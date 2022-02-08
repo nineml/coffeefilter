@@ -1,0 +1,151 @@
+plugins {
+  id "java"
+  id "maven-publish"
+  id "signing"
+  id 'com.github.gmazzo.buildconfig' version "3.0.3"
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url "https://dev.saxonica.com/maven" }
+}
+
+// Set saxonLicenseDir in gradle.properties, or from the
+// command line if you have a license in some other place.
+if (!hasProperty("saxonLicenseDir")) {
+  if (System.getenv("SAXON_LICENSE_DIR") != null) {
+    ext.saxonLicenseDir=System.getenv('SAXON_LICENSE_DIR')
+  } else {
+    ext.saxonLicenseDir=System.getenv('HOME') + "/java"
+  }
+}
+
+dependencies {
+  implementation (
+    [group: 'org.nineml', name: grinderName, version: grinderVersion],
+  )
+  testImplementation (
+    [group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.4.2'],
+    [group: 'org.junit.platform', name: 'junit-platform-console-standalone', version: '1.7.1'],
+    // For saxon:deep-equal
+    [group: 'com.saxonica', name: 'Saxon-EE', version: '11.1.1'],
+    files(saxonLicenseDir)
+  )
+  testRuntimeOnly (
+    [group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.4.2'],
+    [group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.2'],
+    [group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.8.2']
+  )
+}
+
+buildConfig {
+  packageName('org.nineml.coffeefilter')
+  buildConfigField('String', 'TITLE', "\"${filterTitle}\"")
+  buildConfigField('String', 'VERSION', "\"${filterVersion}\"")
+}
+
+jar {
+  archiveBaseName = "${filterTitle}-${filterVersion}"
+  manifest {
+    attributes 'Built-By': 'Norman Walsh'
+    attributes 'Implementation-Vendor': 'Norman Walsh'
+    attributes 'Implementation-Title': filterTitle
+    attributes 'Implementation-Version': filterVersion
+  }
+}
+
+javadoc {
+  inputs.file "${projectDir}/src/main/java/overview.html"
+  inputs.files fileTree(dir: "${projectDir}/src/main")
+
+  title 'An Invisible XML Parsing API'
+  exclude 'org/nineml/coffeefilter/model/**'
+  exclude 'org/nineml/coffeefilter/utils/**'
+  exclude 'org/nineml/coffeefilter/BuildConfig.java'
+  exclude 'org/nineml/coffeefilter/parser/CommonBuilder.java'
+  options.showFromPublic()
+  options.overview = 'src/main/java/overview.html'
+  options.encoding('utf-8')
+  options.docEncoding('utf-8')
+  options.charSet('utf-8')
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar, dependsOn: ['generateBuildConfig']) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:deprecation'
+}
+
+// ============================================================
+
+signing {
+  sign publishing.publications
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      pom {
+        name = filterTitle
+        packaging = 'jar'
+        description = 'An ixml parser'
+        url = 'https://github.com/nineml/coffeefilter'
+
+        scm {
+          url = 'scm:git@github.com:nineml/coffeefilter.git'
+          connection = 'scm:git@github.com:nineml/coffeefilter.git'
+          developerConnection = 'scm:git@github.com:nineml/coffeefilter.git'
+        }
+
+        licenses {
+          license {
+            name = 'Mozilla Public License Version 2.0'
+            url = 'http://www.mozilla.org/MPL/2.0/'
+            distribution = 'repo'
+          }
+        }
+
+        developers {
+          developer {
+            id = 'ndw'
+            name = 'Norman Walsh'
+          }
+        }
+      }
+
+      groupId = "org.nineml"
+      artifactId = filterName
+      version = filterVersion
+      from components.java
+      artifact javadocJar
+      artifact sourcesJar
+    }
+  }
+
+  repositories {
+    maven {
+      url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      credentials {
+        username = sonatypeUsername
+        password = sonatypePassword
+      }
+    }
+  }
+}
+
+// ============================================================
+
+task helloWorld() {
+  doLast {
+    println('Hello, world.')
+  }
+}
