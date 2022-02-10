@@ -7,7 +7,7 @@ import org.xml.sax.SAXException;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.utils.AttributeBuilder;
 import org.nineml.coffeefilter.utils.CommonBuilder;
-import org.nineml.coffeefilter.utils.TrivialContentHandler;
+import org.nineml.coffeefilter.trees.StringTreeBuilder;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -147,7 +147,7 @@ public class InvisibleXmlDocument {
     public String getTree() {
         ParseTree tree = getParseTree();
         CommonBuilder builder = new CommonBuilder(tree);
-        TrivialContentHandler handler = new TrivialContentHandler(options.prettyPrint);
+        StringTreeBuilder handler = new StringTreeBuilder(options.prettyPrint);
         realize(builder, handler);
         return handler.getXml();
     }
@@ -159,7 +159,7 @@ public class InvisibleXmlDocument {
     public void getTree(PrintStream output) {
         ParseTree tree = getParseTree();
         CommonBuilder builder = new CommonBuilder(tree);
-        TrivialContentHandler handler = new TrivialContentHandler(output, options.prettyPrint);
+        StringTreeBuilder handler = new StringTreeBuilder(output, options.prettyPrint);
         realize(builder, handler);
     }
 
