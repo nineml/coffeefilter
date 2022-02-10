@@ -1,4 +1,4 @@
-package org.nineml.coffeefilter.utils;
+package org.nineml.coffeefilter.trees;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -7,7 +7,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class TrivialContentHandler extends DefaultHandler {
+public class StringTreeBuilder extends DefaultHandler {
     private static final int FIRST = 0;
     private static final int START_TAG = 1;
     private static final int IN_TAG = 2;
@@ -22,17 +22,17 @@ public class TrivialContentHandler extends DefaultHandler {
     private final PrintStream stream;
     private final boolean prettyPrint;
 
-    public TrivialContentHandler() {
+    public StringTreeBuilder() {
         this(false);
     }
 
-    public TrivialContentHandler(boolean prettyPrint) {
+    public StringTreeBuilder(boolean prettyPrint) {
         baos = new ByteArrayOutputStream();
         stream = new PrintStream(baos);
         this.prettyPrint = prettyPrint;
     }
 
-    public TrivialContentHandler(PrintStream stream, boolean prettyPrint) {
+    public StringTreeBuilder(PrintStream stream, boolean prettyPrint) {
         this.stream = stream;
         this.prettyPrint = prettyPrint;
     }

@@ -1,6 +1,7 @@
 package org.nineml.coffeefilter;
 
 import net.sf.saxon.s9api.*;
+import org.nineml.coffeefilter.trees.DataTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class TestConfiguration {
     public static final QName _href = new QName("", "href");
 
     public final XdmNode testCatalog;
+    public final DataTree exceptions;
     public final String setName;
     public final String caseName;
     public XdmNode testSet = null;
@@ -34,14 +36,16 @@ public class TestConfiguration {
     public XdmNode grammarTest = null;
     public TestConfiguration parent = null;
 
-    public TestConfiguration(XdmNode catalog, String setName, String caseName) {
+    public TestConfiguration(XdmNode catalog, DataTree exceptions, String setName, String caseName) {
         testCatalog = catalog;
+        this.exceptions = exceptions;
         this.setName = setName;
         this.caseName = caseName;
     }
 
     public TestConfiguration(TestConfiguration copy, XdmNode newSet) {
         this.testCatalog = copy.testCatalog;
+        this.exceptions = copy.exceptions;
         this.setName = copy.setName;
         this.caseName = copy.caseName;
         this.grammar = copy.grammar;
@@ -72,14 +76,47 @@ public class TestConfiguration {
 
     public List<XdmNode> testCases() {
         ArrayList<XdmNode> nodes = new ArrayList<>();
-        if (setName == null || setName.equals(testSet.getAttributeValue(_name))) {
+        List<DataTree> sets;
+        if (exceptions == null) {
+            sets = new ArrayList<>();
+        } else {
+            sets = exceptions.get("exceptions").getAll("set");
+        }
+        DataTree dataSet = null;
+
+        String thisSet = testSet.getAttributeValue(_name);
+        boolean process = setName == null || setName.equals(thisSet);
+        if (setName == null) {
+            // What about exceptions?
+            for (DataTree exset : sets) {
+                if (thisSet.equals(exset.get("id").getValue())) {
+                    dataSet = exset;
+                    if (exset.getAll("case").isEmpty()) {
+                        process = false;
+                    }
+                }
+            }
+        }
+
+        if (process) {
             XdmSequenceIterator<XdmNode> iter = testSet.axisIterator(Axis.CHILD);
             while (iter.hasNext()) {
                 XdmNode child = iter.next();
                 if (child.getNodeKind() == XdmNodeKind.ELEMENT
                         && (child.getNodeName().equals(t_test_case) || child.getNodeName().equals(t_grammar_test))) {
-                    if (caseName == null || caseName.equals(child.getAttributeValue(_name))) {
-                        nodes.add(child);
+                    String thisCase = child.getAttributeValue(_name);
+                    if (caseName == null || caseName.equals(thisCase)) {
+                        process = true;
+                        if (caseName == null && dataSet != null) {
+                            for (DataTree excase : dataSet.getAll("case")) {
+                                if (thisCase.equals(excase.get("id").getValue())) {
+                                    process = false;
+                                }
+                            }
+                        }
+                        if (process) {
+                            nodes.add(child);
+                        }
                     }
                 }
             }

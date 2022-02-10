@@ -6,6 +6,7 @@ import org.nineml.coffeegrinder.util.Messages;
 import java.util.ArrayList;
 
 public final class AttributeBuilder implements Attributes {
+    public static final Attributes EMPTY_ATTRIBUTES = new AttributeBuilder();
     private final Messages messages;
     private final ArrayList<String> names = new ArrayList<>();
     private final ArrayList<String> values = new ArrayList<>();

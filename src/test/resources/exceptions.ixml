@@ -1,0 +1,21 @@
+exceptions: (set,s)+ .
+set: -"set", S, @id, S, ( (case,s)* ; reason ) .
+case: -"case", S, @id, S, reason .
+
+name: namestart, namefollower .
+-namestart: ["_"; L].
+-namefollower: namestart; ["-.·‿⁀"; Nd; Mn].
+
+reason: -"because", S, ~["."]+, "." .
+
+id: -string .
+
+string: -'"', dchar+, -'"';
+        -"'", schar+, -"'".
+
+-dchar: ~['"'; #a; #d] .
+-schar: ~["'"; #a; #d] .
+
+-whitespace: -[Zs]; #9; #a; #d .
+-s: whitespace* .
+-S: whitespace+ .

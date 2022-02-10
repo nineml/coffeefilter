@@ -2,6 +2,8 @@ package org.nineml.coffeefilter;
 
 import net.sf.saxon.s9api.*;
 import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.trees.DataTree;
+import org.nineml.coffeefilter.trees.DataTreeBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TestDriver {
@@ -31,23 +35,33 @@ public class TestDriver {
     public static final QName t_assert_not_a_sentence = new QName("t", xmlns_t, "assert-not-a-sentence");
     public static final QName _name = new QName("", "name");
     public static final QName _href = new QName("", "href");
+    private static final String USAGE = "Usage: TestDriver [-s:set] [-t:test] [-e:exceptions] catalog.xml";
+
+    public static final int STATE_UNKNOWN = 0;
+    public static final int STATE_PASS = 1;
+    public static final int STATE_FAIL = 2;
 
     public static Processor processor = null;
     public static boolean ranOne = false;
     public static int attempts = 0;
     public static int passes = 0;
 
-    public static void main(String[] args) throws IOException, SaxonApiException {
+    public DataTree exceptions = null;
+    public ArrayList<XdmNode> testsToRun = new ArrayList<>();
+    public HashMap<XdmNode,TestConfiguration> testConfigurations = new HashMap<>();
+    public ArrayList<XdmNode> testsToSkip = new ArrayList<>();
+    public HashMap<XdmNode,TestResult> testResults = new HashMap<>();
+
+    public static void main(String[] args) throws IOException, SaxonApiException, URISyntaxException {
         TestDriver driver = new TestDriver();
         driver.run(args);
     }
 
-    private void run(String[] args) throws IOException, SaxonApiException {
+    private void run(String[] args) throws IOException, SaxonApiException, URISyntaxException {
         String catalog = null;
+        String exfile = null;
         String set_name = null;
         String case_name = null;
-
-        // Usage: TestDriver [-s:set] [-t:test] catalog.xml
 
         int pos = 0;
         while (pos < args.length) {
@@ -56,6 +70,8 @@ public class TestDriver {
                 case_name = arg.substring(3);
             } else if (arg.startsWith("-s:")) {
                 set_name = arg.substring(3);
+            } else if (arg.startsWith("-e:")) {
+                exfile = arg.substring(3);
             } else {
                 catalog = arg;
             }
@@ -63,8 +79,12 @@ public class TestDriver {
         }
 
         if (catalog == null) {
-            System.err.println("Usage: TestDriver [-s:test-set] [-t:test-case] catalog.xml");
+            System.err.println(USAGE);
             System.exit(1);
+        }
+
+        if (exfile != null) {
+            loadExceptions(exfile);
         }
 
         File cat = new File(catalog);
@@ -77,16 +97,46 @@ public class TestDriver {
         DocumentBuilder builder = processor.newDocumentBuilder();
 
         TestConfiguration config = new TestConfiguration(builder.build(cat), set_name, case_name);
-        runCatalogDocument(config);
-        System.out.printf("Passed %d of %d attempted tests (%d fails)", passes, attempts, (attempts-passes));
+        readCatalogDocument(config);
+
+        System.err.println("Tests to run: " + testsToRun.size());
+        System.err.println("Tests skipped: " + testsToSkip.size());
+
+        int count = 0;
+        for (XdmNode testCase : testsToRun) {
+            count++;
+            String name = testCase.getAttributeValue(_name);
+            if (name == null) {
+                System.err.printf("Running test %d of %d:%n", count, testsToRun.size());
+            } else {
+                System.err.printf("Running %s, test %d of %d:%n", name, count, testsToRun.size());
+            }
+            runTest(testConfigurations.get(testCase), testCase);
+            TestResult result = testResults.get(testCase);
+            if (result != null) {
+                System.err.printf("\t%d: %d / %d%n", result.state, result.grammarParseTime, result.documentParseTime);
+            }
+        }
+
+        System.err.println("Test results: " + testResults.size());
+
+        //System.out.printf("Passed %d of %d attempted tests (%d fails)", passes, attempts, (attempts-passes));
     }
 
-    private void runCatalogDocument(TestConfiguration config) throws SaxonApiException {
+    private void loadExceptions(String exfile) throws IOException, URISyntaxException {
+        InvisibleXmlParser parser = InvisibleXml.parserFromFile("src/test/resources/exceptions.ixml");
+        InvisibleXmlDocument doc = parser.parseFromFile(exfile);
+        DataTreeBuilder builder = new DataTreeBuilder();
+        doc.getTree(builder);
+        exceptions = builder.getTree();
+    }
+
+    private void readCatalogDocument(TestConfiguration config) throws SaxonApiException {
         XdmSequenceIterator<XdmNode> iter = config.testCatalog.axisIterator(Axis.CHILD);
         while (iter.hasNext()) {
             XdmNode elem = iter.next();
             if (elem.getNodeKind() == XdmNodeKind.ELEMENT && elem.getNodeName().equals(t_test_catalog)) {
-                runCatalog(new TestConfiguration(elem, config.setName, config.caseName));
+                readCatalog(new TestConfiguration(elem, config.setName, config.caseName));
                 return;
             }
         }
@@ -94,13 +144,13 @@ public class TestDriver {
         System.exit(1);
     }
 
-    private void runCatalog(TestConfiguration config) throws SaxonApiException {
+    private void readCatalog(TestConfiguration config) throws SaxonApiException {
         for (XdmNode testSet : config.testSets()) {
-            runTestSet(new TestConfiguration(config, testSet));
+            readTestSet(new TestConfiguration(config, testSet));
         }
     }
 
-    private void runTestSet(TestConfiguration config) throws SaxonApiException {
+    private void readTestSet(TestConfiguration config) throws SaxonApiException {
         if (t_test_set_ref.equals(config.testSet.getNodeName())) {
             DocumentBuilder builder = processor.newDocumentBuilder();
             URI href = config.testSet.getBaseURI().resolve(config.testSet.getAttributeValue(_href));
@@ -110,7 +160,7 @@ public class TestDriver {
             catalog = config.find(catalog, t_test_catalog);
             TestConfiguration newConfig = new TestConfiguration(catalog, config.setName, config.caseName);
             newConfig.parent = config;
-            runCatalog(newConfig);
+            readCatalog(newConfig);
             return;
         }
 
@@ -126,12 +176,17 @@ public class TestDriver {
         }
 
         for (XdmNode testSet : config.testSets()) {
-            runTestSet(new TestConfiguration(config, testSet));
+            readTestSet(new TestConfiguration(config, testSet));
         }
 
         for (XdmNode testCase : config.testCases()) {
-            runTest(config, testCase);
+            readTest(config, testCase);
         }
+    }
+
+    private void readTest(TestConfiguration config, XdmNode testCase) {
+        testsToRun.add(testCase);
+        testConfigurations.put(testCase, config);
     }
 
     private void runTest(TestConfiguration config, XdmNode testCase) {
@@ -144,11 +199,6 @@ public class TestDriver {
 
     private void doRunTest(TestConfiguration config, XdmNode testCase) throws IOException, URISyntaxException, SaxonApiException {
         ranOne = true;
-        if (testCase.getAttributeValue(_name) != null) {
-            System.err.printf("RUN %s in %s\n", testCase.getAttributeValue(_name), config.testSet.getAttributeValue(_name));
-        } else {
-            System.err.printf("RUN test in %s\n", config.testSet.getAttributeValue(_name));
-        }
 
         XdmNode result = config.find(testCase, t_result);
         if (result == null) {
@@ -183,12 +233,15 @@ public class TestDriver {
     }
 
     private void doValidParse(TestConfiguration config, XdmNode testCase, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
+        TestResult result = new TestResult(testCase);
+        testResults.put(testCase, result);
+
         XdmNode testString = config.findOne(testCase, t_test_string, t_test_string_ref);
 
         assert testString != null;
-        attempts++;
 
         InvisibleXmlParser parser = loadGrammar(config);
+        result.grammarParseTime = parser.getParseTime();
 
         String input = null;
         if (t_test_string.equals(testString.getNodeName())) {
@@ -200,6 +253,7 @@ public class TestDriver {
         }
 
         InvisibleXmlDocument doc = parser.parse(input);
+        result.documentParseTime = doc.parseTime();
 
         DocumentBuilder builder = processor.newDocumentBuilder();
         BuildingContentHandler bch = builder.newBuildingContentHandler();
@@ -210,8 +264,6 @@ public class TestDriver {
         while (iter.hasNext() && node.getNodeKind() != XdmNodeKind.ELEMENT) {
             node = iter.next();
         }
-
-        doc.getEarleyResult().getForest().serialize("graph2.xml");
 
         boolean same = false;
         for (XdmNode assertion : assertions) {
@@ -239,9 +291,10 @@ public class TestDriver {
         }
 
         if (same) {
+            result.state = STATE_PASS;
             System.err.println("PASS");
-            passes++;
         } else {
+            result.state = STATE_FAIL;
             System.err.println("FAIL");
         }
     }
@@ -253,8 +306,13 @@ public class TestDriver {
             ixml = config.grammar.getStringValue();
             parser = InvisibleXml.parserFromString(ixml);
         } else if (t_ixml_grammar_ref.equals(config.grammar.getNodeName())) {
-            ixml = textFile(config.grammar.getBaseURI().resolve(config.grammar.getAttributeValue(_href)));
-            parser = InvisibleXml.parserFromString(ixml);
+            URI grammarURI = config.grammar.getBaseURI().resolve(config.grammar.getAttributeValue(_href));
+            if (grammarURI.toString().endsWith("/ixml/tests/reference/ixml.ixml")) {
+                parser = InvisibleXml.invisibleXmlParser();
+            } else {
+                ixml = textFile(grammarURI);
+                parser = InvisibleXml.parserFromString(ixml);
+            }
         } else if (t_vxml_grammar.equals(config.grammar.getNodeName())) {
             ixml = config.grammar.getStringValue();
             parser = InvisibleXml.parserFromVxmlString(ixml);
@@ -312,12 +370,16 @@ public class TestDriver {
     }
 
     private void doNotASentence(TestConfiguration config, XdmNode testCase, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
+        TestResult result = new TestResult(testCase);
+        testResults.put(testCase, result);
+
         XdmNode testString = config.findOne(testCase, t_test_string, t_test_string_ref);
 
         assert testString != null;
         attempts++;
 
         InvisibleXmlParser parser = loadGrammar(config);
+        result.grammarParseTime = parser.getParseTime();
 
         String input = null;
         if (t_test_string.equals(testString.getNodeName())) {
@@ -329,25 +391,182 @@ public class TestDriver {
         }
 
         InvisibleXmlDocument doc = parser.parse(input);
+        result.documentParseTime = doc.parseTime();
 
         if (doc.numberOfParses() == 0) {
+            result.state = STATE_PASS;
             System.err.println("PASS");
-            passes++;
         } else {
+            result.state = STATE_FAIL;
+            result.xml = doc.getTree();
             System.err.println("FAIL");
-            System.err.println(doc.getTree());
         }
     }
 
     private void doNotAGrammar(TestConfiguration config, XdmNode testCase, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
-        attempts++;
+        TestResult result = new TestResult(testCase);
+        testResults.put(testCase, result);
 
         try {
-            loadGrammar(config);
-            System.err.println("FAIL");
+            InvisibleXmlParser parser = loadGrammar(config);
+            result.grammarParseTime = parser.getParseTime();
+            if (parser.constructed()) {
+                result.state = STATE_PASS;
+                System.err.println("FAIL");
+            } else {
+                result.state = STATE_PASS;
+                System.err.println("PASS");
+            }
         } catch (IxmlException ex) {
+            result.state = STATE_PASS;
             System.err.println("PASS");
-            passes++;
+        }
+    }
+
+    private class TestConfiguration {
+        public final XdmNode testCatalog;
+        public final String setName;
+        public final String caseName;
+        public XdmNode testSet = null;
+        public XdmNode grammar = null;
+        public XdmNode grammarTest = null;
+        public TestConfiguration parent = null;
+
+        public TestConfiguration(XdmNode catalog, String setName, String caseName) {
+            testCatalog = catalog;
+            this.setName = setName;
+            this.caseName = caseName;
+        }
+
+        public TestConfiguration(TestConfiguration copy, XdmNode newSet) {
+            this.testCatalog = copy.testCatalog;
+            this.setName = copy.setName;
+            this.caseName = copy.caseName;
+            this.grammar = copy.grammar;
+            this.grammarTest = copy.grammarTest;
+            this.testSet = newSet;
+            this.parent = copy;
+        }
+
+        public List<XdmNode> testSets() {
+            XdmNode parent = testSet;
+            if (parent == null) {
+                parent = testCatalog;
+            }
+
+            ArrayList<XdmNode> nodes = new ArrayList<>();
+            XdmSequenceIterator<XdmNode> iter = parent.axisIterator(Axis.CHILD);
+            while (iter.hasNext()) {
+                XdmNode child = iter.next();
+                if (child.getNodeKind() == XdmNodeKind.ELEMENT) {
+                    if (child.getNodeName().equals(t_test_set)
+                            || child.getNodeName().equals(t_test_set_ref)) {
+                        nodes.add(child);
+                    }
+                }
+            }
+            return nodes;
+        }
+
+        public List<XdmNode> testCases() {
+            ArrayList<XdmNode> nodes = new ArrayList<>();
+            List<DataTree> sets;
+            if (exceptions == null) {
+                sets = new ArrayList<>();
+            } else {
+                sets = exceptions.get("exceptions").getAll("set");
+            }
+            DataTree dataSet = null;
+
+            String thisSet = testSet.getAttributeValue(_name);
+            boolean process = setName == null || setName.equals(thisSet);
+            if (setName == null) {
+                // What about exceptions?
+                for (DataTree exset : sets) {
+                    if (thisSet.equals(exset.get("id").getValue())) {
+                        dataSet = exset;
+                        if (exset.getAll("case").isEmpty()) {
+                            process = false;
+                        }
+                    }
+                }
+            }
+
+            XdmSequenceIterator<XdmNode> iter = testSet.axisIterator(Axis.CHILD);
+            while (iter.hasNext()) {
+                XdmNode child = iter.next();
+                if (child.getNodeKind() == XdmNodeKind.ELEMENT
+                        && (child.getNodeName().equals(t_test_case) || child.getNodeName().equals(t_grammar_test))) {
+                    String thisCase = child.getAttributeValue(_name);
+                    if (caseName == null || caseName.equals(thisCase)) {
+                        boolean processCase = true;
+                        if (caseName == null && dataSet != null) {
+                            for (DataTree excase : dataSet.getAll("case")) {
+                                if (thisCase.equals(excase.get("id").getValue())) {
+                                    processCase = false;
+                                }
+                            }
+                        }
+                        if (process && processCase) {
+                            nodes.add(child);
+                        } else {
+                            testsToSkip.add(child);
+                        }
+                    }
+                }
+            }
+
+            return nodes;
+        }
+
+        public XdmNode find(XdmNode parent, QName name) {
+            XdmSequenceIterator<XdmNode> iter = parent.axisIterator(Axis.CHILD);
+            while (iter.hasNext()) {
+                XdmNode child = iter.next();
+                if (child.getNodeKind() == XdmNodeKind.ELEMENT && child.getNodeName().equals(name)) {
+                    return child;
+                }
+            }
+            return null;
+        }
+
+        public XdmNode findOne(XdmNode parent, QName... names) {
+            for (QName name : names) {
+                XdmNode found = find(parent, name);
+                if (found != null) {
+                    return found;
+                }
+            }
+            return null;
+        }
+
+        public List<XdmNode> findAll(XdmNode parent, QName... names) {
+            ArrayList<XdmNode> foundList = new ArrayList<>();
+            XdmSequenceIterator<XdmNode> iter = parent.axisIterator(Axis.CHILD);
+            while (iter.hasNext()) {
+                XdmNode child = iter.next();
+                if (child.getNodeKind() == XdmNodeKind.ELEMENT) {
+                    boolean match = false;
+                    for (QName name : names) {
+                        match = match || name.equals(child.getNodeName());
+                    }
+                    if (match) {
+                        foundList.add(child);
+                    }
+                }
+            }
+            return foundList;
+        }
+    }
+
+    private static class TestResult {
+        public final XdmNode testCase;
+        public long grammarParseTime = -1;
+        public long documentParseTime = -1;
+        public int state = STATE_UNKNOWN;
+        public String xml = null;
+        public TestResult(XdmNode testCase) {
+            this.testCase = testCase;
         }
     }
 }

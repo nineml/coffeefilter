@@ -18,6 +18,18 @@ public class IxmlParserTest {
         }
     }
 
+    @Test
+    public void testParseExceptions() {
+        try {
+            InvisibleXmlParser parser = InvisibleXml.parserFromFile("src/test/resources/exceptions.ixml");
+            System.err.println(parser.getCompiledParser());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            fail();
+        }
+    }
+
+
     /*
     @Test
     public void testParseProgram() {
