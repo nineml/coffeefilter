@@ -1,5 +1,8 @@
 package org.nineml.coffeefilter.trees;
 
+/**
+ * A node in a {@link DataTree} that contains a single atomic value.
+ */
 public class DataText extends DataTree {
     private final String text;
 
@@ -8,6 +11,10 @@ public class DataText extends DataTree {
         this.text = text;
     }
 
+    /**
+     * Get the value.
+     * @return the value.
+     */
     @Override
     public String getValue() {
         return text;

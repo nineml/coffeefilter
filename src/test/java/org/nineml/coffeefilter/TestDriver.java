@@ -102,6 +102,7 @@ public class TestDriver {
         System.err.println("Tests to run: " + testsToRun.size());
         System.err.println("Tests skipped: " + testsToSkip.size());
 
+        int pass = 0;
         int count = 0;
         for (XdmNode testCase : testsToRun) {
             count++;
@@ -114,13 +115,17 @@ public class TestDriver {
             runTest(testConfigurations.get(testCase), testCase);
             TestResult result = testResults.get(testCase);
             if (result != null) {
-                System.err.printf("\t%d: %d / %d%n", result.state, result.grammarParseTime, result.documentParseTime);
+                result.summarize();
+                if (result.state == STATE_PASS) {
+                    pass++;
+                }
             }
         }
 
-        System.err.println("Test results: " + testResults.size());
-
-        //System.out.printf("Passed %d of %d attempted tests (%d fails)", passes, attempts, (attempts-passes));
+        System.err.printf("Passed %d of %d tests.%n", pass, testResults.size());
+        if (pass != testResults.size()) {
+            System.exit(1);
+        }
     }
 
     private void loadExceptions(String exfile) throws IOException, URISyntaxException {
@@ -292,10 +297,8 @@ public class TestDriver {
 
         if (same) {
             result.state = STATE_PASS;
-            System.err.println("PASS");
         } else {
             result.state = STATE_FAIL;
-            System.err.println("FAIL");
         }
     }
 
@@ -395,11 +398,9 @@ public class TestDriver {
 
         if (doc.numberOfParses() == 0) {
             result.state = STATE_PASS;
-            System.err.println("PASS");
         } else {
             result.state = STATE_FAIL;
             result.xml = doc.getTree();
-            System.err.println("FAIL");
         }
     }
 
@@ -411,15 +412,12 @@ public class TestDriver {
             InvisibleXmlParser parser = loadGrammar(config);
             result.grammarParseTime = parser.getParseTime();
             if (parser.constructed()) {
-                result.state = STATE_PASS;
-                System.err.println("FAIL");
+                result.state = STATE_FAIL;
             } else {
                 result.state = STATE_PASS;
-                System.err.println("PASS");
             }
         } catch (IxmlException ex) {
             result.state = STATE_PASS;
-            System.err.println("PASS");
         }
     }
 
@@ -567,6 +565,38 @@ public class TestDriver {
         public String xml = null;
         public TestResult(XdmNode testCase) {
             this.testCase = testCase;
+        }
+
+        public void summarize() {
+            StringBuilder sb = new StringBuilder();
+            switch (state) {
+                case STATE_FAIL:
+                    sb.append("FAIL: ");
+                    break;
+                case STATE_PASS:
+                    sb.append("Pass: ");
+                    break;
+                default:
+                    sb.append("\t??? Unknown: ");
+            }
+            if (grammarParseTime >= 0) {
+                sb.append("parsed grammar in ").append(time(grammarParseTime));
+                if (documentParseTime >= 0) {
+                    sb.append("; ");
+                } else {
+                    sb.append(".");
+                }
+            }
+            if (documentParseTime >= 0) {
+                sb.append("parsed document in ").append(time(documentParseTime));
+                sb.append(".");
+            }
+            System.err.println(sb);
+            System.err.println("------------------------------------------------------------");
+        }
+
+        private String time(long duration) {
+            return String.format("%5.3fs", duration / 1000.0);
         }
     }
 }

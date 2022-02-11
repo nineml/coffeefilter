@@ -1,5 +1,6 @@
 package org.nineml.coffeefilter.trees;
 
+import org.nineml.coffeefilter.InvisibleXmlDocument;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -7,6 +8,11 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+/**
+ * Construct a "string tree".
+ * <p>This builder can be passed to {@link InvisibleXmlDocument#getTree()} to build a string
+ * represention of the document's underlying VXML.</p>
+ */
 public class StringTreeBuilder extends DefaultHandler {
     private static final int FIRST = 0;
     private static final int START_TAG = 1;
@@ -22,21 +28,43 @@ public class StringTreeBuilder extends DefaultHandler {
     private final PrintStream stream;
     private final boolean prettyPrint;
 
+    /**
+     * Create a default string tree builder.
+     * <p>The default builder does not pretty-print.</p>
+     */
     public StringTreeBuilder() {
         this(false);
     }
 
+    /**
+     * Create a string tree builder.
+     * <p>If pretty printing is requested, additional newlines and whitespace are added
+     * to create an indented view of the XML.</p>
+     * @param prettyPrint if true, attempt to pretty-print the XML.
+     */
     public StringTreeBuilder(boolean prettyPrint) {
         baos = new ByteArrayOutputStream();
         stream = new PrintStream(baos);
         this.prettyPrint = prettyPrint;
     }
 
+    /**
+     * Create a string tree builder, specifying an output stream.
+     * <p>If pretty printing is requested, additional newlines and whitespace are added
+     * to create an indented view of the XML.</p>
+     * @param stream the output stream.
+     * @param prettyPrint if true, attempt to pretty-print the XML.
+     */
     public StringTreeBuilder(PrintStream stream, boolean prettyPrint) {
         this.stream = stream;
         this.prettyPrint = prettyPrint;
     }
 
+    /**
+     * Return a string containing the XML serialization.
+     * <p>If a stream was provided to the constructor, this method will return null.</p>
+     * @return the XML string, or null.
+     */
     public String getXml() {
         if (baos == null) {
             return null;
@@ -142,5 +170,4 @@ public class StringTreeBuilder extends DefaultHandler {
             }
         }
     }
-
 }

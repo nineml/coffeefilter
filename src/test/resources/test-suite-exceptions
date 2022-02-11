@@ -1,4 +1,3 @@
-set "elem1.ixml" because The test suite markup incorrectly describes the test.
 set "expr1"
     case "expr1" because Its output is not valid XML.
 set "xpath"

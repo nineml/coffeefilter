@@ -1,5 +1,8 @@
 package org.nineml.coffeefilter.trees;
 
+/**
+ * A node in a {@link SimpleTree} that contains a single text value.
+ */
 public class SimpleText extends SimpleTree {
     private final String text;
 
@@ -8,6 +11,10 @@ public class SimpleText extends SimpleTree {
         this.text = text;
     }
 
+    /**
+     * Get the value.
+     * @return the value.
+     */
     @Override
     public String getText() {
         return text;

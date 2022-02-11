@@ -21,6 +21,10 @@ if (!hasProperty("saxonLicenseDir")) {
   }
 }
 
+configurations {
+  testsuite.extendsFrom(testImplementation)
+}
+
 dependencies {
   implementation (
     [group: 'org.nineml', name: grinderName, version: grinderVersion],
@@ -37,12 +41,25 @@ dependencies {
     [group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.2'],
     [group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.8.2']
   )
+  testsuite (
+    files("${buildDir}/classes/java/main"),
+    files("${buildDir}/classes/java/test"),
+    files("${buildDir}/resources/main"),
+    files("${buildDir}/resources/test")
+  )
 }
 
 buildConfig {
   packageName('org.nineml.coffeefilter')
   buildConfigField('String', 'TITLE', "\"${filterTitle}\"")
   buildConfigField('String', 'VERSION', "\"${filterVersion}\"")
+}
+
+task testSuite(type: JavaExec, dependsOn: jar) {
+  classpath = configurations.testsuite
+  main = 'org.nineml.coffeefilter.TestDriver'
+  args = ['-e:src/test/resources/test-suite-exceptions',
+          'ixml/tests/test-catalog.xml']
 }
 
 jar {
@@ -147,5 +164,8 @@ publishing {
 task helloWorld() {
   doLast {
     println('Hello, world.')
+    configurations.testsuite.resolve().each { path ->
+      println(path)
+    }
   }
 }
