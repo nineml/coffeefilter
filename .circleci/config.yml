@@ -4,13 +4,14 @@ executors:
     docker:
       - image: cimg/openjdk:8.0
 
-#    environment:
-#      JVM_OPTS: -Xmx16g
-#      TERM: dumb
-
 jobs:
   build:
     executor: builder
+
+    environment:
+      JVM_OPTS: -Xmx16g
+      TERM: dumb
+
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -22,10 +23,13 @@ jobs:
 
       - run: git submodule update --init
 
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            - v1-dependencies-
+# This causes a build failure:
+# Supplied javaHome must be a valid directory. You supplied: /usr/lib/jvm/java-11-openjdk-amd64
+#
+#      - restore_cache:
+#          keys:
+#            - v1-dependencies-{{ checksum "build.gradle" }}
+#            - v1-dependencies-
 
       - run: ./gradlew dependencies
 
