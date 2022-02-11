@@ -88,6 +88,38 @@ javadoc {
   options.charSet('utf-8')
 }
 
+task dist(dependsOn:["test", "jar", "javadoc"]) {
+  doLast {
+    mkdir "${buildDir}/stage"
+    mkdir "${buildDir}/stage/docs"
+  }
+  doLast {
+    copy {
+      from "${buildDir}/libs"
+      into "${buildDir}/stage"
+    }
+  }
+  doLast {
+    copy {
+      from "${buildDir}/docs"
+      into "${buildDir}/stage/docs"
+    }
+  }
+  doLast {
+    copy {
+      from "${projectDir}/README.md"
+      into "${buildDir}/stage/docs"
+    }
+  }
+}
+
+task zipDist(type: Zip) {
+  from "${buildDir}/stage"
+  into "${filterName}-${filterVersion}"
+  archiveFileName = "${filterName}-${filterVersion}.zip"
+}
+dist.finalizedBy zipDist
+
 task javadocJar(type: Jar, dependsOn: javadoc) {
   classifier = 'javadoc'
   from javadoc.destinationDir
@@ -150,10 +182,10 @@ publishing {
 
   repositories {
     maven {
-      url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
       credentials {
-        username = sonatypeUsername
-        password = sonatypePassword
+        username = project.findProperty("sonatypeUsername") ?: "NOUSER"
+        password = project.findProperty("sonatypePassword") ?: "NOPASS"
       }
     }
   }
@@ -164,8 +196,5 @@ publishing {
 task helloWorld() {
   doLast {
     println('Hello, world.')
-    configurations.testsuite.resolve().each { path ->
-      println(path)
-    }
   }
 }
