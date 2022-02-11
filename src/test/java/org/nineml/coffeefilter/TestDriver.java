@@ -41,6 +41,7 @@ public class TestDriver {
     public static final int STATE_PASS = 1;
     public static final int STATE_FAIL = 2;
 
+    public static boolean runningEE = true;
     public static Processor processor = null;
     public static boolean ranOne = false;
     public static int attempts = 0;
@@ -94,6 +95,7 @@ public class TestDriver {
         }
 
         processor = new Processor(true);
+        runningEE = processor.isSchemaAware();
         DocumentBuilder builder = processor.newDocumentBuilder();
 
         TestConfiguration config = new TestConfiguration(builder.build(cat), set_name, case_name);
@@ -362,8 +364,13 @@ public class TestDriver {
         XPathCompiler compiler = processor.newXPathCompiler();
         compiler.declareVariable(a);
         compiler.declareVariable(b);
-        compiler.declareNamespace("saxon", "http://saxon.sf.net/");
-        XPathExecutable exec = compiler.compile("saxon:deep-equal($a,$b, (), '?')");
+        XPathExecutable exec;
+        if (runningEE) {
+            compiler.declareNamespace("saxon", "http://saxon.sf.net/");
+            exec = compiler.compile("saxon:deep-equal($a,$b, (), '?')");
+        } else {
+            exec = compiler.compile("deep-equal($a,$b)");
+        }
         XPathSelector selector = exec.load();
         selector.setVariable(a, left);
         selector.setVariable(b, right);
