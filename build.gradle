@@ -49,6 +49,8 @@ dependencies {
   )
 }
 
+println("Building with Java version ${System.getProperty('java.version')}")
+
 buildConfig {
   packageName('org.nineml.coffeefilter')
   buildConfigField('String', 'TITLE', "\"${filterTitle}\"")
@@ -56,6 +58,13 @@ buildConfig {
 }
 
 task testSuite(type: JavaExec, dependsOn: jar) {
+  inputs.files fileTree(dir: "${buildDir}/classes/java/main")
+  inputs.files fileTree(dir: "${buildDir}/classes/java/test")
+  inputs.files fileTree(dir: "${buildDir}/resources/main")
+  inputs.files fileTree(dir: "${buildDir}/resources/test")
+  inputs.files fileTree(dir: "${projectDir}/ixml/tests")
+  inputs.file "${projectDir}/src/test/resources/test-suite-exceptions"
+
   classpath = configurations.testsuite
   main = 'org.nineml.coffeefilter.TestDriver'
   args = ['-e:src/test/resources/test-suite-exceptions',
