@@ -22,6 +22,11 @@ jobs:
 
       - run: git submodule update --init
 
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-
+
       - run: ./gradlew dependencies
 
       - save_cache:
