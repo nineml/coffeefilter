@@ -36,7 +36,7 @@ public class CompiledGrammarTest {
     @Test
     public void compileHashGrammar() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.parserFromFile("test-suite/correct/hash.ixml");
+            InvisibleXmlParser parser = InvisibleXml.parserFromFile("ixml/tests/correct/hash.ixml");
             InvisibleXmlDocument doc = parser.parse("#12.");
             //doc.getEarleyResult().getForest().parse().serialize("hash.xml");
             //doc.getEarleyResult().getForest().serialize("graph.xml");
