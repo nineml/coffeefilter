@@ -132,7 +132,7 @@ public class SimpleTreeTest {
                     "    case \"c\" because d.\n";
 
             InvisibleXmlDocument doc = parser.parse(input);
-            doc.getEarleyResult().getForest().serialize("graph.xml");
+            //doc.getEarleyResult().getForest().serialize("graph.xml");
 
             String xml = doc.getTree();
 
