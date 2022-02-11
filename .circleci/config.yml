@@ -1,18 +1,16 @@
-version: 2
+version: 2.1
+executors:
+  builder:
+    docker:
+      - image: cimg/openjdk:8.0
+
+#    environment:
+#      JVM_OPTS: -Xmx16g
+#      TERM: dumb
+
 jobs:
   build:
-    machine:
-      image: ubuntu-2004:202111-02
-
-    java:
-      version: oraclejdk8
-
-    working_directory: ~/repo
-
-    environment:
-      JVM_OPTS: -Xmx16g
-      TERM: dumb
-
+    executor: builder
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -83,3 +81,4 @@ workflows:
               ignore: /.*/
             tags:
               only: /.+/
+
