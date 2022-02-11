@@ -14,9 +14,9 @@ jobs:
       TERM: dumb
 
     steps:
-#      - add_ssh_keys:
-#          fingerprints:
-#            - "9f:8a:7e:3f:19:aa:fa:ae:5b:a0:78:4e:3e:9e:03:f5"
+      - add_ssh_keys:
+          fingerprints:
+            - "bb:13:00:be:ea:3a:eb:00:9b:e4:68:6c:85:25:39:26"
 
       - checkout
 
