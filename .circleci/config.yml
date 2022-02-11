@@ -1,13 +1,12 @@
-version: 2
+version: 2.1
+executors:
+  builder:
+    docker:
+      - image: cimg/openjdk:8.0
+
 jobs:
   build:
-    machine:
-      image: ubuntu-2004:202111-02
-
-    java:
-      version: oraclejdk8
-
-    working_directory: ~/repo
+    executor: builder
 
     environment:
       JVM_OPTS: -Xmx16g
@@ -24,10 +23,13 @@ jobs:
 
       - run: git submodule update --init
 
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
-            - v1-dependencies-
+# This causes a build failure:
+# Supplied javaHome must be a valid directory. You supplied: /usr/lib/jvm/java-11-openjdk-amd64
+#
+#      - restore_cache:
+#          keys:
+#            - v1-dependencies-{{ checksum "build.gradle" }}
+#            - v1-dependencies-
 
       - run: ./gradlew dependencies
 
@@ -83,3 +85,4 @@ workflows:
               ignore: /.*/
             tags:
               only: /.+/
+
