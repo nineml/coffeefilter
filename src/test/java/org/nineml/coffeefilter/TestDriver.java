@@ -403,7 +403,7 @@ public class TestDriver {
         InvisibleXmlDocument doc = parser.parse(input);
         result.documentParseTime = doc.parseTime();
 
-        if (doc.numberOfParses() == 0) {
+        if (doc.getNumberOfParses() == 0) {
             result.state = STATE_PASS;
         } else {
             result.state = STATE_FAIL;
