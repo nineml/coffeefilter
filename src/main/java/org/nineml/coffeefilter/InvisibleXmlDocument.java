@@ -87,13 +87,21 @@ public class InvisibleXmlDocument {
     }
 
     /**
+     * Did the parse succeed?
+     * @return true if the parse was successful
+     */
+    public boolean succeeded() {
+        return getNumberOfParses() > 0;
+    }
+
+    /**
      * Return the number of successful parses of this document.
      *
      * <p>Will return 0 if there are no successful parses.</p>
      *
      * @return The number of parses.
      */
-    public long numberOfParses() {
+    public long getNumberOfParses() {
         if (result.succeeded() || result.prefixSucceeded()) {
             return result.getForest().getTotalParses();
         }
@@ -107,7 +115,7 @@ public class InvisibleXmlDocument {
      *
      * @return The number of parses.
      */
-    public BigInteger exactNumberOfParses() {
+    public BigInteger getExactNumberOfParses() {
         if (result.succeeded() || result.prefixSucceeded()) {
             return result.getForest().getExactTotalParses();
         }

@@ -178,7 +178,7 @@ public class InvisibleXmlParser {
 
     protected InvisibleXmlParser getParser(String input) {
         InvisibleXmlDocument doc = parse(input);
-        if (doc.numberOfParses() == 0) {
+        if (doc.getNumberOfParses() == 0) {
             return new InvisibleXmlParser(doc, doc.parseTime());
         }
 

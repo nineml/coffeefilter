@@ -4,9 +4,6 @@ import net.sf.saxon.s9api.*;
 import net.sf.saxon.s9api.DocumentBuilder;
 import org.junit.Assert;
 import org.junit.Test;
-import org.nineml.coffeefilter.InvisibleXml;
-import org.nineml.coffeefilter.InvisibleXmlDocument;
-import org.nineml.coffeefilter.InvisibleXmlParser;
 
 import static org.junit.Assert.fail;
 
@@ -141,7 +138,7 @@ public class ParserTest {
             InvisibleXmlParser parser = InvisibleXml.parserFromFile("src/test/resources/comments.ixml");
             String input = "hello";
             InvisibleXmlDocument doc = parser.parse(input);
-            Assert.assertTrue(doc.numberOfParses() > 0);
+            Assert.assertTrue(doc.getNumberOfParses() > 0);
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();
