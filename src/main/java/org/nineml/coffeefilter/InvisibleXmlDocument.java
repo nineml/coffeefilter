@@ -213,7 +213,7 @@ public class InvisibleXmlDocument {
 
             AttributeBuilder attrs = new AttributeBuilder();
             attrs.addAttribute("http://invisiblexml.org/NS", "ixml:state", "failed");
-            handler.startElement("", "failed", "failed", attrs);
+            handler.startElement("", "parse-failed", "failed", attrs);
 
             attrs = new AttributeBuilder();
             if (lineNumber > 0) {
@@ -227,28 +227,30 @@ public class InvisibleXmlDocument {
             writeString(handler, result.getLastToken().toString());
             handler.endElement("", "last-token", "last-token");
 
-            attrs = new AttributeBuilder();
-            handler.startElement("", "chart", "chart", attrs);
+            if (options.showChart) {
+                handler.startElement("", "chart", "chart", AttributeBuilder.EMPTY_ATTRIBUTES);
 
-            for (int row = 0; row < result.getChart().size(); row++) {
-                if (!result.getChart().get(row).isEmpty()) {
-                    attrs = new AttributeBuilder();
-                    attrs.addAttribute("n", ""+row);
-                    handler.startElement("", "row", "row", attrs);
+                for (int row = 0; row < result.getChart().size(); row++) {
+                    if (!result.getChart().get(row).isEmpty()) {
+                        attrs = new AttributeBuilder();
+                        attrs.addAttribute("n", ""+row);
+                        handler.startElement("", "row", "row", attrs);
 
-                    attrs = new AttributeBuilder();
-                    for (EarleyItem item : result.getChart().get(row)) {
-                        writeString(handler,"  ");
-                        handler.startElement("", "item", "item", attrs);
-                        writeString(handler, item.toString());
-                        handler.endElement("", "item", "item");
+                        attrs = new AttributeBuilder();
+                        for (EarleyItem item : result.getChart().get(row)) {
+                            writeString(handler,"  ");
+                            handler.startElement("", "item", "item", attrs);
+                            writeString(handler, item.toString());
+                            handler.endElement("", "item", "item");
+                        }
+
+                        handler.endElement("", "row", "row");
                     }
-
-                    handler.endElement("", "row", "row");
                 }
+                handler.endElement("", "chart", "chart");
             }
-            handler.endElement("", "chart", "chart");
-            handler.endElement("", "failed", "failed");
+
+            handler.endElement("", "parse-failed", "failed");
             handler.endDocument();
         } catch (SAXException ex) {
             throw new IxmlException("Failed to create XML: " + ex.getMessage(), ex);
