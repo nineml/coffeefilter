@@ -1,8 +1,10 @@
 package org.nineml.coffeefilter;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.nineml.coffeefilter.InvisibleXml;
 import org.nineml.coffeefilter.InvisibleXmlParser;
+import org.nineml.coffeegrinder.parser.Grammar;
 
 import static org.junit.Assert.fail;
 
@@ -11,6 +13,8 @@ public class IxmlParserTest {
     public void testParseIxml() {
         try {
             InvisibleXmlParser parser = InvisibleXml.parserFromFile("src/main/resources/org/nineml/coffeefilter/ixml.ixml");
+            Grammar grammar = parser.getGrammar();
+            Assert.assertNotNull(grammar);
             //System.err.println(parser.getCompiledParser());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
@@ -22,7 +26,9 @@ public class IxmlParserTest {
     public void testParseExceptions() {
         try {
             InvisibleXmlParser parser = InvisibleXml.parserFromFile("src/test/resources/exceptions.ixml");
-            System.err.println(parser.getCompiledParser());
+            Grammar grammar = parser.getGrammar();
+            Assert.assertNotNull(grammar);
+            //System.err.println(parser.getCompiledParser());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();

@@ -14,6 +14,11 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     public boolean prettyPrint = false;
 
     /**
+     * Show the Earley chart in error results?
+     */
+    public boolean showChart = false;
+
+    /**
      * Be verbose about what's going on?
      */
     public boolean verbose = false;
