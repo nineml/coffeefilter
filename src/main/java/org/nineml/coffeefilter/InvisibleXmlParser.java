@@ -23,6 +23,7 @@ public class InvisibleXmlParser {
     private final Ixml ixml;
     private final InvisibleXmlDocument failedParse;
     private final long parseTime;
+    private EarleyParser parser = null;
     private ParserOptions options = new ParserOptions();
 
     protected InvisibleXmlParser(Ixml ixml) {
@@ -176,6 +177,12 @@ public class InvisibleXmlParser {
         return doc;
     }
 
+    /**
+     * Get a parser from a string.
+     * <p>The string is parsed as an Invisible XML grammar.</p>
+     * @param input the grammar
+     * @return the parser
+     */
     protected InvisibleXmlParser getParser(String input) {
         InvisibleXmlDocument doc = parse(input);
         if (doc.getNumberOfParses() == 0) {
@@ -195,6 +202,10 @@ public class InvisibleXmlParser {
         }
     }
 
+    /**
+     * Get a string representation of the compiled grammar
+     * @return the XML serialization of the compiled grammar
+     */
     public String getCompiledParser() {
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
@@ -203,15 +214,32 @@ public class InvisibleXmlParser {
         return compiler.compile(ixml.getGrammar());
     }
 
+    /**
+     * Load a compiled grammar.
+     * @param compiled the compiled grammar.
+     * @return a parser for the grammar.
+     * @throws IOException If the file cannot be read.
+     */
     public static InvisibleXmlParser loadCompiledGrammar(File compiled) throws IOException {
         IxmlCompiler compiler = new IxmlCompiler();
         return new InvisibleXmlParser(compiler.parse(compiled));
     }
 
+    /**
+     * Construct a parser from a compiled grammar.
+     * @param compiled the XML serailization of the compiled grammar
+     * @return a parser for the grammar.
+     */
     public static InvisibleXmlParser parseCompiledGrammar(String compiled) {
         IxmlCompiler compiler = new IxmlCompiler();
         return new InvisibleXmlParser(compiler.parse(compiled));
     }
 
+    public Grammar getGrammar() {
+        if (ixml == null) {
+            throw new NullPointerException("No grammar for this parser");
+        }
+        return ixml.getGrammar();
+    }
 }
 
