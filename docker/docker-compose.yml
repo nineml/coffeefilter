@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+    coffeefilter_server:
+      image: httpd:2.4
+      container_name: coffeefilter
+      ports:
+        - 8280:80
+      working_dir: /src
+      volumes:
+        - ../build/website:/usr/local/apache2/htdocs
+      stdin_open: true
+      tty: true
+      networks:
+        - external_coffeefilter
+
+networks:
+  external_coffeefilter: {}

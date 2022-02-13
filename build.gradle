@@ -1,9 +1,38 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://dev.saxonica.com/maven" }
+  }
+
+  configurations.all {
+    resolutionStrategy {
+      force 'xml-apis:xml-apis:1.4.01',
+        "${saxonGroup}:${saxonEdition}:${saxonVersion}",
+        "org.xmlresolver:xmlresolver:${xmlresolverVersion}"
+    }
+  }
+
+  dependencies {
+    classpath group: saxonGroup, name: saxonEdition, version: saxonVersion
+    classpath group: 'org.docbook', name: 'schemas-docbook', version: docbookVersion
+    classpath group: 'org.docbook', name: 'docbook-xslTNG', version: xslTNGversion
+  }
+}
+
 plugins {
   id "java"
   id "maven-publish"
   id "signing"
   id 'com.github.gmazzo.buildconfig' version "3.0.3"
+  id 'com.nwalsh.gradle.saxon.saxon-gradle' version '0.9.3'
+  id 'com.nwalsh.gradle.relaxng.validate' version '0.0.8'
+  id 'com.nwalsh.gradle.docker.container' version '0.0.3'
 }
+
+import com.nwalsh.gradle.saxon.SaxonXsltTask
+import com.nwalsh.gradle.relaxng.validate.RelaxNGValidateTask
+import com.nwalsh.gradle.docker.DockerContainer
 
 repositories {
   mavenLocal()
@@ -21,8 +50,17 @@ if (!hasProperty("saxonLicenseDir")) {
   }
 }
 
+configurations.all {
+  resolutionStrategy {
+    force 'xml-apis:xml-apis:1.4.01',
+      "${saxonGroup}:${saxonEdition}:${saxonVersion}",
+      "org.xmlresolver:xmlresolver:${xmlresolverVersion}"
+  }
+}
+
 configurations {
-  testsuite.extendsFrom(testImplementation)
+  transform.extendsFrom documentation
+  testsuite.extendsFrom testImplementation
 }
 
 dependencies {
@@ -47,6 +85,11 @@ dependencies {
     files("${buildDir}/resources/main"),
     files("${buildDir}/resources/test")
   )
+  documentation (
+    [group: saxonGroup, name: saxonEdition, version: saxonVersion],
+    [group: 'org.docbook', name: 'schemas-docbook', version: docbookVersion],
+    [group: 'org.docbook', name: 'docbook-xslTNG', version: xslTNGversion]
+  )
 }
 
 println("Building with Java version ${System.getProperty('java.version')}")
@@ -56,6 +99,21 @@ buildConfig {
   buildConfigField('String', 'TITLE', "\"${filterTitle}\"")
   buildConfigField('String', 'VERSION', "\"${filterVersion}\"")
 }
+
+ext {
+  c_coffeefilter = "coffeefilter"
+}
+
+saxon.configure {
+  classpath configurations.transform
+  initializer 'org.docbook.xsltng.extensions.Register'
+}
+
+docker_container.configure {
+  workingDir = "docker"
+}
+
+// ============================================================
 
 task testSuite(type: JavaExec, dependsOn: jar) {
   inputs.files fileTree(dir: "${buildDir}/classes/java/main")
@@ -145,6 +203,121 @@ tasks.withType(JavaCompile) {
 
 // ============================================================
 
+task manual_xinclude(type: SaxonXsltTask, dependsOn: ["copyResources"]) {
+  inputs.files fileTree(dir: "${projectDir}/src/website/xml")
+  inputs.file "${projectDir}/tools/xinclude.xsl"
+
+  input "${projectDir}/src/website/xml/coffeefilter.xml"
+  stylesheet "${projectDir}/tools/xinclude.xsl"
+  output "${buildDir}/tmp/coffeefilter.xml"
+}
+
+task manual_validate(type: RelaxNGValidateTask, dependsOn: ["manual_xinclude"]) {
+  input manual_xinclude.outputs.files.singleFile
+  output "${buildDir}/xml/coffeefilter.xml"
+  schema "${projectDir}/tools/docbook.rnc"
+  compact true
+}
+
+task manual_augment(type: SaxonXsltTask, dependsOn: ["manual_validate"]) {
+  input manual_validate.outputs.files.singleFile
+  output "${buildDir}/aug/coffeefilter.xml"
+  stylesheet "${projectDir}/tools/augment.xsl"
+  parameters (
+    'version': filterVersion,
+    'coffeegrinder-version': grinderVersion,
+  )
+}
+
+task website(type: SaxonXsltTask, dependsOn: ["manual_augment"]) {
+  inputs.file "${projectDir}/tools/docbook.xsl"
+  outputs.files fileTree(dir: "${buildDir}/website")
+
+  input manual_augment.outputs.files.singleFile
+  output "${buildDir}/website/index.html"
+  stylesheet "${projectDir}/tools/docbook.xsl"
+  initializer 'org.docbook.xsltng.extensions.Register'
+  parameters (
+    'mediaobject-input-base-uri': "file:${buildDir}/aug/",
+    'mediaobject-output-base-uri': "/",
+    'chunk': 'index.html',
+    'chunk-output-base-uri': "${projectDir}/build/website/"
+  )
+}
+
+task copyResources(dependsOn: ["copyJarResources", "copyStaticResources"]) {
+  // nop
+}
+
+task copyJarResources() {
+  outputs.files fileTree(dir: "${buildDir}/website")
+
+  def dbjar = null
+  configurations.transform.each { path ->
+    if (path.toString().contains("docbook-xslTNG")) {
+      dbjar = path
+    }
+  }
+
+  doLast {
+    if (dbjar == null) {
+      throw new GradleException("Failed to locate DocBook xslTNG jar file")
+    }
+    copy {
+      into "${buildDir}/website"
+      from ({ zipTree(dbjar.toString()) }) {
+        include "org/docbook/xsltng/resources/**"
+      }
+      eachFile { fileCopyDetails ->
+        def originalPath = fileCopyDetails.path
+        fileCopyDetails.path = originalPath.replace('org/docbook/xsltng/resources/', '')
+      }
+    }
+  }
+
+  doLast {
+    delete "${buildDir}/website/org"
+  }
+}
+
+task copyStaticResources() {
+  inputs.files fileTree(dir: "${projectDir}/src/website/resources")
+  inputs.files fileTree(dir: "${projectDir}/src/website/xml")
+  outputs.files fileTree(dir: "${buildDir}/website")
+  outputs.files fileTree(dir: "${buildDir}/aug")
+
+  doLast {
+    copy {
+      into "${buildDir}/website"
+      from "${projectDir}/src/website/resources"
+    }
+  }
+
+  doLast {
+    copy {
+      from "${projectDir}/src/website/xml/images"
+      into "${buildDir}/website/images"
+    }
+  }
+
+  // FIXME: Grotesque hack. 
+  doLast {
+    copy {
+      from "${projectDir}/src/website/xml/images"
+      into "${buildDir}/aug/images"
+    }
+  }
+
+  doLast {
+    copy {
+      from "${projectDir}/src/website/xml/examples"
+      into "${buildDir}/website/examples"
+    }
+  }
+}
+
+// ============================================================
+
 signing {
   sign publishing.publications
 }
@@ -195,6 +368,31 @@ publishing {
       credentials {
         username = project.findProperty("sonatypeUsername") ?: "NOUSER"
         password = project.findProperty("sonatypePassword") ?: "NOPASS"
+      }
+    }
+  }
+}
+
+// ============================================================
+
+task dockerup() {
+  doLast {
+    if (!DockerContainer.running(c_coffeefilter)) {
+      DockerContainer.compose {
+        command = "up"
+        options = ["-p", "coffeefilter"]
+        args = ["-d"]
+      }
+    }
+  }
+}
+
+task dockerdown() {
+  doLast {
+    if (DockerContainer.running(c_coffeefilter)) {
+      DockerContainer.compose {
+        command = "down"
+        options = ["-p", "coffeefilter"]
       }
     }
   }
