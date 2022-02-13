@@ -1,0 +1,23 @@
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xi='http://www.w3.org/2001/XInclude'
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      version="5.2">
+<info>
+<title>CoffeeFilter</title>
+<subtitle>An Invisible XML parser in Java</subtitle>
+<author>
+  <personname>Norm Tovey Walsh</personname>
+</author>
+<copyright><year>2022</year><holder>Norm Tovey-Walsh</holder></copyright>
+<productname>coffeepot</productname>
+<productnumber>@@VERSION@@</productnumber>
+<bibliomisc role="coffeegrinder">@@GRINDERVERSION@@</bibliomisc>
+</info>
+
+<preface>
+<title>Introduction</title>
+
+<para>Hello world.</para>
+</preface>
+
+</book>
