@@ -3,6 +3,11 @@
       xmlns:xlink="http://www.w3.org/1999/xlink"
       version="5.2">
 <info>
+<mediaobject role="cover">
+  <imageobject>
+    <imagedata fileref="images/CoffeeFilter.svg"/>
+  </imageobject>
+</mediaobject>
 <title>CoffeeFilter</title>
 <subtitle>An Invisible XML parser in Java</subtitle>
 <author>

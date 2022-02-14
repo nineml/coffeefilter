@@ -229,7 +229,7 @@ task manual_augment(type: SaxonXsltTask, dependsOn: ["manual_validate"]) {
   )
 }
 
-task website(type: SaxonXsltTask, dependsOn: ["manual_augment"]) {
+task website(type: SaxonXsltTask, dependsOn: ["manual_augment", "javadoc"]) {
   inputs.file "${projectDir}/tools/docbook.xsl"
   outputs.files fileTree(dir: "${buildDir}/website")
 
@@ -244,6 +244,12 @@ task website(type: SaxonXsltTask, dependsOn: ["manual_augment"]) {
     'chunk-output-base-uri': "${projectDir}/build/website/"
   )
 }
+
+task website_javadoc(type: Copy, dependsOn: ["javadoc"]) {
+  from javadoc.destinationDir
+  into "${buildDir}/website/apidoc"
+}
+website.finalizedBy website_javadoc
 
 task copyResources(dependsOn: ["copyJarResources", "copyStaticResources"]) {
   // nop
