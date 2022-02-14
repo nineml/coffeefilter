@@ -205,17 +205,17 @@ tasks.withType(JavaCompile) {
 
 task manual_xinclude(type: SaxonXsltTask, dependsOn: ["copyResources"]) {
   inputs.files fileTree(dir: "${projectDir}/src/website/xml")
-  inputs.file "${projectDir}/tools/xinclude.xsl"
+  inputs.file "${projectDir}/website/xinclude.xsl"
 
   input "${projectDir}/src/website/xml/coffeefilter.xml"
-  stylesheet "${projectDir}/tools/xinclude.xsl"
+  stylesheet "${projectDir}/website/xinclude.xsl"
   output "${buildDir}/tmp/coffeefilter.xml"
 }
 
 task manual_validate(type: RelaxNGValidateTask, dependsOn: ["manual_xinclude"]) {
   input manual_xinclude.outputs.files.singleFile
   output "${buildDir}/xml/coffeefilter.xml"
-  schema "${projectDir}/tools/docbook.rnc"
+  schema "${projectDir}/website/docbook.rnc"
   compact true
 }
 
@@ -283,6 +283,7 @@ task copyJarResources() {
 task copyStaticResources() {
   inputs.files fileTree(dir: "${projectDir}/src/website/resources")
   inputs.files fileTree(dir: "${projectDir}/src/website/xml")
+  inputs.files fileTree(dir: "${projectDir}/website/resources")
   outputs.files fileTree(dir: "${buildDir}/website")
   outputs.files fileTree(dir: "${buildDir}/aug")
 
@@ -297,6 +298,13 @@ task copyStaticResources() {
     copy {
       from "${projectDir}/src/website/xml/images"
       into "${buildDir}/website/images"
+    }
+  }
+
+  doLast {
+    copy {
+      into "${buildDir}/website"
+      from "${projectDir}/website/resources"
     }
   }
 
