@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":9,"i9":10,"i10":10,"i11":10,"i12":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -124,7 +124,7 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -149,7 +149,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>org.nineml.coffeegrinder.parser.Grammar</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getGrammar--">getGrammar</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getGrammar--">getGrammar</a></span>()</code>
+<div class="block">Get the underlying grammar</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></code></td>
@@ -164,41 +166,42 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#loadCompiledGrammar-java.io.File-">loadCompiledGrammar</a></span>(java.io.File&nbsp;compiled)</code>
-<div class="block">Load a compiled grammar.</div>
+<td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.File-">parse</a></span>(java.io.File&nbsp;source)</code>
+<div class="block">Get a document from a file.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.lang.String-">parse</a></span>(java.lang.String&nbsp;input)</code>
-<div class="block">Constructs a document.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.File-java.lang.String-">parse</a></span>(java.io.File&nbsp;source,
+     java.lang.String&nbsp;encoding)</code>
+<div class="block">Get a document from a file with an explicit encoding.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parseCompiledGrammar-java.lang.String-">parseCompiledGrammar</a></span>(java.lang.String&nbsp;compiled)</code>
-<div class="block">Construct a parser from a compiled grammar.</div>
+<td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.InputStream-java.lang.String-">parse</a></span>(java.io.InputStream&nbsp;stream,
+     java.lang.String&nbsp;encoding)</code>
+<div class="block">Get a document from a stream.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parseFromFile-java.lang.String-">parseFromFile</a></span>(java.lang.String&nbsp;filename)</code>
-<div class="block">Constructs a document.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.lang.String-">parse</a></span>(java.lang.String&nbsp;input)</code>
+<div class="block">Get a document from a string.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parseFromFile-java.lang.String-java.lang.String-">parseFromFile</a></span>(java.lang.String&nbsp;filename,
-             java.lang.String&nbsp;charset)</code>
-<div class="block">Constructs a document.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-">parse</a></span>(java.net.URI&nbsp;source)</code>
+<div class="block">Get a document from a URI.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parseFromStream-java.io.InputStream-java.lang.String-">parseFromStream</a></span>(java.io.InputStream&nbsp;stream,
-               java.lang.String&nbsp;charset)</code>
-<div class="block">Constructs a document.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-java.lang.String-">parse</a></span>(java.net.URI&nbsp;source,
+     java.lang.String&nbsp;encoding)</code>
+<div class="block">Get a document from a URI with an explicit encoding.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
@@ -301,73 +304,114 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="parseFromFile-java.lang.String-">
+<a name="parse-java.net.URI-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>parseFromFile</h4>
-<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parseFromFile(java.lang.String&nbsp;filename)
-                                   throws java.io.IOException</pre>
-<div class="block">Constructs a document.
-
- <p>This method constructs a document by parsing the file
- provided.</p></div>
+<h4>parse</h4>
+<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parse(java.net.URI&nbsp;source)
+                           throws java.io.IOException</pre>
+<div class="block">Get a document from a URI.
+ <p>Attempts to read from the URI with <code>source.toURL().openConnection()</code>.
+ Assumes the input is in UTF-8.</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>filename</code> - The input.</dd>
+<dd><code>source</code> - the source</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A document.</dd>
+<dd>a document</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If the file cannot be read or isn't UTF-8.</dd>
+<dd><code>java.io.IOException</code> - If the source cannot be read</dd>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
 </dl>
 </li>
 </ul>
-<a name="parseFromFile-java.lang.String-java.lang.String-">
+<a name="parse-java.io.File-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>parseFromFile</h4>
-<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parseFromFile(java.lang.String&nbsp;filename,
-                                          java.lang.String&nbsp;charset)
-                                   throws java.io.IOException</pre>
-<div class="block">Constructs a document.
-
- <p>This method constructs a document by parsing the file
- provided.</p></div>
+<h4>parse</h4>
+<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parse(java.io.File&nbsp;source)
+                           throws java.io.IOException</pre>
+<div class="block">Get a document from a file.
+ <p>Assumes the input is in UTF-8.</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>filename</code> - The input.</dd>
-<dd><code>charset</code> - The input character set.</dd>
+<dd><code>source</code> - the source</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A document.</dd>
+<dd>a document</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If the file cannot be read or if the character set is unsupported.</dd>
+<dd><code>java.io.IOException</code> - If the source cannot be read</dd>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
 </dl>
 </li>
 </ul>
-<a name="parseFromStream-java.io.InputStream-java.lang.String-">
+<a name="parse-java.net.URI-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>parseFromStream</h4>
-<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parseFromStream(java.io.InputStream&nbsp;stream,
-                                            java.lang.String&nbsp;charset)
-                                     throws java.io.IOException</pre>
-<div class="block">Constructs a document.
-
- <p>This method constructs a document by parsing the stream
- provided.</p></div>
+<h4>parse</h4>
+<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parse(java.net.URI&nbsp;source,
+                                  java.lang.String&nbsp;encoding)
+                           throws java.io.IOException</pre>
+<div class="block">Get a document from a URI with an explicit encoding.
+ <p>Attempts to read from the URI with <code>source.toURL().openConnection()</code>.
+ </p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the source</dd>
+<dd><code>encoding</code> - the encoding</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a document</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - If the stream cannot be read or if the character set is unsupported.</dd>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="parse-java.io.File-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>parse</h4>
+<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parse(java.io.File&nbsp;source,
+                                  java.lang.String&nbsp;encoding)
+                           throws java.io.IOException</pre>
+<div class="block">Get a document from a file with an explicit encoding.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the source</dd>
+<dd><code>encoding</code> - the encoding</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a document</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - If the stream cannot be read or if the character set is unsupported.</dd>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="parse-java.io.InputStream-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>parse</h4>
+<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parse(java.io.InputStream&nbsp;stream,
+                                  java.lang.String&nbsp;encoding)
+                           throws java.io.IOException</pre>
+<div class="block">Get a document from a stream.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>stream</code> - The input.</dd>
-<dd><code>charset</code> - The input character set.</dd>
+<dd><code>encoding</code> - The input encoding.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A document.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If the stream cannot be read or if the character set is unsupported.</dd>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
 </dl>
 </li>
 </ul>
@@ -378,17 +422,14 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>parse</h4>
 <pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parse(java.lang.String&nbsp;input)</pre>
-<div class="block">Constructs a document.
-
- <p>This method constructs a document by parsing the stream
- provided.</p></div>
+<div class="block">Get a document from a string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>input</code> - The input.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A document.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar (if it failed to construct one)</dd>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
 </dl>
 </li>
 </ul>
@@ -403,41 +444,8 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the XML serialization of the compiled grammar</dd>
-</dl>
-</li>
-</ul>
-<a name="loadCompiledGrammar-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>loadCompiledGrammar</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;loadCompiledGrammar(java.io.File&nbsp;compiled)
-                                              throws java.io.IOException</pre>
-<div class="block">Load a compiled grammar.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>compiled</code> - the compiled grammar.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a parser for the grammar.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If the file cannot be read.</dd>
-</dl>
-</li>
-</ul>
-<a name="parseCompiledGrammar-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>parseCompiledGrammar</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parseCompiledGrammar(java.lang.String&nbsp;compiled)</pre>
-<div class="block">Construct a parser from a compiled grammar.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>compiled</code> - the XML serailization of the compiled grammar</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a parser for the grammar.</dd>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
 </dl>
 </li>
 </ul>
@@ -448,6 +456,13 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getGrammar</h4>
 <pre>public&nbsp;org.nineml.coffeegrinder.parser.Grammar&nbsp;getGrammar()</pre>
+<div class="block">Get the underlying grammar</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the underlying CoffeeGrinder grammar</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
+</dl>
 </li>
 </ul>
 </li>

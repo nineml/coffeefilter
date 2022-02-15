@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -131,65 +131,75 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#invisibleXmlParser--">invisibleXmlParser</a></span>()</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParser--">getParser</a></span>()</code>
 <div class="block">The parser for ixml grammars.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromCxml-java.io.InputStream-java.lang.String-">parserFromCxml</a></span>(java.io.InputStream&nbsp;stream,
-              java.lang.String&nbsp;systemId)</code>
-<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParser-java.io.File-">getParser</a></span>(java.io.File&nbsp;source)</code>
+<div class="block">Get a parser from a file.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromCxml-java.lang.String-">parserFromCxml</a></span>(java.lang.String&nbsp;href)</code>
-<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParser-java.io.File-java.lang.String-">getParser</a></span>(java.io.File&nbsp;source,
+         java.lang.String&nbsp;encoding)</code>
+<div class="block">Get a parser from a file with an explicit encoding.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromFile-java.lang.String-">parserFromFile</a></span>(java.lang.String&nbsp;filename)</code>
-<div class="block">Construct a parser from an ixml grammar.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParser-java.io.InputStream-java.lang.String-">getParser</a></span>(java.io.InputStream&nbsp;stream,
+         java.lang.String&nbsp;systemId)</code>
+<div class="block">Get a parser from an input stream.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromFile-java.lang.String-java.lang.String-">parserFromFile</a></span>(java.lang.String&nbsp;filename,
-              java.lang.String&nbsp;charset)</code>
-<div class="block">Constructs a parser from an ixml grammar.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParser-java.io.InputStream-java.lang.String-java.lang.String-">getParser</a></span>(java.io.InputStream&nbsp;stream,
+         java.lang.String&nbsp;systemId,
+         java.lang.String&nbsp;encoding)</code>
+<div class="block">Get a parser from an input stream with an explicit encoding.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromStream-java.io.InputStream-java.lang.String-">parserFromStream</a></span>(java.io.InputStream&nbsp;stream,
-                java.lang.String&nbsp;charset)</code>
-<div class="block">Constructs a parser from an ixml grammar.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParser-java.net.URI-">getParser</a></span>(java.net.URI&nbsp;source)</code>
+<div class="block">Get a parser from a URI.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromString-java.lang.String-">parserFromString</a></span>(java.lang.String&nbsp;input)</code>
-<div class="block">Constructs a parser from an ixml grammar.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParser-java.net.URI-java.lang.String-">getParser</a></span>(java.net.URI&nbsp;source,
+         java.lang.String&nbsp;encoding)</code>
+<div class="block">Get a parser from a URI with an explicit encoding.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromVxml-java.io.InputStream-java.lang.String-">parserFromVxml</a></span>(java.io.InputStream&nbsp;stream,
-              java.lang.String&nbsp;systemId)</code>
-<div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParserFromCxml-java.io.InputStream-java.lang.String-">getParserFromCxml</a></span>(java.io.InputStream&nbsp;stream,
+                 java.lang.String&nbsp;systemId)</code>
+<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromVxml-java.lang.String-">parserFromVxml</a></span>(java.lang.String&nbsp;href)</code>
-<div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParserFromIxml-java.io.InputStream-java.lang.String-">getParserFromIxml</a></span>(java.io.InputStream&nbsp;stream,
+                 java.lang.String&nbsp;charset)</code>
+<div class="block">Constructs a parser from an ixml grammar.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromVxmlString-java.lang.String-">parserFromVxmlString</a></span>(java.lang.String&nbsp;vxml)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParserFromIxml-java.lang.String-">getParserFromIxml</a></span>(java.lang.String&nbsp;input)</code>
+<div class="block">Constructs a parser from an ixml grammar.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>static <a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXml.html#getParserFromVxml-java.io.InputStream-java.lang.String-">getParserFromVxml</a></span>(java.io.InputStream&nbsp;stream,
+                 java.lang.String&nbsp;systemId)</code>
 <div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
 </td>
 </tr>
@@ -215,13 +225,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="invisibleXmlParser--">
+<a name="getParser--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>invisibleXmlParser</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;invisibleXmlParser()</pre>
+<h4>getParser</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParser()</pre>
 <div class="block">The parser for ixml grammars.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -229,37 +239,162 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="parserFromCxml-java.lang.String-">
+<a name="getParser-java.net.URI-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>parserFromCxml</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromCxml(java.lang.String&nbsp;href)
-                                         throws java.io.IOException,
-                                                java.net.URISyntaxException</pre>
-<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
+<h4>getParser</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParser(java.net.URI&nbsp;source)
+                                    throws java.io.IOException</pre>
+<div class="block">Get a parser from a URI.
+ <p>Attempts to read from the URI with <code>source.toURL().openConnection()</code>.
+ Sniffs the first 4095 bytes of the input to identify the input as an ixml grammar,
+ a vxml grammar, or a compiled grammar. Assumes the input is in UTF-8.</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>href</code> - A system identifier, which may be null</dd>
+<dd><code>source</code> - the grammar source.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The parser</dd>
+<dd>a parser for that grammar</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.net.URISyntaxException</code> - if the href cannot be converted to a URI</dd>
-<dd><code>java.io.IOException</code> - if the input cannot be read</dd>
-<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the input is not an ixml grammar</dd>
+<dd><code>java.io.IOException</code> - if attempting to open or read the source fails</dd>
+<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the source cannot be identified or is not a valid grammar</dd>
 </dl>
 </li>
 </ul>
-<a name="parserFromCxml-java.io.InputStream-java.lang.String-">
+<a name="getParser-java.io.File-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>parserFromCxml</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromCxml(java.io.InputStream&nbsp;stream,
-                                                java.lang.String&nbsp;systemId)
-                                         throws java.io.IOException</pre>
+<h4>getParser</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParser(java.io.File&nbsp;source)
+                                    throws java.io.IOException</pre>
+<div class="block">Get a parser from a file.
+ <p>Sniffs the first 4095 bytes of the input to identify the input as an ixml grammar,
+ a vxml grammar, or a compiled grammar. Assumes the input is in UTF-8.</p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the grammar source.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a parser for that grammar</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if attempting to open or read the source fails</dd>
+<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the source cannot be identified or is not a valid grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="getParser-java.net.URI-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getParser</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParser(java.net.URI&nbsp;source,
+                                           java.lang.String&nbsp;encoding)
+                                    throws java.io.IOException</pre>
+<div class="block">Get a parser from a URI with an explicit encoding.
+ <p>Attempts to read from the URI with <code>source.toURL().openConnection()</code>.
+ Sniffs the first 4095 bytes of the input to identify the input as an ixml grammar,
+ a vxml grammar, or a compiled grammar. The encoding is irrelevant for vxml or
+ compiled grammars.</p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the grammar source.</dd>
+<dd><code>encoding</code> - the character encoding.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a parser for that grammar</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if attempting to open or read the source fails</dd>
+<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the source cannot be identified or is not a valid grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="getParser-java.io.File-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getParser</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParser(java.io.File&nbsp;source,
+                                           java.lang.String&nbsp;encoding)
+                                    throws java.io.IOException</pre>
+<div class="block">Get a parser from a file with an explicit encoding.
+ <p>Sniffs the first 4095 bytes of the input to identify the input as an ixml grammar,
+ a vxml grammar, or a compiled grammar.The encoding is irrelevant for vxml or
+ compiled grammars.</p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - the grammar source.</dd>
+<dd><code>encoding</code> - the encoding</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a parser for that grammar</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if attempting to open or read the source fails</dd>
+<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the source cannot be identified or is not a valid grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="getParser-java.io.InputStream-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getParser</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParser(java.io.InputStream&nbsp;stream,
+                                           java.lang.String&nbsp;systemId)
+                                    throws java.io.IOException</pre>
+<div class="block">Get a parser from an input stream.
+ <p>Sniffs the first 4095 bytes of the input stream to identify the input as an ixml grammar,
+ a vxml grammar, or a compiled grammar. Assumes the input is in UTF-8.</p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>stream</code> - the grammar source</dd>
+<dd><code>systemId</code> - the system identifier (for XML grammars)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a parser for that grammar</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if attempting to read the source fails</dd>
+<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the source cannot be identified or is not a valid grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="getParser-java.io.InputStream-java.lang.String-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getParser</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParser(java.io.InputStream&nbsp;stream,
+                                           java.lang.String&nbsp;systemId,
+                                           java.lang.String&nbsp;encoding)
+                                    throws java.io.IOException</pre>
+<div class="block">Get a parser from an input stream with an explicit encoding.
+ <p>Sniffs the first 4095 bytes of the input stream to identify the input as an ixml grammar,
+ a vxml grammar, or a compiled grammar. The encoding is irrelevant for vxml or
+ compiled grammars.</p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>stream</code> - the grammar source</dd>
+<dd><code>systemId</code> - the system identifier (for XML grammars)</dd>
+<dd><code>encoding</code> - the character encoding.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a parser for that grammar</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if attempting to open or read the source fails</dd>
+<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the source cannot be identified or is not a valid grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="getParserFromCxml-java.io.InputStream-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getParserFromCxml</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParserFromCxml(java.io.InputStream&nbsp;stream,
+                                                   java.lang.String&nbsp;systemId)
+                                            throws java.io.IOException</pre>
 <div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -273,37 +408,15 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="parserFromVxml-java.lang.String-">
+<a name="getParserFromVxml-java.io.InputStream-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>parserFromVxml</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromVxml(java.lang.String&nbsp;href)
-                                         throws java.io.IOException,
-                                                java.net.URISyntaxException</pre>
-<div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>href</code> - A system identifier, which may be null</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The parser</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.net.URISyntaxException</code> - if the href cannot be converted to a URI</dd>
-<dd><code>java.io.IOException</code> - if the input cannot be read</dd>
-<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the input is not an ixml grammar</dd>
-</dl>
-</li>
-</ul>
-<a name="parserFromVxml-java.io.InputStream-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>parserFromVxml</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromVxml(java.io.InputStream&nbsp;stream,
-                                                java.lang.String&nbsp;systemId)
-                                         throws java.io.IOException</pre>
+<h4>getParserFromVxml</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParserFromVxml(java.io.InputStream&nbsp;stream,
+                                                   java.lang.String&nbsp;systemId)
+                                            throws java.io.IOException</pre>
 <div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -317,80 +430,15 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="parserFromVxmlString-java.lang.String-">
+<a name="getParserFromIxml-java.io.InputStream-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>parserFromVxmlString</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromVxmlString(java.lang.String&nbsp;vxml)</pre>
-<div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>vxml</code> - The vxml string</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A parser for that grammar</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the input is not an ixml grammar</dd>
-</dl>
-</li>
-</ul>
-<a name="parserFromFile-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>parserFromFile</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromFile(java.lang.String&nbsp;filename)
-                                         throws java.io.IOException,
-                                                java.net.URISyntaxException</pre>
-<div class="block">Construct a parser from an ixml grammar.
- <p>This method assumes the input file is encoded in UTF-8. See <a href="../../../org/nineml/coffeefilter/InvisibleXml.html#parserFromFile-java.lang.String-java.lang.String-"><code>parserFromFile(String, String)</code></a>.</p></div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>filename</code> - The grammar.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A parser for the grammar.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - if the file cannot be read or isn't UTF-8.</dd>
-<dd><code>java.net.URISyntaxException</code> - if the filename cannot be transformed into a valid URI.</dd>
-<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the input is not an ixml grammar</dd>
-</dl>
-</li>
-</ul>
-<a name="parserFromFile-java.lang.String-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>parserFromFile</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromFile(java.lang.String&nbsp;filename,
-                                                java.lang.String&nbsp;charset)
-                                         throws java.io.IOException,
-                                                java.net.URISyntaxException</pre>
-<div class="block">Constructs a parser from an ixml grammar.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>filename</code> - The grammar.</dd>
-<dd><code>charset</code> - The character set of the grammar file.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A parser for the grammar.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.net.URISyntaxException</code> - if the filename cannot be transformed into a valid URI</dd>
-<dd><code>java.io.IOException</code> - If the file cannot be read or if the character set is unsupported.</dd>
-<dd><code><a href="../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the input is not an ixml grammar</dd>
-</dl>
-</li>
-</ul>
-<a name="parserFromStream-java.io.InputStream-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>parserFromStream</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromStream(java.io.InputStream&nbsp;stream,
-                                                  java.lang.String&nbsp;charset)
-                                           throws java.io.IOException</pre>
+<h4>getParserFromIxml</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParserFromIxml(java.io.InputStream&nbsp;stream,
+                                                   java.lang.String&nbsp;charset)
+                                            throws java.io.IOException</pre>
 <div class="block">Constructs a parser from an ixml grammar.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -404,13 +452,13 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="parserFromString-java.lang.String-">
+<a name="getParserFromIxml-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>parserFromString</h4>
-<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;parserFromString(java.lang.String&nbsp;input)</pre>
+<h4>getParserFromIxml</h4>
+<pre>public static&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParserFromIxml(java.lang.String&nbsp;input)</pre>
 <div class="block">Constructs a parser from an ixml grammar.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

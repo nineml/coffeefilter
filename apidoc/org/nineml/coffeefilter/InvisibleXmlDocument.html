@@ -163,33 +163,33 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getOffset--">getOffset</a></span>()</code>
+<div class="block">Get the offset of the last character processed.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>org.nineml.coffeegrinder.parser.ParseTree</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getParseTree--">getParseTree</a></span>()</code>
 <div class="block">Return the underlying ParseTree for the current parse.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree--">getTree</a></span>()</code>
 <div class="block">Return an XML representation of the current parse.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-org.xml.sax.ContentHandler-">getTree</a></span>(org.xml.sax.ContentHandler&nbsp;handler)</code>
 <div class="block">Write an XML representation of the current parse to a SAX ContentHandler.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-java.io.PrintStream-">getTree</a></span>(java.io.PrintStream&nbsp;output)</code>
 <div class="block">Write an XML representation of the current parse to the stream.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-java.lang.String-">getTree</a></span>(java.lang.String&nbsp;filename)</code>
-<div class="block">Write an XML representation of the current parse to a file.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
@@ -259,6 +259,22 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the column number</dd>
+</dl>
+</li>
+</ul>
+<a name="getOffset--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getOffset</h4>
+<pre>public&nbsp;int&nbsp;getOffset()</pre>
+<div class="block">Get the offset of the last character processed.
+ <p>If the parse failed, this will be the position of the character in the
+ input stream.</p></div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the offset</dd>
 </dl>
 </li>
 </ul>
@@ -375,20 +391,6 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>output</code> - the output stream.</dd>
-</dl>
-</li>
-</ul>
-<a name="getTree-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getTree</h4>
-<pre>public&nbsp;void&nbsp;getTree(java.lang.String&nbsp;filename)</pre>
-<div class="block">Write an XML representation of the current parse to a file.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>filename</code> - the output filename.</dd>
 </dl>
 </li>
 </ul>

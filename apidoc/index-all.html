@@ -68,7 +68,7 @@
 <!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-<div class="contentContainer"><a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a name="I:C">
+<div class="contentContainer"><a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a name="I:C">
 <!--   -->
 </a>
 <h2 class="title">C</h2>
@@ -190,7 +190,9 @@
 <div class="block">If the attempt to parse the grammar failed, return a representation of that failure.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#getGrammar--">getGrammar()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Get the underlying grammar</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlDocument.html#getLineNumber--">getLineNumber()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></dt>
 <dd>
 <div class="block">Get the line number of the last line processed.</div>
@@ -207,6 +209,10 @@
 <dd>
 <div class="block">Return the number of successful parses of this document.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlDocument.html#getOffset--">getOffset()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></dt>
+<dd>
+<div class="block">Get the offset of the last character processed.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#getOptions--">getOptions()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
 <dd>
 <div class="block">Get the parser options.</div>
@@ -218,6 +224,50 @@
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/SimpleTree.html#getParent--">getParent()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/SimpleTree.html" title="class in org.nineml.coffeefilter.trees">SimpleTree</a></dt>
 <dd>
 <div class="block">Get this node's parent.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParser--">getParser()</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">The parser for ixml grammars.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParser-java.net.URI-">getParser(URI)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Get a parser from a URI.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParser-java.io.File-">getParser(File)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Get a parser from a file.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParser-java.net.URI-java.lang.String-">getParser(URI, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Get a parser from a URI with an explicit encoding.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParser-java.io.File-java.lang.String-">getParser(File, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Get a parser from a file with an explicit encoding.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParser-java.io.InputStream-java.lang.String-">getParser(InputStream, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Get a parser from an input stream.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParser-java.io.InputStream-java.lang.String-java.lang.String-">getParser(InputStream, String, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Get a parser from an input stream with an explicit encoding.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParserFromCxml-java.io.InputStream-java.lang.String-">getParserFromCxml(InputStream, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParserFromIxml-java.io.InputStream-java.lang.String-">getParserFromIxml(InputStream, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Constructs a parser from an ixml grammar.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParserFromIxml-java.lang.String-">getParserFromIxml(String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Constructs a parser from an ixml grammar.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#getParserFromVxml-java.io.InputStream-java.lang.String-">getParserFromVxml(InputStream, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
+<dd>
+<div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#getParseTime--">getParseTime()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
 <dd>
@@ -242,10 +292,6 @@
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-java.io.PrintStream-">getTree(PrintStream)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></dt>
 <dd>
 <div class="block">Write an XML representation of the current parse to the stream.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-java.lang.String-">getTree(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></dt>
-<dd>
-<div class="block">Write an XML representation of the current parse to a file.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-org.xml.sax.ContentHandler-">getTree(ContentHandler)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></dt>
 <dd>
@@ -293,10 +339,6 @@
 <dd>
 <div class="block">An InvisibleXmlDocument represents a document created with an <a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter"><code>InvisibleXmlParser</code></a>.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#invisibleXmlParser--">invisibleXmlParser()</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">The parser for ixml grammars.</div>
-</dd>
 <dt><a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter"><span class="typeNameLink">InvisibleXmlParser</span></a> - Class in <a href="org/nineml/coffeefilter/package-summary.html">org.nineml.coffeefilter</a></dt>
 <dd>
 <div class="block">A parser for a particular Invisible XML grammar.</div>
@@ -324,16 +366,6 @@
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/exceptions/IxmlTreeException.html#IxmlTreeException-java.lang.String-java.lang.Throwable-">IxmlTreeException(String, Throwable)</a></span> - Constructor for exception org.nineml.coffeefilter.exceptions.<a href="org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a></dt>
 <dd>
 <div class="block">Create an IxmlTreeException that wraps another exception.</div>
-</dd>
-</dl>
-<a name="I:L">
-<!--   -->
-</a>
-<h2 class="title">L</h2>
-<dl>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#loadCompiledGrammar-java.io.File-">loadCompiledGrammar(File)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
-<dd>
-<div class="block">Load a compiled grammar.</div>
 </dd>
 </dl>
 <a name="I:N">
@@ -367,61 +399,29 @@
 </a>
 <h2 class="title">P</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-">parse(URI)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
+<dd>
+<div class="block">Get a document from a URI.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.File-">parse(File)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
+<dd>
+<div class="block">Get a document from a file.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-java.lang.String-">parse(URI, String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
+<dd>
+<div class="block">Get a document from a URI with an explicit encoding.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.File-java.lang.String-">parse(File, String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
+<dd>
+<div class="block">Get a document from a file with an explicit encoding.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.InputStream-java.lang.String-">parse(InputStream, String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
+<dd>
+<div class="block">Get a document from a stream.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.lang.String-">parse(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
 <dd>
-<div class="block">Constructs a document.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parseCompiledGrammar-java.lang.String-">parseCompiledGrammar(String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
-<dd>
-<div class="block">Construct a parser from a compiled grammar.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parseFromFile-java.lang.String-">parseFromFile(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
-<dd>
-<div class="block">Constructs a document.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parseFromFile-java.lang.String-java.lang.String-">parseFromFile(String, String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
-<dd>
-<div class="block">Constructs a document.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#parseFromStream-java.io.InputStream-java.lang.String-">parseFromStream(InputStream, String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
-<dd>
-<div class="block">Constructs a document.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromCxml-java.lang.String-">parserFromCxml(String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromCxml-java.io.InputStream-java.lang.String-">parserFromCxml(InputStream, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromFile-java.lang.String-">parserFromFile(String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Construct a parser from an ixml grammar.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromFile-java.lang.String-java.lang.String-">parserFromFile(String, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Constructs a parser from an ixml grammar.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromStream-java.io.InputStream-java.lang.String-">parserFromStream(InputStream, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Constructs a parser from an ixml grammar.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromString-java.lang.String-">parserFromString(String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Constructs a parser from an ixml grammar.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromVxml-java.lang.String-">parserFromVxml(String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromVxml-java.io.InputStream-java.lang.String-">parserFromVxml(InputStream, String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXml.html#parserFromVxmlString-java.lang.String-">parserFromVxmlString(String)</a></span> - Static method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXml.html" title="class in org.nineml.coffeefilter">InvisibleXml</a></dt>
-<dd>
-<div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
+<div class="block">Get a document from a string.</div>
 </dd>
 <dt><a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter"><span class="typeNameLink">ParserOptions</span></a> - Class in <a href="org/nineml/coffeefilter/package-summary.html">org.nineml.coffeefilter</a></dt>
 <dd>&nbsp;</dd>
@@ -540,7 +540,7 @@
 <div class="block">Be verbose about what's going on?</div>
 </dd>
 </dl>
-<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:V">V</a>&nbsp;</div>
+<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:V">V</a>&nbsp;</div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">
 <!--   -->
