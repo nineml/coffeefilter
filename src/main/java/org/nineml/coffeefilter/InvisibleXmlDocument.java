@@ -79,6 +79,16 @@ public class InvisibleXmlDocument {
     }
 
     /**
+     * Get the offset of the last character processed.
+     * <p>If the parse failed, this will be the position of the character in the
+     * input stream.</p>
+     * @return the offset
+     */
+    public int getOffset() {
+        return offset;
+    }
+
+    /**
      * Return the underlying {@link EarleyResult} result for this parse.
      * @return the result
      */
@@ -169,19 +179,6 @@ public class InvisibleXmlDocument {
         CommonBuilder builder = new CommonBuilder(tree);
         StringTreeBuilder handler = new StringTreeBuilder(output, options.prettyPrint);
         realize(builder, handler);
-    }
-
-    /**
-     * Write an XML representation of the current parse to a file.
-     * @param filename the output filename.
-     */
-    public void getTree(String filename) {
-        try {
-            PrintStream stream = new PrintStream(new FileOutputStream(filename));
-            getTree(stream);
-        } catch (IOException ex) {
-            throw new IxmlException("Failed to write file: " + filename, ex);
-        }
     }
 
     /**

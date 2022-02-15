@@ -5,12 +5,10 @@ import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,8 +129,8 @@ public class TestDriver {
     }
 
     private void loadExceptions(String exfile) throws IOException, URISyntaxException {
-        InvisibleXmlParser parser = InvisibleXml.parserFromFile("src/test/resources/exceptions.ixml");
-        InvisibleXmlDocument doc = parser.parseFromFile(exfile);
+        InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
+        InvisibleXmlDocument doc = parser.parse(new File(exfile));
         DataTreeBuilder builder = new DataTreeBuilder();
         doc.getTree(builder);
         exceptions = builder.getTree();
@@ -309,24 +307,25 @@ public class TestDriver {
         String ixml;
         if (t_ixml_grammar.equals(config.grammar.getNodeName())) {
             ixml = config.grammar.getStringValue();
-            parser = InvisibleXml.parserFromString(ixml);
+            parser = InvisibleXml.getParserFromIxml(ixml);
         } else if (t_ixml_grammar_ref.equals(config.grammar.getNodeName())) {
             URI grammarURI = config.grammar.getBaseURI().resolve(config.grammar.getAttributeValue(_href));
             if (grammarURI.toString().endsWith("/ixml/tests/reference/ixml.ixml")) {
-                parser = InvisibleXml.invisibleXmlParser();
+                parser = InvisibleXml.getParser();
             } else {
                 ixml = textFile(grammarURI);
-                parser = InvisibleXml.parserFromString(ixml);
+                parser = InvisibleXml.getParserFromIxml(ixml);
             }
         } else if (t_vxml_grammar.equals(config.grammar.getNodeName())) {
             ixml = config.grammar.getStringValue();
-            parser = InvisibleXml.parserFromVxmlString(ixml);
+            ByteArrayInputStream bais = new ByteArrayInputStream(ixml.getBytes(StandardCharsets.UTF_8));
+            parser = InvisibleXml.getParser(bais, null);
         } else if (t_vxml_grammar_ref.equals(config.grammar.getNodeName())) {
             String href = config.grammar.getAttributeValue(_href);
             if (href.endsWith("/reference/ixml.xml")) {
-                parser = InvisibleXml.invisibleXmlParser();
+                parser = InvisibleXml.getParser();
             } else {
-                parser = InvisibleXml.parserFromVxml(config.grammar.getBaseURI().resolve(href).getPath());
+                parser = InvisibleXml.getParser(config.grammar.getBaseURI().resolve(href));
             }
         } else {
             throw new RuntimeException("Unexpected grammar: " + config.grammar.getNodeName());

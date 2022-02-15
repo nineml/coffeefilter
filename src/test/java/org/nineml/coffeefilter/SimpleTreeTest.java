@@ -125,7 +125,7 @@ public class SimpleTreeTest {
     @Test
     public void testExceptions() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.parserFromFile("src/test/resources/exceptions.ixml");
+            InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
 
             String input = "set \"a\"\n" +
                     "set \"b\"\n" +
