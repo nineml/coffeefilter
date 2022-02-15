@@ -14,6 +14,8 @@ import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URLConnection;
 import java.util.Iterator;
 
 /**
@@ -87,47 +89,68 @@ public class InvisibleXmlParser {
     }
 
     /**
-     * Constructs a document.
-     *
-     * <p>This method constructs a document by parsing the file
-     * provided.</p>
-     *
-     * @param filename The input.
-     * @return A document.
-     * @throws IOException If the file cannot be read or isn't UTF-8.
+     * Get a document from a URI.
+     * <p>Attempts to read from the URI with <code>source.toURL().openConnection()</code>.
+     * Assumes the input is in UTF-8.</p>
+     * @param source the source
+     * @return a document
+     * @throws IOException If the source cannot be read
+     * @throws NullPointerException if this parser has no grammar
      */
-    public InvisibleXmlDocument parseFromFile(String filename) throws IOException {
-        return parseFromFile(filename, "UTF-8");
+    public InvisibleXmlDocument parse(URI source) throws IOException {
+        return parse(source, "UTF-8");
     }
 
     /**
-     * Constructs a document.
-     *
-     * <p>This method constructs a document by parsing the file
-     * provided.</p>
-     *
-     * @param filename The input.
-     * @param charset The input character set.
-     * @return A document.
-     * @throws IOException If the file cannot be read or if the character set is unsupported.
+     * Get a document from a file.
+     * <p>Assumes the input is in UTF-8.</p>
+     * @param source the source
+     * @return a document
+     * @throws IOException If the source cannot be read
+     * @throws NullPointerException if this parser has no grammar
      */
-    public InvisibleXmlDocument parseFromFile(String filename, String charset) throws IOException {
-        return parseFromStream(new FileInputStream(filename), charset);
+    public InvisibleXmlDocument parse(File source) throws IOException {
+        return parse(source, "UTF-8");
     }
 
     /**
-     * Constructs a document.
-     *
-     * <p>This method constructs a document by parsing the stream
-     * provided.</p>
-     *
+     * Get a document from a URI with an explicit encoding.
+     * <p>Attempts to read from the URI with <code>source.toURL().openConnection()</code>.
+     * </p>
+     * @param source the source
+     * @param encoding the encoding
+     * @return a document
+     * @throws IOException If the stream cannot be read or if the character set is unsupported.
+     * @throws NullPointerException if this parser has no grammar
+     */
+    public InvisibleXmlDocument parse(URI source, String encoding) throws IOException {
+        URLConnection conn = source.toURL().openConnection();
+        return parse(conn.getInputStream(), encoding);
+
+    }
+
+    /**
+     * Get a document from a file with an explicit encoding.
+     * @param source the source
+     * @param encoding the encoding
+     * @return a document
+     * @throws IOException If the stream cannot be read or if the character set is unsupported.
+     * @throws NullPointerException if this parser has no grammar
+     */
+    public InvisibleXmlDocument parse(File source, String encoding) throws IOException {
+        return parse(new FileInputStream(source), encoding);
+    }
+
+    /**
+     * Get a document from a stream.
      * @param stream The input.
-     * @param charset The input character set.
+     * @param encoding The input encoding.
      * @return A document.
      * @throws IOException If the stream cannot be read or if the character set is unsupported.
+     * @throws NullPointerException if this parser has no grammar
      */
-    public InvisibleXmlDocument parseFromStream(InputStream stream, String charset) throws IOException {
-        InputStreamReader reader = new InputStreamReader(stream, charset);
+    public InvisibleXmlDocument parse(InputStream stream, String encoding) throws IOException {
+        InputStreamReader reader = new InputStreamReader(stream, encoding);
         StringBuilder sb = new StringBuilder();
         char[] buffer = new char[4096];
         int len = reader.read(buffer);
@@ -139,14 +162,10 @@ public class InvisibleXmlParser {
     }
 
     /**
-     * Constructs a document.
-     *
-     * <p>This method constructs a document by parsing the stream
-     * provided.</p>
-     *
+     * Get a document from a string.
      * @param input The input.
      * @return A document.
-     * @throws NullPointerException if this parser has no grammar (if it failed to construct one)
+     * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(String input) {
         if (ixml == null) {
@@ -178,33 +197,9 @@ public class InvisibleXmlParser {
     }
 
     /**
-     * Get a parser from a string.
-     * <p>The string is parsed as an Invisible XML grammar.</p>
-     * @param input the grammar
-     * @return the parser
-     */
-    protected InvisibleXmlParser getParser(String input) {
-        InvisibleXmlDocument doc = parse(input);
-        if (doc.getNumberOfParses() == 0) {
-            return new InvisibleXmlParser(doc, doc.parseTime());
-        }
-
-        ParseTree tree = doc.getEarleyResult().getForest().parse();
-        CommonBuilder builder = new CommonBuilder(tree);
-
-        try {
-            IxmlContentHandler handler = new IxmlContentHandler();
-            builder.build(handler);
-            Ixml ixml = handler.getIxml();
-            return new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
-        } catch (Exception ex) {
-            throw new IxmlException("Failed to parse grammar: " + ex.getMessage(), ex);
-        }
-    }
-
-    /**
      * Get a string representation of the compiled grammar
      * @return the XML serialization of the compiled grammar
+     * @throws NullPointerException if this parser has no grammar
      */
     public String getCompiledParser() {
         if (ixml == null) {
@@ -215,26 +210,10 @@ public class InvisibleXmlParser {
     }
 
     /**
-     * Load a compiled grammar.
-     * @param compiled the compiled grammar.
-     * @return a parser for the grammar.
-     * @throws IOException If the file cannot be read.
+     * Get the underlying grammar
+     * @return the underlying CoffeeGrinder grammar
+     * @throws NullPointerException if this parser has no grammar
      */
-    public static InvisibleXmlParser loadCompiledGrammar(File compiled) throws IOException {
-        IxmlCompiler compiler = new IxmlCompiler();
-        return new InvisibleXmlParser(compiler.parse(compiled));
-    }
-
-    /**
-     * Construct a parser from a compiled grammar.
-     * @param compiled the XML serailization of the compiled grammar
-     * @return a parser for the grammar.
-     */
-    public static InvisibleXmlParser parseCompiledGrammar(String compiled) {
-        IxmlCompiler compiler = new IxmlCompiler();
-        return new InvisibleXmlParser(compiler.parse(compiled));
-    }
-
     public Grammar getGrammar() {
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
