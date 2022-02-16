@@ -23,8 +23,8 @@ import java.math.BigInteger;
 public class InvisibleXmlDocument {
     private final EarleyResult result;
     private final boolean prefixOk;
-    private final ParserOptions options;
     private final TreeWalker treeWalker;
+    private ParserOptions options;
     private boolean selectedFirst = false;
     private int lineNumber = -1;
     private int columnNumber = -1;
@@ -56,6 +56,22 @@ public class InvisibleXmlDocument {
         this.offset = offset;
         lineNumber = line;
         columnNumber = col;
+    }
+
+    /**
+     * Get the parser options.
+     * @return the parser options
+     */
+    public ParserOptions getOptions() {
+        return options;
+    }
+
+    /**
+     * Set the parser options.
+     * @param options the parser options
+     */
+    public void setOptions(ParserOptions options) {
+        this.options = options;
     }
 
     /**
@@ -164,7 +180,7 @@ public class InvisibleXmlDocument {
      */
     public String getTree() {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree);
+        CommonBuilder builder = new CommonBuilder(tree, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(options.prettyPrint);
         realize(builder, handler);
         return handler.getXml();
@@ -176,7 +192,7 @@ public class InvisibleXmlDocument {
      */
     public void getTree(PrintStream output) {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree);
+        CommonBuilder builder = new CommonBuilder(tree, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(output, options.prettyPrint);
         realize(builder, handler);
     }
@@ -187,7 +203,7 @@ public class InvisibleXmlDocument {
      */
     public void getTree(ContentHandler handler) {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree);
+        CommonBuilder builder = new CommonBuilder(tree, result, options);
         realize(builder, handler);
     }
 
