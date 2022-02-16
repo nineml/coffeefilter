@@ -25,7 +25,6 @@ public class InvisibleXmlParser {
     private final Ixml ixml;
     private final InvisibleXmlDocument failedParse;
     private final long parseTime;
-    private EarleyParser parser = null;
     private ParserOptions options = new ParserOptions();
 
     protected InvisibleXmlParser(Ixml ixml) {
