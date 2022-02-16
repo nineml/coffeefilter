@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -169,40 +169,52 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getOptions--">getOptions</a></span>()</code>
+<div class="block">Get the parser options.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>org.nineml.coffeegrinder.parser.ParseTree</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getParseTree--">getParseTree</a></span>()</code>
 <div class="block">Return the underlying ParseTree for the current parse.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree--">getTree</a></span>()</code>
 <div class="block">Return an XML representation of the current parse.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-org.xml.sax.ContentHandler-">getTree</a></span>(org.xml.sax.ContentHandler&nbsp;handler)</code>
 <div class="block">Write an XML representation of the current parse to a SAX ContentHandler.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-java.io.PrintStream-">getTree</a></span>(java.io.PrintStream&nbsp;output)</code>
 <div class="block">Write an XML representation of the current parse to the stream.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#nextTree--">nextTree</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#parseTime--">parseTime</a></span>()</code>
 <div class="block">Returns the amount of time (roughly) spent parsing.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#setOptions-org.nineml.coffeefilter.ParserOptions-">setOptions</a></span>(<a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</code>
+<div class="block">Set the parser options.</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#succeeded--">succeeded</a></span>()</code>
 <div class="block">Did the parse succeed?</div>
@@ -230,6 +242,34 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="getOptions--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getOptions</h4>
+<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;getOptions()</pre>
+<div class="block">Get the parser options.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the parser options</dd>
+</dl>
+</li>
+</ul>
+<a name="setOptions-org.nineml.coffeefilter.ParserOptions-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setOptions</h4>
+<pre>public&nbsp;void&nbsp;setOptions(<a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</pre>
+<div class="block">Set the parser options.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>options</code> - the parser options</dd>
+</dl>
+</li>
+</ul>
 <a name="getLineNumber--">
 <!--   -->
 </a>

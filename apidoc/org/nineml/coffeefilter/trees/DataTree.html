@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -186,42 +186,54 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#asJSON--">asJSON</a></span>()</code>
+<div class="block">Return a JSON representation of the tree.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#asXML--">asXML</a></span>()</code>
+<div class="block">Return an XML representation of the tree.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#get-java.lang.String-">get</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">Get a node named "name".</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#getAll--">getAll</a></span>()</code>
 <div class="block">Get all the children of a node.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#getAll-java.lang.String-">getAll</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">Get all the nodes named "name".</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#getName--">getName</a></span>()</code>
 <div class="block">Get the name of this node.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#getParent--">getParent</a></span>()</code>
 <div class="block">Get this node's parent.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#getValue--">getValue</a></span>()</code>
 <div class="block">Get the value of a node</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
@@ -301,7 +313,7 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;<a href="../../../../org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a>&nbsp;get(java.lang.String&nbsp;name)</pre>
 <div class="block">Get a node named "name".
  <p>If this node has no child named "name", an <a href="../../../../org/nineml/coffeefilter/trees/DataTree.html#EMPTY_DATA_TREE"><code>EMPTY_DATA_TREE</code></a> is returned.
- This means you can <code>.get()</code> chain past it, although now value will
+ This means you can <code>.get()</code> chain past it, although no value will
  ever be found.</p>
  <p>If there are several children with the requested name, one of them will be returned.
  In practice the order of children may be consistent, but no consistency is guaranteed.</p></div>
@@ -359,6 +371,38 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the value.</dd>
+</dl>
+</li>
+</ul>
+<a name="asXML--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asXML</h4>
+<pre>public&nbsp;java.lang.String&nbsp;asXML()</pre>
+<div class="block">Return an XML representation of the tree.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the serialized xml tree.</dd>
+</dl>
+</li>
+</ul>
+<a name="asJSON--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asJSON</h4>
+<pre>public&nbsp;java.lang.String&nbsp;asJSON()</pre>
+<div class="block">Return a JSON representation of the tree.
+ <p>All values in the tree are strings. When they are converted to JSON, the string values "true",
+ and "false" are promoted to boolean values; "null" is promoted to null. String values that match
+ integers between -2<sup>53</sup>+1 and 2<sup>53</sup>-1 are promoted to numbers. String values
+ that match floating point numbers are promoted to numbers.</p></div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a serialized JSON representation.</dd>
 </dl>
 </li>
 </ul>
