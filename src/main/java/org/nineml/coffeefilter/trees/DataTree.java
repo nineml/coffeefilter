@@ -3,6 +3,7 @@ package org.nineml.coffeefilter.trees;
 import org.nineml.coffeefilter.exceptions.IxmlTreeException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -76,7 +77,7 @@ public class DataTree {
     /**
      * Get a node named "name".
      * <p>If this node has no child named "name", an {@link #EMPTY_DATA_TREE} is returned.
-     * This means you can <code>.get()</code> chain past it, although now value will
+     * This means you can <code>.get()</code> chain past it, although no value will
      * ever be found.</p>
      * <p>If there are several children with the requested name, one of them will be returned.
      * In practice the order of children may be consistent, but no consistency is guaranteed.</p>
@@ -150,6 +151,101 @@ public class DataTree {
             return;
         }
         throw new IxmlTreeException("Cannot mix subtree and text nodes in a data tree");
+    }
+
+    /**
+     * Return an XML representation of the tree.
+     * @return the serialized xml tree.
+     */
+    public String asXML() {
+        StringBuilder sb = new StringBuilder();
+        if (name != null) {
+            sb.append("<").append(name);
+            if (children.isEmpty()) {
+                sb.append("/>");
+                return sb.toString();
+            }
+            sb.append(">");
+        }
+        for (DataTree child : children) {
+            sb.append(child.asXML());
+        }
+        if (name != null) {
+            sb.append("</").append(name).append(">");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Return a JSON representation of the tree.
+     * <p>All values in the tree are strings. When they are converted to JSON, the string values "true",
+     * and "false" are promoted to boolean values; "null" is promoted to null. String values that match
+     * integers between -2<sup>53</sup>+1 and 2<sup>53</sup>-1 are promoted to numbers. String values
+     * that match floating point numbers are promoted to numbers.</p>
+     * @return a serialized JSON representation.
+     */
+    public String asJSON() {
+        StringBuilder sb = new StringBuilder();
+
+        if (parent == null && name != null) {
+            sb.append("{");
+        }
+
+        if (name != null) {
+            sb.append('"').append(name).append("\":");
+        }
+
+        if (children.isEmpty()) {
+            sb.append("null");
+        } else {
+            if (children.get(0) instanceof DataText) {
+                sb.append(children.get(0).asJSON());
+            } else {
+                // If children with the same name occur, render them as arrays.
+                HashMap<String,Integer> nameCount = new HashMap<>();
+                for (DataTree child : children) {
+                    if (!nameCount.containsKey(child.name)) {
+                        nameCount.put(child.name, 0);
+                    }
+                    nameCount.put(child.name, nameCount.get(child.name) + 1);
+                }
+
+                sb.append("{");
+                String osep = "";
+                for (DataTree child : children) {
+                    if (!nameCount.containsKey(child.name)) {
+                        continue; // already dealt with these
+                    }
+                    sb.append(osep);
+                    if (nameCount.get(child.name) == 1) {
+                        sb.append(child.asJSON());
+                    } else {
+                        sb.append('"').append(child.name).append("\":");
+                        sb.append("[");
+                        String asep = "";
+                        for (DataTree elem : children) {
+                            if (child.name.equals(elem.name)) {
+                                sb.append(asep);
+                                for (DataTree gchild : elem.children) {
+                                    sb.append(gchild.asJSON());
+                                }
+                                asep = ",";
+                            }
+                        }
+                        sb.append("]");
+                    }
+                    osep = ",";
+                    nameCount.remove(child.name);
+                }
+                sb.append("}");
+            }
+        }
+
+        if (parent == null && name != null) {
+            sb.append("}");
+        }
+
+        return sb.toString();
     }
 
     @Override

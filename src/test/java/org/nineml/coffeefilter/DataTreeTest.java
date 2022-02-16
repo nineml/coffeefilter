@@ -7,6 +7,7 @@ import org.nineml.coffeefilter.trees.DataText;
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
 import org.nineml.coffeefilter.utils.AttributeBuilder;
+import org.xml.sax.SAXException;
 
 import static junit.framework.TestCase.fail;
 
@@ -163,4 +164,207 @@ public class DataTreeTest {
             fail();
         }
     }
+
+    @Test
+    public void jsonSerializerAtomicNull() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "null");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("null", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerUnsignedInteger() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "3");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("3", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerPosInteger() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "+3");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("3", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerNegInteger() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "-3");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("-3", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerUnsignedFloat() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "3.14");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("3.14", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerPosFloat() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "+3.14");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("3.14", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerNegFloat() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "-3.14");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("-3.14", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerAtomicTrue() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "true");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("true", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerAtomicFalse() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "false");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("false", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializerAtomicString() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+            text(builder, "test");
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+            String value = tree.asJSON();
+            Assert.assertEquals("\"test\"", value);
+        } catch (SAXException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializer() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+
+            AttributeBuilder attrs = new AttributeBuilder();
+            attrs.addAttribute("test", "spoon");
+            builder.startElement("", "root", "root", attrs);
+            builder.endElement("", "root", "root");
+
+            atomic(builder, "bool", "true");
+            atomic(builder, "int", "17");
+            atomic(builder, "float", "3.4");
+            atomic(builder, "float", "+3.14");
+            atomic(builder, "float", "-2.7");
+            atomic(builder, "null", "null");
+            atomic(builder, "big", "+9007199254740991");
+            atomic(builder, "toobig", "+9007199254740995");
+
+            builder.startElement("", "wrapper", "wrapper", AttributeBuilder.EMPTY_ATTRIBUTES);
+            atomic(builder, "item", "3");
+            builder.startElement("", "s", "s", AttributeBuilder.EMPTY_ATTRIBUTES);
+            atomic(builder, "item", "3");
+            builder.endElement("", "s", "s");
+            atomic(builder, "item", "4");
+            atomic(builder, "other-item", "test");
+            atomic(builder, "item", "false");
+            builder.endElement("", "wrapper", "wrapper");
+
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+
+            String json = tree.asJSON();
+
+            Assert.assertEquals("{\"root\":{\"test\":\"spoon\"},\"bool\":true,\"int\":17,\"float\":[3.4,3.14,-2.7],\"null\":null,\"big\":9007199254740991,\"toobig\":\"+9007199254740995\",\"wrapper\":{\"item\":[3,4,false],\"s\":{\"item\":3},\"other-item\":\"test\"}}",
+                    json);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    private void atomic(DataTreeBuilder builder, String name, String text) throws SAXException {
+        builder.startElement("", name, name, AttributeBuilder.EMPTY_ATTRIBUTES);
+        builder.characters(text.toCharArray(), 0, text.length());
+        builder.endElement("", name, name);
+    }
+
+    private void text(DataTreeBuilder builder, String text) throws SAXException {
+        builder.characters(text.toCharArray(), 0, text.length());
+    }
+
 }
