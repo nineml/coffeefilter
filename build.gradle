@@ -65,7 +65,7 @@ configurations {
 
 dependencies {
   implementation (
-    [group: 'org.nineml', name: grinderName, version: grinderVersion],
+    [group: 'org.nineml', name: grinderName, version: grinderVersion]
   )
   testImplementation (
     [group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.4.2'],

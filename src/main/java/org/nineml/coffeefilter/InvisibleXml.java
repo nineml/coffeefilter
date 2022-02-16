@@ -27,6 +27,14 @@ import java.util.Calendar;
 public class InvisibleXml {
     private static InvisibleXmlParser xixmlForIxml = null;
 
+    /**
+     * The parser options.
+     * <p>These options are passed to the parsers constructed. Constructed parsers
+     * get a copy of the options, changing them on the <code>InvisibleXml</code> class after
+     * construction will have no effect.</p>
+     */
+    public static final ParserOptions options = new ParserOptions();
+
     private InvisibleXml() {
         // no one makes one of these
     }
@@ -190,7 +198,9 @@ public class InvisibleXml {
             Grammar grammar = compiler.parse(stream, systemId);
             Ixml ixml = new Ixml(grammar);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
-            return new InvisibleXmlParser(ixml, parseMillis);
+            InvisibleXmlParser parser = new InvisibleXmlParser(ixml, parseMillis);
+            parser.setOptions(new ParserOptions(options));
+            return parser;
         } catch (CoffeeGrinderException ex) {
             throw new IxmlException("Failed to parse " + systemId, ex);
         }
@@ -215,7 +225,9 @@ public class InvisibleXml {
             parser.parse(stream, handler, systemId);
             Ixml ixml = handler.getIxml();
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
-            return new InvisibleXmlParser(ixml, parseMillis);
+            InvisibleXmlParser iparser = new InvisibleXmlParser(ixml, parseMillis);
+            iparser.setOptions(new ParserOptions(options));
+            return iparser;
         } catch (ParserConfigurationException ex) {
             throw new IxmlException("Failed to create XML parser", ex);
         } catch (CoffeeGrinderException| SAXException ex) {
@@ -232,14 +244,18 @@ public class InvisibleXml {
      * @throws IxmlException if the input is not an ixml grammar
      */
     public static InvisibleXmlParser getParserFromIxml(InputStream stream, String charset) throws IOException {
+        ParserOptions opts = new ParserOptions(options);
+
         InvisibleXmlParser ixmlParser = getParser();
+        ixmlParser.setOptions(opts);
+
         InvisibleXmlDocument doc = ixmlParser.parse(stream, charset);
         if (doc.getNumberOfParses() == 0) {
             return new InvisibleXmlParser(doc, doc.parseTime());
         }
 
         ParseTree tree = doc.getEarleyResult().getForest().parse();
-        CommonBuilder builder = new CommonBuilder(tree);
+        CommonBuilder builder = new CommonBuilder(tree, doc.getEarleyResult(), opts);
 
         try {
             IxmlContentHandler handler = new IxmlContentHandler();

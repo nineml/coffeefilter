@@ -1,8 +1,9 @@
 package org.nineml.coffeefilter.utils;
 
+import org.nineml.coffeefilter.ParserOptions;
+import org.nineml.coffeegrinder.parser.*;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.Messages;
@@ -15,14 +16,21 @@ import java.util.Stack;
  * This class transforms the output of a successful ixml parse into XML.
  */
 public class CommonBuilder {
+    private final ParserOptions options;
     private final Messages messages;
     private final Stack<PartialOutput> stack = new Stack<>();
     private final Stack<Character> context = new Stack<>();
     private PartialOutput result = null;
     private boolean documentElement = false;
     private boolean ambiguous = false;
+    private boolean prefix = false;
 
-    public CommonBuilder(ParseTree tree, Messages messages) {
+    public CommonBuilder(ParseTree tree, EarleyResult result, ParserOptions options) {
+        this(tree, result, options, null);
+    }
+
+    public CommonBuilder(ParseTree tree, EarleyResult result, ParserOptions options, Messages messages) {
+        this.options = options;
         this.messages = messages;
         if (tree == null) {
             if (messages != null) {
@@ -33,10 +41,7 @@ public class CommonBuilder {
         context.push('^');
         constructTree(tree, null);
         ambiguous = tree.getForest().isAmbiguous();
-    }
-
-    public CommonBuilder(ParseTree tree) {
-        this(tree, null);
+        prefix = result.prefixSucceeded();
     }
 
     private void startNonterminal(ParseTree tree, char mark, String name) {
@@ -285,9 +290,23 @@ public class CommonBuilder {
                         }
                         attrs.addAttribute(attr.name, value);
                     }
-                    if (documentElement && ambiguous) {
-                        attrs.addAttribute("http://invisiblexml.org/NS", "ixml:state", "ambiguous");
+
+                    if (documentElement) {
                         documentElement = false;
+
+                        String state = "";
+                        String sep = "";
+                        if (ambiguous && !options.suppressIxmlAmbiguous) {
+                            state = "ambiguous";
+                            sep = " ";
+                        }
+                        if (prefix && !options.suppressIxmlPrefix) {
+                            state += sep + "prefix";
+                        }
+
+                        if (!"".equals(state)) {
+                            attrs.addAttribute("http://invisiblexml.org/NS", "ixml:state", state);
+                        }
                     }
 
                     handler.startElement("", name, name, attrs);
