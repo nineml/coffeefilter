@@ -41,7 +41,7 @@ public class ParserFailTest {
             Assert.assertTrue(str.contains("<unexpected>J</unexpected>"));
             Assert.assertTrue(str.contains("<permitted>' ', 'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</permitted>"));
 
-            System.out.println(node);
+            //System.out.println(node);
         } catch (SaxonApiException ex) {
             System.err.println(ex.getMessage());
         }

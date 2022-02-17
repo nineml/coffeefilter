@@ -138,68 +138,47 @@ public class SimpleTree {
      */
     public String asJSON() {
         StringBuilder sb = new StringBuilder();
-
-        String sdelim = "{";
-        String edelim = "}";
-        if (parent == null) {
-            sb.append("{");
-            sdelim = "";
-            edelim = "";
-        }
-
+        sb.append("{");
         if (name != null) {
-            sb.append("{\"").append(name).append("\":");
-        }
-
-        if (children.isEmpty()) {
-            if (attributes.isEmpty()) {
-                sb.append("null");
-            } else {
-                sb.append(sdelim);
-                // If false, then a node with only attributes becomes a map with those
-                // attributes as direct properties. Dunno if that's a good idea or not.
-                jsonAttributes(sb, true);
-                sb.append(edelim);
-            }
-        } else {
-            sb.append(sdelim);
-            if (!attributes.isEmpty()) {
-                jsonAttributes(sb, true);
+            sb.append("\"name\":\"").append(name).append("\"");
+            if (!attributes.isEmpty() || !children.isEmpty()) {
                 sb.append(",");
             }
+        }
 
-            sb.append("\"content\":[");
+        if (!attributes.isEmpty()) {
+            sb.append("\"attributes\":{");
             String sep = "";
-            for (SimpleTree child : children) {
+            for (String aname : attributes.keySet()) {
                 sb.append(sep);
-                sb.append(child.asJSON());
+                sb.append("\"").append(TreeUtils.jsonEscape(aname)).append("\":");
+                sb.append(TreeUtils.jsonValue(attributes.get(aname)));
                 sep = ",";
             }
-            sb.append("]");
-            sb.append(edelim);
+            sb.append("}");
+            if (!children.isEmpty()) {
+                sb.append(",");
+            }
         }
 
-        if (parent == null) {
-            sb.append("}");
+        if (!children.isEmpty()) {
+            if (children.size() == 1) {
+                sb.append("\"content\":");
+                sb.append(children.get(0).asJSON());
+            } else {
+                sb.append("\"content\":[");
+                String osep = "";
+                for (SimpleTree child : children) {
+                    sb.append(osep);
+                    sb.append(child.asJSON());
+                    osep = ",";
+                }
+                sb.append("]");
+            }
         }
+
+        sb.append("}");
 
         return sb.toString();
     }
-
-    private void jsonAttributes(StringBuilder sb, boolean wrapper) {
-        if (wrapper) {
-            sb.append("\"attributes\": {");
-        }
-        String sep = "";
-        for (String attname : attributes.keySet()) {
-            sb.append(sep);
-            sb.append("\"").append(attname).append("\":");
-            sb.append(TreeUtils.jsonValue(attributes.get(attname)));
-            sep = ",";
-        }
-        if (wrapper) {
-            sb.append("}");
-        }
-    }
-
 }

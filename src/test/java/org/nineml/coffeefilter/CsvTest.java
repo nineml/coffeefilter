@@ -2,12 +2,8 @@ package org.nineml.coffeefilter;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.CsvColumn;
 import org.nineml.coffeefilter.trees.DataTree;
-import org.nineml.coffeefilter.trees.DataTreeBuilder;
-import org.nineml.coffeefilter.utils.AttributeBuilder;
-import org.xml.sax.SAXException;
 
 import java.util.List;
 
@@ -18,7 +14,7 @@ public class CsvTest extends CommonBuilder {
     @Test
     public void csvSerializer() {
         try {
-            DataTree tree = buildRecordTree();
+            DataTree tree = buildRecordDataTree();
 
             List<CsvColumn> columns = tree.prepareCsv();
             String csv = tree.asCSV(columns);

@@ -2,14 +2,27 @@ package org.nineml.coffeefilter;
 
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
+import org.nineml.coffeefilter.trees.SimpleTree;
 import org.nineml.coffeefilter.trees.SimpleTreeBuilder;
 import org.nineml.coffeefilter.utils.AttributeBuilder;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 public class CommonBuilder {
 
-    public DataTree buildRecordTree() throws SAXException {
+    public DataTree buildRecordDataTree() throws SAXException {
         DataTreeBuilder builder = new DataTreeBuilder();
+        buildRecordTree(builder);
+        return builder.getTree();
+    }
+
+    public SimpleTree buildRecordSimpleTree() throws SAXException {
+        SimpleTreeBuilder builder = new SimpleTreeBuilder();
+        buildRecordTree(builder);
+        return builder.getTree();
+    }
+
+    public void buildRecordTree(DefaultHandler builder) throws SAXException {
         builder.startDocument();
 
         builder.startElement("", "root", "root", AttributeBuilder.EMPTY_ATTRIBUTES);
@@ -37,26 +50,57 @@ public class CommonBuilder {
         builder.endElement("", "root", "root");
 
         builder.endDocument();
+    }
+
+    public SimpleTree buildAttributesSimpleTree() throws SAXException {
+        SimpleTreeBuilder builder = new SimpleTreeBuilder();
+        buildAttributesTree(builder);
         return builder.getTree();
     }
 
-    protected void atomic(DataTreeBuilder builder, String name, String text) throws SAXException {
+    public void buildAttributesTree(DefaultHandler builder) throws SAXException {
+        builder.startDocument();
+
+        AttributeBuilder attrs = new AttributeBuilder();
+        attrs.addAttribute("version", "1.0");
+        attrs.addAttribute("count", "2");
+
+        builder.startElement("", "root", "root", attrs);
+
+        attrs = new AttributeBuilder();
+        attrs.addAttribute("num", "1");
+
+        builder.startElement("", "record", "record", attrs);
+        atomic(builder, "name", "John Doe");
+        atomic(builder, "age", "25");
+        builder.endElement("", "record", "record");
+
+        builder.startElement("", "record", "record", AttributeBuilder.EMPTY_ATTRIBUTES);
+        atomic(builder, "name", "Mary Smith");
+        atomic(builder, "age", "22");
+        builder.endElement("", "record", "record");
+
+        attrs = new AttributeBuilder();
+        attrs.addAttribute("test", "string");
+
+        builder.startElement("", "no-content", "no-content", attrs);
+        builder.endElement("", "no-content", "no-content");
+
+        builder.startElement("", "no-content-or-attr", "no-content-or-attr", AttributeBuilder.EMPTY_ATTRIBUTES);
+        builder.endElement("", "no-content-or-attr", "no-content-or-attr");
+
+        builder.endElement("", "root", "root");
+
+        builder.endDocument();
+    }
+
+    protected void atomic(DefaultHandler builder, String name, String text) throws SAXException {
         builder.startElement("", name, name, AttributeBuilder.EMPTY_ATTRIBUTES);
         builder.characters(text.toCharArray(), 0, text.length());
         builder.endElement("", name, name);
     }
 
-    protected void text(DataTreeBuilder builder, String text) throws SAXException {
-        builder.characters(text.toCharArray(), 0, text.length());
-    }
-
-    protected void atomic(SimpleTreeBuilder builder, String name, String text) throws SAXException {
-        builder.startElement("", name, name, AttributeBuilder.EMPTY_ATTRIBUTES);
-        builder.characters(text.toCharArray(), 0, text.length());
-        builder.endElement("", name, name);
-    }
-
-    protected void text(SimpleTreeBuilder builder, String text) throws SAXException {
+    protected void text(DefaultHandler builder, String text) throws SAXException {
         builder.characters(text.toCharArray(), 0, text.length());
     }
 }
