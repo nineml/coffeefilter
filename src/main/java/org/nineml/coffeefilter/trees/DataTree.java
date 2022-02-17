@@ -5,6 +5,7 @@ import org.nineml.coffeefilter.exceptions.IxmlTreeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * DataTree is data-oriented tree-like data structure.
@@ -185,67 +186,212 @@ public class DataTree {
      * @return a serialized JSON representation.
      */
     public String asJSON() {
-        StringBuilder sb = new StringBuilder();
-
-        if (parent == null && name != null) {
-            sb.append("{");
-        }
-
-        if (name != null) {
-            sb.append('"').append(name).append("\":");
-        }
-
         if (children.isEmpty()) {
-            sb.append("null");
-        } else {
-            if (children.get(0) instanceof DataText) {
-                sb.append(children.get(0).asJSON());
-            } else {
-                // If children with the same name occur, render them as arrays.
-                HashMap<String,Integer> nameCount = new HashMap<>();
-                for (DataTree child : children) {
-                    if (!nameCount.containsKey(child.name)) {
-                        nameCount.put(child.name, 0);
-                    }
-                    nameCount.put(child.name, nameCount.get(child.name) + 1);
-                }
+            return "null";
+        }
 
-                sb.append("{");
-                String osep = "";
-                for (DataTree child : children) {
-                    if (!nameCount.containsKey(child.name)) {
-                        continue; // already dealt with these
+        if (children.get(0) instanceof DataText) {
+            return children.get(0).asJSON();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+
+        HashMap<String,Integer> nameCount = new HashMap<>();
+        for (DataTree child : children) {
+            if (!nameCount.containsKey(child.name)) {
+                nameCount.put(child.name, 0);
+            }
+            nameCount.put(child.name, nameCount.get(child.name) + 1);
+        }
+
+        String osep = "";
+        for (DataTree child : children) {
+            if (!nameCount.containsKey(child.name)) {
+                continue; // already dealt with these
+            }
+            sb.append(osep);
+            sb.append("\"").append(child.name).append("\":");
+
+            if (nameCount.get(child.name) == 1) {
+                sb.append(child.asJSON());
+            } else {
+                sb.append("[");
+                String asep = "";
+                for (DataTree elem : children) {
+                    if (child.name.equals(elem.name)) {
+                        sb.append(asep);
+                        sb.append(elem.asJSON());
+                        asep = ",";
                     }
-                    sb.append(osep);
-                    if (nameCount.get(child.name) == 1) {
-                        sb.append(child.asJSON());
-                    } else {
-                        sb.append('"').append(child.name).append("\":");
-                        sb.append("[");
-                        String asep = "";
-                        for (DataTree elem : children) {
-                            if (child.name.equals(elem.name)) {
-                                sb.append(asep);
-                                for (DataTree gchild : elem.children) {
-                                    sb.append(gchild.asJSON());
-                                }
-                                asep = ",";
-                            }
-                        }
-                        sb.append("]");
-                    }
-                    osep = ",";
-                    nameCount.remove(child.name);
                 }
-                sb.append("}");
+                sb.append("]");
+            }
+            osep = ",";
+            nameCount.remove(child.name);
+        }
+        sb.append("}");
+
+        return sb.toString();
+    }
+
+    public List<CsvColumn> prepareCsv() {
+        if (parent != null) {
+            return null;
+        }
+
+        if (children.size() != 1) {
+            return null;
+        }
+
+        if (children.get(0) instanceof DataText) {
+            return null;
+        }
+
+        ArrayList<String> names = new ArrayList<>();
+        HashMap<String, CsvColumn> columns = new HashMap<>();
+        for (DataTree row : children.get(0).children) {
+            if (!row.children.isEmpty()) {
+                for (DataTree col : row.children) {
+                    if (col instanceof DataText) {
+                        return null;
+                    }
+                    if (col.children.size() > 1) {
+                        return null;
+                    }
+                    if (!col.children.isEmpty()) {
+                        if (!(col.children.get(0) instanceof DataText)) {
+                            return null;
+                        }
+                    }
+
+                    if (!columns.containsKey(col.name)) {
+                        names.add(col.name);
+                        columns.put(col.name, new CsvColumn(col.name));
+                    }
+                    checkColumn(columns.get(col.name), col.getValue());
+                }
             }
         }
 
-        if (parent == null && name != null) {
-            sb.append("}");
+        ArrayList<CsvColumn> columnList = new ArrayList<>();
+        for (String name : names) {
+            columnList.add(columns.get(name));
+        }
+
+        return columnList;
+    }
+
+    public String asCSV(List<CsvColumn> columns) {
+        StringBuilder sb = new StringBuilder();
+
+        if (parent != null) {
+            throw new IxmlTreeException("Cannot build CSV from this tree");
+        }
+
+        if (children.size() != 1) {
+            throw new IxmlTreeException("Cannot build CSV from this tree");
+        }
+
+        if (children.get(0) instanceof DataText) {
+            throw new IxmlTreeException("Cannot build CSV from this tree");
+        }
+
+        String sep = "";
+        for (CsvColumn col : columns) {
+            sb.append(sep);
+            sb.append("\"").append(TreeUtils.csvEscape(col.header)).append("\"");
+            sep = ",";
+        }
+        sb.append('\n');
+
+        HashMap<String,String> values = new HashMap<>();
+        for (DataTree row : children.get(0).children) {
+            values.clear();
+            if (!row.children.isEmpty()) {
+                for (DataTree col : row.children) {
+                    if (col instanceof DataText) {
+                        throw new IxmlTreeException("Cannot build CSV from this tree");
+                    }
+                    if (col.children.size() > 1) {
+                        throw new IxmlTreeException("Cannot build CSV from this tree");
+                    }
+                    if (!col.children.isEmpty()) {
+                        if (!(col.children.get(0) instanceof DataText)) {
+                            throw new IxmlTreeException("Cannot build CSV from this tree");
+                        }
+                    }
+
+                    values.put(col.name, col.getValue());
+                }
+            }
+
+            sep = "";
+            for (CsvColumn col : columns) {
+                sb.append(sep);
+                if (values.containsKey(col.name)) {
+                    if ("string".equals(col.datatype)) {
+                        sb.append("\"").append(TreeUtils.csvEscape(values.get(col.name))).append("\"");
+                    } else {
+                        sb.append(TreeUtils.csvEscape(values.get(col.name)));
+                    }
+                }
+                sep = ",";
+            }
+
+            sb.append('\n');
         }
 
         return sb.toString();
+    }
+
+    private void checkColumn(CsvColumn column, String value) {
+        if ("string".equals(column.datatype)) {
+            return;
+        }
+
+        if ("true".equals(value) || "false".equals(value)) {
+            if (column.datatype == null) {
+                column.datatype = "boolean";
+            }
+            if (!"boolean".equals(column.datatype)) {
+                column.datatype = "string";
+            }
+        }
+
+        if ("null".equals(value)) {
+            if (column.datatype == null) {
+                column.datatype = "null";
+            }
+            if (!"null".equals(column.datatype)) {
+                column.datatype = "string";
+            }
+        }
+
+        Matcher match = TreeUtils.intRegex.matcher(value);
+        if (match.matches()) {
+            if (column.datatype == null) {
+                column.datatype = "integer";
+            }
+            if (!"integer".equals(column.datatype)) {
+                column.datatype = "string";
+            }
+            return;
+        }
+
+        match = TreeUtils.floatRegex.matcher(value);
+        if (match.matches()) {
+            if (column.datatype == null) {
+                column.datatype = "float";
+            }
+            if (!"float".equals(column.datatype)) {
+                column.datatype = "string";
+            }
+        }
+
+        if (column.datatype == null) {
+            column.datatype = "string";
+        }
     }
 
     @Override
