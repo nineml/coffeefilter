@@ -3,7 +3,6 @@ package org.nineml.coffeefilter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.trees.DataText;
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
 import org.nineml.coffeefilter.utils.AttributeBuilder;
@@ -11,7 +10,7 @@ import org.xml.sax.SAXException;
 
 import static junit.framework.TestCase.fail;
 
-public class DataTreeTest {
+public class DataTreeTest extends CommonBuilder {
     @Test
     public void emptyTree() {
         DataTreeBuilder builder = new DataTreeBuilder();
@@ -357,14 +356,58 @@ public class DataTreeTest {
         }
     }
 
-    private void atomic(DataTreeBuilder builder, String name, String text) throws SAXException {
-        builder.startElement("", name, name, AttributeBuilder.EMPTY_ATTRIBUTES);
-        builder.characters(text.toCharArray(), 0, text.length());
-        builder.endElement("", name, name);
+    @Test
+    public void xmlSerializer() {
+        try {
+            DataTreeBuilder builder = new DataTreeBuilder();
+            builder.startDocument();
+
+            AttributeBuilder attrs = new AttributeBuilder();
+            attrs.addAttribute("test", "spoon");
+            builder.startElement("", "root", "root", attrs);
+
+            atomic(builder, "node1", "<test>");
+            atomic(builder, "node2", "&other;");
+            atomic(builder, "node2", "]]>");
+
+            builder.endElement("", "root", "root");
+
+            builder.endDocument();
+            DataTree tree = builder.getTree();
+
+            String xml = tree.asXML();
+            Assert.assertEquals("<root><test>spoon</test><node1>&lt;test&gt;</node1><node2>&amp;other;</node2><node2>]]&gt;</node2></root>",
+                    xml);
+        } catch (Exception ex) {
+            fail();
+        }
     }
 
-    private void text(DataTreeBuilder builder, String text) throws SAXException {
-        builder.characters(text.toCharArray(), 0, text.length());
+    @Test
+    public void testXmlRecords() {
+        try {
+            DataTree tree = buildRecordTree();
+            String xml = tree.asXML();
+
+            Assert.assertEquals("<root><record><name>John Doe</name><age>25</age><height>1.7</height><bool>true</bool></record><record><name>Mary Smith</name><age>22</age><bool>false</bool></record><record><name>Jane Doe</name><height>1.4</height><age>33</age><bool>true</bool></record></root>",
+                    xml);
+        } catch (Exception ex) {
+            fail();
+        }
     }
+
+    @Test
+    public void testJsonRecords() {
+        try {
+            DataTree tree = buildRecordTree();
+            String json = tree.asJSON();
+
+            Assert.assertEquals("{\"root\":{\"record\":[{\"name\":\"John Doe\",\"age\":25,\"height\":1.7,\"bool\":true},{\"name\":\"Mary Smith\",\"age\":22,\"bool\":false},{\"name\":\"Jane Doe\",\"height\":1.4,\"age\":33,\"bool\":true}]}}",
+                    json);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
 
 }

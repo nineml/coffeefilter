@@ -6,13 +6,12 @@ import org.nineml.coffeefilter.trees.SimpleText;
 import org.nineml.coffeefilter.trees.SimpleTree;
 import org.nineml.coffeefilter.trees.SimpleTreeBuilder;
 import org.nineml.coffeefilter.utils.AttributeBuilder;
-import org.nineml.coffeegrinder.util.GrammarCompiler;
 
 import java.io.File;
 
 import static junit.framework.TestCase.fail;
 
-public class SimpleTreeTest {
+public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void emptyTree() {
         SimpleTreeBuilder builder = new SimpleTreeBuilder();
@@ -60,7 +59,7 @@ public class SimpleTreeTest {
             Assert.assertEquals(1, tree.getChildren().size());
 
             SimpleTree node = tree.getChildren().get(0);
-            Assert.assertEquals(1,node.getChildren().size());
+            Assert.assertEquals(1, node.getChildren().size());
 
             SimpleTree textNode = node.getChildren().get(0);
             Assert.assertTrue(textNode instanceof SimpleText);
@@ -88,7 +87,7 @@ public class SimpleTreeTest {
             Assert.assertEquals(1, tree.getChildren().size());
 
             SimpleTree node = tree.getChildren().get(0);
-            Assert.assertEquals(1,node.getChildren().size());
+            Assert.assertEquals(1, node.getChildren().size());
 
             SimpleTree textNode = node.getChildren().get(0);
             Assert.assertTrue(textNode instanceof SimpleText);
@@ -116,7 +115,7 @@ public class SimpleTreeTest {
             Assert.assertEquals(1, tree.getChildren().size());
 
             SimpleTree node = tree.getChildren().get(0);
-            Assert.assertEquals(0,node.getChildren().size());
+            Assert.assertEquals(0, node.getChildren().size());
         } catch (Exception ex) {
             fail();
         }
@@ -145,4 +144,68 @@ public class SimpleTreeTest {
         }
     }
 
+    @Test
+    public void xmlSerializer() {
+        try {
+            SimpleTreeBuilder builder = new SimpleTreeBuilder();
+            builder.startDocument();
+
+            AttributeBuilder attrs = new AttributeBuilder();
+            attrs.addAttribute("test", "spoon");
+            attrs.addAttribute("test2", "fork");
+            builder.startElement("", "root", "root", attrs);
+
+            atomic(builder, "node1", "<test>");
+            atomic(builder, "node2", "&other;");
+            atomic(builder, "node2", "]]>");
+
+            builder.endElement("", "root", "root");
+
+            builder.endDocument();
+            SimpleTree tree = builder.getTree();
+
+            String xml = tree.asXML();
+
+            String ok1 = "<root test2=\"fork\" test=\"spoon\"><node1>&lt;test&gt;</node1><node2>&amp;other;</node2><node2>]]&gt;</node2></root>";
+            String ok2 = "<root test=\"spoon\" test2=\"fork\"><node1>&lt;test&gt;</node1><node2>&amp;other;</node2><node2>]]&gt;</node2></root>";
+
+            Assert.assertTrue(ok1.equals(xml) || ok2.equals(xml));
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonSerializer() {
+        try {
+            SimpleTreeBuilder builder = new SimpleTreeBuilder();
+            builder.startDocument();
+
+            AttributeBuilder attrs = new AttributeBuilder();
+            attrs.addAttribute("test", "spoon");
+            builder.startElement("", "root", "root", attrs);
+
+            attrs = new AttributeBuilder();
+            attrs.addAttribute("a", "1");
+            attrs.addAttribute("b", "2");
+            builder.startElement("", "attronly", "attronly", attrs);
+            builder.endElement("", "attronly", "attronly");
+
+            atomic(builder, "node1", "\"hello\"");
+            atomic(builder, "node2", "c:\\path");
+            atomic(builder, "node3", "/usr/local");
+
+            builder.endElement("", "root", "root");
+
+            builder.endDocument();
+            SimpleTree tree = builder.getTree();
+
+            String json = tree.asJSON();
+
+            Assert.assertEquals("{\"content\":[{\"root\":{\"attributes\": {\"test\":\"spoon\"},\"content\":[{\"attronly\":{\"attributes\": {\"a\":1,\"b\":2}},{\"node1\":{\"content\":[\"\\\"hello\\\"\"]},{\"node2\":{\"content\":[\"c:\\\\path\"]},{\"node3\":{\"content\":[\"/usr/local\"]}]}]}",
+                    json);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
 }

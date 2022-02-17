@@ -97,4 +97,109 @@ public class SimpleTree {
         SimpleText node = new SimpleText(this, text);
         children.add(node);
     }
+
+    /**
+     * Return an XML representation of the tree.
+     * @return the serialized xml tree.
+     */
+    public String asXML() {
+        StringBuilder sb = new StringBuilder();
+        if (name != null) {
+            sb.append("<").append(name);
+
+            for (String attname : attributes.keySet()) {
+                sb.append(" ").append(attname).append("=\"");
+                sb.append(TreeUtils.xmlEscapeAttribute(attributes.get(attname)));
+                sb.append("\"");
+            }
+
+            if (children.isEmpty()) {
+                sb.append("/>");
+                return sb.toString();
+            }
+            sb.append(">");
+        }
+        for (SimpleTree child : children) {
+            sb.append(child.asXML());
+        }
+        if (name != null) {
+            sb.append("</").append(name).append(">");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Return a JSON representation of the tree.
+     * <p>All values in the tree are strings. When they are converted to JSON, the string values "true",
+     * and "false" are promoted to boolean values; "null" is promoted to null. String values that match
+     * integers between -2<sup>53</sup>+1 and 2<sup>53</sup>-1 are promoted to numbers. String values
+     * that match floating point numbers are promoted to numbers.</p>
+     * @return a serialized JSON representation.
+     */
+    public String asJSON() {
+        StringBuilder sb = new StringBuilder();
+
+        String sdelim = "{";
+        String edelim = "}";
+        if (parent == null) {
+            sb.append("{");
+            sdelim = "";
+            edelim = "";
+        }
+
+        if (name != null) {
+            sb.append("{\"").append(name).append("\":");
+        }
+
+        if (children.isEmpty()) {
+            if (attributes.isEmpty()) {
+                sb.append("null");
+            } else {
+                sb.append(sdelim);
+                // If false, then a node with only attributes becomes a map with those
+                // attributes as direct properties. Dunno if that's a good idea or not.
+                jsonAttributes(sb, true);
+                sb.append(edelim);
+            }
+        } else {
+            sb.append(sdelim);
+            if (!attributes.isEmpty()) {
+                jsonAttributes(sb, true);
+                sb.append(",");
+            }
+
+            sb.append("\"content\":[");
+            String sep = "";
+            for (SimpleTree child : children) {
+                sb.append(sep);
+                sb.append(child.asJSON());
+                sep = ",";
+            }
+            sb.append("]");
+            sb.append(edelim);
+        }
+
+        if (parent == null) {
+            sb.append("}");
+        }
+
+        return sb.toString();
+    }
+
+    private void jsonAttributes(StringBuilder sb, boolean wrapper) {
+        if (wrapper) {
+            sb.append("\"attributes\": {");
+        }
+        String sep = "";
+        for (String attname : attributes.keySet()) {
+            sb.append(sep);
+            sb.append("\"").append(attname).append("\":");
+            sb.append(TreeUtils.jsonValue(attributes.get(attname)));
+            sep = ",";
+        }
+        if (wrapper) {
+            sb.append("}");
+        }
+    }
+
 }

@@ -24,8 +24,6 @@ public class ParserTest {
 
         InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
 
-        System.out.println(parser.getCompiledParser());
-
         input = "16 June '67";
         InvisibleXmlDocument doc = parser.parse(input);
 
@@ -36,9 +34,17 @@ public class ParserTest {
             BuildingContentHandler bch = builder.newBuildingContentHandler();
             doc.getTree(bch);
             XdmNode node = bch.getDocumentNode();
-            System.out.println(node);
+
+            Assert.assertEquals("16June67", node.getStringValue());
+
+            String str = node.toString();
+            Assert.assertTrue(str.contains("<date>"));
+            Assert.assertTrue(str.contains("<day>16</day>"));
+            Assert.assertTrue(str.contains("<month>June</month>"));
+            Assert.assertTrue(str.contains("<year>67</year>"));
         } catch (SaxonApiException ex) {
             System.err.println(ex.getMessage());
+            fail();
         }
     }
 
@@ -56,10 +62,13 @@ public class ParserTest {
             BuildingContentHandler bch = builder.newBuildingContentHandler();
             doc.getTree(bch);
             XdmNode node = bch.getDocumentNode();
-            System.out.println(node);
 
+            Assert.assertEquals("#.", node.getStringValue());
+
+            String str = node.toString();
+            Assert.assertTrue(str.contains("<hash d6=\"12\">"));
         } catch (Exception ex) {
-            System.err.println(ex);
+            System.err.println(ex.getMessage());
             fail();
         }
     }
@@ -88,10 +97,14 @@ public class ParserTest {
             BuildingContentHandler bch = builder.newBuildingContentHandler();
             doc.getTree(bch);
             XdmNode node = bch.getDocumentNode();
-            System.out.println(node);
+            Assert.assertEquals("", node.getStringValue());
 
+            String str = node.toString();
+
+            Assert.assertTrue(str.contains("<property name=\"ORG\">"));      // random spotchecks
+            Assert.assertTrue(str.contains("<attribute value=\"EVenX\"/>"));
         } catch (Exception ex) {
-            System.err.println(ex);
+            System.err.println(ex.getMessage());
             fail();
         }
     }
@@ -100,17 +113,15 @@ public class ParserTest {
     public void css() {
         try {
             InvisibleXmlParser parser = InvisibleXml.getParser(new File("ixml/tests/ambiguous/css.ixml"));
-            System.out.println(parser.getCompiledParser());
             String input = "body { color: blue;}";
 
             InvisibleXmlDocument doc = parser.parse(input);
 
-            //doc.getEarleyResult().getForest().parse().serialize("css.xml");
-
-            System.out.println(doc.getTree());
-
+            String str = doc.getTree();
+            Assert.assertEquals("<css><rule><selector><name>body</name></selector><block><property name=\"color\"><value name=\"blue\"/></property><property/></block></rule></css>",
+                    str);
         } catch (Exception ex) {
-            System.err.println(ex);
+            System.err.println(ex.getMessage());
             fail();
         }
     }
@@ -119,17 +130,11 @@ public class ParserTest {
     public void ambig2() {
         try {
             InvisibleXmlParser parser = InvisibleXml.getParser(new File("ixml/tests/ambiguous/ambig2.ixml"));
-
             String input = "";
-
             InvisibleXmlDocument doc = parser.parse(input);
-
-            //doc.getEarleyResult().getForest().parse().serialize("css.xml");
-
-            System.out.println(doc.getTree());
-
+            Assert.assertEquals("<a/>", doc.getTree());
         } catch (Exception ex) {
-            System.err.println(ex);
+            System.err.println(ex.getMessage());
             fail();
         }
     }
@@ -146,5 +151,4 @@ public class ParserTest {
             fail();
         }
     }
-
 }
