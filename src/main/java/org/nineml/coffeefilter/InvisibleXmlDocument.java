@@ -1,6 +1,7 @@
 package org.nineml.coffeefilter;
 
 import org.nineml.coffeegrinder.parser.*;
+import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.DefaultTreeWalker;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -13,6 +14,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * An InvisibleXmlDocument represents a document created with an {@link InvisibleXmlParser}.
@@ -226,19 +231,40 @@ public class InvisibleXmlDocument {
 
             AttributeBuilder attrs = new AttributeBuilder();
             attrs.addAttribute("http://invisiblexml.org/NS", "ixml:state", "failed");
-            handler.startElement("", "parse-failed", "failed", attrs);
+            handler.startElement("", "fail", "failed", attrs);
 
-            attrs = new AttributeBuilder();
             if (lineNumber > 0) {
-                attrs.addAttribute("line", ""+lineNumber);
+                atomicValue(handler, "line", ""+lineNumber);
             }
+
             if (columnNumber > 0) {
-                attrs.addAttribute("column", ""+columnNumber);
+                atomicValue(handler, "column", ""+columnNumber);
             }
-            attrs.addAttribute("token-count", ""+result.getTokenCount());
-            handler.startElement("",  "last-token", "last-token", attrs);
-            writeString(handler, result.getLastToken().toString());
-            handler.endElement("", "last-token", "last-token");
+
+            atomicValue(handler, "pos", ""+result.getTokenCount());
+
+            TokenCharacter tchar = (TokenCharacter) result.getLastToken();
+            atomicValue(handler, "unexpected", ""+tchar.getValue());
+
+            List<TokenCharacter> oknext = couldBeNext(result.getChart(), result.getParser().getGrammar());
+            if (!oknext.isEmpty()) {
+                // I don't actually care about the order,
+                // but let's not just make it HashMap random for testing if nothing else.
+                ArrayList<String> chars = new ArrayList<>();
+                for (TokenCharacter next : oknext) {
+                    chars.add(next.toString());
+                }
+                Collections.sort(chars);
+
+                StringBuilder sb = new StringBuilder();
+                for (int pos = 0; pos < chars.size(); pos++) {
+                    if (pos > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(chars.get(pos));
+                }
+                atomicValue(handler, "permitted", sb.toString());
+            }
 
             if (options.showChart) {
                 handler.startElement("", "chart", "chart", AttributeBuilder.EMPTY_ATTRIBUTES);
@@ -263,11 +289,67 @@ public class InvisibleXmlDocument {
                 handler.endElement("", "chart", "chart");
             }
 
-            handler.endElement("", "parse-failed", "failed");
+            handler.endElement("", "fail", "failed");
             handler.endDocument();
         } catch (SAXException ex) {
             throw new IxmlException("Failed to create XML: " + ex.getMessage(), ex);
         }
+    }
+
+    private void atomicValue(ContentHandler handler, String name, String value) throws SAXException {
+        handler.startElement("", name, name, AttributeBuilder.EMPTY_ATTRIBUTES);
+        handler.characters(value.toCharArray(), 0, value.length());
+        handler.endElement("", name, name);
+    }
+
+    private List<TokenCharacter> couldBeNext(EarleyChart chart, Grammar grammar) {
+        ArrayList<TokenCharacter> next = new ArrayList<>();
+        List<TerminalSymbol> symbols = couldBeNextSymbols(chart, grammar);
+        for (TerminalSymbol symbol : symbols) {
+            if (symbol.getToken() instanceof TokenCharacter) {
+                next.add((TokenCharacter) symbol.getToken());
+            }
+        }
+        return next;
+    }
+
+    private List<TerminalSymbol> couldBeNextSymbols(EarleyChart chart, Grammar grammar) {
+        ArrayList<TerminalSymbol> nextChars = new ArrayList<>();
+        HashSet<TerminalSymbol> nextSet = new HashSet<>();
+
+        int lastrow = chart.size() - 1;
+        while (lastrow >= 0 && chart.get(lastrow).isEmpty()) {
+            lastrow--;
+        }
+
+        if (lastrow < 0 || chart.get(lastrow).isEmpty()) {
+            return nextChars;
+        }
+
+        HashSet<Symbol> nextSymbols = new HashSet<>();
+        for (EarleyItem item : chart.get(lastrow)) {
+            State state = item.state;
+            if (state != null && !state.completed()) {
+                if (state.nextSymbol() instanceof TerminalSymbol) {
+                    nextSet.add((TerminalSymbol) state.nextSymbol());
+                } else {
+                    nextSymbols.add(state.nextSymbol());
+                }
+            }
+        }
+
+        for (Symbol s: nextSymbols) {
+            for (Rule rule : grammar.getRules()) {
+                if (rule.getSymbol().equals(s) && !rule.getRhs().isEmpty()) {
+                    if (rule.getRhs().get(0) instanceof TerminalSymbol) {
+                        nextSet.add((TerminalSymbol) rule.getRhs().get(0));
+                    }
+                }
+            }
+        }
+
+        nextChars.addAll(nextSet);
+        return nextChars;
     }
 
     private void writeString(ContentHandler handler, String str) throws SAXException {
