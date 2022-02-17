@@ -21,6 +21,13 @@ public class TreeUtils {
         return xml;
     }
 
+    public static String jsonEscape(String text) {
+        String json = text.replace("\\", "\\\\");
+        json = json.replace("\"", "\\\"");
+        return json;
+
+    }
+
     public static String jsonValue(String text) {
         if ("true".equals(text) || "false".equals(text) || "null".equals(text)) {
             return text;
@@ -43,10 +50,7 @@ public class TreeUtils {
             }
         }
 
-        String json = text.replace("\\", "\\\\");
-        json = json.replace("\"", "\\\"");
-
-        return '"' + json + '"';
+        return "\"" + jsonEscape(text) + "\"";
     }
 
     public static String csvEscape(String text) {

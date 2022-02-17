@@ -137,8 +137,6 @@ public class SimpleTreeTest extends CommonBuilder {
 
             Assert.assertNotNull(xml);
 
-            System.err.println(xml);
-
         } catch (Exception ex) {
             fail();
         }
@@ -202,10 +200,36 @@ public class SimpleTreeTest extends CommonBuilder {
 
             String json = tree.asJSON();
 
-            Assert.assertEquals("{\"content\":[{\"root\":{\"attributes\": {\"test\":\"spoon\"},\"content\":[{\"attronly\":{\"attributes\": {\"a\":1,\"b\":2}},{\"node1\":{\"content\":[\"\\\"hello\\\"\"]},{\"node2\":{\"content\":[\"c:\\\\path\"]},{\"node3\":{\"content\":[\"/usr/local\"]}]}]}",
+            Assert.assertEquals("{\"content\":{\"name\":\"root\",\"attributes\":{\"test\":\"spoon\"},\"content\":[{\"name\":\"attronly\",\"attributes\":{\"a\":1,\"b\":2}},{\"name\":\"node1\",\"content\":\"\\\"hello\\\"\"},{\"name\":\"node2\",\"content\":\"c:\\\\path\"},{\"name\":\"node3\",\"content\":\"/usr/local\"}]}}",
                     json);
         } catch (Exception ex) {
             fail();
         }
     }
+
+    @Test
+    public void jsonAttributes() {
+        try {
+            SimpleTree tree = buildAttributesSimpleTree();
+            String str = tree.asJSON();
+            Assert.assertEquals("{\"content\":{\"name\":\"root\",\"attributes\":{\"count\":2,\"version\":1.0},\"content\":[{\"name\":\"record\",\"attributes\":{\"num\":1},\"content\":[{\"name\":\"name\",\"content\":\"John Doe\"},{\"name\":\"age\",\"content\":25}]},{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"Mary Smith\"},{\"name\":\"age\",\"content\":22}]},{\"name\":\"no-content\",\"attributes\":{\"test\":\"string\"}},{\"name\":\"no-content-or-attr\"}]}}",
+                    str);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void jsonRecords() {
+        try {
+            SimpleTree tree = buildRecordSimpleTree();
+
+            String str = tree.asJSON();
+            Assert.assertEquals("{\"content\":{\"name\":\"root\",\"content\":[{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"John Doe\"},{\"name\":\"age\",\"content\":25},{\"name\":\"height\",\"content\":1.7},{\"name\":\"bool\",\"content\":true}]},{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"Mary Smith\"},{\"name\":\"age\",\"content\":22},{\"name\":\"bool\",\"content\":false}]},{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"Jane Doe\"},{\"name\":\"height\",\"content\":1.4},{\"name\":\"age\",\"content\":33},{\"name\":\"bool\",\"content\":true}]}]}}",
+                    str);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
 }

@@ -386,7 +386,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void testXmlRecords() {
         try {
-            DataTree tree = buildRecordTree();
+            DataTree tree = buildRecordDataTree();
             String xml = tree.asXML();
 
             Assert.assertEquals("<root><record><name>John Doe</name><age>25</age><height>1.7</height><bool>true</bool></record><record><name>Mary Smith</name><age>22</age><bool>false</bool></record><record><name>Jane Doe</name><height>1.4</height><age>33</age><bool>true</bool></record></root>",
@@ -399,7 +399,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void testJsonRecords() {
         try {
-            DataTree tree = buildRecordTree();
+            DataTree tree = buildRecordDataTree();
             String json = tree.asJSON();
 
             Assert.assertEquals("{\"root\":{\"record\":[{\"name\":\"John Doe\",\"age\":25,\"height\":1.7,\"bool\":true},{\"name\":\"Mary Smith\",\"age\":22,\"bool\":false},{\"name\":\"Jane Doe\",\"height\":1.4,\"age\":33,\"bool\":true}]}}",
