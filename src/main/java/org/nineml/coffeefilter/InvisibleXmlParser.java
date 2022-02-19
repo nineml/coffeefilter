@@ -26,6 +26,7 @@ public class InvisibleXmlParser {
     private final InvisibleXmlDocument failedParse;
     private final long parseTime;
     private ParserOptions options = new ParserOptions();
+    private Exception exception = null;
 
     protected InvisibleXmlParser(Ixml ixml) {
         this.ixml = ixml;
@@ -45,6 +46,11 @@ public class InvisibleXmlParser {
         failedParse = failed;
     }
 
+    protected InvisibleXmlParser(InvisibleXmlDocument failed, Exception exception, long parseMillis) {
+        this(failed, parseMillis);
+        this.exception = exception;
+    }
+
     /**
      * Get the parser options.
      * @return the parser options
@@ -59,6 +65,16 @@ public class InvisibleXmlParser {
      */
     public void setOptions(ParserOptions options) {
         this.options = options;
+    }
+
+    /**
+     * Return the exception that caused an attempt to build a parser to fail.
+     * <p>If the attempt was successful, or if failure did not raise an exception, <code>null</code>
+     * will be returned.</p>
+     * @return the exception, or null if no exception is available
+     */
+    public Exception getException() {
+        return exception;
     }
 
     /**

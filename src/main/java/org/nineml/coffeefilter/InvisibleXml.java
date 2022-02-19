@@ -52,7 +52,7 @@ public class InvisibleXml {
                     stream = getClass().getResourceAsStream(name);
 
                     if (stream == null || resource == null) {
-                        throw new IxmlException("Failed to load ixml specification grammar: " + name);
+                        throw IxmlException.failedToLoadIxmlGrammar(name);
                     }
 
                     xixmlForIxml = getParserFromVxml(stream, resource.toString());
@@ -60,7 +60,7 @@ public class InvisibleXml {
                     xixmlForIxml = getParserFromCxml(stream, resource.toString());
                 }
             } catch (IOException ex) {
-                throw new IxmlException("Failed to load ixml specification grammar", ex);
+                throw IxmlException.failedToLoadIxmlGrammar(ex);
             }
         }
         return xixmlForIxml;
@@ -179,7 +179,7 @@ public class InvisibleXml {
             case Sniff.IXML_SOURCE:
                 return getParserFromIxml(bufstream, encoding);
             default:
-                throw new IxmlException("Failed to identify source");
+                throw IxmlException.sniffingFailed(systemId);
         }
     }
 
@@ -202,7 +202,7 @@ public class InvisibleXml {
             parser.setOptions(new ParserOptions(options));
             return parser;
         } catch (CoffeeGrinderException ex) {
-            throw new IxmlException("Failed to parse " + systemId, ex);
+            throw IxmlException.failedtoParse(systemId, ex);
         }
     }
 
@@ -228,10 +228,10 @@ public class InvisibleXml {
             InvisibleXmlParser iparser = new InvisibleXmlParser(ixml, parseMillis);
             iparser.setOptions(new ParserOptions(options));
             return iparser;
-        } catch (ParserConfigurationException ex) {
-            throw new IxmlException("Failed to create XML parser", ex);
-        } catch (CoffeeGrinderException| SAXException ex) {
-            throw new IxmlException("Failed to parse " + systemId, ex);
+        } catch (ParserConfigurationException|SAXException ex) {
+            throw IxmlException.failedtoParse(systemId, ex);
+        } catch (CoffeeGrinderException ex) {
+            throw IxmlException.failedtoParse(systemId, ex);
         }
     }
 
@@ -263,7 +263,7 @@ public class InvisibleXml {
             Ixml ixml = handler.getIxml();
             return new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
         } catch (Exception ex) {
-            throw new IxmlException("Failed to parse grammar: " + ex.getMessage(), ex);
+            return new InvisibleXmlParser(doc, ex, doc.parseTime());
         }
     }
 
@@ -278,7 +278,7 @@ public class InvisibleXml {
         try {
             return getParserFromIxml(bais, "UTF-8");
         } catch (IOException ex) {
-            throw new IxmlException("I/O error parsing a string in memory? Wat?");
+            throw IxmlException.internalError("I/O error parsing a string in memory (!?)");
         }
     }
 }

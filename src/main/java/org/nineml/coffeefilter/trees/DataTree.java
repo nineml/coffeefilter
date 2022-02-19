@@ -151,7 +151,7 @@ public class DataTree {
             children.add(node);
             return;
         }
-        throw new IxmlTreeException("Cannot mix subtree and text nodes in a data tree");
+        throw IxmlTreeException.noMixedContent();
     }
 
     /**
@@ -286,15 +286,15 @@ public class DataTree {
         StringBuilder sb = new StringBuilder();
 
         if (parent != null) {
-            throw new IxmlTreeException("Cannot build CSV from this tree");
+            throw IxmlTreeException.noCsv();
         }
 
         if (children.size() != 1) {
-            throw new IxmlTreeException("Cannot build CSV from this tree");
+            throw IxmlTreeException.noCsv();
         }
 
         if (children.get(0) instanceof DataText) {
-            throw new IxmlTreeException("Cannot build CSV from this tree");
+            throw IxmlTreeException.noCsv();
         }
 
         String sep = "";
@@ -311,14 +311,14 @@ public class DataTree {
             if (!row.children.isEmpty()) {
                 for (DataTree col : row.children) {
                     if (col instanceof DataText) {
-                        throw new IxmlTreeException("Cannot build CSV from this tree");
+                        throw IxmlTreeException.noCsv();
                     }
                     if (col.children.size() > 1) {
-                        throw new IxmlTreeException("Cannot build CSV from this tree");
+                        throw IxmlTreeException.noCsv();
                     }
                     if (!col.children.isEmpty()) {
                         if (!(col.children.get(0) instanceof DataText)) {
-                            throw new IxmlTreeException("Cannot build CSV from this tree");
+                            throw IxmlTreeException.noCsv();
                         }
                     }
 

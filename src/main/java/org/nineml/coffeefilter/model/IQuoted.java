@@ -1,5 +1,7 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+
 /**
  * Model an Invisible XML 'quoted'.
  */
@@ -16,7 +18,7 @@ public class IQuoted extends XNonterminal implements TMarked {
     public IQuoted(XNode parent, char tmark) {
         super(parent, "quoted");
         if (tmark != '^' && tmark != '-') {
-            throw new IllegalArgumentException("tmark must be '^' or '-'.");
+            throw IxmlException.invalidTMark(tmark);
         }
         this.tmark = tmark;
     }

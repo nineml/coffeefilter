@@ -1,9 +1,11 @@
 package org.nineml.coffeefilter.trees;
 
 import org.nineml.coffeefilter.InvisibleXmlDocument;
+import org.nineml.coffeefilter.ParserOptions;
+import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.utils.TokenUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -13,7 +15,7 @@ import java.io.PrintStream;
  * <p>This builder can be passed to {@link InvisibleXmlDocument#getTree()} to build a string
  * represention of the document's underlying VXML.</p>
  */
-public class StringTreeBuilder extends DefaultHandler {
+public class StringTreeBuilder extends AbstractTreeBuilder {
     private static final int FIRST = 0;
     private static final int START_TAG = 1;
     private static final int IN_TAG = 2;
@@ -26,38 +28,29 @@ public class StringTreeBuilder extends DefaultHandler {
 
     private final String iunit = "   ";
     private final PrintStream stream;
-    private final boolean prettyPrint;
-
-    /**
-     * Create a default string tree builder.
-     * <p>The default builder does not pretty-print.</p>
-     */
-    public StringTreeBuilder() {
-        this(false);
-    }
 
     /**
      * Create a string tree builder.
      * <p>If pretty printing is requested, additional newlines and whitespace are added
      * to create an indented view of the XML.</p>
-     * @param prettyPrint if true, attempt to pretty-print the XML.
+     * @param options the parser options
      */
-    public StringTreeBuilder(boolean prettyPrint) {
+    public StringTreeBuilder(ParserOptions options) {
+        super(options);
         baos = new ByteArrayOutputStream();
         stream = new PrintStream(baos);
-        this.prettyPrint = prettyPrint;
     }
 
     /**
      * Create a string tree builder, specifying an output stream.
      * <p>If pretty printing is requested, additional newlines and whitespace are added
      * to create an indented view of the XML.</p>
-     * @param stream the output stream.
-     * @param prettyPrint if true, attempt to pretty-print the XML.
+     * @param options the parser options
+     * @param stream the output stream
      */
-    public StringTreeBuilder(PrintStream stream, boolean prettyPrint) {
+    public StringTreeBuilder(ParserOptions options, PrintStream stream) {
+        super(options);
         this.stream = stream;
-        this.prettyPrint = prettyPrint;
     }
 
     /**
@@ -84,7 +77,7 @@ public class StringTreeBuilder extends DefaultHandler {
             state = START_TAG;
         }
 
-        if (prettyPrint) {
+        if (options.prettyPrint) {
             switch (state) {
                 case FIRST:
                     break;
@@ -97,6 +90,10 @@ public class StringTreeBuilder extends DefaultHandler {
             indent += iunit;
         }
 
+        if (options.assertValidXmlNames && !TokenUtils.xmlName(localName)) {
+            throw IxmlException.invalidXmlName(localName);
+        }
+
         stream.printf("<%s", localName);
         for (int pos = 0; pos < attributes.getLength(); pos++) {
             stream.print(" ");
@@ -104,6 +101,10 @@ public class StringTreeBuilder extends DefaultHandler {
             String qname = attributes.getQName(pos);
             if (qname.contains(":")) {
                 stream.printf("xmlns:%s=\"%s\" ", qname.substring(0, qname.indexOf(":")), attributes.getURI(pos));
+            } else {
+                if (options.assertValidXmlNames && !TokenUtils.xmlName(qname)) {
+                    throw IxmlException.invalidXmlName(qname);
+                }
             }
 
             String value = attributes.getValue(pos);
@@ -123,7 +124,7 @@ public class StringTreeBuilder extends DefaultHandler {
             stream.print("/>");
         }
 
-        if (prettyPrint) {
+        if (options.prettyPrint) {
             if (indent.length() >= iunit.length()) {
                 indent = indent.substring(iunit.length());
             }

@@ -1,15 +1,17 @@
 package org.nineml.coffeefilter.trees;
 
 import org.nineml.coffeefilter.InvisibleXmlDocument;
+import org.nineml.coffeefilter.ParserOptions;
+import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.utils.TokenUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Construct a {@link SimpleTree}.
  * <p>This builder can be passed to {@link InvisibleXmlDocument#getTree()} to build a {@link SimpleTree}.</p>
  */
-public class SimpleTreeBuilder extends DefaultHandler {
+public class SimpleTreeBuilder extends AbstractTreeBuilder {
     private final boolean ignoreWhitespaceNodes;
     private SimpleTree tree;
     private StringBuilder text = null;
@@ -20,8 +22,8 @@ public class SimpleTreeBuilder extends DefaultHandler {
      * Create a default simple tree builder.
      * <p>The default builder does not ignore whitespace nodes.</p>
      */
-    public SimpleTreeBuilder() {
-        this(false);
+    public SimpleTreeBuilder(ParserOptions options) {
+        this(options, false);
     }
 
     /**
@@ -30,7 +32,8 @@ public class SimpleTreeBuilder extends DefaultHandler {
      * of whitespace will be elided when the tree is constructed.</p>
      * @param ignoreWhitespaceNodes if true, text nodes containing only whitespace are ignored.
      */
-    public SimpleTreeBuilder(boolean ignoreWhitespaceNodes) {
+    public SimpleTreeBuilder(ParserOptions options, boolean ignoreWhitespaceNodes) {
+        super(options);
         this.ignoreWhitespaceNodes = ignoreWhitespaceNodes;
         tree = new SimpleTree();
     }
@@ -102,9 +105,19 @@ public class SimpleTreeBuilder extends DefaultHandler {
             text = null;
         }
 
+        if (options.assertValidXmlNames && !TokenUtils.xmlName(localName)) {
+            throw IxmlException.invalidXmlName(localName);
+        }
+
         tree = tree.addChild(localName);
         for (int pos = 0; pos < attributes.getLength(); pos++) {
-            tree.addAttribute(attributes.getQName(pos), attributes.getValue(pos));
+            String qname = attributes.getQName(pos);
+
+            if (!qname.contains(":") && options.assertValidXmlNames && !TokenUtils.xmlName(qname)) {
+                throw IxmlException.invalidXmlName(qname);
+            }
+
+            tree.addAttribute(qname, attributes.getValue(pos));
         }
     }
 

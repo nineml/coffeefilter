@@ -14,7 +14,7 @@ public class CsvTest extends CommonBuilder {
     @Test
     public void csvSerializer() {
         try {
-            DataTree tree = buildRecordDataTree();
+            DataTree tree = buildRecordDataTree(new ParserOptions());
 
             List<CsvColumn> columns = tree.prepareCsv();
             String csv = tree.asCSV(columns);

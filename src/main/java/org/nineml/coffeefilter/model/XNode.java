@@ -106,9 +106,6 @@ public abstract class XNode {
             case "dchar":
                 child = new IDChar(this);
                 break;
-            case "dstring":
-                child = new IDString(this);
-                break;
             case "encoded":
                 tmark = attributes.getValue("tmark");
                 if (tmark == null) {
@@ -246,9 +243,6 @@ public abstract class XNode {
                 break;
             case "set":
                 child = new ISet(this);
-                break;
-            case "sstring":
-                child = new ISString(this);
                 break;
             case "string":
                 child = new IString(this);
