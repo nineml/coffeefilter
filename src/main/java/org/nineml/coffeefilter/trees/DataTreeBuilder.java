@@ -22,6 +22,7 @@ public class DataTreeBuilder extends AbstractTreeBuilder {
     /**
      * Create a default data tree builder.
      * <p>The default builder allows duplicate names.</p>
+     * @param options The parser options.
      */
     public DataTreeBuilder(ParserOptions options) {
         this(options, true);
@@ -31,6 +32,7 @@ public class DataTreeBuilder extends AbstractTreeBuilder {
      * Create a data tree builder.
      * <p>If duplicate names are not allowed, the builder will raise an exception if
      * any node has more than one child with a given name.</p>
+     * @param options The parser options.
      * @param allowDuplicateNames if false, children with duplicated names are forbidden.
      */
     public DataTreeBuilder(ParserOptions options, boolean allowDuplicateNames) {

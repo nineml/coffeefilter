@@ -1,7 +1,7 @@
 package org.nineml.coffeefilter;
 
 import org.nineml.coffeefilter.utils.CommonBuilder;
-import org.nineml.coffeefilter.utils.Sniff;
+import org.nineml.coffeefilter.utils.GrammarSniffer;
 import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
 import org.nineml.coffeegrinder.parser.Grammar;
 import org.nineml.coffeegrinder.parser.ParseTree;
@@ -25,6 +25,9 @@ import java.util.Calendar;
  * A static class for constructing instances of Invisible XML grammars.
  */
 public class InvisibleXml {
+    public static final String logcategory = "InvisibleXml";
+    private static final String ixml_cxml = "/org/nineml/coffeefilter/ixml.cxml";
+    private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.xml";
     private static InvisibleXmlParser xixmlForIxml = null;
 
     /**
@@ -42,17 +45,17 @@ public class InvisibleXml {
     private InvisibleXmlParser getIxmlParser() {
         if (xixmlForIxml == null) {
             try {
-                String name = "/org/nineml/coffeefilter/ixml.cxml";
-                URL resource = getClass().getResource(name);
-                InputStream stream = getClass().getResourceAsStream(name);
+                URL resource = getClass().getResource(ixml_cxml);
+                InputStream stream = getClass().getResourceAsStream(ixml_cxml);
 
                 if (stream == null || resource == null) {
-                    name = "/org/nineml/coffeefilter/ixml.xml";
-                    resource = getClass().getResource(name);
-                    stream = getClass().getResourceAsStream(name);
+                    options.logger.debug(logcategory, "Failed to load %s", ixml_cxml);
+                    resource = getClass().getResource(ixml_ixml);
+                    stream = getClass().getResourceAsStream(ixml_ixml);
 
                     if (stream == null || resource == null) {
-                        throw IxmlException.failedToLoadIxmlGrammar(name);
+                        options.logger.debug(logcategory, "Failed to load %s", ixml_ixml);
+                        throw IxmlException.failedToLoadIxmlGrammar(ixml_ixml);
                     }
 
                     xixmlForIxml = getParserFromVxml(stream, resource.toString());
@@ -119,7 +122,7 @@ public class InvisibleXml {
      */
     public static InvisibleXmlParser getParser(URI source, String encoding) throws IOException {
         URLConnection conn = source.toURL().openConnection();
-        return getParser(conn.getInputStream(), encoding);
+        return getParser(conn.getInputStream(), source.toString(), encoding);
     }
 
     /**
@@ -170,15 +173,19 @@ public class InvisibleXml {
         int len = bufstream.read(buf, 0, buf.length);
         bufstream.reset();
 
-        int sourceType = Sniff.identify(buf, 0, buf.length);
+        int sourceType = GrammarSniffer.identify(buf, 0, buf.length);
         switch (sourceType) {
-            case Sniff.VXML_SOURCE:
+            case GrammarSniffer.VXML_SOURCE:
+                options.logger.debug(logcategory, "Loading %s (VXML)", systemId);
                 return getParserFromVxml(bufstream, systemId);
-            case Sniff.CXML_SOURCE:
+            case GrammarSniffer.CXML_SOURCE:
+                options.logger.debug(logcategory, "Loading %s (CXML)", systemId);
                 return getParserFromCxml(bufstream, systemId);
-            case Sniff.IXML_SOURCE:
+            case GrammarSniffer.IXML_SOURCE:
+                options.logger.debug(logcategory, "Loading %s with %s encoding", systemId, encoding);
                 return getParserFromIxml(bufstream, encoding);
             default:
+                options.logger.info(logcategory, "Failed to detect grammar type for %s", systemId);
                 throw IxmlException.sniffingFailed(systemId);
         }
     }

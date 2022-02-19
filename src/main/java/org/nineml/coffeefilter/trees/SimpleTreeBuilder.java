@@ -21,6 +21,7 @@ public class SimpleTreeBuilder extends AbstractTreeBuilder {
     /**
      * Create a default simple tree builder.
      * <p>The default builder does not ignore whitespace nodes.</p>
+     * @param options The parser options.
      */
     public SimpleTreeBuilder(ParserOptions options) {
         this(options, false);
@@ -31,6 +32,7 @@ public class SimpleTreeBuilder extends AbstractTreeBuilder {
      * <p>If <code>ignoreWhitespaceNodes</code> is true, any text node that consists entirely
      * of whitespace will be elided when the tree is constructed.</p>
      * @param ignoreWhitespaceNodes if true, text nodes containing only whitespace are ignored.
+     * @param options The parser options.
      */
     public SimpleTreeBuilder(ParserOptions options, boolean ignoreWhitespaceNodes) {
         super(options);
