@@ -18,6 +18,12 @@
     catch(err) {
     }
 //-->
+var methods = {"i0":9,"i1":9,"i2":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -43,7 +49,7 @@
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../../org/nineml/coffeefilter/exceptions/MessageGenerator.html" title="class in org.nineml.coffeefilter.exceptions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/nineml/coffeefilter/exceptions/IxmlTreeException.html" target="_top">Frames</a></li>
@@ -70,13 +76,13 @@
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.java.lang.Throwable">Method</a></li>
+<li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -153,12 +159,14 @@ extends <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.ht
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html#IxmlTreeException-java.lang.String-">IxmlTreeException</a></span>(java.lang.String&nbsp;message)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html#IxmlTreeException-java.lang.String-java.lang.String-">IxmlTreeException</a></span>(java.lang.String&nbsp;code,
+                 java.lang.String&nbsp;message)</code>
 <div class="block">Create an IxmlTreeException with a message.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html#IxmlTreeException-java.lang.String-java.lang.Throwable-">IxmlTreeException</a></span>(java.lang.String&nbsp;message,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html#IxmlTreeException-java.lang.String-java.lang.String-java.lang.Throwable-">IxmlTreeException</a></span>(java.lang.String&nbsp;code,
+                 java.lang.String&nbsp;message,
                  java.lang.Throwable&nbsp;cause)</code>
 <div class="block">Create an IxmlTreeException that wraps another exception.</div>
 </td>
@@ -172,6 +180,32 @@ extends <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.ht
 <!--   -->
 </a>
 <h3>Method Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html#duplicatesForbidden-java.lang.String-">duplicatesForbidden</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html#noCsv--">noCsv</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html#noMixedContent--">noMixedContent</a></span>()</code>&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.nineml.coffeefilter.exceptions.IxmlException">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.nineml.coffeefilter.exceptions.<a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></h3>
+<code><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#attributeRoot-java.lang.String-">attributeRoot</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#duplicateRuleForSymbol-java.lang.String-">duplicateRuleForSymbol</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#failedToLoadIxmlGrammar-java.lang.Exception-">failedToLoadIxmlGrammar</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#failedToLoadIxmlGrammar-java.lang.String-">failedToLoadIxmlGrammar</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#failedtoParse-java.lang.String-java.lang.Exception-">failedtoParse</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#getCode--">getCode</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#internalError-java.lang.String-">internalError</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#internalError-java.lang.String-java.lang.Exception-">internalError</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#invalidCharacterClass-java.lang.String-">invalidCharacterClass</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#invalidHex-java.lang.String-">invalidHex</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#invalidMark-char-">invalidMark</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#invalidRange-java.lang.String-java.lang.String-">invalidRange</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#invalidTMark-char-">invalidTMark</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#invalidXmlName-java.lang.String-">invalidXmlName</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#multipleRoots-java.lang.String-">multipleRoots</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#noRuleForSymbol-java.lang.String-">noRuleForSymbol</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#parseFailed-java.lang.Exception-">parseFailed</a>, <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html#sniffingFailed-java.lang.String-">sniffingFailed</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Throwable">
 <!--   -->
@@ -200,13 +234,14 @@ extends <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.ht
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="IxmlTreeException-java.lang.String-">
+<a name="IxmlTreeException-java.lang.String-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>IxmlTreeException</h4>
-<pre>public&nbsp;IxmlTreeException(java.lang.String&nbsp;message)</pre>
+<pre>public&nbsp;IxmlTreeException(java.lang.String&nbsp;code,
+                         java.lang.String&nbsp;message)</pre>
 <div class="block">Create an IxmlTreeException with a message.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -214,13 +249,14 @@ extends <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.ht
 </dl>
 </li>
 </ul>
-<a name="IxmlTreeException-java.lang.String-java.lang.Throwable-">
+<a name="IxmlTreeException-java.lang.String-java.lang.String-java.lang.Throwable-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>IxmlTreeException</h4>
-<pre>public&nbsp;IxmlTreeException(java.lang.String&nbsp;message,
+<pre>public&nbsp;IxmlTreeException(java.lang.String&nbsp;code,
+                         java.lang.String&nbsp;message,
                          java.lang.Throwable&nbsp;cause)</pre>
 <div class="block">Create an IxmlTreeException that wraps another exception.</div>
 <dl>
@@ -228,6 +264,41 @@ extends <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.ht
 <dd><code>message</code> - A message for the wrapper.</dd>
 <dd><code>cause</code> - The underlying exception.</dd>
 </dl>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="noMixedContent--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>noMixedContent</h4>
+<pre>public static&nbsp;<a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a>&nbsp;noMixedContent()</pre>
+</li>
+</ul>
+<a name="duplicatesForbidden-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>duplicatesForbidden</h4>
+<pre>public static&nbsp;<a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a>&nbsp;duplicatesForbidden(java.lang.String&nbsp;name)</pre>
+</li>
+</ul>
+<a name="noCsv--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>noCsv</h4>
+<pre>public static&nbsp;<a href="../../../../org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a>&nbsp;noCsv()</pre>
 </li>
 </ul>
 </li>
@@ -258,7 +329,7 @@ extends <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.ht
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../../org/nineml/coffeefilter/exceptions/MessageGenerator.html" title="class in org.nineml.coffeefilter.exceptions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/nineml/coffeefilter/exceptions/IxmlTreeException.html" target="_top">Frames</a></li>
@@ -285,13 +356,13 @@ extends <a href="../../../../org/nineml/coffeefilter/exceptions/IxmlException.ht
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.java.lang.Throwable">Method</a></li>
+<li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

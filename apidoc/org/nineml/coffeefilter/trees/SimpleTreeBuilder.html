@@ -102,7 +102,12 @@ var activeTableTab = "activeTableTab";
 <li>org.xml.sax.helpers.DefaultHandler</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">org.nineml.coffeefilter.trees.AbstractTreeBuilder</a></li>
+<li>
+<ul class="inheritance">
 <li>org.nineml.coffeefilter.trees.SimpleTreeBuilder</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -118,7 +123,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">SimpleTreeBuilder</span>
-extends org.xml.sax.helpers.DefaultHandler</pre>
+extends <a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">AbstractTreeBuilder</a></pre>
 <div class="block">Construct a <a href="../../../../org/nineml/coffeefilter/trees/SimpleTree.html" title="class in org.nineml.coffeefilter.trees"><code>SimpleTree</code></a>.
  <p>This builder can be passed to <a href="../../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree--"><code>InvisibleXmlDocument.getTree()</code></a> to build a <a href="../../../../org/nineml/coffeefilter/trees/SimpleTree.html" title="class in org.nineml.coffeefilter.trees"><code>SimpleTree</code></a>.</p></div>
 </li>
@@ -139,12 +144,13 @@ extends org.xml.sax.helpers.DefaultHandler</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/SimpleTreeBuilder.html#SimpleTreeBuilder--">SimpleTreeBuilder</a></span>()</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/SimpleTreeBuilder.html#SimpleTreeBuilder-org.nineml.coffeefilter.ParserOptions-">SimpleTreeBuilder</a></span>(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</code>
 <div class="block">Create a default simple tree builder.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/SimpleTreeBuilder.html#SimpleTreeBuilder-boolean-">SimpleTreeBuilder</a></span>(boolean&nbsp;ignoreWhitespaceNodes)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/SimpleTreeBuilder.html#SimpleTreeBuilder-org.nineml.coffeefilter.ParserOptions-boolean-">SimpleTreeBuilder</a></span>(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options,
+                 boolean&nbsp;ignoreWhitespaceNodes)</code>
 <div class="block">Create a simple tree builder.</div>
 </td>
 </tr>
@@ -241,24 +247,25 @@ extends org.xml.sax.helpers.DefaultHandler</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="SimpleTreeBuilder--">
+<a name="SimpleTreeBuilder-org.nineml.coffeefilter.ParserOptions-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>SimpleTreeBuilder</h4>
-<pre>public&nbsp;SimpleTreeBuilder()</pre>
+<pre>public&nbsp;SimpleTreeBuilder(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</pre>
 <div class="block">Create a default simple tree builder.
  <p>The default builder does not ignore whitespace nodes.</p></div>
 </li>
 </ul>
-<a name="SimpleTreeBuilder-boolean-">
+<a name="SimpleTreeBuilder-org.nineml.coffeefilter.ParserOptions-boolean-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>SimpleTreeBuilder</h4>
-<pre>public&nbsp;SimpleTreeBuilder(boolean&nbsp;ignoreWhitespaceNodes)</pre>
+<pre>public&nbsp;SimpleTreeBuilder(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options,
+                         boolean&nbsp;ignoreWhitespaceNodes)</pre>
 <div class="block">Create a simple tree builder.
  <p>If <code>ignoreWhitespaceNodes</code> is true, any text node that consists entirely
  of whitespace will be elided when the tree is constructed.</p></div>

@@ -102,7 +102,12 @@ var activeTableTab = "activeTableTab";
 <li>org.xml.sax.helpers.DefaultHandler</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">org.nineml.coffeefilter.trees.AbstractTreeBuilder</a></li>
+<li>
+<ul class="inheritance">
 <li>org.nineml.coffeefilter.trees.DataTreeBuilder</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -118,7 +123,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">DataTreeBuilder</span>
-extends org.xml.sax.helpers.DefaultHandler</pre>
+extends <a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">AbstractTreeBuilder</a></pre>
 <div class="block">Construct a <a href="../../../../org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees"><code>DataTree</code></a>.
  <p>This builder can be passed to <a href="../../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree--"><code>InvisibleXmlDocument.getTree()</code></a> to build <a href="../../../../org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees"><code>DataTree</code></a>.</p></div>
 </li>
@@ -139,12 +144,13 @@ extends org.xml.sax.helpers.DefaultHandler</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTreeBuilder.html#DataTreeBuilder--">DataTreeBuilder</a></span>()</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTreeBuilder.html#DataTreeBuilder-org.nineml.coffeefilter.ParserOptions-">DataTreeBuilder</a></span>(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</code>
 <div class="block">Create a default data tree builder.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTreeBuilder.html#DataTreeBuilder-boolean-">DataTreeBuilder</a></span>(boolean&nbsp;allowDuplicateNames)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/DataTreeBuilder.html#DataTreeBuilder-org.nineml.coffeefilter.ParserOptions-boolean-">DataTreeBuilder</a></span>(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options,
+               boolean&nbsp;allowDuplicateNames)</code>
 <div class="block">Create a data tree builder.</div>
 </td>
 </tr>
@@ -241,24 +247,25 @@ extends org.xml.sax.helpers.DefaultHandler</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="DataTreeBuilder--">
+<a name="DataTreeBuilder-org.nineml.coffeefilter.ParserOptions-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>DataTreeBuilder</h4>
-<pre>public&nbsp;DataTreeBuilder()</pre>
+<pre>public&nbsp;DataTreeBuilder(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</pre>
 <div class="block">Create a default data tree builder.
  <p>The default builder allows duplicate names.</p></div>
 </li>
 </ul>
-<a name="DataTreeBuilder-boolean-">
+<a name="DataTreeBuilder-org.nineml.coffeefilter.ParserOptions-boolean-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>DataTreeBuilder</h4>
-<pre>public&nbsp;DataTreeBuilder(boolean&nbsp;allowDuplicateNames)</pre>
+<pre>public&nbsp;DataTreeBuilder(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options,
+                       boolean&nbsp;allowDuplicateNames)</pre>
 <div class="block">Create a data tree builder.
  <p>If duplicate names are not allowed, the builder will raise an exception if
  any node has more than one child with a given name.</p></div>

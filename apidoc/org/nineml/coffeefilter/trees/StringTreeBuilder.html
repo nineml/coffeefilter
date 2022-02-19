@@ -102,7 +102,12 @@ var activeTableTab = "activeTableTab";
 <li>org.xml.sax.helpers.DefaultHandler</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">org.nineml.coffeefilter.trees.AbstractTreeBuilder</a></li>
+<li>
+<ul class="inheritance">
 <li>org.nineml.coffeefilter.trees.StringTreeBuilder</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -118,7 +123,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">StringTreeBuilder</span>
-extends org.xml.sax.helpers.DefaultHandler</pre>
+extends <a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">AbstractTreeBuilder</a></pre>
 <div class="block">Construct a "string tree".
  <p>This builder can be passed to <a href="../../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree--"><code>InvisibleXmlDocument.getTree()</code></a> to build a string
  represention of the document's underlying VXML.</p></div>
@@ -140,18 +145,13 @@ extends org.xml.sax.helpers.DefaultHandler</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/StringTreeBuilder.html#StringTreeBuilder--">StringTreeBuilder</a></span>()</code>
-<div class="block">Create a default string tree builder.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/StringTreeBuilder.html#StringTreeBuilder-boolean-">StringTreeBuilder</a></span>(boolean&nbsp;prettyPrint)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/StringTreeBuilder.html#StringTreeBuilder-org.nineml.coffeefilter.ParserOptions-">StringTreeBuilder</a></span>(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</code>
 <div class="block">Create a string tree builder.</div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/StringTreeBuilder.html#StringTreeBuilder-java.io.PrintStream-boolean-">StringTreeBuilder</a></span>(java.io.PrintStream&nbsp;stream,
-                 boolean&nbsp;prettyPrint)</code>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/StringTreeBuilder.html#StringTreeBuilder-org.nineml.coffeefilter.ParserOptions-java.io.PrintStream-">StringTreeBuilder</a></span>(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options,
+                 java.io.PrintStream&nbsp;stream)</code>
 <div class="block">Create a string tree builder, specifying an output stream.</div>
 </td>
 </tr>
@@ -224,48 +224,37 @@ extends org.xml.sax.helpers.DefaultHandler</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="StringTreeBuilder--">
+<a name="StringTreeBuilder-org.nineml.coffeefilter.ParserOptions-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>StringTreeBuilder</h4>
-<pre>public&nbsp;StringTreeBuilder()</pre>
-<div class="block">Create a default string tree builder.
- <p>The default builder does not pretty-print.</p></div>
-</li>
-</ul>
-<a name="StringTreeBuilder-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>StringTreeBuilder</h4>
-<pre>public&nbsp;StringTreeBuilder(boolean&nbsp;prettyPrint)</pre>
+<pre>public&nbsp;StringTreeBuilder(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</pre>
 <div class="block">Create a string tree builder.
  <p>If pretty printing is requested, additional newlines and whitespace are added
  to create an indented view of the XML.</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>prettyPrint</code> - if true, attempt to pretty-print the XML.</dd>
+<dd><code>options</code> - the parser options</dd>
 </dl>
 </li>
 </ul>
-<a name="StringTreeBuilder-java.io.PrintStream-boolean-">
+<a name="StringTreeBuilder-org.nineml.coffeefilter.ParserOptions-java.io.PrintStream-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>StringTreeBuilder</h4>
-<pre>public&nbsp;StringTreeBuilder(java.io.PrintStream&nbsp;stream,
-                         boolean&nbsp;prettyPrint)</pre>
+<pre>public&nbsp;StringTreeBuilder(<a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options,
+                         java.io.PrintStream&nbsp;stream)</pre>
 <div class="block">Create a string tree builder, specifying an output stream.
  <p>If pretty printing is requested, additional newlines and whitespace are added
  to create an indented view of the XML.</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>stream</code> - the output stream.</dd>
-<dd><code>prettyPrint</code> - if true, attempt to pretty-print the XML.</dd>
+<dd><code>options</code> - the parser options</dd>
+<dd><code>stream</code> - the output stream</dd>
 </dl>
 </li>
 </ul>
