@@ -1,7 +1,10 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Model an Invisible XML 'rule'.
@@ -21,7 +24,7 @@ public class IRule extends XNonterminal {
         super(parent, "rule", name);
 
         if (mark != '^' && mark != '@' && mark != '-') {
-            throw new IllegalArgumentException("mark must be '@', '^', or '-'");
+            throw IxmlException.invalidMark(mark);
         }
 
         this.mark = mark;

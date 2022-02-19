@@ -1,5 +1,7 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeegrinder.exceptions.GrammarException;
 import org.nineml.coffeegrinder.tokens.CharacterSet;
 
 import java.io.PrintStream;
@@ -75,7 +77,15 @@ public class IClass extends XTerminal {
     @Override
     public List<CharacterSet> getCharacterSets() {
         if (charset == null) {
-            charset = CharacterSet.unicodeClass(code);
+            try {
+                charset = CharacterSet.unicodeClass(code);
+            } catch (GrammarException ex) {
+                if ("E002".equals(ex.getCode())) {
+                    // Map the CoffeeGrinder exception into an IxmlException for consistency
+                    throw IxmlException.invalidCharacterClass(code);
+                }
+                throw ex;
+            }
         }
         return Collections.singletonList(charset);
     }

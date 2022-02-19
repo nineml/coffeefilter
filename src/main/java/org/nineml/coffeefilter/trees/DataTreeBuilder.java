@@ -1,6 +1,8 @@
 package org.nineml.coffeefilter.trees;
 
 import org.nineml.coffeefilter.InvisibleXmlDocument;
+import org.nineml.coffeefilter.ParserOptions;
+import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.exceptions.IxmlTreeException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -10,7 +12,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Construct a {@link DataTree}.
  * <p>This builder can be passed to {@link InvisibleXmlDocument#getTree()} to build {@link DataTree}.</p>
  */
-public class DataTreeBuilder extends DefaultHandler {
+public class DataTreeBuilder extends AbstractTreeBuilder {
     private final boolean allowDuplicateNames;
     private DataTree tree;
     private StringBuilder text = null;
@@ -21,8 +23,8 @@ public class DataTreeBuilder extends DefaultHandler {
      * Create a default data tree builder.
      * <p>The default builder allows duplicate names.</p>
      */
-    public DataTreeBuilder() {
-        this(true);
+    public DataTreeBuilder(ParserOptions options) {
+        this(options, true);
     }
 
     /**
@@ -31,7 +33,8 @@ public class DataTreeBuilder extends DefaultHandler {
      * any node has more than one child with a given name.</p>
      * @param allowDuplicateNames if false, children with duplicated names are forbidden.
      */
-    public DataTreeBuilder(boolean allowDuplicateNames) {
+    public DataTreeBuilder(ParserOptions options, boolean allowDuplicateNames) {
+        super(options);
         this.allowDuplicateNames = allowDuplicateNames;
         tree = new DataTree();
     }
@@ -100,13 +103,13 @@ public class DataTreeBuilder extends DefaultHandler {
         if (text != null) {
             String value = text.toString();
             if (!"".equals(value.trim())) {
-                throw new IxmlTreeException("Cannot mix subtree and text nodes in a data tree");
+                throw IxmlTreeException.noMixedContent();
             }
             text = null;
         }
 
         if (!allowDuplicateNames && tree.get(localName) != null) {
-            throw new IxmlTreeException("Duplicate names forbidden in data tree");
+            throw IxmlTreeException.duplicatesForbidden(localName);
         }
 
         tree = tree.addChild(localName);

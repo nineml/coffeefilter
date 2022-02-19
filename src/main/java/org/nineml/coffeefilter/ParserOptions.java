@@ -60,4 +60,10 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
      * Suppress the ixml:state=prefix annotation on the root element.
      */
     public boolean suppressIxmlPrefix = false;
+
+    /**
+     * Raise an exception if invalid XML names are used in nonterminals that are serialized.
+     */
+    public boolean assertValidXmlNames = true;
+
 }

@@ -131,7 +131,7 @@ public class TestDriver {
     private void loadExceptions(String exfile) throws IOException, URISyntaxException {
         InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
         InvisibleXmlDocument doc = parser.parse(new File(exfile));
-        DataTreeBuilder builder = new DataTreeBuilder();
+        DataTreeBuilder builder = new DataTreeBuilder(new ParserOptions());
         doc.getTree(builder);
         exceptions = builder.getTree();
     }

@@ -1,5 +1,7 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.utils.TokenUtils;
 import org.nineml.coffeegrinder.tokens.CharacterSet;
 
 import java.io.PrintStream;
@@ -33,7 +35,7 @@ public class IRange extends XTerminal {
         // FIXME: hex values arrive here as '#' followed by digits.
         // That's probably a bug in how the XML is constructed.
         if (from.length() > 1 && from.startsWith("#")) {
-            int cp = Integer.parseInt(from.substring(1), 16);
+            int cp = TokenUtils.convertHex(from.substring(1));
             StringBuilder sb = new StringBuilder();
             sb.appendCodePoint(cp);
             from = sb.toString();
@@ -49,7 +51,7 @@ public class IRange extends XTerminal {
         // FIXME: hex values arrive here as '#' followed by digits.
         // That's probably a bug in how the XML is constructed.
         if (to.length() > 1 && to.startsWith("#")) {
-            int cp = Integer.parseInt(to.substring(1), 16);
+            int cp = TokenUtils.convertHex(to.substring(1));
             StringBuilder sb = new StringBuilder();
             sb.appendCodePoint(cp);
             to = sb.toString();
@@ -60,7 +62,7 @@ public class IRange extends XTerminal {
         this.to = to.codePointAt(0);
 
         if (this.from > this.to) {
-            throw new IllegalArgumentException("Range 'from' cannot be larger than range 'to'");
+            throw IxmlException.invalidRange(from, to);
         }
     }
 
@@ -78,7 +80,7 @@ public class IRange extends XTerminal {
         this.from = from;
         this.to = to;
         if (this.from > this.to) {
-            throw new IllegalArgumentException("Range 'from' cannot be larger than range 'to'");
+            throw IxmlException.invalidRange(""+from, ""+to);
         }
     }
 

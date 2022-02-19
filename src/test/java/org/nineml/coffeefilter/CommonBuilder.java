@@ -10,14 +10,14 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class CommonBuilder {
 
-    public DataTree buildRecordDataTree() throws SAXException {
-        DataTreeBuilder builder = new DataTreeBuilder();
+    public DataTree buildRecordDataTree(ParserOptions options) throws SAXException {
+        DataTreeBuilder builder = new DataTreeBuilder(options);
         buildRecordTree(builder);
         return builder.getTree();
     }
 
-    public SimpleTree buildRecordSimpleTree() throws SAXException {
-        SimpleTreeBuilder builder = new SimpleTreeBuilder();
+    public SimpleTree buildRecordSimpleTree(ParserOptions options) throws SAXException {
+        SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
         buildRecordTree(builder);
         return builder.getTree();
     }
@@ -52,8 +52,8 @@ public class CommonBuilder {
         builder.endDocument();
     }
 
-    public SimpleTree buildAttributesSimpleTree() throws SAXException {
-        SimpleTreeBuilder builder = new SimpleTreeBuilder();
+    public SimpleTree buildAttributesSimpleTree(ParserOptions options) throws SAXException {
+        SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
         buildAttributesTree(builder);
         return builder.getTree();
     }

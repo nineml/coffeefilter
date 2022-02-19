@@ -12,9 +12,11 @@ import java.io.File;
 import static junit.framework.TestCase.fail;
 
 public class SimpleTreeTest extends CommonBuilder {
+    ParserOptions options = new ParserOptions();
+
     @Test
     public void emptyTree() {
-        SimpleTreeBuilder builder = new SimpleTreeBuilder();
+        SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
         builder.startDocument();
         builder.endDocument();
         SimpleTree tree = builder.getTree();
@@ -26,7 +28,7 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void treeWithTextNode() {
         try {
-            SimpleTreeBuilder builder = new SimpleTreeBuilder();
+            SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
             builder.characters("abc".toCharArray(), 0, 3);
             builder.endDocument();
@@ -44,7 +46,7 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void treeWithNode() {
         try {
-            SimpleTreeBuilder builder = new SimpleTreeBuilder();
+            SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -72,7 +74,7 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void treeWithWhitespace() {
         try {
-            SimpleTreeBuilder builder = new SimpleTreeBuilder();
+            SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -100,7 +102,7 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void treeWithoutWhitespace() {
         try {
-            SimpleTreeBuilder builder = new SimpleTreeBuilder(true);
+            SimpleTreeBuilder builder = new SimpleTreeBuilder(options,true);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -145,7 +147,7 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void xmlSerializer() {
         try {
-            SimpleTreeBuilder builder = new SimpleTreeBuilder();
+            SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -176,7 +178,7 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializer() {
         try {
-            SimpleTreeBuilder builder = new SimpleTreeBuilder();
+            SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -210,7 +212,9 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void jsonAttributes() {
         try {
-            SimpleTree tree = buildAttributesSimpleTree();
+            ParserOptions options = new ParserOptions();
+            options.assertValidXmlNames = false;
+            SimpleTree tree = buildAttributesSimpleTree(options);
             String str = tree.asJSON();
             Assert.assertEquals("{\"content\":{\"name\":\"root\",\"attributes\":{\"count\":2,\"version\":1.0},\"content\":[{\"name\":\"record\",\"attributes\":{\"num\":1},\"content\":[{\"name\":\"name\",\"content\":\"John Doe\"},{\"name\":\"age\",\"content\":25}]},{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"Mary Smith\"},{\"name\":\"age\",\"content\":22}]},{\"name\":\"no-content\",\"attributes\":{\"test\":\"string\"}},{\"name\":\"no-content-or-attr\"}]}}",
                     str);
@@ -222,7 +226,9 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void jsonRecords() {
         try {
-            SimpleTree tree = buildRecordSimpleTree();
+            ParserOptions options = new ParserOptions();
+            options.assertValidXmlNames = false;
+            SimpleTree tree = buildRecordSimpleTree(options);
 
             String str = tree.asJSON();
             Assert.assertEquals("{\"content\":{\"name\":\"root\",\"content\":[{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"John Doe\"},{\"name\":\"age\",\"content\":25},{\"name\":\"height\",\"content\":1.7},{\"name\":\"bool\",\"content\":true}]},{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"Mary Smith\"},{\"name\":\"age\",\"content\":22},{\"name\":\"bool\",\"content\":false}]},{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"Jane Doe\"},{\"name\":\"height\",\"content\":1.4},{\"name\":\"age\",\"content\":33},{\"name\":\"bool\",\"content\":true}]}]}}",

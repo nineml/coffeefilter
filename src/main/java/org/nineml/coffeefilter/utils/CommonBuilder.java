@@ -1,6 +1,7 @@
 package org.nineml.coffeefilter.utils;
 
 import org.nineml.coffeefilter.ParserOptions;
+import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeegrinder.parser.*;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -20,6 +21,8 @@ public class CommonBuilder {
     private final Messages messages;
     private final Stack<PartialOutput> stack = new Stack<>();
     private final Stack<Character> context = new Stack<>();
+    private final Stack<String> elementStack = new Stack<>();
+    private boolean rootFinished = false;
     private PartialOutput result = null;
     private boolean documentElement = false;
     private boolean ambiguous = false;
@@ -38,7 +41,7 @@ public class CommonBuilder {
             }
             return;
         }
-        context.push('^');
+        context.push('*');
         constructTree(tree, null);
         ambiguous = tree.getForest().isAmbiguous();
         prefix = result.prefixSucceeded();
@@ -50,6 +53,12 @@ public class CommonBuilder {
         if (context.peek() == '@') {
             ctx = '@';
         } else {
+            if (ctx == '^') {
+                if (rootFinished) {
+                    throw IxmlException.multipleRoots(name);
+                }
+                elementStack.push(name);
+            }
             PartialOutput top = new PartialOutput(mark, name);
             stack.push(top);
         }
@@ -70,11 +79,20 @@ public class CommonBuilder {
         if (stack.isEmpty()) {
             result = top;
         } else {
+            if (top.mark == '^') {
+                elementStack.pop();
+                rootFinished = rootFinished || elementStack.isEmpty();
+            }
+
             if (top.mark == '@' && stack.peek().mark != '^') {
                 // Special case. We have to put this on an item that will generate an element
                 int pos = stack.size()-1;
                 while (stack.get(pos).mark != '^') {
                     pos--;
+                    if (pos < 0) {
+                        // If this is the root element, that's not allowed
+                        throw IxmlException.attributeRoot(name);
+                    }
                 }
                 stack.get(pos).add(top);
             } else {

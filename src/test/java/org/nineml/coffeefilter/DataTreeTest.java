@@ -11,9 +11,11 @@ import org.xml.sax.SAXException;
 import static junit.framework.TestCase.fail;
 
 public class DataTreeTest extends CommonBuilder {
+    private final ParserOptions options = new ParserOptions();
+    
     @Test
     public void emptyTree() {
-        DataTreeBuilder builder = new DataTreeBuilder();
+        DataTreeBuilder builder = new DataTreeBuilder(options);
         builder.startDocument();
         builder.endDocument();
         DataTree tree = builder.getTree();
@@ -24,7 +26,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void treeWithTextNode() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             builder.characters("abc".toCharArray(), 0, 3);
             builder.endDocument();
@@ -40,7 +42,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void treeWithNode() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -65,7 +67,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void treeWithNodes() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -108,7 +110,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void treeWithDuplicateNodes() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder(true);
+            DataTreeBuilder builder = new DataTreeBuilder(options,true);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -146,7 +148,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void treeWithDuplicateNodesForbidden() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder(false);
+            DataTreeBuilder builder = new DataTreeBuilder(options,false);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -167,7 +169,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerAtomicNull() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "null");
             builder.endDocument();
@@ -182,7 +184,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerUnsignedInteger() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "3");
             builder.endDocument();
@@ -197,7 +199,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerPosInteger() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "+3");
             builder.endDocument();
@@ -212,7 +214,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerNegInteger() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "-3");
             builder.endDocument();
@@ -227,7 +229,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerUnsignedFloat() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "3.14");
             builder.endDocument();
@@ -242,7 +244,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerPosFloat() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "+3.14");
             builder.endDocument();
@@ -257,7 +259,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerNegFloat() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "-3.14");
             builder.endDocument();
@@ -272,7 +274,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerAtomicTrue() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "true");
             builder.endDocument();
@@ -287,7 +289,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerAtomicFalse() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "false");
             builder.endDocument();
@@ -302,7 +304,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializerAtomicString() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
             text(builder, "test");
             builder.endDocument();
@@ -317,7 +319,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void jsonSerializer() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -359,7 +361,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void xmlSerializer() {
         try {
-            DataTreeBuilder builder = new DataTreeBuilder();
+            DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
 
             AttributeBuilder attrs = new AttributeBuilder();
@@ -386,7 +388,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void testXmlRecords() {
         try {
-            DataTree tree = buildRecordDataTree();
+            DataTree tree = buildRecordDataTree(options);
             String xml = tree.asXML();
 
             Assert.assertEquals("<root><record><name>John Doe</name><age>25</age><height>1.7</height><bool>true</bool></record><record><name>Mary Smith</name><age>22</age><bool>false</bool></record><record><name>Jane Doe</name><height>1.4</height><age>33</age><bool>true</bool></record></root>",
@@ -399,7 +401,7 @@ public class DataTreeTest extends CommonBuilder {
     @Test
     public void testJsonRecords() {
         try {
-            DataTree tree = buildRecordDataTree();
+            DataTree tree = buildRecordDataTree(options);
             String json = tree.asJSON();
 
             Assert.assertEquals("{\"root\":{\"record\":[{\"name\":\"John Doe\",\"age\":25,\"height\":1.7,\"bool\":true},{\"name\":\"Mary Smith\",\"age\":22,\"bool\":false},{\"name\":\"Jane Doe\",\"height\":1.4,\"age\":33,\"bool\":true}]}}",

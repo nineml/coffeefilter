@@ -1,0 +1,19 @@
+E001: There is no rule for the nonterminal symbol: %1.
+E002: The Unicode character class ‘%1’ is invalid.
+E003: Invalid XML Name: %1.
+E004: More than one rule for nonterminal symbol: %1.
+E005: Invalid mark: %1.
+E006: Invalid tmark: %1.
+E007: Invalid hex: %1.
+E008: The root node (‘%1’) must not be marked ‘@’.
+E009: A second root note (‘%1’) is not allowed.
+E010: Range from ‘%1’ must not be larger than range to ‘%2’.
+I001: Internal error: failed to load ixml specification grammar: %1.
+I002: Internal error: failed to load ixml specification grammar: %1.
+I003: Internal error: %1.
+L001: Failed to identify grammar source from beginning of file: %1.
+P004: Failed to parse ‘%1’: %2.
+P005: Parse failed: %2.
+DT01: Mixed content not allowed in data tree.
+DT02: Duplicate names forbidden: %2.
+CV01: Tree does not support CSV serialization.

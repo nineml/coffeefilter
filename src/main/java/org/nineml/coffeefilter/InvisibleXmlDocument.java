@@ -1,6 +1,7 @@
 package org.nineml.coffeefilter;
 
 import org.nineml.coffeegrinder.parser.*;
+import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.DefaultTreeWalker;
 import org.xml.sax.ContentHandler;
@@ -186,7 +187,7 @@ public class InvisibleXmlDocument {
     public String getTree() {
         ParseTree tree = getParseTree();
         CommonBuilder builder = new CommonBuilder(tree, result, options);
-        StringTreeBuilder handler = new StringTreeBuilder(options.prettyPrint);
+        StringTreeBuilder handler = new StringTreeBuilder(options);
         realize(builder, handler);
         return handler.getXml();
     }
@@ -198,7 +199,7 @@ public class InvisibleXmlDocument {
     public void getTree(PrintStream output) {
         ParseTree tree = getParseTree();
         CommonBuilder builder = new CommonBuilder(tree, result, options);
-        StringTreeBuilder handler = new StringTreeBuilder(output, options.prettyPrint);
+        StringTreeBuilder handler = new StringTreeBuilder(options, output);
         realize(builder, handler);
     }
 
@@ -207,6 +208,15 @@ public class InvisibleXmlDocument {
      * @param handler the content handler.
      */
     public void getTree(ContentHandler handler) {
+        getTree(handler, options);
+    }
+
+    /**
+     * Write an XML representation of the current parse to a SAX ContentHandler.
+     * @param handler the content handler.
+     * @param options the options to use when constructing the tree
+     */
+    public void getTree(ContentHandler handler, ParserOptions options) {
         ParseTree tree = getParseTree();
         CommonBuilder builder = new CommonBuilder(tree, result, options);
         realize(builder, handler);
@@ -246,12 +256,12 @@ public class InvisibleXmlDocument {
             TokenCharacter tchar = (TokenCharacter) result.getLastToken();
             atomicValue(handler, "unexpected", ""+tchar.getValue());
 
-            List<TokenCharacter> oknext = couldBeNext(result.getChart(), result.getParser().getGrammar());
+            List<Token> oknext = couldBeNext(result.getChart(), result.getParser().getGrammar());
             if (!oknext.isEmpty()) {
                 // I don't actually care about the order,
                 // but let's not just make it HashMap random for testing if nothing else.
                 ArrayList<String> chars = new ArrayList<>();
-                for (TokenCharacter next : oknext) {
+                for (Token next : oknext) {
                     chars.add(next.toString());
                 }
                 Collections.sort(chars);
@@ -292,7 +302,7 @@ public class InvisibleXmlDocument {
             handler.endElement("", "fail", "failed");
             handler.endDocument();
         } catch (SAXException ex) {
-            throw new IxmlException("Failed to create XML: " + ex.getMessage(), ex);
+            throw IxmlException.parseFailed(ex);
         }
     }
 
@@ -302,12 +312,12 @@ public class InvisibleXmlDocument {
         handler.endElement("", name, name);
     }
 
-    private List<TokenCharacter> couldBeNext(EarleyChart chart, Grammar grammar) {
-        ArrayList<TokenCharacter> next = new ArrayList<>();
+    private List<Token> couldBeNext(EarleyChart chart, Grammar grammar) {
+        ArrayList<Token> next = new ArrayList<>();
         List<TerminalSymbol> symbols = couldBeNextSymbols(chart, grammar);
         for (TerminalSymbol symbol : symbols) {
-            if (symbol.getToken() instanceof TokenCharacter) {
-                next.add((TokenCharacter) symbol.getToken());
+            if (symbol.getToken() != null) {
+                next.add(symbol.getToken());
             }
         }
         return next;

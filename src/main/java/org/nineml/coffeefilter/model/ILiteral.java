@@ -1,5 +1,7 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.utils.TokenUtils;
 import org.nineml.coffeegrinder.tokens.CharacterSet;
 
 import java.io.PrintStream;
@@ -37,7 +39,7 @@ public class ILiteral extends XTerminal implements TMarked {
             throw new IllegalArgumentException("ILiteral needs exactly one of string or hex");
         }
         if (tmark != '^' && tmark != '-') {
-            throw new IllegalArgumentException("tmark must be '^' or '-'.");
+            throw IxmlException.invalidTMark(tmark);
         }
 
         this.tmark = tmark;
@@ -70,7 +72,7 @@ public class ILiteral extends XTerminal implements TMarked {
             if (string != null) {
                 name = string;
             } else {
-                int cp = Integer.parseInt(hex, 16);
+                int cp = TokenUtils.convertHex(hex);
                 StringBuilder sb = new StringBuilder();
                 sb.appendCodePoint(cp);
                 name = sb.toString();
@@ -125,7 +127,7 @@ public class ILiteral extends XTerminal implements TMarked {
             if (string != null) {
                 charset = CharacterSet.literal(string);
             } else {
-                int cp = Integer.parseInt(hex, 16);
+                int cp = TokenUtils.convertHex(hex);
                 charset = CharacterSet.range(cp, cp);
             }
         }

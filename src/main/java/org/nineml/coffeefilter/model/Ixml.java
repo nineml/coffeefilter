@@ -2,6 +2,7 @@ package org.nineml.coffeefilter.model;
 
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.utils.TokenUtils;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.ParserAttribute;
@@ -105,6 +106,18 @@ public class Ixml extends XNonterminal {
      * of other transformations.</p>
      */
     public void simplifyGrammar() {
+        // Make sure there's only one rule for each nonterminal before we begin.
+        HashSet<String> definedSymbols = new HashSet<>();
+        for (XNode node : children) {
+            if (node instanceof IRule) {
+                IRule rule = (IRule) node;
+                if (definedSymbols.contains(rule.getName())) {
+                    throw IxmlException.duplicateRuleForSymbol(rule.getName());
+                }
+                definedSymbols.add(rule.getName());
+            }
+        }
+
         flatten();
 
         ArrayList<XNode> newchildren = new ArrayList<>();
@@ -144,7 +157,7 @@ public class Ixml extends XNonterminal {
         // Make sure we have a top-level rule that will have only one rhs
         // even if the user's seed rule winds up having alternatives
         ArrayList<XNode> newchildren = new ArrayList<>();
-        IRule START = new IRule(this, "$$", '-');
+        IRule startSymbol = new IRule(this, "$$", '-');
 
         IRule firstRule = null;
         int pos = 0;
@@ -153,8 +166,8 @@ public class Ixml extends XNonterminal {
         }
         firstRule = (IRule) children.get(pos);
 
-        START.children.add(new INonterminal(START, firstRule.getName(), firstRule.getMark()));
-        newchildren.add(START);
+        startSymbol.children.add(new INonterminal(startSymbol, firstRule.getName(), firstRule.getMark()));
+        newchildren.add(startSymbol);
         newchildren.addAll(children);
 
         children.clear();
@@ -274,7 +287,7 @@ public class Ixml extends XNonterminal {
                         attributes.add(new ParserAttribute("tmark", ""+lit.getTMark()));
 
                         if (lit.getString() == null) {
-                            int cp = Integer.parseInt(lit.getHex(), 16);
+                            int cp = TokenUtils.convertHex(lit.getHex());
                             StringBuilder sb = new StringBuilder();
                             sb.appendCodePoint(cp);
                             rhs.add(new TerminalSymbol(TokenCharacter.get(sb.toString().charAt(0)), attributes));
@@ -300,52 +313,6 @@ public class Ixml extends XNonterminal {
         }
     }
 
-    private HashSet<String> optionalSymbols(List<XNode> children) {
-        HashSet<String> optional = new HashSet<>();
-        ArrayList<IRule> rules = new ArrayList<>();
-        boolean changed = true;
-
-        for (XNode child : children) {
-            if (child instanceof IRule) {
-                rules.add((IRule) child);
-            }
-        }
-
-        while (changed) {
-            changed = false;
-            for (IRule rule : rules) {
-                if ((rule.isOptional() || rule.getChildren().isEmpty()) && !optional.contains(rule.getName())) {
-                    changed = true;
-                    optional.add(rule.getName());
-                }
-
-                for (XNode child : rule.getChildren()) {
-                    boolean allOptional = true;
-                    if (child instanceof XNonterminal) {
-                        XNonterminal sym = (XNonterminal) child;
-                        if (sym.isOptional()) {
-                            if (!optional.contains(sym.getName())) {
-                                changed = true;
-                                optional.add(sym.getName());
-                            }
-                        } else {
-                            allOptional = false;
-                        }
-                    } else {
-                        allOptional = false;
-                    }
-
-                    if (allOptional && !optional.contains(rule.getName())) {
-                        changed = true;
-                        optional.add(rule.getName());
-                    }
-                }
-            }
-        }
-
-        return optional;
-    }
-
     /**
      * Return the rule for the given name.
      * @param name The rule name.
@@ -361,7 +328,7 @@ public class Ixml extends XNonterminal {
                 }
             }
         }
-        throw new IllegalArgumentException("No rule named " + name);
+        throw IxmlException.noRuleForSymbol(name);
     }
 
     /**
@@ -377,7 +344,7 @@ public class Ixml extends XNonterminal {
             return baos.toString("UTF-8");
         } catch (UnsupportedEncodingException ex) {
             // this can't happen!
-            throw new IxmlException("'Impossible' unsupported encoding for UTF-8: " + ex.getMessage(), ex);
+            throw IxmlException.internalError("unsupported encoding: UTF-8: " + ex.getMessage(), ex);
         }
     }
 

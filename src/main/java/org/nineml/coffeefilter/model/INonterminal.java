@@ -1,5 +1,7 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+
 import java.io.PrintStream;
 
 /**
@@ -25,7 +27,7 @@ public class INonterminal extends XNonterminal {
         }
 
         if (mark != '^' && mark != '@' && mark != '-') {
-            throw new IllegalArgumentException("mark must be '@', '^', or '-'");
+            throw IxmlException.invalidMark(mark);
         }
 
         this.mark = mark;

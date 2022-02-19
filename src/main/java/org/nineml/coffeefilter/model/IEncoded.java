@@ -1,5 +1,7 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+
 /**
  * Model an Invisible XML 'encoded'.
  */
@@ -16,7 +18,7 @@ public class IEncoded extends XNonterminal implements TMarked {
     public IEncoded(XNode parent, char tmark) {
         super(parent, "encoded");
         if (tmark != '^' && tmark != '-') {
-            throw new IllegalArgumentException("tmark must be '^' or '-'.");
+            throw IxmlException.invalidTMark(tmark);
         }
         this.tmark = tmark;
     }
