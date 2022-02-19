@@ -1,6 +1,6 @@
 package org.nineml.coffeefilter.utils;
 
-public class Sniff {
+public class GrammarSniffer {
     public static final int UNK_SOURCE = -1;
     public static final int IXML_SOURCE = 0;
     public static final int VXML_SOURCE = 1;

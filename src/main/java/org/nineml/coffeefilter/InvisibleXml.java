@@ -1,7 +1,7 @@
 package org.nineml.coffeefilter;
 
 import org.nineml.coffeefilter.utils.CommonBuilder;
-import org.nineml.coffeefilter.utils.Sniff;
+import org.nineml.coffeefilter.utils.GrammarSniffer;
 import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
 import org.nineml.coffeegrinder.parser.Grammar;
 import org.nineml.coffeegrinder.parser.ParseTree;
@@ -170,13 +170,13 @@ public class InvisibleXml {
         int len = bufstream.read(buf, 0, buf.length);
         bufstream.reset();
 
-        int sourceType = Sniff.identify(buf, 0, buf.length);
+        int sourceType = GrammarSniffer.identify(buf, 0, buf.length);
         switch (sourceType) {
-            case Sniff.VXML_SOURCE:
+            case GrammarSniffer.VXML_SOURCE:
                 return getParserFromVxml(bufstream, systemId);
-            case Sniff.CXML_SOURCE:
+            case GrammarSniffer.CXML_SOURCE:
                 return getParserFromCxml(bufstream, systemId);
-            case Sniff.IXML_SOURCE:
+            case GrammarSniffer.IXML_SOURCE:
                 return getParserFromIxml(bufstream, encoding);
             default:
                 throw IxmlException.sniffingFailed(systemId);
