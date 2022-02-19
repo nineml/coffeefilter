@@ -8,6 +8,7 @@ package org.nineml.coffeefilter.exceptions;
 public class IxmlTreeException extends IxmlException {
     /**
      * Create an IxmlTreeException with a message.
+     * @param code the code.
      * @param message The message.
      */
     public IxmlTreeException(String code, String message) {
@@ -16,6 +17,7 @@ public class IxmlTreeException extends IxmlException {
 
     /**
      * Create an IxmlTreeException that wraps another exception.
+     * @param code the code.
      * @param message A message for the wrapper.
      * @param cause The underlying exception.
      */

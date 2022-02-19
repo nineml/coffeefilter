@@ -13,6 +13,7 @@ public class IxmlException extends RuntimeException {
 
     /**
      * Create an IxmlException with a message.
+     * @param code the code.
      * @param message The message.
      */
     public IxmlException(String code, String message) {
@@ -22,6 +23,7 @@ public class IxmlException extends RuntimeException {
 
     /**
      * Create an IxmlException that wraps another exception.
+     * @param code the code.
      * @param message A message for the wrapper.
      * @param cause The underlying exception.
      */
