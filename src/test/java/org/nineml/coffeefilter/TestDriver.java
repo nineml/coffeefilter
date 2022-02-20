@@ -196,7 +196,11 @@ public class TestDriver {
 
     private void runTest(TestConfiguration config, XdmNode testCase) {
         try {
-            doRunTest(config, testCase);
+            if (t_grammar_test.equals(testCase.getNodeName())) {
+                doGrammarTest(config, testCase);
+            } else {
+                doRunTest(config, testCase);
+            }
         } catch (Exception ex) {
             System.err.println("EXCEPTION " + testCase.getAttributeValue(_name) + ": " + ex.getMessage());
         }
@@ -237,6 +241,91 @@ public class TestDriver {
         doValidParse(config, testCase, assertions);
     }
 
+    private void doGrammarTest(TestConfiguration config, XdmNode testCase) throws IOException, URISyntaxException, SaxonApiException {
+        XdmNode result = config.find(testCase, t_result);
+        if (result == null) {
+            throw new RuntimeException("Test case has no result?: " + testCase.getAttributeValue(_name));
+        }
+
+        List<XdmNode> assertions = config.findAll(result, t_assert_xml, t_assert_xml_ref, t_assert_not_a_grammar, t_assert_not_a_sentence);
+        if (assertions.isEmpty()) {
+            throw new RuntimeException("Test case makes no assertion?: " + testCase.getAttributeValue(_name));
+        }
+
+        TestResult tresult = new TestResult(testCase);
+        testResults.put(testCase, tresult);
+
+        if (config.grammar == null) {
+            throw new RuntimeException("Test case has no in-scope grammar?: " + testCase.getAttributeValue(_name));
+        }
+
+        InvisibleXmlParser parser = InvisibleXml.getParser();
+        tresult.grammarParseTime = parser.getParseTime();
+
+        InvisibleXmlDocument doc = parseGrammar(config);
+        tresult.documentParseTime = doc.parseTime();
+
+        // But is it a legitimate grammar?
+        InvisibleXmlParser grammarParser = loadGrammar(config);
+
+        DocumentBuilder builder = processor.newDocumentBuilder();
+        BuildingContentHandler bch = builder.newBuildingContentHandler();
+        doc.getTree(bch);
+        XdmNode node = bch.getDocumentNode();
+
+        XdmSequenceIterator<XdmNode> iter = node.axisIterator(Axis.CHILD);
+        while (iter.hasNext() && node.getNodeKind() != XdmNodeKind.ELEMENT) {
+            node = iter.next();
+        }
+
+        boolean grammarExpected = true;
+        boolean same = false;
+        for (XdmNode assertion : assertions) {
+            XdmNode expected = null;
+            if (t_assert_xml.equals(assertion.getNodeName())) {
+                iter = assertion.axisIterator(Axis.CHILD);
+                while (iter.hasNext()) {
+                    XdmNode anode = iter.next();
+                    if (anode.getNodeKind() == XdmNodeKind.ELEMENT) {
+                        expected = anode;
+                    }
+                }
+            } else if (t_assert_xml_ref.equals(assertion.getNodeName())) {
+                expected = xmlFile(assertion.getBaseURI().resolve(assertion.getAttributeValue(_href)));
+            } else if (t_assert_not_a_grammar.equals(assertion.getNodeName())) {
+                grammarExpected = false;
+            } else {
+                throw new RuntimeException("Unexpected assertion: " + assertion);
+            }
+
+            if (grammarExpected) {
+                iter = expected.axisIterator(Axis.CHILD);
+                while (iter.hasNext() && expected.getNodeKind() != XdmNodeKind.ELEMENT) {
+                    expected = iter.next();
+                }
+                if (expected.getNodeKind() != XdmNodeKind.ELEMENT) {
+                    throw new RuntimeException("Did not find element to compare against in assertion?: " + testCase.getBaseURI());
+                }
+
+                same = deepEqual(expected, node);
+                if (same) {
+                    break;
+                }
+            } else {
+                same = !grammarParser.constructed();
+                break;
+            }
+        }
+
+        if (same) {
+            tresult.state = STATE_PASS;
+        } else {
+            System.err.println("Actual result:");
+            System.err.println(node);
+            tresult.state = STATE_FAIL;
+        }
+    }
+
     private void doValidParse(TestConfiguration config, XdmNode testCase, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
         TestResult result = new TestResult(testCase);
         testResults.put(testCase, result);
@@ -274,7 +363,13 @@ public class TestDriver {
         for (XdmNode assertion : assertions) {
             XdmNode expected = null;
             if (t_assert_xml.equals(assertion.getNodeName())) {
-                expected = assertion;
+                iter = assertion.axisIterator(Axis.CHILD);
+                while (iter.hasNext()) {
+                    XdmNode anode = iter.next();
+                    if (anode.getNodeKind() == XdmNodeKind.ELEMENT) {
+                        expected = anode;
+                    }
+                }
             } else if (t_assert_xml_ref.equals(assertion.getNodeName())) {
                 expected = xmlFile(assertion.getBaseURI().resolve(assertion.getAttributeValue(_href)));
             } else {
@@ -298,6 +393,8 @@ public class TestDriver {
         if (same) {
             result.state = STATE_PASS;
         } else {
+            System.err.println("Actual result:");
+            System.err.println(node);
             result.state = STATE_FAIL;
         }
     }
@@ -331,6 +428,27 @@ public class TestDriver {
             throw new RuntimeException("Unexpected grammar: " + config.grammar.getNodeName());
         }
         return parser;
+    }
+
+    private InvisibleXmlDocument parseGrammar(TestConfiguration config) throws IOException, URISyntaxException {
+        InvisibleXmlParser parser = InvisibleXml.getParser();
+        InvisibleXmlDocument doc = null;
+        String ixml;
+        if (t_ixml_grammar.equals(config.grammar.getNodeName())) {
+            ixml = config.grammar.getStringValue();
+            doc = parser.parse(ixml);
+        } else if (t_ixml_grammar_ref.equals(config.grammar.getNodeName())) {
+            URI grammarURI = config.grammar.getBaseURI().resolve(config.grammar.getAttributeValue(_href));
+            ixml = textFile(grammarURI);
+            doc = parser.parse(ixml);
+        } else if (t_vxml_grammar.equals(config.grammar.getNodeName())) {
+            throw new UnsupportedOperationException("Cannot parse a vxml grammar");
+        } else if (t_vxml_grammar_ref.equals(config.grammar.getNodeName())) {
+            throw new UnsupportedOperationException("Cannot parse a vxml grammar");
+        } else {
+            throw new RuntimeException("Unexpected grammar: " + config.grammar.getNodeName());
+        }
+        return doc;
     }
 
     private String textFile(URI uri) {
