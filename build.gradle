@@ -10,7 +10,7 @@ buildscript {
       force 'xml-apis:xml-apis:1.4.01',
         "${saxonGroup}:${saxonEdition}:${saxonVersion}",
         "org.xmlresolver:xmlresolver:${xmlresolverVersion}",
-        'com.nwalsh:sinclude:4.0.0-11'
+        'com.nwalsh:sinclude:4.0.0'
     }
   }
 
@@ -56,7 +56,7 @@ configurations.all {
     force 'xml-apis:xml-apis:1.4.01',
       "${saxonGroup}:${saxonEdition}:${saxonVersion}",
       "org.xmlresolver:xmlresolver:${xmlresolverVersion}",
-      'com.nwalsh:sinclude:4.0.0-11'
+      'com.nwalsh:sinclude:4.0.0'
   }
 }
 
@@ -73,7 +73,7 @@ dependencies {
     [group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.4.2'],
     [group: 'org.junit.platform', name: 'junit-platform-console-standalone', version: '1.7.1'],
     // For saxon:deep-equal
-    [group: 'com.saxonica', name: 'Saxon-EE', version: '11.1.1'],
+    [group: 'com.saxonica', name: 'Saxon-EE', version: saxonVersion],
     files(saxonLicenseDir)
   )
   testRuntimeOnly (
@@ -246,6 +246,24 @@ task website(type: SaxonXsltTask, dependsOn: ["manual_augment", "javadoc"]) {
     'chunk-output-base-uri': "${projectDir}/build/website/"
   )
 }
+
+task intro(type: SaxonXsltTask) {
+  inputs.file "${projectDir}/tools/docbook.xsl"
+  inputs.file "${projectDir}/src/website/docs/invisible.xml"
+  outputs.file "${buildDir}/website/docs/invisible.html"
+
+  input "${projectDir}/src/website/docs/invisible.xml"
+  output "${buildDir}/website/docs/invisible.html"
+  stylesheet "${projectDir}/tools/docbook.xsl"
+  initializer 'org.docbook.xsltng.extensions.Register'
+  parameters (
+    'mediaobject-input-base-uri': "file:${buildDir}/aug/",
+    'mediaobject-output-base-uri': "/",
+    'chunk': 'invisible.html',
+    'chunk-output-base-uri': "${buildDir}/website/docs/"
+  )
+}
+website.finalizedBy intro
 
 task website_javadoc(type: Copy, dependsOn: ["javadoc"]) {
   from javadoc.destinationDir
