@@ -1,7 +1,12 @@
-<article xmlns="http://docbook.org/ns/docbook">
+<article xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         version="5.2">
 <info>
 <title>Invisible XML</title>
-<author><firstname>Norm</firstname><surname>Tovey-Walsh</surname></author>
+<author>
+<personname><firstname>Norm</firstname><surname>Tovey-Walsh</surname></personname>
+</author>
+<pubdate>2022-02-21</pubdate>
 <copyright><year>2022</year><holder>Norm Tovey-Walsh</holder></copyright>
 <abstract>
 <para>This article is a draft that I intend to submit to
@@ -18,7 +23,7 @@ to represent the text as structured information. That sounds a bit
 abstract, so let’s start with an example:</para>
 
 <para>Suppose you have a document, <filename>contacts.txt</filename>,
-where you keep the names, email addresses, and other details about
+where you keep the names, email addresses, and other details of
 friends and colleagues. It might look something like this:</para>
 
 <programlisting linenumbering="unnumbered"><![CDATA[John Doe
@@ -37,7 +42,7 @@ nancy@example.org]]></programlisting>
 
 <para>This is obviously a toy example, but it will work to illustrate
 a few points. First of all, those of us who are used to working with
-marked up data (such as XML or JSON), are likely to think of this as
+marked up data (such as XML or JSON) are likely to think of this as
 “unstructured” data. But that’s not really true. There is structure
 there, it’s just indicated with whitespace and other informal
 conventions, rather than with angle brackets or curly braces.</para>
@@ -46,7 +51,7 @@ conventions, rather than with angle brackets or curly braces.</para>
 conventions. We use files like this every day: email headers, ical and vcard
 files, CSS, Java property files, Windows “ini” configuration files,
 BibTeX, Markdown, etc. At finer levels of granularity, we find even
-more examples, ISO 8601 dates and times, XPath expressions, CSS
+more examples: ISO 8601 dates and times, XPath expressions, CSS
 selectors, and so on. And then we have our own ad hoc formats in
 countless text files: diaries, todo lists, calendars, event planners,
 etc. There are probably a dozen or so files like this within easy
@@ -59,7 +64,7 @@ some other system? What happens when we want to extract the
 information out of these documents structured by conventions of
 spacing and punctuation?</para>
 
-<para>Often, we write a script to read the format:</para>
+<para>A common approach would be to write a script to read the format:</para>
 
 <programlisting language="python"><![CDATA[#!/usr/bin/env python3
 
@@ -94,7 +99,7 @@ know it isn’t), are difficult to understand, difficult to
 test, and difficult to reason about.</para>
 
 <para>Can I put an address in this file? Is it ok if I have two blank
-lines? If I have phone number but not an email address, can I just put
+lines? If I have a phone number but not an email address, can I just put
 in a blank line for the email address? For anything bigger than a toy
 example, these are not easy questions to answer.</para>
 
@@ -105,26 +110,29 @@ easier to reuse, and generally require less coding.</para>
 <para>So why, you might ask, don’t we use them all the time?
 </para>
 
-<para>We do. Your XML processor, your JavaScript engine, your JSON tooling,
-the compilers that built your web browser and your operating system, are all
-driven by parsers that take declarative descriptions of a system plus
-some input, construct an abstract representation of that system, and
-operate on it.</para>
+<para>We do. Your XML processor, your JavaScript engine, your JSON
+tooling, the compilers that built your web browser and your operating
+system, are all driven by parsers that take declarative descriptions
+of a system plus some input, construct an abstract representation of
+that system, and operate on it. Under the hood, our favourite software
+is making constant use of declarative descriptions.
+</para>
 
 <para>Okay, but why don’t <emphasis>we</emphasis> use them all the
 time?</para>
 
 <para>There are a couple of reasons. Historically, it was expensive. I
-mean computationally expensive. But Moore’s Law has pretty much sorted
-that out. The other reason, the real reason, is because it’s
-<emphasis>hard work</emphasis>. Off-the-shelf tools are mostly
-designed to build incredibly efficient parsers that can analyze huge
-amounts of data, unambiguously and efficiently, with only a
+mean computationally expensive. But
+<link xlink:href="https://en.wikipedia.org/wiki/Moore%27s_law">Moore’s Law</link>
+has pretty much sorted that out. The other reason, the real reason, is
+because it’s <emphasis>hard work</emphasis>. Off-the-shelf tools are
+mostly designed to build incredibly efficient parsers that can analyze
+huge amounts of data, unambiguously and efficiently, with only a
 character or two of lookahead. Writing format descriptions for those
 tools is a specialized skill that few of us have.</para>
 
 <para>But it doesn’t actually have to be hard. Or at least, nowhere
-near as hard. What makes it a specialized skill, and what makes it
+near <emphasis>that</emphasis> hard. What makes it a specialized skill, and what makes it
 hard, is fitting your declarative description into those very tight
 requirements: no ambiguity and no (or only a small, fixed amount of)
 lookahead.</para>
@@ -144,7 +152,8 @@ to your data and get structured data out. No (imperative) coding required.</para
 
 <para>Before we dig in a deeper, let’s establish a little bit of
 vocabulary. An Invisible XML document is a
-<glossterm>grammar</glossterm>. A <firstterm>grammar</firstterm> is a
+<glossterm>grammar</glossterm>. As a term of art in computer programming,
+a <firstterm>grammar</firstterm> is essentially a
 set of rules. Each rule describes a <glossterm>symbol</glossterm> in
 terms of some other symbols.</para>
 
@@ -161,10 +170,10 @@ side is a single symbol, the one being defined, and the right hand side
 is a list of one or more symbols that define it.
 A <firstterm>symbol</firstterm> is either the name of something,
 in which case there must be a further rule that defines it, one that has it as the
-rule’s left hand side, or it’s something that literally matches
+rule’s left hand side; or it’s something that literally matches
 characters in your input.
 With these rules, the processor will work out whether it’s possible
-tto match the whole input string that you gave it by applying these
+to match the whole input string that you gave it by applying these
 rules in some order.</para>
 
 <para>Let’s take a very small example. Suppose we want to match
@@ -211,7 +220,7 @@ say how you do anything with a word or any of its constituent parts.
 The grammar just declaratively describes the format. It’s easy to answer questions
 about this format. Are numbers allowed? Can words be more or less than
 three letters long? Is punctuation allowed? No, no, and no, respectively.
-And it’s easy to imagine writing tests to assure that this grammar does
+And it’s easy to imagine writing tests to ensure that this grammar does
 match what you want.
 </para>
 
@@ -219,7 +228,7 @@ match what you want.
 first thing a processor, or parser, is going to do is determine whether the
 input you gave it matches the grammar (you’ll sometimes see this
 written as “checking if the input is a sentence in the grammar”).
-In order to do that, it has to know where to start, you need to nominate
+In order to do that, it has to know where to start, so you need to nominate
 one of the symbols as the “start symbol”. In Invisible XML, that’s the
 symbol in your first rule, so “sentence” in this case.
 </para>
@@ -240,11 +249,20 @@ what’s a word?
 </para>
 </listitem>
 <listitem>
-<para>A word is <emphasis>consonant</emphasis>, <emphasis>vowel</emphasis>,
-<emphasis>consonant</emphasis> or 
-<emphasis>consonant</emphasis>, <emphasis>vowel</emphasis>,
-<emphasis>vowel</emphasis>. Does the input match that? I don’t know,
-what’s a consonant?
+<para>A word is either:</para>
+<itemizedlist>
+<listitem>
+<para>A <emphasis>consonant</emphasis>, followed by <emphasis>vowel</emphasis>,
+followed by a <emphasis>consonant</emphasis>, or 
+</para>
+</listitem>
+<listitem>
+<para>a <emphasis>consonant</emphasis>, followed by a <emphasis>vowel</emphasis>,
+followed by another <emphasis>vowel</emphasis>.
+</para>
+</listitem>
+</itemizedlist>
+<para>Does the input match that? I don’t know, what’s a consonant?
 </para>
 </listitem>
 <listitem>
@@ -297,7 +315,7 @@ Would have permitted: ["aeiouy"].</para>
 
 <para>So your grammar also functions as a validator for your input!</para>
 
-<para>On a successful parse, the other thing a parser has to do is tell
+<para>On a successful parse, the other thing an Invisible XML parser has to do is tell
 you <emphasis>how</emphasis> it matched the input. This is the part
 that gives you back the structured information. For our word parser,
 it’s pretty simple and obvious:</para>
@@ -338,7 +356,7 @@ sentence grammar, you’ll get:</para>
 </sentence>]]></programlisting>
 
 <para>Or maybe you’ll get:</para>
-sixml
+
 <programlisting language="xml" linenumbering="unnumbered"><![CDATA[<sentence xmlns:ixml="http://invisiblexml.org/NS"
           ixml:state="ambiguous">
    <word>
@@ -358,7 +376,7 @@ grammar says that a “y” can be either a consonant or a vowel. The word
 “hey” therefore matches both the pattern “consonant-vowel-vowel” and the pattern
 “consonant-vowel-consonant”.
 That makes the results ambiguous. The Invisible XML processor is
-required to tell us that, and it‘s required to return one of the valid
+required to tell us that, and it’s required to return one of the valid
 parses. (Implementations may give you more control than that, but
 that’s all that’s required for conformance.)</para>
 
@@ -448,7 +466,7 @@ followed by newline.
 <para>If you give that grammar and the contacts file to an Invisible
 XML processor, it will return:</para>
 
-<programlisting linenumber="unnumbered"><![CDATA[<contacts>
+<programlisting linenumbering="unnumbered"><![CDATA[<contacts>
    <contact>
       <name>John Doe</name>
       <email>john@example.com</email>
@@ -469,7 +487,8 @@ XML processor, it will return:</para>
    </contact>
 </contacts>]]></programlisting>
 
-<para>Or, equivalently:</para>
+<para>Or the author of the processor might allow you to ask for the output in JSON
+instead:</para>
 
 <programlisting linenumbering="unnumbered">{
   "contacts": {
@@ -496,7 +515,7 @@ XML processor, it will return:</para>
   }
 }</programlisting>
 
-<para>Or even:</para>
+<para>Or maybe in CSV:</para>
 
 <programlisting linenumbering="unnumbered">"name","email","phone"
 "John Doe","john@example.com","555-1234"
@@ -508,7 +527,7 @@ XML processor, it will return:</para>
 representation of your input data. That’s why it’s called Invisible
 XML. But what’s really going on here is that we’re turning input with
 implicit structure into explicitly structured data that can be
-transformed into whatever output format we require.And we’re doing it
+transformed into whatever output format we require. And we’re doing it
 by describing that format in a compact, understandable, reusable,
 testable way.</para>
 

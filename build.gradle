@@ -247,12 +247,19 @@ task website(type: SaxonXsltTask, dependsOn: ["manual_augment", "javadoc"]) {
   )
 }
 
-task intro(type: SaxonXsltTask) {
+task intro_validate(type: RelaxNGValidateTask) {
+  input "${projectDir}/src/website/docs/invisible.xml"
+  output "${buildDir}/xml/invisible.xml"
+  schema "${projectDir}/website/docbook.rnc"
+  compact true
+}
+
+task intro(type: SaxonXsltTask, dependsOn: ["intro_validate"]) {
   inputs.file "${projectDir}/tools/docbook.xsl"
-  inputs.file "${projectDir}/src/website/docs/invisible.xml"
+  inputs.file intro_validate.outputs.files.singleFile
   outputs.file "${buildDir}/website/docs/invisible.html"
 
-  input "${projectDir}/src/website/docs/invisible.xml"
+  input intro_validate.outputs.files.singleFile
   output "${buildDir}/website/docs/invisible.html"
   stylesheet "${projectDir}/tools/docbook.xsl"
   initializer 'org.docbook.xsltng.extensions.Register'
