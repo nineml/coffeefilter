@@ -150,7 +150,7 @@ description that’s easy to use and easy to understand. Combined with
 a parser that understands Invisible XML, you can apply those descriptions
 to your data and get structured data out. No (imperative) coding required.</para>
 
-<para>Before we dig in a deeper, let’s establish a little bit of
+<para>Before we dig in deeper, let’s establish a little bit of
 vocabulary. An Invisible XML document is a
 <glossterm>grammar</glossterm>. As a term of art in computer programming,
 a <firstterm>grammar</firstterm> is essentially a
@@ -442,12 +442,12 @@ followed by a domainname.
 </para>
 </listitem>
 <listitem>
-<para>A <emphasis>username</emphasis> is one or more occrrences
+<para>A <emphasis>username</emphasis> is one or more occurrences
 of letter or any of the characters “+”, “-”, and “.”.
 </para>
 </listitem>
 <listitem>
-<para>A <emphasis>domainname</emphasis> is one or more occrrences
+<para>A <emphasis>domainname</emphasis> is one or more occurrences
 of letter or any of the characters “+”, “-”, and “.”.
 </para>
 </listitem>
