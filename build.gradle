@@ -117,7 +117,8 @@ docker_container.configure {
 
 // ============================================================
 
-task testSuite(type: JavaExec, dependsOn: jar) {
+task testSuite(type: JavaExec,
+               dependsOn: ["compileTestJava", "processTestResources"]) {
   inputs.files fileTree(dir: "${buildDir}/classes/java/main")
   inputs.files fileTree(dir: "${buildDir}/classes/java/test")
   inputs.files fileTree(dir: "${buildDir}/resources/main")
