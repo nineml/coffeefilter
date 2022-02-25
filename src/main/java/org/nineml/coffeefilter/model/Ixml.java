@@ -32,6 +32,10 @@ public class Ixml extends XNonterminal {
         super(null, "ixml", "$$_ixml");
     }
 
+    /**
+     * Construct Ixml from a grammar.
+     * @param grammar the grammar.
+     */
     public Ixml(Grammar grammar) {
         super(null, "ixml", "$$_ixml");
         this.grammar = grammar;
