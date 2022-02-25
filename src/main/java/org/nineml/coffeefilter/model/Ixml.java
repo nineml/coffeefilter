@@ -245,8 +245,6 @@ public class Ixml extends XNonterminal {
     private void constructGrammar(ParserOptions options) {
         ParserOptions localOptions = new ParserOptions(options);
         localOptions.treesWithStates = true;
-        localOptions.prefixParsing = true;
-        //options.listener.setMessageLevel(ParseListener.DEBUG);
         grammar = new Grammar(localOptions);
 
         ArrayList<ParserAttribute> attributes = new ArrayList<>();
