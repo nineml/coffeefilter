@@ -6,10 +6,7 @@ import org.nineml.coffeefilter.model.IxmlCompiler;
 import org.nineml.coffeefilter.model.IxmlContentHandler;
 import org.nineml.coffeefilter.utils.CharacterIterator;
 import org.nineml.coffeefilter.utils.CommonBuilder;
-import org.nineml.coffeegrinder.parser.EarleyParser;
-import org.nineml.coffeegrinder.parser.EarleyResult;
-import org.nineml.coffeegrinder.parser.Grammar;
-import org.nineml.coffeegrinder.parser.ParseTree;
+import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 
@@ -27,6 +24,7 @@ public class InvisibleXmlParser {
     private final long parseTime;
     private ParserOptions options = new ParserOptions();
     private Exception exception = null;
+    private HygieneReport hygieneReport = null;
 
     protected InvisibleXmlParser(Ixml ixml) {
         this.ixml = ixml;
@@ -93,6 +91,17 @@ public class InvisibleXmlParser {
      */
     public boolean constructed() {
         return failedParse == null;
+    }
+
+    /**
+     * Get the hygiene report for this parser's grammar
+     * @return the hygiene report
+     */
+    public HygieneReport getHygieneReport() {
+        if (hygieneReport == null && getGrammar() != null) {
+            hygieneReport = getGrammar().checkHygiene("$$");
+        }
+        return hygieneReport;
     }
 
     /**
