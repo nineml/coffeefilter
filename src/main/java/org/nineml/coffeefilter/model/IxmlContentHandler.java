@@ -1,5 +1,6 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.ParserOptions;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -10,7 +11,14 @@ public class IxmlContentHandler extends DefaultHandler {
     private Ixml ixml = null;
     private XNode current = null;
 
-    public Ixml getIxml() {
+    /**
+     * Get the Ixml for this handler.
+     * <p>The underlying grammar is cached. Calling this method with different parser
+     * options will have no effect.</p>
+     * @param options the parser options
+     * @return the Ixml grammar
+     */
+    public Ixml getIxml(ParserOptions options) {
         if (!finished) {
             return null;
         }
@@ -20,7 +28,7 @@ public class IxmlContentHandler extends DefaultHandler {
         }
 
         if (!simplified) {
-            ixml.simplifyGrammar();
+            ixml.simplifyGrammar(options);
             simplified = true;
         }
 

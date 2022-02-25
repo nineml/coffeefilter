@@ -254,7 +254,9 @@ public class InvisibleXmlDocument {
             atomicValue(handler, "pos", ""+result.getTokenCount());
 
             TokenCharacter tchar = (TokenCharacter) result.getLastToken();
-            atomicValue(handler, "unexpected", ""+tchar.getValue());
+            if (tchar != null) {
+                atomicValue(handler, "unexpected", ""+tchar.getValue());
+            }
 
             List<Token> oknext = couldBeNext(result.getChart(), result.getParser().getGrammar());
             if (!oknext.isEmpty()) {
