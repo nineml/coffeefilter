@@ -196,8 +196,7 @@ public class InvisibleXmlParser {
             throw new NullPointerException("No grammar for this parser");
         }
 
-        Grammar grammar = ixml.getGrammar();
-        grammar.setParserOptions(options);
+        Grammar grammar = ixml.getGrammar(options);
 
         CharacterIterator iterator = new CharacterIterator(input);
         EarleyParser parser = grammar.getParser(grammar.getNonterminal("$$"));
@@ -230,7 +229,7 @@ public class InvisibleXmlParser {
             throw new NullPointerException("No grammar for this parser");
         }
         IxmlCompiler compiler = new IxmlCompiler();
-        return compiler.compile(ixml.getGrammar());
+        return compiler.compile(ixml.getGrammar(options));
     }
 
     /**
@@ -242,7 +241,7 @@ public class InvisibleXmlParser {
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
         }
-        return ixml.getGrammar();
+        return ixml.getGrammar(options);
     }
 }
 

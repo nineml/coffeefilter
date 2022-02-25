@@ -29,17 +29,32 @@ public class InvisibleXml {
     private static final String ixml_cxml = "/org/nineml/coffeefilter/ixml.cxml";
     private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.xml";
     private static InvisibleXmlParser xixmlForIxml = null;
-
-    /**
-     * The parser options.
-     * <p>These options are passed to the parsers constructed. Constructed parsers
-     * get a copy of the options, changing them on the <code>InvisibleXml</code> class after
-     * construction will have no effect.</p>
-     */
-    public static final ParserOptions options = new ParserOptions();
+    private static ParserOptions options = new ParserOptions();
 
     private InvisibleXml() {
         // no one makes one of these
+    }
+
+    /**
+     * Set the parser options for subsequently constructed parsers.
+     * <p>Each parser is constructed with these options. Changing them will cause the
+     * class to construct a new instance of the Invisible XML parser for Invisible XML.
+     * Each parser constructed gets its own copy of these options.</p>
+     * @param newOptions the new options
+     */
+    public static void setOptions(ParserOptions newOptions) {
+        options = newOptions;
+        xixmlForIxml = null;
+    }
+
+    /**
+     * Get the parser options currently being used to construct parsers.
+     * <p>Changing properties on the options will only effect subsequently constructed
+     * parsers. Each parser gets its own copy of the options.</p>
+     * @return the current options
+     */
+    public static ParserOptions getOptions() {
+        return options;
     }
 
     private InvisibleXmlParser getIxmlParser() {
@@ -200,13 +215,14 @@ public class InvisibleXml {
      */
     public static InvisibleXmlParser getParserFromCxml(InputStream stream, String systemId) throws IOException {
         try {
-            GrammarCompiler compiler = new GrammarCompiler();
+            ParserOptions optionsCopy = new ParserOptions(options);
+            GrammarCompiler compiler = new GrammarCompiler(optionsCopy);
             long startMillis = Calendar.getInstance().getTimeInMillis();
             Grammar grammar = compiler.parse(stream, systemId);
             Ixml ixml = new Ixml(grammar);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             InvisibleXmlParser parser = new InvisibleXmlParser(ixml, parseMillis);
-            parser.setOptions(new ParserOptions(options));
+            parser.setOptions(optionsCopy);
             return parser;
         } catch (CoffeeGrinderException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
@@ -227,13 +243,14 @@ public class InvisibleXml {
         factory.setValidating(false);
         IxmlContentHandler handler = new IxmlContentHandler();
         try {
+            ParserOptions optionsCopy = new ParserOptions(options);
             SAXParser parser = factory.newSAXParser();
             long startMillis = Calendar.getInstance().getTimeInMillis();
             parser.parse(stream, handler, systemId);
-            Ixml ixml = handler.getIxml();
+            Ixml ixml = handler.getIxml(optionsCopy);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             InvisibleXmlParser iparser = new InvisibleXmlParser(ixml, parseMillis);
-            iparser.setOptions(new ParserOptions(options));
+            iparser.setOptions(optionsCopy);
             return iparser;
         } catch (ParserConfigurationException|SAXException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
@@ -267,7 +284,7 @@ public class InvisibleXml {
         try {
             IxmlContentHandler handler = new IxmlContentHandler();
             builder.build(handler);
-            Ixml ixml = handler.getIxml();
+            Ixml ixml = handler.getIxml(new ParserOptions(options));
             return new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
         } catch (Exception ex) {
             return new InvisibleXmlParser(doc, ex, doc.parseTime());

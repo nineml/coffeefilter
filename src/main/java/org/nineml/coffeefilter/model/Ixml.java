@@ -109,7 +109,7 @@ public class Ixml extends XNonterminal {
      * simpler constructions, creating duplicate rules to deal with optionality, and a number
      * of other transformations.</p>
      */
-    public void simplifyGrammar() {
+    public void simplifyGrammar(ParserOptions options) {
         // Make sure there's only one rule for each nonterminal before we begin.
         HashSet<String> definedSymbols = new HashSet<>();
         for (XNode node : children) {
@@ -154,7 +154,7 @@ public class Ixml extends XNonterminal {
 
         simplify();
         flattenNonterminals();
-        constructGrammar();
+        constructGrammar(options);
     }
 
     protected void simplify() {
@@ -230,23 +230,24 @@ public class Ixml extends XNonterminal {
 
     /**
      * Return an instance of this ixml grammar ready for processing by EarleyParser.
-     *
+     * <p>The contructed grammar is cached. Calling this method with different parser
+     * options will have no effect.</p>
      * @return The underlying grammar.
      */
-    public Grammar getGrammar() {
+    public Grammar getGrammar(ParserOptions options) {
         if (grammar == null) {
-            constructGrammar();
+            constructGrammar(options);
         }
 
         return grammar;
     }
 
-    private void constructGrammar() {
-        ParserOptions options = new ParserOptions();
-        options.treesWithStates = true;
-        options.prefixParsing = true;
+    private void constructGrammar(ParserOptions options) {
+        ParserOptions localOptions = new ParserOptions(options);
+        localOptions.treesWithStates = true;
+        localOptions.prefixParsing = true;
         //options.listener.setMessageLevel(ParseListener.DEBUG);
-        grammar = new Grammar(options);
+        grammar = new Grammar(localOptions);
 
         ArrayList<ParserAttribute> attributes = new ArrayList<>();
         for (XNode child : children) {
@@ -315,6 +316,8 @@ public class Ixml extends XNonterminal {
                 grammar.addRule(grule);
             }
         }
+
+        grammar.close();
     }
 
     /**
