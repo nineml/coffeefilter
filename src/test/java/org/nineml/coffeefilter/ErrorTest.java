@@ -9,6 +9,8 @@ import org.nineml.coffeefilter.utils.TokenUtils;
 import static junit.framework.TestCase.fail;
 
 public class ErrorTest {
+    private static InvisibleXml invisibleXml = new InvisibleXml();
+
     @Test
     public void invalidXmlNames() {
         Assert.assertTrue(TokenUtils.xmlName("test"));
@@ -22,7 +24,7 @@ public class ErrorTest {
     @Test
     public void invalidXmlName() {
         String grammar = "\u00AA: 'a' .";
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(grammar);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(grammar);
 
         String input = "a";
         InvisibleXmlDocument doc = parser.parse(input);
@@ -47,7 +49,7 @@ public class ErrorTest {
     @Test
     public void validJsonName() {
         String grammar = "\u00AA: 'a' .";
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(grammar);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(grammar);
 
         String input = "a";
         InvisibleXmlDocument doc = parser.parse(input);
@@ -70,7 +72,7 @@ public class ErrorTest {
     public void repeatedAttribute() {
         String input = "S: @a, @a . a: 'a'; 'b' .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
         Assert.assertTrue(parser.constructed());
 
         InvisibleXmlDocument doc = parser.parse("aa");
@@ -88,7 +90,7 @@ public class ErrorTest {
         String input = "date: ['0123'], ['0'-'9'] .\n" +
                 "date: 'January' .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
@@ -99,7 +101,7 @@ public class ErrorTest {
     public void badHex() {
         String input = "date: [#00decafbad00badbadbad] .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
@@ -107,7 +109,7 @@ public class ErrorTest {
 
         input = "date: [#ffffffff0] .";
 
-        parser = InvisibleXml.getParserFromIxml(input);
+        parser = invisibleXml.getParserFromIxml(input);
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
@@ -115,7 +117,7 @@ public class ErrorTest {
 
         input = "date: [#fffe] .";
 
-        parser = InvisibleXml.getParserFromIxml(input);
+        parser = invisibleXml.getParserFromIxml(input);
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
@@ -123,7 +125,7 @@ public class ErrorTest {
 
         input = "date: [#1fffe] .";
 
-        parser = InvisibleXml.getParserFromIxml(input);
+        parser = invisibleXml.getParserFromIxml(input);
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
@@ -131,7 +133,7 @@ public class ErrorTest {
 
         input = "date: [#d801] .";
 
-        parser = InvisibleXml.getParserFromIxml(input);
+        parser = invisibleXml.getParserFromIxml(input);
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
@@ -142,7 +144,7 @@ public class ErrorTest {
     public void badUnicodeClass() {
         String input = "s: [Xq] .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
@@ -153,7 +155,7 @@ public class ErrorTest {
     public void rootAttribute() {
         String input = "@s: 'a' .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
         Assert.assertTrue(parser.constructed());
         InvisibleXmlDocument doc = parser.parse("a");
         Assert.assertTrue(doc.succeeded());
@@ -170,7 +172,7 @@ public class ErrorTest {
     public void alsoRootAttribute() {
         String input = "-s: t. @t: 'a' .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
         Assert.assertTrue(parser.constructed());
         InvisibleXmlDocument doc = parser.parse("a");
         Assert.assertTrue(doc.succeeded());
@@ -187,7 +189,7 @@ public class ErrorTest {
     public void multipleRoots() {
         String input = "-s: t, u. t: 't' . u: 'u' .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
         Assert.assertTrue(parser.constructed());
         InvisibleXmlDocument doc = parser.parse("tu");
         Assert.assertTrue(doc.succeeded());
@@ -204,7 +206,7 @@ public class ErrorTest {
     public void emptyOutput() {
         String input = "s: -'a' .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
         Assert.assertTrue(parser.constructed());
         InvisibleXmlDocument doc = parser.parse("a");
         Assert.assertTrue(doc.succeeded());
@@ -217,7 +219,7 @@ public class ErrorTest {
     public void invalidRange() {
         String input = "s: ['Z'-'A'] .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
         Assert.assertEquals("E010", ((IxmlException) parser.getException()).getCode());

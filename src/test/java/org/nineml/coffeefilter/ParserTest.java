@@ -10,6 +10,7 @@ import java.io.File;
 import static org.junit.Assert.fail;
 
 public class ParserTest {
+    private static InvisibleXml invisibleXml = new InvisibleXml();
 
     @Test
     public void parseDate() {
@@ -22,7 +23,7 @@ public class ParserTest {
                 "       \"September\"; \"October\"; \"November\"; \"December\".\n" +
                 "year: ((digit, digit); -\"'\")?, digit, digit .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
 
         input = "16 June '67";
         InvisibleXmlDocument doc = parser.parse(input);
@@ -51,7 +52,7 @@ public class ParserTest {
     @Test
     public void hash() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("ixml/tests/correct/hash.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/correct/hash.ixml"));
 
             String input = "#12.";
             InvisibleXmlDocument doc = parser.parse(input);
@@ -76,7 +77,7 @@ public class ParserTest {
     @Test
     public void vcard() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("ixml/tests/correct/vcard.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/correct/vcard.ixml"));
 
             String input = "BEGIN:VCARD\n" +
                     "VERSION:3.0\n" +
@@ -112,7 +113,7 @@ public class ParserTest {
     @Test
     public void css() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("ixml/tests/ambiguous/css.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/ambiguous/css.ixml"));
             String input = "body { color: blue;}";
 
             InvisibleXmlDocument doc = parser.parse(input);
@@ -129,7 +130,7 @@ public class ParserTest {
     @Test
     public void ambig2() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("ixml/tests/ambiguous/ambig2.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/ambiguous/ambig2.ixml"));
             String input = "";
             InvisibleXmlDocument doc = parser.parse(input);
             Assert.assertEquals("<a/>", doc.getTree());
@@ -142,7 +143,7 @@ public class ParserTest {
     @Test
     public void comments() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/comments.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/comments.ixml"));
             String input = "hello";
             InvisibleXmlDocument doc = parser.parse(input);
             Assert.assertTrue(doc.getNumberOfParses() > 0);
