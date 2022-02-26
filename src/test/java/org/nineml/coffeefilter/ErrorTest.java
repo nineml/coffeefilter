@@ -67,14 +67,20 @@ public class ErrorTest {
     }
 
     @Test
-    public void undefinedNonterminal() {
-        String input = "date: ['0123'], ['0'-'9'], month, year .";
+    public void repeatedAttribute() {
+        String input = "S: @a, @a . a: 'a'; 'b' .";
 
         InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        Assert.assertTrue(parser.constructed());
 
-        Assert.assertFalse(parser.constructed());
-        Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E001", ((IxmlException) parser.getException()).getCode());
+        InvisibleXmlDocument doc = parser.parse("aa");
+
+        try {
+            String tree = doc.getTree();
+            fail();
+        } catch (IxmlException ex) {
+            Assert.assertEquals("E001", ex.getCode());
+        }
     }
 
     @Test

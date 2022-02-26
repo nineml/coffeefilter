@@ -12,17 +12,17 @@ public class CommonBuilder {
 
     public DataTree buildRecordDataTree(ParserOptions options) throws SAXException {
         DataTreeBuilder builder = new DataTreeBuilder(options);
-        buildRecordTree(builder);
+        buildRecordTree(options, builder);
         return builder.getTree();
     }
 
     public SimpleTree buildRecordSimpleTree(ParserOptions options) throws SAXException {
         SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
-        buildRecordTree(builder);
+        buildRecordTree(options, builder);
         return builder.getTree();
     }
 
-    public void buildRecordTree(DefaultHandler builder) throws SAXException {
+    public void buildRecordTree(ParserOptions options, DefaultHandler builder) throws SAXException {
         builder.startDocument();
 
         builder.startElement("", "root", "root", AttributeBuilder.EMPTY_ATTRIBUTES);
@@ -54,20 +54,20 @@ public class CommonBuilder {
 
     public SimpleTree buildAttributesSimpleTree(ParserOptions options) throws SAXException {
         SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
-        buildAttributesTree(builder);
+        buildAttributesTree(options, builder);
         return builder.getTree();
     }
 
-    public void buildAttributesTree(DefaultHandler builder) throws SAXException {
+    public void buildAttributesTree(ParserOptions options, DefaultHandler builder) throws SAXException {
         builder.startDocument();
 
-        AttributeBuilder attrs = new AttributeBuilder();
+        AttributeBuilder attrs = new AttributeBuilder(options);
         attrs.addAttribute("version", "1.0");
         attrs.addAttribute("count", "2");
 
         builder.startElement("", "root", "root", attrs);
 
-        attrs = new AttributeBuilder();
+        attrs = new AttributeBuilder(options);
         attrs.addAttribute("num", "1");
 
         builder.startElement("", "record", "record", attrs);
@@ -80,7 +80,7 @@ public class CommonBuilder {
         atomic(builder, "age", "22");
         builder.endElement("", "record", "record");
 
-        attrs = new AttributeBuilder();
+        attrs = new AttributeBuilder(options);
         attrs.addAttribute("test", "string");
 
         builder.startElement("", "no-content", "no-content", attrs);

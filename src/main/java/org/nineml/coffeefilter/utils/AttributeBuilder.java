@@ -1,23 +1,22 @@
 package org.nineml.coffeefilter.utils;
 
+import org.nineml.coffeefilter.ParserOptions;
+import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeegrinder.exceptions.GrammarException;
 import org.xml.sax.Attributes;
-import org.nineml.coffeegrinder.util.Messages;
 
 import java.util.ArrayList;
 
 public final class AttributeBuilder implements Attributes {
-    public static final Attributes EMPTY_ATTRIBUTES = new AttributeBuilder();
-    private final Messages messages;
+    public static final String logcategory = "Attributes";
+    public static final Attributes EMPTY_ATTRIBUTES = new AttributeBuilder(new ParserOptions());
+    private final ParserOptions options;
     private final ArrayList<String> names = new ArrayList<>();
     private final ArrayList<String> values = new ArrayList<>();
     private final ArrayList<String> namespaces = new ArrayList<>();
 
-    public AttributeBuilder() {
-        messages = null;
-    }
-
-    public AttributeBuilder(Messages messages) {
-        this.messages = messages;
+    public AttributeBuilder(ParserOptions options) {
+        this.options = options;
     }
 
     public void addAttribute(String name, String value) {
@@ -35,14 +34,15 @@ public final class AttributeBuilder implements Attributes {
             throw new NullPointerException("Attribute value must not be null");
         }
         if (names.contains(name)) {
+            /* Allow them if they're the same value? Not per the current spec...
             int pos = getIndex(ns, name);
             if (value.equals(getValue(pos))) {
-                if (messages != null) {
-                    messages.debug("Duplicated attribute: " + name);
-                }
-                return;
+                options.logger.debug(logcategory, "Duplicated attribute: %s", name);
+            } else {
+                throw IxmlException.repeatedAttribute(name);
             }
-            throw new RuntimeException("Duplicate attribute: " + name);
+             */
+            throw IxmlException.repeatedAttribute(name);
         }
 
         namespaces.add(ns);
