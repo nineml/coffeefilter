@@ -82,7 +82,11 @@ public class INonterminal extends XNonterminal {
     public char getMark() {
         if (mark == '?') {
             IRule rule = getRoot().getRule(name);
-            mark = rule.getMark();
+            if (rule == null) {
+                mark = '^'; // it's irrelevant since any reference to the symbol will throw an exception
+            } else {
+                mark = rule.getMark();
+            }
         }
         return mark;
     }
