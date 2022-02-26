@@ -11,7 +11,7 @@
 <title>CoffeeFilter</title>
 <subtitle>An Invisible XML parser in Java</subtitle>
 <author>
-  <personname>Norm Tovey Walsh</personname>
+  <personname>Norm Tovey-Walsh</personname>
 </author>
 <copyright><year>2022</year><holder>Norm Tovey-Walsh</holder></copyright>
 <productname>coffeepot</productname>
@@ -21,8 +21,60 @@
 
 <preface>
 <title>Introduction</title>
-
-<para>Hello world.</para>
+<para>CoffeeFilter is an
+<link xlink:href="https://invisiblexml.org/">Invisible XML</link> parsing
+library.</para>
 </preface>
+
+<chapter>
+<title>General use</title>
+
+<para>This is just an overview, consult the 
+<link xlink:href="/apidoc">JavaDoc</link> for more details.</para>
+
+<programlistingco>
+<areaspec>
+<area xml:id="ex_parser" coords="10 55"/>
+<area xml:id="ex_doc" coords="13 55"/>
+<area xml:id="ex_tree" coords="16 55"/>
+</areaspec>
+<programlisting language="java">String input = "date: s?, day, -s, month, (-s, year)? .\n" +
+        "-s: -\" \"+ .\n" +
+        "day: digit, digit? .\n" +
+        "-digit: \"0\"; \"1\"; \"2\"; \"3\"; \"4\"; \"5\"; \"6\"; \"7\"; \"8\"; \"9\".\n" +
+        "month: \"January\"; \"February\"; \"March\"; \"April\";\n" +
+        "       \"May\"; \"June\"; \"July\"; \"August\";\n" +
+        "       \"September\"; \"October\"; \"November\"; \"December\".\n" +
+        "year: ((digit, digit); -\"'\")?, digit, digit .";
+
+InvisibleXmlParser parser
+    = InvisibleXml.getParserFromIxml(input);
+
+InvisibleXmlDocument doc
+     = parser.parse("27 Feb 2022");
+
+String result = doc.getTree();
+</programlisting>
+<calloutlist>
+<callout arearefs="ex_parser">
+<para>Create a parser.
+</para>
+</callout>
+<callout arearefs="ex_doc">
+<para>Parse some input.
+</para>
+<para>In the case of a failed parse, the <classname>InvisibleXmlDocument</classname>
+will also provide details about the failure.</para>
+</callout>
+<callout arearefs="ex_tree">
+<para>Get the XML.
+</para>
+<para>Several tree models can be constructed and the parse tree can be
+sent to any <link xlink:href="http://www.saxproject.org/">SAX</link>
+document builder.</para>
+</callout>
+</calloutlist>
+</programlistingco>
+</chapter>
 
 </book>
