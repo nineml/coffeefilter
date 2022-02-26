@@ -22,6 +22,8 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
         graphviz = copy.graphviz;
         suppressIxmlAmbiguous = copy.suppressIxmlAmbiguous;
         suppressIxmlPrefix = copy.suppressIxmlPrefix;
+        allowUndefinedSymbols = copy.allowUndefinedSymbols;
+        assertValidXmlNames = copy.assertValidXmlNames;
     }
 
     /**
@@ -30,6 +32,13 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
      * removed from the input, report success.</p>
      */
     public boolean ignoreTrailingWhitespace = false;
+
+    /**
+     * Allow undefined symbols.
+     * <p>A grammar with undefined symbols isn't necessarily unusable. But Invisible XML
+     * forbids them.</p>
+     */
+    public boolean allowUndefinedSymbols = false;
 
     /**
      * Attempt to pretty print the result?
