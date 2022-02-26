@@ -129,47 +129,53 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#allowUndefinedSymbols">allowUndefinedSymbols</a></span></code>
+<div class="block">Allow undefined symbols.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#assertValidXmlNames">assertValidXmlNames</a></span></code>
 <div class="block">Raise an exception if invalid XML names are used in nonterminals that are serialized.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#graphviz">graphviz</a></span></code>
 <div class="block">Where's the GraphViz 'dot' command?</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#ignoreTrailingWhitespace">ignoreTrailingWhitespace</a></span></code>
 <div class="block">Ignore trailing whitespace.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#prettyPrint">prettyPrint</a></span></code>
 <div class="block">Attempt to pretty print the result?</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#showChart">showChart</a></span></code>
 <div class="block">Show the Earley chart in error results?</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#suppressIxmlAmbiguous">suppressIxmlAmbiguous</a></span></code>
 <div class="block">Suppress the ixml:state=ambiguous annotation on the root element.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#suppressIxmlPrefix">suppressIxmlPrefix</a></span></code>
 <div class="block">Suppress the ixml:state=prefix annotation on the root element.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#verbose">verbose</a></span></code>
 <div class="block">Be verbose about what's going on?</div>
@@ -246,6 +252,18 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <div class="block">Ignore trailing whitespace.
  <p>If a parse fails where it would have succeeded if trailing whitespace was
  removed from the input, report success.</p></div>
+</li>
+</ul>
+<a name="allowUndefinedSymbols">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>allowUndefinedSymbols</h4>
+<pre>public&nbsp;boolean allowUndefinedSymbols</pre>
+<div class="block">Allow undefined symbols.
+ <p>A grammar with undefined symbols isn't necessarily unusable. But Invisible XML
+ forbids them.</p></div>
 </li>
 </ul>
 <a name="prettyPrint">
