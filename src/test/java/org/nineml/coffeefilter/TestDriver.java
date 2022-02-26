@@ -105,10 +105,11 @@ public class TestDriver {
         int pass = 0;
         int count = 0;
         for (XdmNode testCase : testsToRun) {
+            XdmNode testSet = testCase.getParent();
             count++;
             String name = testCase.getAttributeValue(_name);
             if (name == null) {
-                System.err.printf("Running test %d of %d:%n", count, testsToRun.size());
+                System.err.printf("Running test %d of %d (from %s):%n", count, testsToRun.size(), testSet.getAttributeValue(_name));
             } else {
                 System.err.printf("Running %s, test %d of %d:%n", name, count, testsToRun.size());
             }

@@ -1,4 +1,4 @@
-E001: There is no rule for the nonterminal symbol: %1.
+E001: Repeated attribute: %1.
 E002: The Unicode character class ‘%1’ is invalid.
 E003: Invalid XML Name: %1.
 E004: More than one rule for nonterminal symbol: %1.

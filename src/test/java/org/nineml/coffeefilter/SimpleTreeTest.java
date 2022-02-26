@@ -49,7 +49,7 @@ public class SimpleTreeTest extends CommonBuilder {
             SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("test", "spoon");
             builder.startElement("", "root", "root", attrs);
             builder.characters("abc".toCharArray(), 0, 3);
@@ -77,7 +77,7 @@ public class SimpleTreeTest extends CommonBuilder {
             SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("test", "spoon");
             builder.startElement("", "root", "root", attrs);
             builder.characters("   ".toCharArray(), 0, 3);
@@ -105,7 +105,7 @@ public class SimpleTreeTest extends CommonBuilder {
             SimpleTreeBuilder builder = new SimpleTreeBuilder(options,true);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("test", "spoon");
             builder.startElement("", "root", "root", attrs);
             builder.characters("   ".toCharArray(), 0, 3);
@@ -150,7 +150,7 @@ public class SimpleTreeTest extends CommonBuilder {
             SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("test", "spoon");
             attrs.addAttribute("test2", "fork");
             builder.startElement("", "root", "root", attrs);
@@ -181,11 +181,11 @@ public class SimpleTreeTest extends CommonBuilder {
             SimpleTreeBuilder builder = new SimpleTreeBuilder(options);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("test", "spoon");
             builder.startElement("", "root", "root", attrs);
 
-            attrs = new AttributeBuilder();
+            attrs = new AttributeBuilder(options);
             attrs.addAttribute("a", "1");
             attrs.addAttribute("b", "2");
             builder.startElement("", "attronly", "attronly", attrs);

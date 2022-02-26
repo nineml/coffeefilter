@@ -4,6 +4,7 @@ import org.nineml.coffeefilter.utils.CommonBuilder;
 import org.nineml.coffeefilter.utils.GrammarSniffer;
 import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
 import org.nineml.coffeegrinder.parser.Grammar;
+import org.nineml.coffeegrinder.parser.HygieneReport;
 import org.nineml.coffeegrinder.parser.ParseTree;
 import org.nineml.coffeegrinder.util.GrammarCompiler;
 import org.xml.sax.SAXException;
@@ -285,7 +286,16 @@ public class InvisibleXml {
             IxmlContentHandler handler = new IxmlContentHandler();
             builder.build(handler);
             Ixml ixml = handler.getIxml(new ParserOptions(options));
-            return new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
+
+            InvisibleXmlParser parser = new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
+
+            HygieneReport report = parser.getHygieneReport();
+            if (!report.isClean() && !report.getUndefinedSymbols().isEmpty() && !options.allowUndefinedSymbols) {
+                // Treat this like a failed parse.
+                parser = new InvisibleXmlParser(doc, doc.parseTime());
+            }
+
+            return parser;
         } catch (Exception ex) {
             return new InvisibleXmlParser(doc, ex, doc.parseTime());
         }

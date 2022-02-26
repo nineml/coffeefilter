@@ -67,7 +67,7 @@ public class IxmlException extends RuntimeException {
     public static IxmlException parseFailed(Exception ex) {
         return getException("P005", new String[] { ex.getMessage() }, ex);
     }
-    public static IxmlException noRuleForSymbol(String name) { return getException("E001", name); }
+    public static IxmlException repeatedAttribute(String name) { return getException("E001", name); }
     public static IxmlException invalidCharacterClass(String name) { return getException("E002", name); }
     public static IxmlException invalidXmlName(String name) { return getException("E003", name); }
     public static IxmlException duplicateRuleForSymbol(String name) { return getException("E004", name); }

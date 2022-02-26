@@ -321,8 +321,7 @@ public class Ixml extends XNonterminal {
     /**
      * Return the rule for the given name.
      * @param name The rule name.
-     * @return Return the rule.
-     * @throws IllegalArgumentException if no rule with the specified name exists.
+     * @return Return the rule, or null if no such rule exists.
      */
     public IRule getRule(String name) {
         for (XNode child : children) {
@@ -333,7 +332,7 @@ public class Ixml extends XNonterminal {
                 }
             }
         }
-        throw IxmlException.noRuleForSymbol(name);
+        return null;
     }
 
     /**

@@ -45,7 +45,7 @@ public class DataTreeTest extends CommonBuilder {
             DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("test", "spoon");
             builder.startElement("", "root", "root", attrs);
             builder.endElement("", "root", "root");
@@ -70,7 +70,7 @@ public class DataTreeTest extends CommonBuilder {
             DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("a", "A");
             attrs.addAttribute("b", "B");
             attrs.addAttribute("empty1", "      ");
@@ -113,7 +113,7 @@ public class DataTreeTest extends CommonBuilder {
             DataTreeBuilder builder = new DataTreeBuilder(options,true);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("a", "A");
             builder.startElement("", "root", "root", attrs);
 
@@ -151,7 +151,7 @@ public class DataTreeTest extends CommonBuilder {
             DataTreeBuilder builder = new DataTreeBuilder(options,false);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("a", "A");
             builder.startElement("", "b", "b", attrs);
             builder.startElement("", "a", "a", AttributeBuilder.EMPTY_ATTRIBUTES);
@@ -322,7 +322,7 @@ public class DataTreeTest extends CommonBuilder {
             DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("test", "spoon");
             builder.startElement("", "root", "root", attrs);
             builder.endElement("", "root", "root");
@@ -364,7 +364,7 @@ public class DataTreeTest extends CommonBuilder {
             DataTreeBuilder builder = new DataTreeBuilder(options);
             builder.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
+            AttributeBuilder attrs = new AttributeBuilder(options);
             attrs.addAttribute("test", "spoon");
             builder.startElement("", "root", "root", attrs);
 

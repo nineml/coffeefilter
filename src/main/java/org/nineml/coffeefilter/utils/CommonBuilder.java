@@ -7,7 +7,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
-import org.nineml.coffeegrinder.util.Messages;
 import org.nineml.coffeegrinder.util.ParserAttribute;
 
 import java.util.ArrayList;
@@ -17,8 +16,11 @@ import java.util.Stack;
  * This class transforms the output of a successful ixml parse into XML.
  */
 public class CommonBuilder {
+    public static final String logcategory = "TreeBuilder";
+    public static final String ixml_prefix = "ixml";
+    public static final String ixml_ns = "http://invisiblexml.org/NS";
+
     private final ParserOptions options;
-    private final Messages messages;
     private final Stack<PartialOutput> stack = new Stack<>();
     private final Stack<Character> context = new Stack<>();
     private final Stack<String> elementStack = new Stack<>();
@@ -29,16 +31,9 @@ public class CommonBuilder {
     private boolean prefix = false;
 
     public CommonBuilder(ParseTree tree, EarleyResult result, ParserOptions options) {
-        this(tree, result, options, null);
-    }
-
-    public CommonBuilder(ParseTree tree, EarleyResult result, ParserOptions options, Messages messages) {
         this.options = options;
-        this.messages = messages;
         if (tree == null) {
-            if (messages != null) {
-                messages.detail("No tree");
-            }
+            options.logger.trace(logcategory, "No tree");
             return;
         }
         context.push('*');
@@ -297,7 +292,7 @@ public class CommonBuilder {
                 if (name == null) {
                     handler.characters(text.toCharArray(), 0, text.length());
                 } else {
-                    AttributeBuilder attrs = new AttributeBuilder();
+                    AttributeBuilder attrs = new AttributeBuilder(options);
                     for (PartialOutput attr : attributes) {
                         // Attributes are constructed with a single child that contains the value
                         String value;
@@ -323,7 +318,8 @@ public class CommonBuilder {
                         }
 
                         if (!"".equals(state)) {
-                            attrs.addAttribute("http://invisiblexml.org/NS", "ixml:state", state);
+                            handler.startPrefixMapping(ixml_prefix, ixml_ns);
+                            attrs.addAttribute(ixml_ns, ixml_prefix + ":state", state);
                         }
                     }
 

@@ -239,8 +239,10 @@ public class InvisibleXmlDocument {
         try {
             handler.startDocument();
 
-            AttributeBuilder attrs = new AttributeBuilder();
-            attrs.addAttribute("http://invisiblexml.org/NS", "ixml:state", "failed");
+            handler.startPrefixMapping(CommonBuilder.ixml_prefix, CommonBuilder.ixml_ns);
+
+            AttributeBuilder attrs = new AttributeBuilder(options);
+            attrs.addAttribute(CommonBuilder.ixml_ns, CommonBuilder.ixml_prefix + ":state", "failed");
             handler.startElement("", "fail", "failed", attrs);
 
             if (lineNumber > 0) {
@@ -283,11 +285,11 @@ public class InvisibleXmlDocument {
 
                 for (int row = 0; row < result.getChart().size(); row++) {
                     if (!result.getChart().get(row).isEmpty()) {
-                        attrs = new AttributeBuilder();
+                        attrs = new AttributeBuilder(options);
                         attrs.addAttribute("n", ""+row);
                         handler.startElement("", "row", "row", attrs);
 
-                        attrs = new AttributeBuilder();
+                        attrs = new AttributeBuilder(options);
                         for (EarleyItem item : result.getChart().get(row)) {
                             writeString(handler,"  ");
                             handler.startElement("", "item", "item", attrs);
