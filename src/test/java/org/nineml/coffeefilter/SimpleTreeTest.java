@@ -12,7 +12,8 @@ import java.io.File;
 import static junit.framework.TestCase.fail;
 
 public class SimpleTreeTest extends CommonBuilder {
-    ParserOptions options = new ParserOptions();
+    private static ParserOptions options = new ParserOptions();
+    private static InvisibleXml invisibleXml = new InvisibleXml(options);
 
     @Test
     public void emptyTree() {
@@ -126,7 +127,7 @@ public class SimpleTreeTest extends CommonBuilder {
     @Test
     public void testExceptions() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
 
             String input = "set \"a\"\n" +
                     "set \"b\"\n" +

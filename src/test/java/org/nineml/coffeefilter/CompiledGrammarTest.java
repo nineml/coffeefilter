@@ -13,10 +13,12 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.Assert.fail;
 
 public class CompiledGrammarTest {
+    private static InvisibleXml invisibleXml = new InvisibleXml();
+
     @Test
     public void parseIxmlGrammar() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/date.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/date.ixml"));
             InvisibleXmlDocument doc = parser.parse("1 January 2022");
             Assert.assertEquals("<date><day>1</day><month>January</month><year>2022</year></date>", doc.getTree());
         } catch (Exception ex) {
@@ -27,7 +29,7 @@ public class CompiledGrammarTest {
     @Test
     public void parseCompiledGrammar() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/date.cxml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/date.cxml"));
             InvisibleXmlDocument doc = parser.parse("1 January 2022");
             Assert.assertEquals("<date><day>1</day><month>January</month><year>2022</year></date>", doc.getTree());
         } catch (Exception ex) {
@@ -38,7 +40,7 @@ public class CompiledGrammarTest {
     @Test
     public void compileHashGrammar() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("ixml/tests/correct/hash.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/correct/hash.ixml"));
             InvisibleXmlDocument doc = parser.parse("#12.");
             //doc.getEarleyResult().getForest().parse().serialize("hash.xml");
             //doc.getEarleyResult().getForest().serialize("graph.xml");
@@ -47,7 +49,7 @@ public class CompiledGrammarTest {
 
             ByteArrayInputStream bais = new ByteArrayInputStream(compiled.getBytes(StandardCharsets.UTF_8));
 
-            parser = InvisibleXml.getParser(bais, null);
+            parser = invisibleXml.getParser(bais, null);
             doc = parser.parse("#12.");
             //doc.getEarleyResult().getForest().parse().serialize("hash2.xml");
             //doc.getEarleyResult().getForest().serialize("graph2.xml");

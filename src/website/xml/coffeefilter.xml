@@ -48,7 +48,7 @@ library.</para>
         "year: ((digit, digit); -\"'\")?, digit, digit .";
 
 InvisibleXmlParser parser
-    = InvisibleXml.getParserFromIxml(input);
+    = new InvisibleXml().getParserFromIxml(input);
 
 InvisibleXmlDocument doc
      = parser.parse("27 Feb 2022");
@@ -57,7 +57,10 @@ String result = doc.getTree();
 </programlisting>
 <calloutlist>
 <callout arearefs="ex_parser">
-<para>Create a parser.
+<para>Create a parser. In early versions of this API, the
+<classname>InvisibleXml</classname> class had static methods. In version 0.6.0,
+that was changed. It must now be instantiated and the <classname>ParserOptions</classname>
+to use can be specified.
 </para>
 </callout>
 <callout arearefs="ex_doc">

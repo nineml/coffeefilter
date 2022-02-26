@@ -29,23 +29,51 @@ public class InvisibleXml {
     public static final String logcategory = "InvisibleXml";
     private static final String ixml_cxml = "/org/nineml/coffeefilter/ixml.cxml";
     private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.xml";
-    private static InvisibleXmlParser xixmlForIxml = null;
-    private static ParserOptions options = new ParserOptions();
+    private static final String UTF_8 = "UTF-8";
 
-    private InvisibleXml() {
-        // no one makes one of these
+    private final InvisibleXmlParser ixmlForIxml;
+    private final ParserOptions options;
+
+    /**
+     * Creates a new InvisibleXml object from which parsers can be constructed.
+     * <p>Attempts to load the Invisible XML parser for Invisible XML from
+     * resources. This constructor uses default options.</p>
+     * @throws IxmlException if the Invisible XML parser for Invisible XML cannot be loaded
+     */
+    public InvisibleXml() {
+        this(new ParserOptions());
     }
 
     /**
-     * Set the parser options for subsequently constructed parsers.
-     * <p>Each parser is constructed with these options. Changing them will cause the
-     * class to construct a new instance of the Invisible XML parser for Invisible XML.
-     * Each parser constructed gets its own copy of these options.</p>
-     * @param newOptions the new options
+     * Creates a new InvisibleXml object from which parsers can be constructed.
+     * <p>Attempts to load the Invisible XML parser for Invisible XML from
+     * resources.</p>
+     * @param options the parser options
+     * @throws IxmlException if the Invisible XML parser for Invisible XML cannot be loaded
      */
-    public static void setOptions(ParserOptions newOptions) {
-        options = newOptions;
-        xixmlForIxml = null;
+    public InvisibleXml(ParserOptions options) {
+        this.options = options;
+        try {
+            URL resource = getClass().getResource(ixml_cxml);
+            InputStream stream = getClass().getResourceAsStream(ixml_cxml);
+
+            if (stream == null || resource == null) {
+                options.logger.debug(logcategory, "Failed to load %s", ixml_cxml);
+                resource = getClass().getResource(ixml_ixml);
+                stream = getClass().getResourceAsStream(ixml_ixml);
+
+                if (stream == null || resource == null) {
+                    options.logger.debug(logcategory, "Failed to load %s", ixml_ixml);
+                    throw IxmlException.failedToLoadIxmlGrammar(ixml_ixml);
+                }
+
+                ixmlForIxml = getParserFromVxml(stream, resource.toString());
+            } else {
+                ixmlForIxml = getParserFromCxml(stream, resource.toString());
+            }
+        } catch (IOException ex) {
+            throw IxmlException.failedToLoadIxmlGrammar(ex);
+        }
     }
 
     /**
@@ -54,46 +82,16 @@ public class InvisibleXml {
      * parsers. Each parser gets its own copy of the options.</p>
      * @return the current options
      */
-    public static ParserOptions getOptions() {
+    public ParserOptions getOptions() {
         return options;
-    }
-
-    private InvisibleXmlParser getIxmlParser() {
-        if (xixmlForIxml == null) {
-            try {
-                URL resource = getClass().getResource(ixml_cxml);
-                InputStream stream = getClass().getResourceAsStream(ixml_cxml);
-
-                if (stream == null || resource == null) {
-                    options.logger.debug(logcategory, "Failed to load %s", ixml_cxml);
-                    resource = getClass().getResource(ixml_ixml);
-                    stream = getClass().getResourceAsStream(ixml_ixml);
-
-                    if (stream == null || resource == null) {
-                        options.logger.debug(logcategory, "Failed to load %s", ixml_ixml);
-                        throw IxmlException.failedToLoadIxmlGrammar(ixml_ixml);
-                    }
-
-                    xixmlForIxml = getParserFromVxml(stream, resource.toString());
-                } else {
-                    xixmlForIxml = getParserFromCxml(stream, resource.toString());
-                }
-            } catch (IOException ex) {
-                throw IxmlException.failedToLoadIxmlGrammar(ex);
-            }
-        }
-        return xixmlForIxml;
     }
 
     /**
      * The parser for ixml grammars.
      * @return A parser for the ixml specification grammar.
      */
-    public static InvisibleXmlParser getParser() {
-        if (xixmlForIxml == null) {
-            return new InvisibleXml().getIxmlParser();
-        }
-        return xixmlForIxml;
+    public InvisibleXmlParser getParser() {
+        return ixmlForIxml;
     }
 
     /**
@@ -106,9 +104,9 @@ public class InvisibleXml {
      * @throws IOException if attempting to open or read the source fails
      * @throws IxmlException if the source cannot be identified or is not a valid grammar
      */
-    public static InvisibleXmlParser getParser(URI source) throws IOException {
+    public InvisibleXmlParser getParser(URI source) throws IOException {
         URLConnection conn = source.toURL().openConnection();
-        return getParser(conn.getInputStream(), source.toString(), "UTF-8");
+        return getParser(conn.getInputStream(), source.toString(), UTF_8);
     }
 
     /**
@@ -120,8 +118,8 @@ public class InvisibleXml {
      * @throws IOException if attempting to open or read the source fails
      * @throws IxmlException if the source cannot be identified or is not a valid grammar
      */
-    public static InvisibleXmlParser getParser(File source) throws IOException {
-        return getParser(new FileInputStream(source), source.toURI().toString(), "UTF-8");
+    public InvisibleXmlParser getParser(File source) throws IOException {
+        return getParser(new FileInputStream(source), source.toURI().toString(), UTF_8);
     }
 
     /**
@@ -136,7 +134,7 @@ public class InvisibleXml {
      * @throws IOException if attempting to open or read the source fails
      * @throws IxmlException if the source cannot be identified or is not a valid grammar
      */
-    public static InvisibleXmlParser getParser(URI source, String encoding) throws IOException {
+    public InvisibleXmlParser getParser(URI source, String encoding) throws IOException {
         URLConnection conn = source.toURL().openConnection();
         return getParser(conn.getInputStream(), source.toString(), encoding);
     }
@@ -152,7 +150,7 @@ public class InvisibleXml {
      * @throws IOException if attempting to open or read the source fails
      * @throws IxmlException if the source cannot be identified or is not a valid grammar
      */
-    public static InvisibleXmlParser getParser(File source, String encoding) throws IOException {
+    public InvisibleXmlParser getParser(File source, String encoding) throws IOException {
         return getParser(new FileInputStream(source), source.toURI().toString(), encoding);
     }
 
@@ -166,7 +164,7 @@ public class InvisibleXml {
      * @throws IOException if attempting to read the source fails
      * @throws IxmlException if the source cannot be identified or is not a valid grammar
      */
-    public static InvisibleXmlParser getParser(InputStream stream, String systemId) throws IOException {
+    public InvisibleXmlParser getParser(InputStream stream, String systemId) throws IOException {
         return getParser(stream, systemId, "UTF-8");
     }
 
@@ -182,7 +180,7 @@ public class InvisibleXml {
      * @throws IOException if attempting to open or read the source fails
      * @throws IxmlException if the source cannot be identified or is not a valid grammar
      */
-    public static InvisibleXmlParser getParser(InputStream stream, String systemId, String encoding) throws IOException {
+    public InvisibleXmlParser getParser(InputStream stream, String systemId, String encoding) throws IOException {
         BufferedInputStream bufstream = new BufferedInputStream(stream, 8192);
         bufstream.mark(4096);
         byte[] buf = new byte[4095];
@@ -214,7 +212,7 @@ public class InvisibleXml {
      * @throws IOException if the input cannot be read
      * @throws IxmlException if the input is not an ixml grammar
      */
-    public static InvisibleXmlParser getParserFromCxml(InputStream stream, String systemId) throws IOException {
+    public InvisibleXmlParser getParserFromCxml(InputStream stream, String systemId) throws IOException {
         try {
             ParserOptions optionsCopy = new ParserOptions(options);
             GrammarCompiler compiler = new GrammarCompiler(optionsCopy);
@@ -238,7 +236,7 @@ public class InvisibleXml {
      * @throws IOException if the input cannot be read
      * @throws IxmlException if the input is not an ixml grammar
      */
-    public static InvisibleXmlParser getParserFromVxml(InputStream stream, String systemId) throws IOException {
+    public InvisibleXmlParser getParserFromVxml(InputStream stream, String systemId) throws IOException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
@@ -268,7 +266,7 @@ public class InvisibleXml {
      * @throws IOException If an error occurs reading the stream or if the character set is unsupported.
      * @throws IxmlException if the input is not an ixml grammar
      */
-    public static InvisibleXmlParser getParserFromIxml(InputStream stream, String charset) throws IOException {
+    public InvisibleXmlParser getParserFromIxml(InputStream stream, String charset) throws IOException {
         ParserOptions opts = new ParserOptions(options);
 
         InvisibleXmlParser ixmlParser = getParser();
@@ -307,10 +305,10 @@ public class InvisibleXml {
      * @return A parser for the grammar.
      * @throws IxmlException if the input is not an ixml grammar
      */
-    public static InvisibleXmlParser getParserFromIxml(String input) {
+    public InvisibleXmlParser getParserFromIxml(String input) {
         ByteArrayInputStream bais = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
         try {
-            return getParserFromIxml(bais, "UTF-8");
+            return getParserFromIxml(bais, UTF_8);
         } catch (IOException ex) {
             throw IxmlException.internalError("I/O error parsing a string in memory (!?)");
         }

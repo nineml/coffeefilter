@@ -39,6 +39,8 @@ public class TestDriver {
     public static final int STATE_PASS = 1;
     public static final int STATE_FAIL = 2;
 
+    public static ParserOptions options = new ParserOptions();
+    public static InvisibleXml invisibleXml = new InvisibleXml(options);
     public static boolean runningEE = true;
     public static Processor processor = null;
     public static boolean ranOne = false;
@@ -130,7 +132,7 @@ public class TestDriver {
     }
 
     private void loadExceptions(String exfile) throws IOException, URISyntaxException {
-        InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
+        InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
         InvisibleXmlDocument doc = parser.parse(new File(exfile));
         DataTreeBuilder builder = new DataTreeBuilder(new ParserOptions());
         doc.getTree(builder);
@@ -260,7 +262,7 @@ public class TestDriver {
             throw new RuntimeException("Test case has no in-scope grammar?: " + testCase.getAttributeValue(_name));
         }
 
-        InvisibleXmlParser parser = InvisibleXml.getParser();
+        InvisibleXmlParser parser = invisibleXml.getParser();
         tresult.grammarParseTime = parser.getParseTime();
 
         InvisibleXmlDocument doc = parseGrammar(config);
@@ -405,25 +407,25 @@ public class TestDriver {
         String ixml;
         if (t_ixml_grammar.equals(config.grammar.getNodeName())) {
             ixml = config.grammar.getStringValue();
-            parser = InvisibleXml.getParserFromIxml(ixml);
+            parser = invisibleXml.getParserFromIxml(ixml);
         } else if (t_ixml_grammar_ref.equals(config.grammar.getNodeName())) {
             URI grammarURI = config.grammar.getBaseURI().resolve(config.grammar.getAttributeValue(_href));
             if (grammarURI.toString().endsWith("/ixml/tests/reference/ixml.ixml")) {
-                parser = InvisibleXml.getParser();
+                parser = invisibleXml.getParser();
             } else {
                 ixml = textFile(grammarURI);
-                parser = InvisibleXml.getParserFromIxml(ixml);
+                parser = invisibleXml.getParserFromIxml(ixml);
             }
         } else if (t_vxml_grammar.equals(config.grammar.getNodeName())) {
             ixml = config.grammar.getStringValue();
             ByteArrayInputStream bais = new ByteArrayInputStream(ixml.getBytes(StandardCharsets.UTF_8));
-            parser = InvisibleXml.getParser(bais, null);
+            parser = invisibleXml.getParser(bais, null);
         } else if (t_vxml_grammar_ref.equals(config.grammar.getNodeName())) {
             String href = config.grammar.getAttributeValue(_href);
             if (href.endsWith("/reference/ixml.xml")) {
-                parser = InvisibleXml.getParser();
+                parser = invisibleXml.getParser();
             } else {
-                parser = InvisibleXml.getParser(config.grammar.getBaseURI().resolve(href));
+                parser = invisibleXml.getParser(config.grammar.getBaseURI().resolve(href));
             }
         } else {
             throw new RuntimeException("Unexpected grammar: " + config.grammar.getNodeName());
@@ -432,7 +434,7 @@ public class TestDriver {
     }
 
     private InvisibleXmlDocument parseGrammar(TestConfiguration config) throws IOException, URISyntaxException {
-        InvisibleXmlParser parser = InvisibleXml.getParser();
+        InvisibleXmlParser parser = invisibleXml.getParser();
         InvisibleXmlDocument doc = null;
         String ixml;
         if (t_ixml_grammar.equals(config.grammar.getNodeName())) {

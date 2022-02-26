@@ -11,10 +11,12 @@ import java.io.File;
 import static org.junit.Assert.fail;
 
 public class IxmlParserTest {
+    private static InvisibleXml invisibleXml = new InvisibleXml();
+
     @Test
     public void testParseIxml() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/main/resources/org/nineml/coffeefilter/ixml.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/main/resources/org/nineml/coffeefilter/ixml.ixml"));
             Grammar grammar = parser.getGrammar();
             Assert.assertNotNull(grammar);
             //System.err.println(parser.getCompiledParser());
@@ -27,7 +29,7 @@ public class IxmlParserTest {
     @Test
     public void testParseExceptions() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
             Grammar grammar = parser.getGrammar();
             Assert.assertNotNull(grammar);
             //System.err.println(parser.getCompiledParser());

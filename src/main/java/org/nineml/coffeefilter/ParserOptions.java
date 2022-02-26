@@ -18,7 +18,6 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
         ignoreTrailingWhitespace = copy.ignoreTrailingWhitespace;
         prettyPrint = copy.prettyPrint;
         showChart = copy.showChart;
-        verbose = copy.verbose;
         graphviz = copy.graphviz;
         suppressIxmlAmbiguous = copy.suppressIxmlAmbiguous;
         suppressIxmlPrefix = copy.suppressIxmlPrefix;
@@ -49,11 +48,6 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
      * Show the Earley chart in error results?
      */
     public boolean showChart = false;
-
-    /**
-     * Be verbose about what's going on?
-     */
-    public boolean verbose = false;
 
     /**
      * Where's the GraphViz 'dot' command?

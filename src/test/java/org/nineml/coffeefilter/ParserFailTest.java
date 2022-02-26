@@ -9,6 +9,7 @@ import java.io.File;
 import static org.junit.Assert.fail;
 
 public class ParserFailTest {
+    private static InvisibleXml invisibleXml = new InvisibleXml();
 
     @Test
     public void parseDate() {
@@ -21,7 +22,7 @@ public class ParserFailTest {
                 "       \"September\"; \"October\"; \"November\"; \"December\".\n" +
                 "year: ((digit, digit); -\"'\")?, digit, digit .";
 
-        InvisibleXmlParser parser = InvisibleXml.getParserFromIxml(input);
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
 
         input = "16 Jinglebells 1992";
         InvisibleXmlDocument doc = parser.parse(input);

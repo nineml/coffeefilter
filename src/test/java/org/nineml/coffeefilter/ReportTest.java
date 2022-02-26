@@ -8,10 +8,12 @@ import org.nineml.coffeegrinder.parser.NonterminalSymbol;
 import java.io.File;
 
 public class ReportTest {
+    private static InvisibleXml invisibleXml = new InvisibleXml();
+
     @Test
     public void testHygieneReport() {
         try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("src/test/resources/unproductive.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/unproductive.ixml"));
             Assertions.assertTrue(parser.constructed());
 
             HygieneReport report = parser.getHygieneReport();
