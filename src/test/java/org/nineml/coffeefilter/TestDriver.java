@@ -1,5 +1,8 @@
 package org.nineml.coffeefilter;
 
+import net.sf.saxon.lib.ErrorReporter;
+import net.sf.saxon.lib.Logger;
+import net.sf.saxon.lib.StandardErrorReporter;
 import net.sf.saxon.s9api.*;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.DataTree;
@@ -35,23 +38,19 @@ public class TestDriver {
     public static final QName _href = new QName("", "href");
     private static final String USAGE = "Usage: TestDriver [-s:set] [-t:test] [-e:exceptions] catalog.xml";
 
-    public static final int STATE_UNKNOWN = 0;
-    public static final int STATE_PASS = 1;
-    public static final int STATE_FAIL = 2;
-
     public static ParserOptions options = new ParserOptions();
     public static InvisibleXml invisibleXml = new InvisibleXml(options);
     public static boolean runningEE = true;
     public static Processor processor = null;
     public static boolean ranOne = false;
     public static int attempts = 0;
-    public static int passes = 0;
+    public static final TestReport report = new TestReport();
 
     public DataTree exceptions = null;
     public ArrayList<XdmNode> testsToRun = new ArrayList<>();
-    public HashMap<XdmNode,TestConfiguration> testConfigurations = new HashMap<>();
+    public HashMap<XdmNode, TestConfiguration> testConfigurations = new HashMap<>();
     public ArrayList<XdmNode> testsToSkip = new ArrayList<>();
-    public HashMap<XdmNode,TestResult> testResults = new HashMap<>();
+    public HashMap<XdmNode, TestResult> testResults = new HashMap<>();
 
     public static void main(String[] args) throws IOException, SaxonApiException, URISyntaxException {
         TestDriver driver = new TestDriver();
@@ -101,32 +100,22 @@ public class TestDriver {
         TestConfiguration config = new TestConfiguration(builder.build(cat), set_name, case_name);
         readCatalogDocument(config);
 
-        System.err.println("Tests to run: " + testsToRun.size());
-        System.err.println("Tests skipped: " + testsToSkip.size());
+        report.toRun(testsToRun.size());
+        report.toSkip(testsToSkip.size());
 
-        int pass = 0;
         int count = 0;
         for (XdmNode testCase : testsToRun) {
             XdmNode testSet = testCase.getParent();
             count++;
             String name = testCase.getAttributeValue(_name);
-            if (name == null) {
-                System.err.printf("Running test %d of %d (from %s):%n", count, testsToRun.size(), testSet.getAttributeValue(_name));
-            } else {
-                System.err.printf("Running %s, test %d of %d:%n", name, count, testsToRun.size());
-            }
+            report.start(count, name, testSet.getAttributeValue(_name));
             runTest(testConfigurations.get(testCase), testCase);
             TestResult result = testResults.get(testCase);
-            if (result != null) {
-                result.summarize();
-                if (result.state == STATE_PASS) {
-                    pass++;
-                }
-            }
+            report.result(count, result);
         }
 
-        System.err.printf("Passed %d of %d tests.%n", pass, testResults.size());
-        if (pass != testResults.size()) {
+        report.finished();
+        if (!report.passedAll()) {
             System.exit(1);
         }
     }
@@ -302,6 +291,7 @@ public class TestDriver {
             }
 
             if (grammarExpected) {
+                assert expected != null;
                 iter = expected.axisIterator(Axis.CHILD);
                 while (iter.hasNext() && expected.getNodeKind() != XdmNodeKind.ELEMENT) {
                     expected = iter.next();
@@ -310,7 +300,7 @@ public class TestDriver {
                     throw new RuntimeException("Did not find element to compare against in assertion?: " + testCase.getBaseURI());
                 }
 
-                same = deepEqual(expected, node);
+                same = deepEqual(expected, node, tresult);
                 if (same) {
                     break;
                 }
@@ -321,11 +311,11 @@ public class TestDriver {
         }
 
         if (same) {
-            tresult.state = STATE_PASS;
+            tresult.state = TestState.PASS;
         } else {
             System.err.println("Actual result:");
             System.err.println(node);
-            tresult.state = STATE_FAIL;
+            tresult.state = TestState.FAIL;
         }
     }
 
@@ -379,6 +369,7 @@ public class TestDriver {
                 throw new RuntimeException("Unexpected assertion: " + assertion);
             }
 
+            assert expected != null;
             iter = expected.axisIterator(Axis.CHILD);
             while (iter.hasNext() && expected.getNodeKind() != XdmNodeKind.ELEMENT) {
                 expected = iter.next();
@@ -387,18 +378,16 @@ public class TestDriver {
                 throw new RuntimeException("Did not find element to compare against in assertion?: " + testCase.getBaseURI());
             }
 
-            same = deepEqual(expected, node);
+            same = deepEqual(expected, node, result);
             if (same) {
                 break;
             }
         }
 
         if (same) {
-            result.state = STATE_PASS;
+            result.state = TestState.PASS;
         } else {
-            System.err.println("Actual result:");
-            System.err.println(node);
-            result.state = STATE_FAIL;
+            result.state = TestState.FAIL;
         }
     }
 
@@ -478,7 +467,15 @@ public class TestDriver {
         return builder.build(input);
     }
 
-    private boolean deepEqual(XdmValue left, XdmValue right) throws SaxonApiException {
+    private boolean deepEqual(XdmValue left, XdmValue right, TestResult result) throws SaxonApiException {
+        if (result.expected == null) {
+            result.expected = new ArrayList<>();
+            result.expected.add(left);
+            result.actual = new ArrayList<>();
+            result.actual.add(right);
+            result.deepEqualMessages = new ArrayList<>();
+        }
+
         QName a = new QName("", "a");
         QName b = new QName("", "b");
         XPathCompiler compiler = processor.newXPathCompiler();
@@ -494,8 +491,22 @@ public class TestDriver {
         XPathSelector selector = exec.load();
         selector.setVariable(a, left);
         selector.setVariable(b, right);
+
+        CaptureErrors capture = new CaptureErrors();
+        ErrorReporter saveReporter = selector.getUnderlyingXPathContext().getErrorReporter();
+        selector.getUnderlyingXPathContext().setErrorReporter(capture);
+
         XdmSequenceIterator<XdmItem> iter = selector.iterator();
         XdmAtomicValue item = (XdmAtomicValue) iter.next();
+
+        selector.getUnderlyingXPathContext().setErrorReporter(saveReporter);
+
+        if (capture.messages.isEmpty()) {
+            result.deepEqualMessages.add("");
+        } else {
+            result.deepEqualMessages.add(capture.messages.get(0));
+        }
+
         return item.getBooleanValue();
     }
 
@@ -515,7 +526,7 @@ public class TestDriver {
         if (t_test_string.equals(testString.getNodeName())) {
             input = testString.getStringValue();
         } else if (t_test_string_ref.equals(testString.getNodeName())) {
-            input =textFile(testString.getBaseURI().resolve(testString.getAttributeValue(_href)));
+            input = textFile(testString.getBaseURI().resolve(testString.getAttributeValue(_href)));
         } else {
             throw new RuntimeException("Unexpected test string: " + testString.getNodeName());
         }
@@ -524,9 +535,9 @@ public class TestDriver {
         result.documentParseTime = doc.parseTime();
 
         if (doc.getNumberOfParses() == 0) {
-            result.state = STATE_PASS;
+            result.state = TestState.PASS;
         } else {
-            result.state = STATE_FAIL;
+            result.state = TestState.FAIL;
             result.xml = doc.getTree();
         }
     }
@@ -539,12 +550,12 @@ public class TestDriver {
             InvisibleXmlParser parser = loadGrammar(config);
             result.grammarParseTime = parser.getParseTime();
             if (parser.constructed()) {
-                result.state = STATE_FAIL;
+                result.state = TestState.FAIL;
             } else {
-                result.state = STATE_PASS;
+                result.state = TestState.PASS;
             }
         } catch (IxmlException ex) {
-            result.state = STATE_PASS;
+            result.state = TestState.PASS;
         }
     }
 
@@ -684,46 +695,12 @@ public class TestDriver {
         }
     }
 
-    private static class TestResult {
-        public final XdmNode testCase;
-        public long grammarParseTime = -1;
-        public long documentParseTime = -1;
-        public int state = STATE_UNKNOWN;
-        public String xml = null;
-        public TestResult(XdmNode testCase) {
-            this.testCase = testCase;
-        }
+    public static class CaptureErrors implements ErrorReporter {
+        public final ArrayList<String> messages = new ArrayList<>();
 
-        public void summarize() {
-            StringBuilder sb = new StringBuilder();
-            switch (state) {
-                case STATE_FAIL:
-                    sb.append("FAIL: ");
-                    break;
-                case STATE_PASS:
-                    sb.append("Pass: ");
-                    break;
-                default:
-                    sb.append("\t??? Unknown: ");
-            }
-            if (grammarParseTime >= 0) {
-                sb.append("parsed grammar in ").append(time(grammarParseTime));
-                if (documentParseTime >= 0) {
-                    sb.append("; ");
-                } else {
-                    sb.append(".");
-                }
-            }
-            if (documentParseTime >= 0) {
-                sb.append("parsed document in ").append(time(documentParseTime));
-                sb.append(".");
-            }
-            System.err.println(sb);
-            System.err.println("------------------------------------------------------------");
-        }
-
-        private String time(long duration) {
-            return String.format("%5.3fs", duration / 1000.0);
+        @Override
+        public void report(XmlProcessingError xmlProcessingError) {
+            messages.add(xmlProcessingError.getMessage());
         }
     }
 }
