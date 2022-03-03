@@ -243,9 +243,7 @@ public class Ixml extends XNonterminal {
     }
 
     private void constructGrammar(ParserOptions options) {
-        ParserOptions localOptions = new ParserOptions(options);
-        localOptions.treesWithStates = true;
-        grammar = new Grammar(localOptions);
+        grammar = new Grammar(options);
 
         ArrayList<ParserAttribute> attributes = new ArrayList<>();
         for (XNode child : children) {
