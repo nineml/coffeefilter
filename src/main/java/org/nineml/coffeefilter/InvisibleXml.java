@@ -214,14 +214,13 @@ public class InvisibleXml {
      */
     public InvisibleXmlParser getParserFromCxml(InputStream stream, String systemId) throws IOException {
         try {
-            ParserOptions optionsCopy = new ParserOptions(options);
-            GrammarCompiler compiler = new GrammarCompiler(optionsCopy);
+            GrammarCompiler compiler = new GrammarCompiler(options);
             long startMillis = Calendar.getInstance().getTimeInMillis();
             Grammar grammar = compiler.parse(stream, systemId);
             Ixml ixml = new Ixml(grammar);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             InvisibleXmlParser parser = new InvisibleXmlParser(ixml, parseMillis);
-            parser.setOptions(optionsCopy);
+            parser.setOptions(options);
             return parser;
         } catch (CoffeeGrinderException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
@@ -242,14 +241,13 @@ public class InvisibleXml {
         factory.setValidating(false);
         IxmlContentHandler handler = new IxmlContentHandler();
         try {
-            ParserOptions optionsCopy = new ParserOptions(options);
             SAXParser parser = factory.newSAXParser();
             long startMillis = Calendar.getInstance().getTimeInMillis();
             parser.parse(stream, handler, systemId);
-            Ixml ixml = handler.getIxml(optionsCopy);
+            Ixml ixml = handler.getIxml(options);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             InvisibleXmlParser iparser = new InvisibleXmlParser(ixml, parseMillis);
-            iparser.setOptions(optionsCopy);
+            iparser.setOptions(options);
             return iparser;
         } catch (ParserConfigurationException|SAXException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
@@ -267,10 +265,8 @@ public class InvisibleXml {
      * @throws IxmlException if the input is not an ixml grammar
      */
     public InvisibleXmlParser getParserFromIxml(InputStream stream, String charset) throws IOException {
-        ParserOptions opts = new ParserOptions(options);
-
         InvisibleXmlParser ixmlParser = getParser();
-        ixmlParser.setOptions(opts);
+        ixmlParser.setOptions(options);
 
         InvisibleXmlDocument doc = ixmlParser.parse(stream, charset);
         if (doc.getNumberOfParses() == 0) {
@@ -278,12 +274,12 @@ public class InvisibleXml {
         }
 
         ParseTree tree = doc.getEarleyResult().getForest().parse();
-        CommonBuilder builder = new CommonBuilder(tree, doc.getEarleyResult(), opts);
+        CommonBuilder builder = new CommonBuilder(tree, doc.getEarleyResult(), options);
 
         try {
             IxmlContentHandler handler = new IxmlContentHandler();
             builder.build(handler);
-            Ixml ixml = handler.getIxml(new ParserOptions(options));
+            Ixml ixml = handler.getIxml(options);
 
             InvisibleXmlParser parser = new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
 

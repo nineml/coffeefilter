@@ -10,22 +10,6 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     }
 
     /**
-     * A copy constructor.
-     * @param copy the options to copy.
-     */
-    public ParserOptions(ParserOptions copy) {
-        super(copy);
-        ignoreTrailingWhitespace = copy.ignoreTrailingWhitespace;
-        prettyPrint = copy.prettyPrint;
-        showChart = copy.showChart;
-        graphviz = copy.graphviz;
-        suppressIxmlAmbiguous = copy.suppressIxmlAmbiguous;
-        suppressIxmlPrefix = copy.suppressIxmlPrefix;
-        allowUndefinedSymbols = copy.allowUndefinedSymbols;
-        assertValidXmlNames = copy.assertValidXmlNames;
-    }
-
-    /**
      * Ignore trailing whitespace.
      * <p>If a parse fails where it would have succeeded if trailing whitespace was
      * removed from the input, report success.</p>
