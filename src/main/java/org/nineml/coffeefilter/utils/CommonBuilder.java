@@ -37,6 +37,7 @@ public class CommonBuilder {
             return;
         }
         context.push('*');
+
         constructTree(tree, null);
         ambiguous = tree.getForest().isAmbiguous();
         prefix = result.prefixSucceeded();
@@ -81,7 +82,7 @@ public class CommonBuilder {
 
             if (top.mark == '@' && stack.peek().mark != '^') {
                 // Special case. We have to put this on an item that will generate an element
-                int pos = stack.size()-1;
+                int pos = stack.size() - 1;
                 while (stack.get(pos).mark != '^') {
                     pos--;
                     if (pos < 0) {
