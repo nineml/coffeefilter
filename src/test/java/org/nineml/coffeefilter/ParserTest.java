@@ -28,6 +28,8 @@ public class ParserTest {
         input = "16 June '67";
         InvisibleXmlDocument doc = parser.parse(input);
 
+        //doc.getEarleyResult().getForest().serialize("date.xml");
+
         Processor processor = new Processor(false);
         DocumentBuilder builder = processor.newDocumentBuilder();
 
