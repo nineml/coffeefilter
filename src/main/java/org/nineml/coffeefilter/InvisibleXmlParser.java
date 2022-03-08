@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A parser for a particular Invisible XML grammar.
@@ -51,6 +52,7 @@ public class InvisibleXmlParser {
 
     /**
      * Get the parser options.
+     *
      * @return the parser options
      */
     public ParserOptions getOptions() {
@@ -59,6 +61,7 @@ public class InvisibleXmlParser {
 
     /**
      * Set the parser options.
+     *
      * @param options the parser options
      */
     public void setOptions(ParserOptions options) {
@@ -69,6 +72,7 @@ public class InvisibleXmlParser {
      * Return the exception that caused an attempt to build a parser to fail.
      * <p>If the attempt was successful, or if failure did not raise an exception, <code>null</code>
      * will be returned.</p>
+     *
      * @return the exception, or null if no exception is available
      */
     public Exception getException() {
@@ -79,6 +83,7 @@ public class InvisibleXmlParser {
      * Get the time spent parsing the input grammar.
      * <p>This returns the number of milliseconds of "wall clock time" spent by the processor
      * constructing this parser.</p>
+     *
      * @return the time in milliseconds
      */
     public long getParseTime() {
@@ -87,6 +92,7 @@ public class InvisibleXmlParser {
 
     /**
      * Did the grammar parse succeed?
+     *
      * @return true if the parse succeeded
      */
     public boolean constructed() {
@@ -95,6 +101,7 @@ public class InvisibleXmlParser {
 
     /**
      * Get the hygiene report for this parser's grammar
+     *
      * @return the hygiene report
      */
     public HygieneReport getHygieneReport() {
@@ -106,6 +113,7 @@ public class InvisibleXmlParser {
 
     /**
      * If the attempt to parse the grammar failed, return a representation of that failure.
+     *
      * @return The failed parse, or null if the parse succeeded.
      */
     public InvisibleXmlDocument getFailedParse() {
@@ -116,9 +124,10 @@ public class InvisibleXmlParser {
      * Get a document from a URI.
      * <p>Attempts to read from the URI with <code>source.toURL().openConnection()</code>.
      * Assumes the input is in UTF-8.</p>
+     *
      * @param source the source
      * @return a document
-     * @throws IOException If the source cannot be read
+     * @throws IOException          If the source cannot be read
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(URI source) throws IOException {
@@ -128,9 +137,10 @@ public class InvisibleXmlParser {
     /**
      * Get a document from a file.
      * <p>Assumes the input is in UTF-8.</p>
+     *
      * @param source the source
      * @return a document
-     * @throws IOException If the source cannot be read
+     * @throws IOException          If the source cannot be read
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(File source) throws IOException {
@@ -141,10 +151,11 @@ public class InvisibleXmlParser {
      * Get a document from a URI with an explicit encoding.
      * <p>Attempts to read from the URI with <code>source.toURL().openConnection()</code>.
      * </p>
-     * @param source the source
+     *
+     * @param source   the source
      * @param encoding the encoding
      * @return a document
-     * @throws IOException If the stream cannot be read or if the character set is unsupported.
+     * @throws IOException          If the stream cannot be read or if the character set is unsupported.
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(URI source, String encoding) throws IOException {
@@ -155,10 +166,11 @@ public class InvisibleXmlParser {
 
     /**
      * Get a document from a file with an explicit encoding.
-     * @param source the source
+     *
+     * @param source   the source
      * @param encoding the encoding
      * @return a document
-     * @throws IOException If the stream cannot be read or if the character set is unsupported.
+     * @throws IOException          If the stream cannot be read or if the character set is unsupported.
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(File source, String encoding) throws IOException {
@@ -167,10 +179,11 @@ public class InvisibleXmlParser {
 
     /**
      * Get a document from a stream.
-     * @param stream The input.
+     *
+     * @param stream   The input.
      * @param encoding The input encoding.
      * @return A document.
-     * @throws IOException If the stream cannot be read or if the character set is unsupported.
+     * @throws IOException          If the stream cannot be read or if the character set is unsupported.
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(InputStream stream, String encoding) throws IOException {
@@ -187,6 +200,7 @@ public class InvisibleXmlParser {
 
     /**
      * Get a document from a string.
+     *
      * @param input The input.
      * @return A document.
      * @throws NullPointerException if this parser has no grammar
@@ -220,16 +234,28 @@ public class InvisibleXmlParser {
     }
 
     /**
-     * Get a string representation of the compiled grammar
+     * Get a string representation of the compiled grammar.
      * @return the XML serialization of the compiled grammar
      * @throws NullPointerException if this parser has no grammar
      */
     public String getCompiledParser() {
+        return getCompiledParser(null);
+    }
+
+    /**
+     * Get a string representation of the compiled grammar.
+     * <p>If an empty map, or null, is passed in for the properties, no extra properties
+     * are added to the compiled grammar.</p>
+     * @param properties extra properties to store in the compiled grammar
+     * @return the XML serialization of the compiled grammar
+     * @throws NullPointerException if this parser has no grammar
+     */
+    public String getCompiledParser(Map<String,String> properties) {
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
         }
         IxmlCompiler compiler = new IxmlCompiler();
-        return compiler.compile(ixml.getGrammar(options));
+        return compiler.compile(ixml.getGrammar(options), properties);
     }
 
     /**
