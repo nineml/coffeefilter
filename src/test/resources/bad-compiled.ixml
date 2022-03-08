@@ -1,0 +1,9 @@
+phone-number: (areacode, sep)?, prefix, sep, number .
+sep: dash, space .
+dash: '-'? .
+space: ' '? .
+number: digits .
+prefix: digits .
+areacode: digits .
+digits: ['0'-'9']+ .
+
