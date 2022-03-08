@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -138,85 +138,91 @@ extends java.lang.Object</pre>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getCompiledParser--">getCompiledParser</a></span>()</code>
-<div class="block">Get a string representation of the compiled grammar</div>
+<div class="block">Get a string representation of the compiled grammar.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getCompiledParser-java.util.Map-">getCompiledParser</a></span>(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;properties)</code>
+<div class="block">Get a string representation of the compiled grammar.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.Exception</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getException--">getException</a></span>()</code>
 <div class="block">Return the exception that caused an attempt to build a parser to fail.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getFailedParse--">getFailedParse</a></span>()</code>
 <div class="block">If the attempt to parse the grammar failed, return a representation of that failure.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>org.nineml.coffeegrinder.parser.Grammar</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getGrammar--">getGrammar</a></span>()</code>
 <div class="block">Get the underlying grammar</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>org.nineml.coffeegrinder.parser.HygieneReport</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getHygieneReport--">getHygieneReport</a></span>()</code>
 <div class="block">Get the hygiene report for this parser's grammar</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getOptions--">getOptions</a></span>()</code>
 <div class="block">Get the parser options.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getParseTime--">getParseTime</a></span>()</code>
 <div class="block">Get the time spent parsing the input grammar.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.File-">parse</a></span>(java.io.File&nbsp;source)</code>
 <div class="block">Get a document from a file.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.File-java.lang.String-">parse</a></span>(java.io.File&nbsp;source,
      java.lang.String&nbsp;encoding)</code>
 <div class="block">Get a document from a file with an explicit encoding.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.InputStream-java.lang.String-">parse</a></span>(java.io.InputStream&nbsp;stream,
      java.lang.String&nbsp;encoding)</code>
 <div class="block">Get a document from a stream.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.lang.String-">parse</a></span>(java.lang.String&nbsp;input)</code>
 <div class="block">Get a document from a string.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-">parse</a></span>(java.net.URI&nbsp;source)</code>
 <div class="block">Get a document from a URI.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-java.lang.String-">parse</a></span>(java.net.URI&nbsp;source,
      java.lang.String&nbsp;encoding)</code>
 <div class="block">Get a document from a URI with an explicit encoding.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#setOptions-org.nineml.coffeefilter.ParserOptions-">setOptions</a></span>(<a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</code>
 <div class="block">Set the parser options.</div>
@@ -482,8 +488,28 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getCompiledParser</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getCompiledParser()</pre>
-<div class="block">Get a string representation of the compiled grammar</div>
+<div class="block">Get a string representation of the compiled grammar.</div>
 <dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the XML serialization of the compiled grammar</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="getCompiledParser-java.util.Map-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCompiledParser</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getCompiledParser(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;properties)</pre>
+<div class="block">Get a string representation of the compiled grammar.
+ <p>If an empty map, or null, is passed in for the properties, no extra properties
+ are added to the compiled grammar.</p></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>properties</code> - extra properties to store in the compiled grammar</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the XML serialization of the compiled grammar</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
