@@ -17,22 +17,7 @@ public class IxmlCompiler {
      * @return the compiled grammar
      */
     public String compile(Grammar grammar) {
-        return compile(grammar, null);
-    }
-
-    /**
-     * Compile a grammar.
-     * @param grammar the grammar
-     * @param properties the properties to store in that grammar
-     * @return the compiled grammar
-     */
-    public String compile(Grammar grammar, Map<String,String> properties) {
         GrammarCompiler compiler = new GrammarCompiler();
-        if (properties != null) {
-            for (String name : properties.keySet()) {
-                compiler.setProperty(name, properties.get(name));
-            }
-        }
         return compiler.compile(grammar);
     }
 

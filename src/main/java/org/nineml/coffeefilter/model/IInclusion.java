@@ -47,6 +47,9 @@ public class IInclusion extends Charset {
             }
         }
         sb.append("]");
+        if (optional) {
+            sb.append("?");
+        }
         return sb.toString();
     }
 }

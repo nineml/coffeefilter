@@ -1,7 +1,7 @@
 package org.nineml.coffeefilter.model;
 
-import org.nineml.coffeegrinder.parser.TerminalSymbol;
 import org.nineml.coffeegrinder.tokens.CharacterSet;
+import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacterSet;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * An abstract class representing terminal nodes.
  */
 public abstract class XTerminal extends XNode {
-    protected TerminalSymbol symbol = null;
+    protected Token token = null;
 
     /**
      * Construct a terminal.
@@ -23,14 +23,16 @@ public abstract class XTerminal extends XNode {
     }
 
     /**
-     * Return the terminal symbol that matches this terminal.
-     * @return The symbol.
+     * Return the token that matches this terminal.
+     * <p>The default is to match the underlying character sets (strings, ranges, classes, etc.)
+     * as an inclusion.</p>
+     * @return the token.
      */
-    public TerminalSymbol getTerminal() {
-        if (symbol == null) {
-            symbol = new TerminalSymbol(TokenCharacterSet.inclusion(getCharacterSets()));
+    public Token getToken()  {
+        if (token == null) {
+            token = TokenCharacterSet.inclusion(getCharacterSets());
         }
-        return symbol;
+        return token;
     }
 
     /**

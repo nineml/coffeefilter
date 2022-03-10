@@ -239,23 +239,11 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public String getCompiledParser() {
-        return getCompiledParser(null);
-    }
-
-    /**
-     * Get a string representation of the compiled grammar.
-     * <p>If an empty map, or null, is passed in for the properties, no extra properties
-     * are added to the compiled grammar.</p>
-     * @param properties extra properties to store in the compiled grammar
-     * @return the XML serialization of the compiled grammar
-     * @throws NullPointerException if this parser has no grammar
-     */
-    public String getCompiledParser(Map<String,String> properties) {
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
         }
         IxmlCompiler compiler = new IxmlCompiler();
-        return compiler.compile(ixml.getGrammar(options), properties);
+        return compiler.compile(ixml.getGrammar(options));
     }
 
     /**

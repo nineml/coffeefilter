@@ -4,6 +4,7 @@ import net.sf.saxon.s9api.*;
 import net.sf.saxon.s9api.DocumentBuilder;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
 
@@ -140,6 +141,21 @@ public class ParserTest {
             System.err.println(ex.getMessage());
             fail();
         }
+    }
+
+    @Test
+    public void ambig3() {
+        // This test is for the bug where a terminal marked as optional was losing its optionality
+        String input = "S: 'a', sep, sep, sep, sep, sep, 'b' .\n" +
+                "sep: ['.';',']? .";
+
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+
+        input = "a.b";
+        InvisibleXmlDocument doc = parser.parse(input);
+
+        Assertions.assertEquals("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">a<sep>.</sep><sep/><sep/><sep/><sep/>b</S>",
+                doc.getTree());
     }
 
     @Test

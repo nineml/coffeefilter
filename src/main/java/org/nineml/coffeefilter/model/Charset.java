@@ -2,6 +2,7 @@ package org.nineml.coffeefilter.model;
 
 import org.nineml.coffeegrinder.parser.TerminalSymbol;
 import org.nineml.coffeegrinder.tokens.CharacterSet;
+import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacterSet;
 import org.nineml.coffeegrinder.util.ParserAttribute;
 
@@ -47,20 +48,6 @@ public abstract class Charset extends XTerminal implements TMarked {
      */
     public char getTMark() {
         return tmark;
-    }
-
-    /**
-     * Return the terminal symbol that matches this terminal.
-     * @return The symbol.
-     */
-    @Override
-    public TerminalSymbol getTerminal() {
-        if (symbol == null) {
-            ArrayList<ParserAttribute> attributes = new ArrayList<>();
-            attributes.add(new ParserAttribute("tmark", ""+getTMark()));
-            symbol = new TerminalSymbol(TokenCharacterSet.inclusion(getCharacterSets()), attributes);
-        }
-        return symbol;
     }
 
     /**
