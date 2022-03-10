@@ -1,7 +1,7 @@
 package org.nineml.coffeefilter.model;
 
-import org.nineml.coffeegrinder.parser.TerminalSymbol;
 import org.nineml.coffeegrinder.tokens.CharacterSet;
+import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacterSet;
 
 /**
@@ -31,15 +31,15 @@ public class IExclusion extends Charset {
     }
 
     /**
-     * Return the terminal symbol that matches this exclusion.
-     * @return The symbol.
+     * Return the token that matches this terminal.
+     * <p>This time the token is an exclusion of the underlying character set.</p>
+     * @return the token.
      */
-    @Override
-    public TerminalSymbol getTerminal() {
-        if (symbol == null) {
-            symbol = new TerminalSymbol(TokenCharacterSet.exclusion(getCharacterSets()));
+    public Token getToken() {
+        if (token == null) {
+            token = TokenCharacterSet.exclusion(getCharacterSets());
         }
-        return symbol;
+        return token;
     }
 
     /**
@@ -61,6 +61,9 @@ public class IExclusion extends Charset {
             }
         }
         sb.append("]");
+        if (optional) {
+            sb.append("?");
+        }
         return sb.toString();
     }
 }

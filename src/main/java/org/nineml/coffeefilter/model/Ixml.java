@@ -274,11 +274,7 @@ public class Ixml extends XNonterminal {
                             if (cat.getName().startsWith("$")) {
                                 attributes.add(ParserAttribute.PRUNING_ALLOWED);
                             }
-                            if (cat.isOptional()) {
-                                attributes.add(Symbol.OPTIONAL);
-                            }
                         }
-
 
                         NonterminalSymbol nts = grammar.getNonterminal(nt.getName(), attributes);
                         rhs.add(nts);
@@ -300,7 +296,13 @@ public class Ixml extends XNonterminal {
                         }
                     } else if (cat instanceof XTerminal) {
                         XTerminal term = (XTerminal) cat;
-                        rhs.add(term.getTerminal());
+
+                        if (term instanceof TMarked) {
+                            char mark = ((TMarked) term).getTMark();
+                            attributes.add(new ParserAttribute("tmark", ""+mark));
+                        }
+
+                        rhs.add(new TerminalSymbol(term.getToken(), attributes));
                     } else {
                         throw new RuntimeException("Unexpected category: " + cat.getName());
                     }
