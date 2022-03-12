@@ -1,0 +1,3 @@
+{[nineml xmlns "http://example.com/]}.        { <-- syntax error }
+{[rule-pragma]}S: {[nonterminal-pragma]}A.
+A: ('a'; {[nineml rewrite "a'c"]} 'b')+ .

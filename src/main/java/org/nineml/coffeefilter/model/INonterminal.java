@@ -69,6 +69,7 @@ public class INonterminal extends XNonterminal {
     @Override
     public XNode copy() {
         INonterminal newnode = new INonterminal(parent, name);
+        newnode.pragmas.addAll(pragmas);
         newnode.mark = mark;
         newnode.optional = optional;
         newnode.copyChildren(getChildren());
