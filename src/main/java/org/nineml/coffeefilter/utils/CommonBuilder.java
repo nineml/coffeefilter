@@ -333,7 +333,10 @@ public class CommonBuilder {
         }
 
         public void rewrite(String rewrite) {
-            if (!children.isEmpty()) {
+            if (children.isEmpty()) {
+                // we must be rewriting a single token
+                children.add(new PartialOutput(rewrite));
+            } else {
                 PartialOutput last = children.get(children.size() - 1);
                 if (last.name == null) {
                     last.text = rewrite;
