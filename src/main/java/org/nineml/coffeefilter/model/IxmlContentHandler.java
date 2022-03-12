@@ -8,17 +8,25 @@ import org.xml.sax.helpers.DefaultHandler;
 public class IxmlContentHandler extends DefaultHandler {
     private boolean finished = false;
     private boolean simplified = false;
+    private final ParserOptions options;
     private Ixml ixml = null;
     private XNode current = null;
+
+    /**
+     * Construct a new content handler.
+     * @param options the parser options.
+     */
+    public IxmlContentHandler(ParserOptions options) {
+        this.options = options;
+    }
 
     /**
      * Get the Ixml for this handler.
      * <p>The underlying grammar is cached. Calling this method with different parser
      * options will have no effect.</p>
-     * @param options the parser options
      * @return the Ixml grammar
      */
-    public Ixml getIxml(ParserOptions options) {
+    public Ixml getIxml() {
         if (!finished) {
             return null;
         }
@@ -58,7 +66,7 @@ public class IxmlContentHandler extends DefaultHandler {
         }
          */
         if (current == null) {
-            ixml = new Ixml();
+            ixml = new Ixml(options);
             current = ixml;
         } else {
             current = current.createChild(localName, attributes);
@@ -73,6 +81,15 @@ public class IxmlContentHandler extends DefaultHandler {
             System.err.println("Current is null for " + localName + "?");
         } else {
             current = current.getParent();
+        }
+    }
+
+    @Override
+    public void characters (char ch[], int start, int length) {
+        if (current == null) {
+            System.err.println("Current is null for characters?");
+        } else {
+            current.addCharacters(new String(ch, start, length));
         }
     }
 }

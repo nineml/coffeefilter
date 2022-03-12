@@ -242,7 +242,7 @@ public class InvisibleXmlParser {
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
         }
-        IxmlCompiler compiler = new IxmlCompiler();
+        IxmlCompiler compiler = new IxmlCompiler(options);
         return compiler.compile(ixml.getGrammar(options));
     }
 
