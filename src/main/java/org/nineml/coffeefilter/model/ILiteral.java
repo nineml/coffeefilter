@@ -54,6 +54,7 @@ public class ILiteral extends XTerminal implements TMarked {
     @Override
     public XNode copy() {
         ILiteral newnode = new ILiteral(parent, tmark, string, hex);
+        newnode.pragmas.addAll(pragmas);
         newnode.optional = optional;
         newnode.copyChildren(getChildren());
         return newnode;

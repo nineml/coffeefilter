@@ -1,6 +1,7 @@
 package org.nineml.coffeefilter.model;
 
 import org.nineml.coffeegrinder.exceptions.GrammarException;
+import org.nineml.logging.Logger;
 import org.xml.sax.Attributes;
 
 import java.io.PrintStream;
@@ -327,6 +328,7 @@ public abstract class XNode {
     protected XNode shallowCopy() {
         XNode copy = copy();
         copy.children.clear(); // FIXME: shallowCopy() method?
+        copy.pragmas.addAll(pragmas);
         copy.optional = optional;
         copy.parent = null;
         return copy;
@@ -410,27 +412,6 @@ public abstract class XNode {
         return false;
     }
 
-    /**
-     * Strip comments from this node and its descendants.
-     *
-     * <p>This method updates the children of this node and potentially its descendants.</p>
-     */
-    public void stripComments() {
-        boolean found = false;
-        ArrayList<XNode> newchildren = new ArrayList<>();
-        for (XNode child : children) {
-            if (child instanceof IComment) {
-                found = true;
-            } else {
-                child.stripComments();
-                newchildren.add(child);
-            }
-        }
-        if (found) {
-            children = newchildren;
-        }
-    }
-
     private IPragma parsePragma(IPragma pragma) {
         String data = pragma.getPragmaData();
         if (data != null) {
@@ -455,15 +436,18 @@ public abstract class XNode {
                         }
                     }
                 }
+
+                getRoot().options.logger.error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
             } else if (data.startsWith("rename ")) {
                 data = data.substring(7).trim();
                 if (!"".equals(data)) {
                     return new IPragmaRename(pragma.parent, data);
                 }
+                getRoot().options.logger.error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
             }
         }
 
-        // FIXME: I need access to the logger here
+        getRoot().options.logger.debug(logcategory, "Unrecognized pragma: %s", pragma.getPragmaData());
         return pragma;
     }
 

@@ -3,10 +3,10 @@ input: date; iso .
 
 -date: day, -" ", month, -" ", year.
 day: d, d?.
-@month: "January"; "Feb", {[nineml rewrite "tacular"]} "ruary" .
+@month: ("January"; "Feb", {[nineml rewrite "tacular"]} "ruary") .
 year: d, d, d, d.
 
--iso: year, -"-", {[nineml rename month]} nmonth, -"-", day.
+-iso: year, -"-", ({[nineml rename month]} nmonth), -"-", day.
 nmonth: d, d .
 
 -d: ["0"-"9"].
