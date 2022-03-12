@@ -20,8 +20,7 @@ public class ErrorDocumentTest {
         InvisibleXmlDocument doc = parser.parse("a!.");
         String xml = doc.getTree();
         Assertions.assertTrue(xml.contains("<unexpected>!</unexpected>"));
-        Assertions.assertTrue(!xml.contains("<end-of-input>"));
-        System.out.println(xml);
+        Assertions.assertFalse(xml.contains("<end-of-input>"));
     }
 
     @Test
@@ -32,6 +31,5 @@ public class ErrorDocumentTest {
         InvisibleXmlDocument doc = parser.parse("a.");
         String xml = doc.getTree();
         Assertions.assertTrue(xml.contains("<end-of-input>true</end-of-input>"));
-        System.out.println(xml);
     }
 }
