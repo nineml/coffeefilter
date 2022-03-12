@@ -14,6 +14,16 @@ public class IComment extends XNonterminal {
     }
 
     /**
+     * Add characters to a comment.
+     * <p>The comment will subsequently be discarded, so this method doesn't actually bother to
+     * keep the characters.</p>
+     * @param chars the characters.
+     */
+    public void addCharacters(String chars) {
+        // discard them
+    }
+
+    /**
      * Copy the current node and its descendants.
      * @return A copy of the node.
      */

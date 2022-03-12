@@ -53,4 +53,11 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
      */
     public boolean assertValidXmlNames = true;
 
+    /**
+     * Enforce strict compliance to the Invisible XML specification.
+     * <p>In pedantic mode, the processor won't allow grammar extensions, like pragmas,
+     * that are not yet officially incorporated into the specification.</p>
+     */
+    public boolean pedantic = false;
+
 }

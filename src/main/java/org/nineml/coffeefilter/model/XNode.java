@@ -1,5 +1,6 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeegrinder.exceptions.GrammarException;
 import org.xml.sax.Attributes;
 
 import java.io.PrintStream;
@@ -10,7 +11,9 @@ import java.util.List;
  * The abstract class that is the supertype of all nodes in the Ixml model.
  */
 public abstract class XNode {
+    protected static final String logcategory = "InvisibleXml";
     protected final String nodeName;
+    protected final ArrayList<IPragma> pragmas = new ArrayList<>();
     protected String name = null;
     protected XNode parent;
     protected ArrayList<XNode> children;
@@ -265,11 +268,34 @@ public abstract class XNode {
             case "whitespace":
                 child = new IWhitespace(this);
                 break;
+            case "prolog":
+                child = new IProlog(this);
+                break;
+            case "pragma":
+                String pname = attributes.getValue("name");
+                child = new IPragma(this, pname);
+                break;
+            case "pragma-data":
+                child = new IPragmaData(this);
+                break;
             default:
                 throw new IllegalArgumentException("Unexpected token name: " + name);
         }
         children.add(child);
         return child;
+    }
+
+    /**
+     * Add characters to a node.
+     * @param chars the characters.
+     * @throws IllegalArgumentException, characters aren't allowed in most places
+     */
+    public void addCharacters(String chars) {
+        throw new IllegalArgumentException("Unexpected characters in " + this);
+    }
+
+    protected void addPragma(IPragma pragma) {
+        pragmas.add(pragma);
     }
 
     /**
@@ -283,6 +309,7 @@ public abstract class XNode {
      */
     protected XNode addCopy(XNode child) {
         XNode copy = child.copy();
+        copy.pragmas.addAll(child.pragmas);
         copy.optional = child.optional;
         copy.parent = this;
         children.add(copy);
@@ -404,12 +431,67 @@ public abstract class XNode {
         }
     }
 
+    private IPragma parsePragma(IPragma pragma) {
+        String data = pragma.getPragmaData();
+        if (data != null) {
+            data = data.trim();
+            if (data.startsWith("rewrite ") || data.startsWith("xmlns ")) {
+                boolean rewrite = data.startsWith("rewrite ");
+                int pos = data.indexOf(" ");
+                data = data.substring(pos).trim();
+                if (!"".equals(data)) {
+                    String quote = data.substring(0, 1);
+                    if (("\"".equals(quote) || "'".equals(quote)) && data.endsWith(quote)) {
+                        String other = "'";
+                        if ("'".equals(quote)) {
+                            other = "\"";
+                        }
+                        data = data.substring(1, data.length() - 1);
+                        data = data.replaceAll(quote + quote, quote);
+                        if (rewrite) {
+                            return new IPragmaRewrite(pragma.parent, data);
+                        } else {
+                            return new IPragmaXmlns(pragma.parent, data);
+                        }
+                    }
+                }
+            } else if (data.startsWith("rename ")) {
+                data = data.substring(7).trim();
+                if (!"".equals(data)) {
+                    return new IPragmaRename(pragma.parent, data);
+                }
+            }
+        }
+
+        // FIXME: I need access to the logger here
+        return pragma;
+    }
+
     public void flatten() {
         ArrayList<XNode> newchildren = new ArrayList<>();
         for (XNode child : children) {
             if (!(child instanceof IComment)) {
                 child.flatten();
-                newchildren.add(child);
+
+                if (child instanceof IProlog) {
+                    // Promote all the pragmas in the prolog to the parent Ixml node
+                    for (IPragma pragma : child.pragmas) {
+                        addPragma(pragma);
+                    }
+                } else if (child instanceof IPragma) {
+                    IPragma pragma = (IPragma) child;
+                    if ("nineml".equals(pragma.name)) {
+                        addPragma(parsePragma((IPragma) child));
+                    }
+                } else if (child instanceof IPragmaData) {
+                    if (this instanceof IPragma) {
+                        ((IPragma) this).setPragmaData(((IPragmaData) child).getPragmaData());
+                    } else {
+                        throw new RuntimeException("Pragma data not inside a pragma?");
+                    }
+                } else {
+                    newchildren.add(child);
+                }
             }
         }
         children.clear();

@@ -25,6 +25,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
     private String indent = "";
     private int state = FIRST;
     private ByteArrayOutputStream baos = null;
+    private boolean documentElement = true;
 
     private final String iunit = "   ";
     private final PrintStream stream;
@@ -39,6 +40,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
         super(options);
         baos = new ByteArrayOutputStream();
         stream = new PrintStream(baos);
+        documentElement = true;
     }
 
     /**
@@ -95,6 +97,13 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
         }
 
         stream.printf("<%s", localName);
+
+        if (documentElement && !"".equals(uri)) {
+            uri = uri.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
+            uri = uri.replaceAll("\"", "&quot;");
+            stream.printf(" xmlns=\"%s\"", uri);
+        }
+
         for (int pos = 0; pos < attributes.getLength(); pos++) {
             stream.print(" ");
 
@@ -113,6 +122,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
             stream.printf("%s=\"%s\"", qname, value);
         }
 
+        documentElement = false;
         state = IN_TAG;
     }
 

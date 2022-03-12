@@ -11,6 +11,11 @@ public class TestReport {
     private final ArrayList<TestResult> results = new ArrayList<>();
     private final HashSet<Integer> timers = new HashSet<>();
     private final HashMap<Integer, String> messages = new HashMap<>();
+    private final ParserOptions options;
+
+    public TestReport(ParserOptions options) {
+        this.options = options;
+    }
 
     public void toRun(int toRun) {
         testsToRun = toRun;
@@ -96,6 +101,10 @@ public class TestReport {
     }
 
     public void finished() {
-        System.err.printf("Passed %d of %d tests.%n", passed, testsToRun);
+        if (options.pedantic) {
+            System.err.printf("Passed %d of %d tests (pedantically).%n", passed, testsToRun);
+        } else {
+            System.err.printf("Passed %d of %d tests.%n", passed, testsToRun);
+        }
     }
 }

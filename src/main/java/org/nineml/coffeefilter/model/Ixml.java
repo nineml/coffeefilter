@@ -3,7 +3,11 @@ package org.nineml.coffeefilter.model;
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.utils.TokenUtils;
-import org.nineml.coffeegrinder.parser.*;
+import org.nineml.coffeegrinder.parser.Grammar;
+import org.nineml.coffeegrinder.parser.NonterminalSymbol;
+import org.nineml.coffeegrinder.parser.Rule;
+import org.nineml.coffeegrinder.parser.Symbol;
+import org.nineml.coffeegrinder.parser.TerminalSymbol;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.ParserAttribute;
 
@@ -21,27 +25,29 @@ public class Ixml extends XNonterminal {
     private boolean changed = true;
     private ArrayList<IRule> newRules = null;
     private final ArrayList<Rule> grammarRules = new ArrayList<>();
-    private String startRule = null;
+    private final String startRule = "$$";
+    protected final ParserOptions options;
     private Grammar grammar = null;
     protected boolean emptyProduction = false;
 
     /**
      * Construct an Ixml.
      */
-    protected Ixml() {
+    protected Ixml(ParserOptions options) {
         super(null, "ixml", "$$_ixml");
+        this.options = options;
     }
 
     /**
      * Construct Ixml from a grammar.
      * @param grammar the grammar.
      */
-    public Ixml(Grammar grammar) {
+    public Ixml(ParserOptions options, Grammar grammar) {
         super(null, "ixml", "$$_ixml");
         this.grammar = grammar;
         synCount += grammar.getRules().size();
         grammarRules.addAll(grammar.getRules());
-        startRule = "$$";
+        this.options = options;
     }
 
     /**
@@ -81,7 +87,7 @@ public class Ixml extends XNonterminal {
      */
     @Override
     public XNode copy() {
-        Ixml newnode = new Ixml();
+        Ixml newnode = new Ixml(options);
         newnode.optional = optional;
         newnode.copyChildren(getChildren());
         return newnode;
@@ -126,9 +132,6 @@ public class Ixml extends XNonterminal {
 
         ArrayList<XNode> newchildren = new ArrayList<>();
         for (IRule rule : ruleChildren()) {
-            if (startRule == null) {
-                startRule = rule.getName();
-            }
             if (!rule.children.isEmpty() && rule.children.get(0) instanceof IAlt) {
                 for (XNode alt : rule.children) {
                     if (!(alt instanceof IAlt)) {
@@ -161,7 +164,7 @@ public class Ixml extends XNonterminal {
         // Make sure we have a top-level rule that will have only one rhs
         // even if the user's seed rule winds up having alternatives
         ArrayList<XNode> newchildren = new ArrayList<>();
-        IRule startSymbol = new IRule(this, "$$", '-');
+        IRule startSymbol = new IRule(this, startRule, '-');
 
         IRule firstRule = null;
         int pos = 0;
@@ -256,6 +259,16 @@ public class Ixml extends XNonterminal {
                 if (rule.getName().startsWith("$")) {
                     attributes.add(ParserAttribute.PRUNING_ALLOWED);
                 }
+                if (startRule.equals(rule.getName())) {
+                    for (IPragma pragma : pragmas) {
+                        if (pragma instanceof IPragmaXmlns) {
+                            attributes.add(new ParserAttribute("ns", pragma.getPragmaData()));
+                        } else {
+                            options.logger.debug(logcategory, "Unknown pragma, or does not apply in the prologue: %s", pragma);
+                        }
+                    }
+                }
+
                 NonterminalSymbol ruleSymbol = grammar.getNonterminal(rule.getName(), attributes);
 
                 ArrayList<Symbol> rhs = new ArrayList<>();
@@ -270,7 +283,13 @@ public class Ixml extends XNonterminal {
                         XNonterminal nt = (XNonterminal) cat;
                         if (cat instanceof INonterminal) {
                             attributes.add(new ParserAttribute("mark", ""+((INonterminal) cat).getMark()));
-                            attributes.add(new ParserAttribute("name", cat.getName()));
+                            for (IPragma pragma : cat.pragmas) {
+                                if (pragma instanceof IPragmaRename) {
+                                    attributes.add(new ParserAttribute("name", pragma.getPragmaData()));
+                                } else {
+                                    options.logger.debug(logcategory, "Unknown pragma, or does not apply to a nonterminal: %s", pragma);
+                                }
+                            }
                             if (cat.getName().startsWith("$")) {
                                 attributes.add(ParserAttribute.PRUNING_ALLOWED);
                             }
@@ -282,6 +301,21 @@ public class Ixml extends XNonterminal {
                         ILiteral lit = (ILiteral) cat;
 
                         attributes.add(new ParserAttribute("tmark", ""+lit.getTMark()));
+                        ArrayList<ParserAttribute> accumulator = attributes;
+                        IPragmaRewrite rewrite = null;
+                        for (IPragma pragma : cat.pragmas) {
+                            if (pragma instanceof IPragmaRewrite) {
+                                rewrite = (IPragmaRewrite) pragma;
+                            } else {
+                                options.logger.debug(logcategory, "Unknown pragma, or does not apply to a literal: %s", pragma);
+                            }
+                        }
+
+                        if (rewrite != null) {
+                            accumulator = new ArrayList<>(attributes);
+                            accumulator.add(new ParserAttribute("acc", "true"));
+                            attributes.add(new ParserAttribute("rewrite", rewrite.getPragmaData()));
+                        }
 
                         if (lit.getString() == null) {
                             int cp = TokenUtils.convertHex(lit.getHex());
@@ -291,7 +325,11 @@ public class Ixml extends XNonterminal {
                         } else {
                             String str = lit.getString();
                             for (int pos = 0; pos < str.length(); pos++) {
-                                rhs.add(new TerminalSymbol(TokenCharacter.get(str.charAt(pos)), attributes));
+                                if (pos+1 == str.length()) {
+                                    rhs.add(new TerminalSymbol(TokenCharacter.get(str.charAt(pos)), attributes));
+                                } else {
+                                    rhs.add(new TerminalSymbol(TokenCharacter.get(str.charAt(pos)), accumulator));
+                                }
                             }
                         }
                     } else if (cat instanceof XTerminal) {
