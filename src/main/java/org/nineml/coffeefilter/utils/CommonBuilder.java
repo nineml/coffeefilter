@@ -2,6 +2,7 @@ package org.nineml.coffeefilter.utils;
 
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.model.IPragma;
 import org.nineml.coffeegrinder.parser.*;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -10,6 +11,8 @@ import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.ParserAttribute;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -29,6 +32,7 @@ public class CommonBuilder {
     private boolean documentElement = false;
     private boolean ambiguous = false;
     private boolean prefix = false;
+    private String xmlns = "";
 
     public CommonBuilder(ParseTree tree, EarleyResult result, ParserOptions options) {
         this.options = options;
@@ -37,6 +41,10 @@ public class CommonBuilder {
             return;
         }
         context.push('*');
+
+        if (tree.getSymbol().hasAttribute("ns")) {
+            xmlns = tree.getSymbol().getAttribute("ns").getValue();
+        }
 
         constructTree(tree, null);
         ambiguous = tree.getForest().isAmbiguous();
@@ -97,17 +105,23 @@ public class CommonBuilder {
         }
     }
 
-    private void terminal(ParseTree tree, char mark, char ch) {
+    private void terminal(ParseTree tree, char mark, char ch, boolean acc, String rewrite) {
         //System.err.println("TT2: " + tree);
         if (mark == '-') {
             return;
         }
 
-        PartialOutput item = new PartialOutput(ch);
-        if (stack.isEmpty()) {
-            stack.push(item);
+        if (rewrite != null) {
+            if (!stack.isEmpty()) {
+                stack.peek().rewrite(rewrite);
+            }
         } else {
-            stack.peek().add(item);
+            PartialOutput item = new PartialOutput(ch, acc);
+            if (stack.isEmpty()) {
+                stack.push(item);
+            } else {
+                stack.peek().add(item);
+            }
         }
     }
 
@@ -177,8 +191,11 @@ public class CommonBuilder {
                 throw new RuntimeException("Unexpected token in tree (not a TokenCharacter): " + token);
             }
 
+            String acc = getAttribute(symbol, xsymbol, "acc");
+            String rewrite = getAttribute(symbol, xsymbol, "rewrite");
+
             char ch = ((TokenCharacter) token).getValue();
-            terminal(tree, mark, ch);
+            terminal(tree, mark, ch, acc != null, rewrite);
         } else {
             if (child1 != null) {
                 pos = getSymbol(child1.getSymbol(), state, state.getPosition());
@@ -201,7 +218,7 @@ public class CommonBuilder {
                 }
             }
 
-            localName = symbol.getAttribute("name").getValue();
+            localName = getAttribute(symbol, xsymbol, "name");
             startNonterminal(tree, mark, localName);
 
             if (child0 != null) {
@@ -215,6 +232,16 @@ public class CommonBuilder {
             endNonterminal(tree, localName);
         }
     }
+
+    private String getAttribute(Symbol symbol, Symbol xsymbol, String name) {
+        if (xsymbol != null && xsymbol.hasAttribute(name)) {
+            return xsymbol.getAttribute(name).getValue();
+        }
+        if (symbol != null && symbol.hasAttribute(name)) {
+            return symbol.getAttribute(name).getValue();
+        }
+        return null;
+    };
 
     private int getSymbol(Symbol seek, State state, int maxPos) {
         // Because some nonterminals can go to epsilon, we can't always find them
@@ -252,6 +279,7 @@ public class CommonBuilder {
         private final char mark;
         private final String name;
         private String text;
+        private boolean accumulator = false;
         private final ArrayList<PartialOutput> attributes = new ArrayList<>();
         private final ArrayList<PartialOutput> children = new ArrayList<>();
 
@@ -261,14 +289,30 @@ public class CommonBuilder {
             text = null;
         }
 
-        public PartialOutput(char ch) {
+        public PartialOutput(char ch, boolean acc) {
             mark ='?';
             name = null;
             text = "" + ch;
+            accumulator = acc;
+        }
+
+        public PartialOutput(String text) {
+            mark ='?';
+            name = null;
+            this.text = text;
         }
 
         public void add(PartialOutput item) {
             if (item.mark == '@') {
+                // Collapse all the text item children into a single string
+                StringBuilder sb = new StringBuilder();
+                for (PartialOutput child : item.children) {
+                    if (child.name == null) {
+                        sb.append(child.text);
+                    }
+                }
+                item.children.clear();
+                item.children.add(new PartialOutput(sb.toString()));
                 attributes.add(item);
                 return;
             }
@@ -278,13 +322,22 @@ public class CommonBuilder {
             }
             if (item.name == null) {
                 PartialOutput last = children.get(children.size() - 1);
-                if (last.name == null) {
+                if (last.name == null && last.accumulator == item.accumulator) {
                     last.text += item.text;
                 } else {
                     children.add(item);
                 }
             } else {
                 children.add(item);
+            }
+        }
+
+        public void rewrite(String rewrite) {
+            if (!children.isEmpty()) {
+                PartialOutput last = children.get(children.size() - 1);
+                if (last.name == null) {
+                    last.text = rewrite;
+                }
             }
         }
 
@@ -318,13 +371,17 @@ public class CommonBuilder {
                             state += sep + "prefix";
                         }
 
+                        if (!"".equals(xmlns)) {
+                            handler.startPrefixMapping("", xmlns);
+                        }
+
                         if (!"".equals(state)) {
                             handler.startPrefixMapping(ixml_prefix, ixml_ns);
                             attrs.addAttribute(ixml_ns, ixml_prefix + ":state", state);
                         }
                     }
 
-                    handler.startElement("", name, name, attrs);
+                    handler.startElement(xmlns, name, name, attrs);
                 }
             }
 

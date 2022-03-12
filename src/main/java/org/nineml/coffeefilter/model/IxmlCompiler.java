@@ -1,5 +1,6 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeegrinder.parser.Grammar;
 import org.nineml.coffeegrinder.util.GrammarCompiler;
 
@@ -11,6 +12,12 @@ import java.util.Map;
  * An API to compiled grammars.
  */
 public class IxmlCompiler {
+    private final ParserOptions options;
+
+    public IxmlCompiler(ParserOptions options) {
+        this.options = options;
+    }
+
     /**
      * Compile a grammar.
      * @param grammar the grammar
@@ -29,7 +36,7 @@ public class IxmlCompiler {
      */
     public Ixml parse(File compiled) throws IOException {
         GrammarCompiler compiler = new GrammarCompiler();
-        return new Ixml(compiler.parse(compiled));
+        return new Ixml(options, compiler.parse(compiled));
     }
 
     /**
@@ -39,6 +46,6 @@ public class IxmlCompiler {
      */
     public Ixml parse(String input) {
         GrammarCompiler compiler = new GrammarCompiler();
-        return new Ixml(compiler.parse(input));
+        return new Ixml(options, compiler.parse(input));
     }
 }

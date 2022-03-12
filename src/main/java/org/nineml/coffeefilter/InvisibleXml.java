@@ -28,7 +28,9 @@ import java.util.Calendar;
 public class InvisibleXml {
     public static final String logcategory = "InvisibleXml";
     private static final String ixml_cxml = "/org/nineml/coffeefilter/ixml.cxml";
-    private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.xml";
+    private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.ixml";
+    private static final String pragmas_cxml = "/org/nineml/coffeefilter/pragmas.cxml";
+    private static final String pragmas_ixml = "/org/nineml/coffeefilter/pragmas.ixml";
     private static final String UTF_8 = "UTF-8";
 
     private final InvisibleXmlParser ixmlForIxml;
@@ -52,19 +54,26 @@ public class InvisibleXml {
      * @throws IxmlException if the Invisible XML parser for Invisible XML cannot be loaded
      */
     public InvisibleXml(ParserOptions options) {
+        String cxml = ixml_cxml;
+        String ixml = ixml_ixml;
+        if (!options.pedantic) {
+            cxml = pragmas_cxml;
+            ixml = pragmas_ixml;
+        }
+
         this.options = options;
         try {
-            URL resource = getClass().getResource(ixml_cxml);
-            InputStream stream = getClass().getResourceAsStream(ixml_cxml);
+            URL resource = getClass().getResource(cxml);
+            InputStream stream = getClass().getResourceAsStream(cxml);
 
             if (stream == null || resource == null) {
-                options.logger.debug(logcategory, "Failed to load %s", ixml_cxml);
-                resource = getClass().getResource(ixml_ixml);
-                stream = getClass().getResourceAsStream(ixml_ixml);
+                options.logger.debug(logcategory, "Failed to load %s", cxml);
+                resource = getClass().getResource(ixml);
+                stream = getClass().getResourceAsStream(ixml);
 
                 if (stream == null || resource == null) {
-                    options.logger.debug(logcategory, "Failed to load %s", ixml_ixml);
-                    throw IxmlException.failedToLoadIxmlGrammar(ixml_ixml);
+                    options.logger.debug(logcategory, "Failed to load %s", ixml);
+                    throw IxmlException.failedToLoadIxmlGrammar(ixml);
                 }
 
                 ixmlForIxml = getParserFromVxml(stream, resource.toString());
@@ -217,7 +226,7 @@ public class InvisibleXml {
             GrammarCompiler compiler = new GrammarCompiler(options);
             long startMillis = Calendar.getInstance().getTimeInMillis();
             Grammar grammar = compiler.parse(stream, systemId);
-            Ixml ixml = new Ixml(grammar);
+            Ixml ixml = new Ixml(options, grammar);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             InvisibleXmlParser parser = new InvisibleXmlParser(ixml, parseMillis);
             parser.setOptions(options);
@@ -239,12 +248,12 @@ public class InvisibleXml {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
-        IxmlContentHandler handler = new IxmlContentHandler();
+        IxmlContentHandler handler = new IxmlContentHandler(options);
         try {
             SAXParser parser = factory.newSAXParser();
             long startMillis = Calendar.getInstance().getTimeInMillis();
             parser.parse(stream, handler, systemId);
-            Ixml ixml = handler.getIxml(options);
+            Ixml ixml = handler.getIxml();
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             InvisibleXmlParser iparser = new InvisibleXmlParser(ixml, parseMillis);
             iparser.setOptions(options);
@@ -277,9 +286,9 @@ public class InvisibleXml {
         CommonBuilder builder = new CommonBuilder(tree, doc.getEarleyResult(), options);
 
         try {
-            IxmlContentHandler handler = new IxmlContentHandler();
+            IxmlContentHandler handler = new IxmlContentHandler(options);
             builder.build(handler);
-            Ixml ixml = handler.getIxml(options);
+            Ixml ixml = handler.getIxml();
 
             InvisibleXmlParser parser = new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
 

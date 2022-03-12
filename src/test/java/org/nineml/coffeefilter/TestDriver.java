@@ -44,7 +44,7 @@ public class TestDriver {
     public static Processor processor = null;
     public static boolean ranOne = false;
     public static int attempts = 0;
-    public static final TestReport report = new TestReport();
+    public static final TestReport report = new TestReport(options);
 
     public DataTree exceptions = null;
     public ArrayList<XdmNode> testsToRun = new ArrayList<>();
@@ -72,6 +72,8 @@ public class TestDriver {
                 set_name = arg.substring(3);
             } else if (arg.startsWith("-e:")) {
                 exfile = arg.substring(3);
+            } else if ("--pedantic".equals(arg)) {
+                options.pedantic = true;
             } else {
                 catalog = arg;
             }
@@ -121,7 +123,8 @@ public class TestDriver {
     }
 
     private void loadExceptions(String exfile) throws IOException, URISyntaxException {
-        InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));
+        InputStream stream = getClass().getResourceAsStream("/exceptions.ixml");
+        InvisibleXmlParser parser = invisibleXml.getParser(stream, "/tmp/irrelevant.xml");
         InvisibleXmlDocument doc = parser.parse(new File(exfile));
         DataTreeBuilder builder = new DataTreeBuilder(new ParserOptions());
         doc.getTree(builder);
