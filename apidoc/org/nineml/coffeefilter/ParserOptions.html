@@ -153,23 +153,29 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#pedantic">pedantic</a></span></code>
+<div class="block">Enforce strict compliance to the Invisible XML specification.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#prettyPrint">prettyPrint</a></span></code>
 <div class="block">Attempt to pretty print the result?</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#showChart">showChart</a></span></code>
 <div class="block">Show the Earley chart in error results?</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#suppressIxmlAmbiguous">suppressIxmlAmbiguous</a></span></code>
 <div class="block">Suppress the ixml:state=ambiguous annotation on the root element.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#suppressIxmlPrefix">suppressIxmlPrefix</a></span></code>
 <div class="block">Suppress the ixml:state=prefix annotation on the root element.</div>
@@ -308,11 +314,23 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <a name="assertValidXmlNames">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>assertValidXmlNames</h4>
 <pre>public&nbsp;boolean assertValidXmlNames</pre>
 <div class="block">Raise an exception if invalid XML names are used in nonterminals that are serialized.</div>
+</li>
+</ul>
+<a name="pedantic">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>pedantic</h4>
+<pre>public&nbsp;boolean pedantic</pre>
+<div class="block">Enforce strict compliance to the Invisible XML specification.
+ <p>In pedantic mode, the processor won't allow grammar extensions, like pragmas,
+ that are not yet officially incorporated into the specification.</p></div>
 </li>
 </ul>
 </li>
