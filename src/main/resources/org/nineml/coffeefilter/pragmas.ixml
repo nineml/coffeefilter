@@ -31,7 +31,7 @@
 
   nonterminal: annotation, name, s.
   -annotation: (pragma, sp)?, (mark, sp)?.
-          -sp: (s; pragma)*.
+          -sp: (whitespace; comment; pragma)*.
 
     -terminal: literal; 
                charset.
@@ -43,8 +43,7 @@
    -namestart: ["_"; L].
 -namefollower: namestart; ["-.·‿⁀"; Nd; Mn].
 
-
- -tannotation:  (pragma, sp)?, (tmark, sp)?.
+ -tannotation: (pragma, sp)?, (tmark, sp)?.
 
        @tmark: ["^-"].
       @string: -'"', dchar+, -'"', s;
@@ -82,8 +81,8 @@
        @pname: -QName; -UQName. 
 }
        @pmark: ["@^?"].
-  pragma-data: (-pragma-chars; -bracket-pair)*.
--pragma-chars: ~["{}"]+.
+  pragma-data: (-pragma-char; -bracket-pair)*.
+ -pragma-char: ~["{}"].
 -bracket-pair: '{', -pragma-data, '}'.
 
 {
