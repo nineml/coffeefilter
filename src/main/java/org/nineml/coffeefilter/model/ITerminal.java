@@ -20,6 +20,7 @@ public class ITerminal extends XNonterminal {
     @Override
     public XNode copy() {
         ITerminal newnode = new ITerminal(parent);
+        newnode.pragmas.addAll(pragmas);
         newnode.optional = optional;
         newnode.copyChildren(getChildren());
         return newnode;

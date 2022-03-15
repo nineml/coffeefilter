@@ -121,7 +121,7 @@ public class Ixml extends XNonterminal {
         for (XNode node : children) {
             if (node instanceof IRule) {
                 IRule rule = (IRule) node;
-                if (definedSymbols.contains(rule.getName())) {
+                if (definedSymbols.contains(rule.getName()) && !options.getAllowMultipleDefinitions()) {
                     throw IxmlException.duplicateRuleForSymbol(rule.getName());
                 }
                 definedSymbols.add(rule.getName());
@@ -264,7 +264,15 @@ public class Ixml extends XNonterminal {
                         if (pragma instanceof IPragmaXmlns) {
                             attributes.add(new ParserAttribute("ns", pragma.getPragmaData()));
                         } else {
-                            options.logger.debug(logcategory, "Unknown pragma, or does not apply in the prologue: %s", pragma);
+                            options.getLogger().debug(logcategory, "Unknown pragma, or does not apply in the prologue: %s", pragma);
+                        }
+                    }
+                } else {
+                    for (IPragma pragma : rule.pragmas) {
+                        if (pragma instanceof IPragmaRegex) {
+                            attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
+                        } else {
+                            options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to rule: %s", pragma);
                         }
                     }
                 }
@@ -286,8 +294,10 @@ public class Ixml extends XNonterminal {
                             for (IPragma pragma : cat.pragmas) {
                                 if (pragma instanceof IPragmaRename) {
                                     attributes.add(new ParserAttribute("name", pragma.getPragmaData()));
+                                } else if (pragma instanceof IPragmaDiscardEmpty) {
+                                    attributes.add(new ParserAttribute("discard", pragma.getPragmaData()));
                                 } else {
-                                    options.logger.debug(logcategory, "Unknown pragma, or does not apply to a nonterminal: %s", pragma);
+                                    options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a nonterminal: %s", pragma);
                                 }
                             }
                             if (cat.getName().startsWith("$")) {
@@ -307,7 +317,7 @@ public class Ixml extends XNonterminal {
                             if (pragma instanceof IPragmaRewrite) {
                                 rewrite = (IPragmaRewrite) pragma;
                             } else {
-                                options.logger.debug(logcategory, "Unknown pragma, or does not apply to a literal: %s", pragma);
+                                options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a literal: %s", pragma);
                             }
                         }
 
