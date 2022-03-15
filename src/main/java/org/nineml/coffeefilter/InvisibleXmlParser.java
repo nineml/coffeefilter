@@ -217,12 +217,12 @@ public class InvisibleXmlParser {
         EarleyResult result = parser.parse(iterator);
 
         InvisibleXmlDocument doc;
-        if (!result.succeeded() && result.prefixSucceeded() && options.ignoreTrailingWhitespace) {
+        if (!result.succeeded() && result.prefixSucceeded() && options.getIgnoreTrailingWhitespace()) {
             boolean ok = true;
             Iterator<Token> remaining = result.getContinuingIterator();
             while (remaining.hasNext()) {
                 Token token = remaining.next();
-                ok = ok && (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getValue());
+                ok = ok && (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCharacter());
             }
             doc = new InvisibleXmlDocument(result, options, ok);
         } else {

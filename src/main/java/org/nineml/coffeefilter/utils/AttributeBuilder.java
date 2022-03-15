@@ -37,7 +37,7 @@ public final class AttributeBuilder implements Attributes {
             /* Allow them if they're the same value? Not per the current spec...
             int pos = getIndex(ns, name);
             if (value.equals(getValue(pos))) {
-                options.logger.debug(logcategory, "Duplicated attribute: %s", name);
+                options.getLogger().debug(logcategory, "Duplicated attribute: %s", name);
             } else {
                 throw IxmlException.repeatedAttribute(name);
             }

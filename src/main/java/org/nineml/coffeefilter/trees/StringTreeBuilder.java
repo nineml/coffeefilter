@@ -79,7 +79,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
             state = START_TAG;
         }
 
-        if (options.prettyPrint) {
+        if (options.getPrettyPrint()) {
             switch (state) {
                 case FIRST:
                     break;
@@ -92,7 +92,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
             indent += iunit;
         }
 
-        if (options.assertValidXmlNames && !TokenUtils.xmlName(localName)) {
+        if (options.getAssertValidXmlNames() && !TokenUtils.xmlName(localName)) {
             throw IxmlException.invalidXmlName(localName);
         }
 
@@ -111,7 +111,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
             if (qname.contains(":")) {
                 stream.printf("xmlns:%s=\"%s\" ", qname.substring(0, qname.indexOf(":")), attributes.getURI(pos));
             } else {
-                if (options.assertValidXmlNames && !TokenUtils.xmlName(qname)) {
+                if (options.getAssertValidXmlNames() && !TokenUtils.xmlName(qname)) {
                     throw IxmlException.invalidXmlName(qname);
                 }
             }
@@ -134,7 +134,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
             stream.print("/>");
         }
 
-        if (options.prettyPrint) {
+        if (options.getPrettyPrint()) {
             if (indent.length() >= iunit.length()) {
                 indent = indent.substring(iunit.length());
             }

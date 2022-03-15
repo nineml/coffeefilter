@@ -107,7 +107,7 @@ public class SimpleTreeBuilder extends AbstractTreeBuilder {
             text = null;
         }
 
-        if (options.assertValidXmlNames && !TokenUtils.xmlName(localName)) {
+        if (options.getAssertValidXmlNames() && !TokenUtils.xmlName(localName)) {
             throw IxmlException.invalidXmlName(localName);
         }
 
@@ -115,7 +115,7 @@ public class SimpleTreeBuilder extends AbstractTreeBuilder {
         for (int pos = 0; pos < attributes.getLength(); pos++) {
             String qname = attributes.getQName(pos);
 
-            if (!qname.contains(":") && options.assertValidXmlNames && !TokenUtils.xmlName(qname)) {
+            if (!qname.contains(":") && options.getAssertValidXmlNames() && !TokenUtils.xmlName(qname)) {
                 throw IxmlException.invalidXmlName(qname);
             }
 

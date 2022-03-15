@@ -284,7 +284,7 @@ public class InvisibleXmlDocument {
                 atomicValue(handler, "permitted", sb.toString());
             }
 
-            if (options.showChart) {
+            if (options.getShowChart()) {
                 handler.startElement("", "chart", "chart", AttributeBuilder.EMPTY_ATTRIBUTES);
 
                 for (int row = 0; row < result.getChart().size(); row++) {

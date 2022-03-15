@@ -28,9 +28,9 @@ import java.util.Calendar;
 public class InvisibleXml {
     public static final String logcategory = "InvisibleXml";
     private static final String ixml_cxml = "/org/nineml/coffeefilter/ixml.cxml";
-    private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.ixml";
+    private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.xml";
     private static final String pragmas_cxml = "/org/nineml/coffeefilter/pragmas.cxml";
-    private static final String pragmas_ixml = "/org/nineml/coffeefilter/pragmas.ixml";
+    private static final String pragmas_ixml = "/org/nineml/coffeefilter/pragmas.xml";
     private static final String UTF_8 = "UTF-8";
 
     private final InvisibleXmlParser ixmlForIxml;
@@ -56,7 +56,7 @@ public class InvisibleXml {
     public InvisibleXml(ParserOptions options) {
         String cxml = ixml_cxml;
         String ixml = ixml_ixml;
-        if (!options.pedantic) {
+        if (!options.getPedantic()) {
             cxml = pragmas_cxml;
             ixml = pragmas_ixml;
         }
@@ -67,12 +67,12 @@ public class InvisibleXml {
             InputStream stream = getClass().getResourceAsStream(cxml);
 
             if (stream == null || resource == null) {
-                options.logger.debug(logcategory, "Failed to load %s", cxml);
+                options.getLogger().debug(logcategory, "Failed to load %s", cxml);
                 resource = getClass().getResource(ixml);
                 stream = getClass().getResourceAsStream(ixml);
 
                 if (stream == null || resource == null) {
-                    options.logger.debug(logcategory, "Failed to load %s", ixml);
+                    options.getLogger().debug(logcategory, "Failed to load %s", ixml);
                     throw IxmlException.failedToLoadIxmlGrammar(ixml);
                 }
 
@@ -199,16 +199,16 @@ public class InvisibleXml {
         int sourceType = GrammarSniffer.identify(buf, 0, buf.length);
         switch (sourceType) {
             case GrammarSniffer.VXML_SOURCE:
-                options.logger.debug(logcategory, "Loading %s (VXML)", systemId);
+                options.getLogger().debug(logcategory, "Loading %s (VXML)", systemId);
                 return getParserFromVxml(bufstream, systemId);
             case GrammarSniffer.CXML_SOURCE:
-                options.logger.debug(logcategory, "Loading %s (CXML)", systemId);
+                options.getLogger().debug(logcategory, "Loading %s (CXML)", systemId);
                 return getParserFromCxml(bufstream, systemId);
             case GrammarSniffer.IXML_SOURCE:
-                options.logger.debug(logcategory, "Loading %s with %s encoding", systemId, encoding);
+                options.getLogger().debug(logcategory, "Loading %s with %s encoding", systemId, encoding);
                 return getParserFromIxml(bufstream, encoding);
             default:
-                options.logger.info(logcategory, "Failed to detect grammar type for %s", systemId);
+                options.getLogger().info(logcategory, "Failed to detect grammar type for %s", systemId);
                 throw IxmlException.sniffingFailed(systemId);
         }
     }
@@ -293,9 +293,19 @@ public class InvisibleXml {
             InvisibleXmlParser parser = new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
 
             HygieneReport report = parser.getHygieneReport();
-            if (!report.isClean() && !report.getUndefinedSymbols().isEmpty() && !options.allowUndefinedSymbols) {
-                // Treat this like a failed parse.
-                parser = new InvisibleXmlParser(doc, doc.parseTime());
+            if (!report.isClean()) {
+                if (!report.getUndefinedSymbols().isEmpty() && !options.getAllowUndefinedSymbols()) {
+                    // Treat this like a failed parse.
+                    parser = new InvisibleXmlParser(doc, doc.parseTime());
+                }
+                if (!report.getUnreachableSymbols().isEmpty() && !options.getAllowUnreachableSymbols()) {
+                    // Treat this like a failed parse.
+                    parser = new InvisibleXmlParser(doc, doc.parseTime());
+                }
+                if (!report.getUnproductiveRules().isEmpty() && !(options.getAllowUnproductiveSymbols())) {
+                    // Treat this like a failed parse.
+                    parser = new InvisibleXmlParser(doc, doc.parseTime());
+                }
             }
 
             return parser;

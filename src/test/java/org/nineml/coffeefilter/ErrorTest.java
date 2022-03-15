@@ -58,7 +58,7 @@ public class ErrorTest {
 
         try {
             ParserOptions options = new ParserOptions();
-            options.assertValidXmlNames = false;
+            options.setAssertValidXmlNames(false);
             DataTreeBuilder builder = new DataTreeBuilder(options);
             doc.getTree(builder);
             String json = builder.getTree().asJSON();

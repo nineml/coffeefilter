@@ -1,63 +1,270 @@
 package org.nineml.coffeefilter;
 
+import org.nineml.logging.DefaultLogger;
+import org.nineml.logging.Logger;
+
+import java.util.HashSet;
+
+/**
+ * Options to the Invisible XML processor.
+ * <p>This object is extended by other members of the NineML family to provide additional options.
+ * It started out as a collection of public fields, but changed to a more traditional collection of
+ * getters and setters when it began to develop options that were not entirely independent.</p>
+ */
 public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions {
+    private boolean ignoreTrailingWhitespace = false;
+    private boolean allowUndefinedSymbols = false;
+    private boolean allowUnreachableSymbols = true;
+    private boolean allowUnproductiveSymbols = true;
+    private boolean allowMultipleDefinitions = false;
+    private boolean prettyPrint = false;
+    private boolean showChart = false;
+    private String graphviz = null;
+    private static HashSet<String> suppressedIxmlStates = new HashSet<>();
+    private boolean assertValidXmlNames = true;
+    private boolean pedantic = false;
+
     /**
-     * The default constructor.
-     * <p>This object is intended to be just a collection of publicly modifiable fields.</p>
+     * Create the parser options.
+     * <p>The initial logger will be a {@link DefaultLogger} initialized with
+     * {@link DefaultLogger#readSystemProperties readSystemProperties()}.</p>
      */
     public ParserOptions() {
         super();
     }
 
     /**
-     * Ignore trailing whitespace.
-     * <p>If a parse fails where it would have succeeded if trailing whitespace was
-     * removed from the input, report success.</p>
+     * Create the parser options with an explicit logger.
+     * @param logger the logger.
      */
-    public boolean ignoreTrailingWhitespace = false;
+    public ParserOptions(Logger logger) {
+        super(logger);
+    }
 
     /**
-     * Allow undefined symbols.
+     * Ignore trailing whitespace?
+     * <p>If a parse fails where it would have succeeded if trailing whitespace was
+     * removed from the input, report success.</p>
+     * @return true if trailing whitespace is ignored
+     */
+    public boolean getIgnoreTrailingWhitespace() {
+        return ignoreTrailingWhitespace;
+    }
+
+    /**
+     * Set the {@link #getIgnoreTrailingWhitespace()} property.
+     * @param ignore ignore trailing whitespace?
+     */
+    public void setIgnoreTrailingWhitespace(boolean ignore) {
+        ignoreTrailingWhitespace = ignore;
+    }
+
+    /**
+     * Allow undefined symbols?
      * <p>A grammar with undefined symbols isn't necessarily unusable. But Invisible XML
      * forbids them.</p>
+     * @return true if undefined symbols are allowed
      */
-    public boolean allowUndefinedSymbols = false;
+    public boolean getAllowUndefinedSymbols() {
+        return allowUndefinedSymbols;
+    }
+
+    /**
+     * Set the {@link #getAllowUndefinedSymbols()} property.
+     * <p>Allowing undefined symbols implies {@link #getAllowUnproductiveSymbols()} and
+     * {@link #getAllowUndefinedSymbols()}.
+     * An undefined symbol is always part of an unproductive rule and avoiding errors for
+     * undefined rules often introduces undefined symbols.</p>
+     * @param allow allow undefined symbols?
+     */
+    public void setAllowUndefinedSymbols(boolean allow) {
+        allowUndefinedSymbols = allow;
+        if (allowUndefinedSymbols) {
+            allowUnproductiveSymbols = true;
+        }
+    }
+
+    /**
+     * Allow unreachable symbols?
+     * <p>A grammar with unreachable symbols isn't forbidden by Invisible XML, but might
+     * still be an error.</p>
+     * @return true if unreachable symbols are allowed.
+     */
+    public boolean getAllowUnreachableSymbols() {
+        return allowUnreachableSymbols;
+    }
+
+    /**
+     * Set the {@link #getAllowUnreachableSymbols()} property.
+     * @param allow allow unreachable symbols?
+     */
+    public void setAllowUnreachableSymbols(boolean allow) {
+        allowUnreachableSymbols = allow;
+    }
+
+    /**
+     * Allow unproductive symbols?
+     * <p>An unproductive symbol is one which can never produce output in a valid parse.</p>
+     * @return true if unproductive rules are allowed
+     */
+    public boolean getAllowUnproductiveSymbols() {
+        return allowUnproductiveSymbols;
+    }
+
+    /**
+     * Set the {@link #getAllowUnproductiveSymbols()} property.
+     * @param allow allow unproductive rules?
+     */
+    public void setAllowUnproductiveSymbols(boolean allow) {
+        allowUnproductiveSymbols = allow;
+    }
+
+    /**
+     * Allow multiple definitions?
+     * <p>A grammar with multiply defined symbols isn't a problem for the underlying Earley
+     * parser, but it is forbidden by Invisible XML.</p>
+     * @return true if multiple definitions are allowed.
+     */
+    public boolean getAllowMultipleDefinitions() {
+        return allowMultipleDefinitions;
+    }
+
+    /**
+     * Set the {@link #getAllowMultipleDefinitions()} property.
+     * @param allow allow multiple definitions?
+     */
+    public void setAllowMultipleDefinitions(boolean allow) {
+        allowMultipleDefinitions = allow;
+    }
 
     /**
      * Attempt to pretty print the result?
+     * <p>If the result is pretty printed, extra newlines and spaces for indentation
+     * will be added to the result.</p>
+     * @return true if the result should be pretty printed.
      */
-    public boolean prettyPrint = false;
+    public boolean getPrettyPrint() {
+        return prettyPrint;
+    };
+
+    /**
+     * Set the {@link #getPrettyPrint()} property.
+     * @param prettPrint pretty print?
+     */
+    public void setPrettyPrint(boolean prettPrint) {
+        this.prettyPrint = prettPrint;
+    }
 
     /**
      * Show the Earley chart in error results?
+     * @return true if the early chart should appear in error results.
      */
-    public boolean showChart = false;
+    public boolean getShowChart() {
+        return showChart;
+    };
+
+    /**
+     * Set the {@link #getShowChart()} property.
+     * @param show show the chart?
+     */
+    public void setShowChart(boolean show) {
+        showChart = show;
+    }
 
     /**
      * Where's the GraphViz 'dot' command?
+     * @return the path of the dot command.
      */
-    public String graphviz = null;
+    public String getGraphviz() {
+        return graphviz;
+    };
 
     /**
-     * Suppress the ixml:state=ambiguous annotation on the root element.
+     * Set the {@link #getGraphviz()} property.
+     * <p>Setting the path to <code>null</code> disables SVG output.</p>
+     * @param dot the path to the dot command.
      */
-    public boolean suppressIxmlAmbiguous = false;
+    public void setGraphviz(String dot) {
+        graphviz = dot;
+    }
 
     /**
-     * Suppress the ixml:state=prefix annotation on the root element.
+     * Is the specified state suppressed?
+     * <p>The Invisible XML processor adds state values to the root element to report
+     * conditions such as ambiguity or a prefix parse. These states can be suppressed.</p>
+     * @param state the state
+     * @return true if the state is suppressed.
      */
-    public boolean suppressIxmlPrefix = false;
+    public boolean isSuppressedState(String state) {
+        return suppressedIxmlStates.contains(state);
+    }
+
+    /**
+     * Suppress a state.
+     * <p>The Invisible XML processor adds state values to the root element to report
+     * conditions such as ambiguity or a prefix parse. These states can be suppressed.</p>
+     * @param state the state to suppress.
+     */
+    public void suppressState(String state) {
+        if (!"ambiguous".equals(state) && !"prefix".equals(state)) {
+            getLogger().warn("CoffeeFilter", "Unknown state: %s", state);
+        }
+        suppressedIxmlStates.add(state);
+    }
+
+    /**
+     * Expose a state.
+     * <p>The Invisible XML processor adds state values to the root element to report
+     * conditions such as ambiguity or a prefix parse. These states can be suppressed.</p>
+     * @param state the state to (no longer) suppress
+     */
+    public void exposeState(String state) {
+        if (!"ambiguous".equals(state) && !"prefix".equals(state)) {
+            getLogger().warn("CoffeeFilter", "Unknown state: %s", state);
+        }
+        suppressedIxmlStates.remove(state);
+    }
 
     /**
      * Raise an exception if invalid XML names are used in nonterminals that are serialized.
+     * @return true if invalid XML names should raise an exception
      */
-    public boolean assertValidXmlNames = true;
+    public boolean getAssertValidXmlNames() {
+        return assertValidXmlNames;
+    }
+
+    /**
+     * Set the {@link #getAssertValidXmlNames()} property.
+     * @param valid assert valid names?
+     */
+    public void setAssertValidXmlNames(boolean valid) {
+        assertValidXmlNames = valid;
+    }
 
     /**
      * Enforce strict compliance to the Invisible XML specification.
      * <p>In pedantic mode, the processor won't allow grammar extensions, like pragmas,
      * that are not yet officially incorporated into the specification.</p>
+     * @return true if pedantic mode is enabled
      */
-    public boolean pedantic = false;
+    public boolean getPedantic() {
+        return pedantic;
+    };
 
+    /**
+     * Set the {@link #getPedantic()} property.
+     * <p>In pedantic mode, the processor won't allow grammar extensions, like pragmas,
+     * that are not yet officially incorporated into the specification. Enabling pedantic
+     * mode also resets the allowed grammar hygiene rules to their defaults.</p>
+     * @param pedantic be pedantic?
+     */
+    public void setPedantic(boolean pedantic) {
+        this.pedantic = pedantic;
+        if (pedantic) {
+            allowUndefinedSymbols = false;
+            allowUnreachableSymbols = true;
+            allowUnproductiveSymbols = true;
+            allowMultipleDefinitions = false;
+        }
+    }
 }
