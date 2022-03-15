@@ -1,0 +1,10 @@
+S: {[nineml discard empty]} A,
+                            B,
+   {[nineml discard empty]} C,
+   {[nineml discard empty]} @D,
+                            @E .
+A: 'a'? .
+B: 'b'? .
+C: 'c'? .
+D: 'd'? .
+E: 'e'? .

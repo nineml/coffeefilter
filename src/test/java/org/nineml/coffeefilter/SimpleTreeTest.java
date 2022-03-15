@@ -214,7 +214,7 @@ public class SimpleTreeTest extends CommonBuilder {
     public void jsonAttributes() {
         try {
             ParserOptions options = new ParserOptions();
-            options.assertValidXmlNames = false;
+            options.setAssertValidXmlNames(false);
             SimpleTree tree = buildAttributesSimpleTree(options);
             String str = tree.asJSON();
             Assert.assertEquals("{\"content\":{\"name\":\"root\",\"attributes\":{\"count\":2,\"version\":1.0},\"content\":[{\"name\":\"record\",\"attributes\":{\"num\":1},\"content\":[{\"name\":\"name\",\"content\":\"John Doe\"},{\"name\":\"age\",\"content\":25}]},{\"name\":\"record\",\"content\":[{\"name\":\"name\",\"content\":\"Mary Smith\"},{\"name\":\"age\",\"content\":22}]},{\"name\":\"no-content\",\"attributes\":{\"test\":\"string\"}},{\"name\":\"no-content-or-attr\"}]}}",
@@ -228,7 +228,7 @@ public class SimpleTreeTest extends CommonBuilder {
     public void jsonRecords() {
         try {
             ParserOptions options = new ParserOptions();
-            options.assertValidXmlNames = false;
+            options.setAssertValidXmlNames(false);
             SimpleTree tree = buildRecordSimpleTree(options);
 
             String str = tree.asJSON();

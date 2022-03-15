@@ -1,15 +1,26 @@
 package org.nineml.coffeefilter;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.nineml.coffeegrinder.parser.Ambiguity;
+import org.nineml.coffeegrinder.parser.EarleyItem;
+import org.nineml.coffeegrinder.parser.ForestNode;
 
 import java.io.File;
 
 import static org.junit.Assert.fail;
 
 public class PragmasTest {
-    private static InvisibleXml invisibleXml = new InvisibleXml();
+    private ParserOptions options;
+    private InvisibleXml invisibleXml;
+
+    @Before
+    public void setup() {
+        options = new ParserOptions();
+        //options.getLogger().setDefaultLogLevel("debug");
+        invisibleXml = new InvisibleXml(options);
+    }
 
     @Test
     public void renameNonterminal() {
@@ -55,6 +66,103 @@ public class PragmasTest {
             InvisibleXmlDocument doc = parser.parse("b");
             String xml = doc.getTree();
             Assertions.assertEquals("<S><A>a'c</A></S>", xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void discardEmpty() {
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParser();
+            InvisibleXmlDocument doc = parser.parse(new File("src/main/resources/org/nineml/coffeefilter/pragmas.ixml"));
+            String xml = doc.getTree();
+            Assertions.assertFalse(xml.contains("<prolog"));
+            xml = parser.getCompiledParser();
+            System.out.println(xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void discardNone() {
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
+            InvisibleXmlDocument doc = parser.parse("abcde");
+            String xml = doc.getTree();
+            Assertions.assertEquals("<S D=\"d\" E=\"e\"><A>a</A><B>b</B><C>c</C></S>", xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void discardA() {
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
+            InvisibleXmlDocument doc = parser.parse("cde");
+            String xml = doc.getTree();
+            Assertions.assertEquals("<S D=\"d\" E=\"e\"><B/><C>c</C></S>", xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void discardACD() {
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
+            InvisibleXmlDocument doc = parser.parse("");
+            String xml = doc.getTree();
+            Assertions.assertEquals("<S E=\"\"><B/></S>", xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void compilerTest() {
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
+            String xml = parser.getCompiledParser();
+            System.out.println(xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void lettersOrNumbers() {
+        try {
+            ParserOptions options = new ParserOptions();
+            options.setPrettyPrint(true);
+            invisibleXml = new InvisibleXml(options);
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/letters-or-numbers.ixml"));
+            StringBuilder sb = new StringBuilder();
+            for (int count = 0; count < 20; count++) {
+                sb.append("abcde");
+                sb.append("01234");
+            }
+            InvisibleXmlDocument doc = parser.parse(sb.toString());
+            String xml = doc.getTree();
+            System.out.println(xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void unicodeData() {
+        try {
+            ParserOptions options = new ParserOptions();
+            options.setPrettyPrint(true);
+            invisibleXml = new InvisibleXml(options);
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("../pot/scraps/chars/unicode.ixml"));
+            InvisibleXmlDocument doc = parser.parse(new File("../pot/scraps/chars/MediumData.txt"));
+            //String xml = doc.getTree();
+            System.out.println(doc.succeeded());
+            System.out.println(EarleyItem.totalItems() + " / " + ForestNode.totalNodes());
         } catch (Exception ex) {
             fail();
         }
