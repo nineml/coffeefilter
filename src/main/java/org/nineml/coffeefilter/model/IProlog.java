@@ -1,7 +1,5 @@
 package org.nineml.coffeefilter.model;
 
-import java.util.ArrayList;
-
 public class IProlog extends XNonterminal {
 
     public IProlog(XNode parent) {

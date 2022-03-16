@@ -288,10 +288,14 @@ public abstract class XNode {
 
     /**
      * Add characters to a node.
+     * <p>Ignores whitespace, throws an exception for any non-whitespace characters.</p>
      * @param chars the characters.
      * @throws IllegalArgumentException, characters aren't allowed in most places
      */
     public void addCharacters(String chars) {
+        if ("".equals(chars.trim())) {
+            return;
+        }
         throw new IllegalArgumentException("Unexpected characters in " + this);
     }
 
@@ -310,7 +314,6 @@ public abstract class XNode {
      */
     protected XNode addCopy(XNode child) {
         XNode copy = child.copy();
-        copy.pragmas.addAll(child.pragmas);
         copy.optional = child.optional;
         copy.parent = this;
         children.add(copy);
@@ -328,6 +331,7 @@ public abstract class XNode {
     protected XNode shallowCopy() {
         XNode copy = copy();
         copy.children.clear(); // FIXME: shallowCopy() method?
+        copy.pragmas.clear();
         copy.pragmas.addAll(pragmas);
         copy.optional = optional;
         copy.parent = null;
@@ -416,9 +420,9 @@ public abstract class XNode {
         String data = pragma.getPragmaData();
         if (data != null) {
             data = data.trim();
-            if (data.startsWith("rewrite ") || data.startsWith("xmlns ")) {
-                boolean rewrite = data.startsWith("rewrite ");
+            if (data.startsWith("rewrite ") || data.startsWith("xmlns ") || data.startsWith("regex ")) {
                 int pos = data.indexOf(" ");
+                String ptype = data.substring(0, pos);
                 data = data.substring(pos).trim();
                 if (!"".equals(data)) {
                     String quote = data.substring(0, 1);
@@ -429,25 +433,36 @@ public abstract class XNode {
                         }
                         data = data.substring(1, data.length() - 1);
                         data = data.replaceAll(quote + quote, quote);
-                        if (rewrite) {
-                            return new IPragmaRewrite(pragma.parent, data);
-                        } else {
-                            return new IPragmaXmlns(pragma.parent, data);
+                        switch (ptype) {
+                            case "rewrite":
+                                return new IPragmaRewrite(pragma.parent, data);
+                            case "xmlns":
+                                return new IPragmaXmlns(pragma.parent, data);
+                            case "regex":
+                                return new IPragmaRegex(pragma.parent, data);
+                            default:
+                                throw new RuntimeException("Internal error, unexpected pragma type: " + ptype);
                         }
                     }
                 }
 
-                getRoot().options.logger.error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
+                getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
             } else if (data.startsWith("rename ")) {
                 data = data.substring(7).trim();
                 if (!"".equals(data)) {
                     return new IPragmaRename(pragma.parent, data);
                 }
-                getRoot().options.logger.error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
+                getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
+            } else if (data.startsWith("discard ")) {
+                data = data.substring(8).trim();
+                if ("empty".equals(data)) {
+                    return new IPragmaDiscardEmpty(pragma.parent, data);
+                }
+                getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
             }
         }
 
-        getRoot().options.logger.debug(logcategory, "Unrecognized pragma: %s", pragma.getPragmaData());
+        getRoot().options.getLogger().debug(logcategory, "Unrecognized pragma: %s", pragma.getPragmaData());
         return pragma;
     }
 

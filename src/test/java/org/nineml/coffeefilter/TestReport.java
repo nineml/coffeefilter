@@ -101,7 +101,7 @@ public class TestReport {
     }
 
     public void finished() {
-        if (options.pedantic) {
+        if (options.getPedantic()) {
             System.err.printf("Passed %d of %d tests (pedantically).%n", passed, testsToRun);
         } else {
             System.err.printf("Passed %d of %d tests.%n", passed, testsToRun);

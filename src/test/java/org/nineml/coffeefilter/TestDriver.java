@@ -1,12 +1,11 @@
 package org.nineml.coffeefilter;
 
 import net.sf.saxon.lib.ErrorReporter;
-import net.sf.saxon.lib.Logger;
-import net.sf.saxon.lib.StandardErrorReporter;
 import net.sf.saxon.s9api.*;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
+import org.nineml.coffeegrinder.exceptions.GrammarException;
 
 import java.io.*;
 import java.net.URI;
@@ -15,9 +14,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestDriver {
     public static final String xmlns_t = "https://github.com/cmsmcq/ixml-tests";
+    public static final String xmlns_ap = "http://blackmesatech.com/2019/iXML/Aparecium";
     public static final QName t_test_catalog = new QName("t", xmlns_t, "test-catalog");
     public static final QName t_test_set = new QName("t", xmlns_t, "test-set");
     public static final QName t_test_set_ref = new QName("t", xmlns_t, "test-set-ref");
@@ -34,18 +35,24 @@ public class TestDriver {
     public static final QName t_assert_xml = new QName("t", xmlns_t, "assert-xml");
     public static final QName t_assert_not_a_grammar = new QName("t", xmlns_t, "assert-not-a-grammar");
     public static final QName t_assert_not_a_sentence = new QName("t", xmlns_t, "assert-not-a-sentence");
+    public static final QName t_app_info = new QName("t", xmlns_t, "app-info");
+    public static final QName t_options = new QName("t", xmlns_t, "options");
+    public static final QName ap_multiple_definitions = new QName("ap", xmlns_ap, "multiple-definitions");
+    public static final QName ap_undefined_symbols = new QName("ap", xmlns_ap, "undefined-symbols");
+    public static final QName ap_unreachable_symbols = new QName("ap", xmlns_ap, "unreachable-symbols");
+    public static final QName ap_unproductive_symbols = new QName("ap", xmlns_ap, "unproductive-symbols");
     public static final QName _name = new QName("", "name");
     public static final QName _href = new QName("", "href");
     private static final String USAGE = "Usage: TestDriver [-s:set] [-t:test] [-e:exceptions] catalog.xml";
 
     public static ParserOptions options = new ParserOptions();
-    public static InvisibleXml invisibleXml = new InvisibleXml(options);
     public static boolean runningEE = true;
     public static Processor processor = null;
     public static boolean ranOne = false;
     public static int attempts = 0;
     public static final TestReport report = new TestReport(options);
 
+    public InvisibleXml invisibleXml;
     public DataTree exceptions = null;
     public ArrayList<XdmNode> testsToRun = new ArrayList<>();
     public HashMap<XdmNode, TestConfiguration> testConfigurations = new HashMap<>();
@@ -73,12 +80,14 @@ public class TestDriver {
             } else if (arg.startsWith("-e:")) {
                 exfile = arg.substring(3);
             } else if ("--pedantic".equals(arg)) {
-                options.pedantic = true;
+                options.setPedantic(true);
             } else {
                 catalog = arg;
             }
             pos += 1;
         }
+
+        invisibleXml = new InvisibleXml(options);
 
         if (catalog == null) {
             System.err.println(USAGE);
@@ -196,18 +205,97 @@ public class TestDriver {
             } else {
                 doRunTest(config, testCase);
             }
+
+            XdmNode appInfo = appInfo(testCase);
+            if (appInfo != null) {
+                Map<QName,String> okopts = supportedOptions(appInfo);
+                if (okopts != null) {
+                    System.err.println("Running with app-info");
+                    boolean allowUndefinedSymbols = options.getAllowUndefinedSymbols();
+                    boolean allowUnreachableSymbols = options.getAllowUnreachableSymbols();
+                    boolean allowUnproductiveRules = options.getAllowUnproductiveSymbols();
+                    boolean allowMultiple = options.getAllowMultipleDefinitions();
+
+                    options.setAllowUnreachableSymbols(!"error".equals(okopts.getOrDefault(ap_unreachable_symbols, "error")));
+                    options.setAllowUnproductiveSymbols(!"error".equals(okopts.getOrDefault(ap_unproductive_symbols, "error")));
+                    options.setAllowMultipleDefinitions(!"error".equals(okopts.getOrDefault(ap_multiple_definitions, "error")));
+                    // Last because it also enables unproductive nonterminals
+                    options.setAllowUndefinedSymbols(!"error".equals(okopts.getOrDefault(ap_undefined_symbols, "error")));
+
+                    if (t_grammar_test.equals(testCase.getNodeName())) {
+                        doGrammarTest(config, testCase, appInfo);
+                    } else {
+                        doRunTest(config, testCase, appInfo);
+                    }
+
+                    options.setAllowUndefinedSymbols(allowUndefinedSymbols);
+                    options.setAllowUnproductiveSymbols(allowUnproductiveRules);
+                    options.setAllowUnreachableSymbols(allowUnreachableSymbols);
+                    options.setAllowMultipleDefinitions(allowMultiple);
+                } else {
+                    System.err.println("No app-info options are possible");
+                }
+            }
         } catch (Exception ex) {
             System.err.println("EXCEPTION " + testCase.getAttributeValue(_name) + ": " + ex.getMessage());
         }
     }
 
-    private void doRunTest(TestConfiguration config, XdmNode testCase) throws IOException, URISyntaxException, SaxonApiException {
-        ranOne = true;
+    private XdmNode appInfo(XdmNode node) {
+        XdmSequenceIterator<XdmNode> iter = node.axisIterator(Axis.CHILD);
+        while (iter.hasNext()) {
+            XdmNode child = iter.next();
+            if (child.getNodeKind() == XdmNodeKind.ELEMENT
+                && t_app_info.equals(child.getNodeName())) {
+                return child;
+            }
+        }
+        return null;
+    }
 
+    private Map<QName,String> supportedOptions(XdmNode appInfo) {
+        XdmSequenceIterator<XdmNode> iter = appInfo.axisIterator(Axis.CHILD);
+        while (iter.hasNext()) {
+            XdmNode child = iter.next();
+            if (child.getNodeKind() == XdmNodeKind.ELEMENT
+                    && t_options.equals(child.getNodeName())) {
+                boolean ok = true;
+                HashMap<QName,String> opts = new HashMap<>();
+                XdmSequenceIterator<XdmNode> aiter = child.axisIterator(Axis.ATTRIBUTE);
+                while (aiter.hasNext()) {
+                    XdmNode attr = aiter.next();
+                    String value = attr.getStringValue();
+                    if (ap_multiple_definitions.equals(attr.getNodeName())
+                            || ap_undefined_symbols.equals(attr.getNodeName())
+                            || ap_unproductive_symbols.equals(attr.getNodeName())
+                            || ap_unreachable_symbols.equals(attr.getNodeName())) {
+                        if ("error".equals(value) || "warning".equals(value) || "silence".equals(value)) {
+                            opts.put(attr.getNodeName(), value);
+                        } else {
+                            ok = false;
+                        }
+                    } else {
+                        ok = false;
+                    }
+                }
+                if (ok) {
+                    return opts;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void doRunTest(TestConfiguration config, XdmNode testCase) throws IOException, URISyntaxException, SaxonApiException {
         XdmNode result = config.find(testCase, t_result);
         if (result == null) {
             throw new RuntimeException("Test case has no result?: " + testCase.getAttributeValue(_name));
         }
+        doRunTest(config, testCase, result);
+    }
+
+    private void doRunTest(TestConfiguration config, XdmNode testCase, XdmNode result) throws IOException, URISyntaxException, SaxonApiException {
+        ranOne = true;
 
         List<XdmNode> assertions = config.findAll(result, t_assert_xml, t_assert_xml_ref, t_assert_not_a_grammar, t_assert_not_a_sentence);
         if (assertions.isEmpty()) {
@@ -241,7 +329,10 @@ public class TestDriver {
         if (result == null) {
             throw new RuntimeException("Test case has no result?: " + testCase.getAttributeValue(_name));
         }
+        doGrammarTest(config, testCase, result);
+    }
 
+    private void doGrammarTest(TestConfiguration config, XdmNode testCase, XdmNode result) throws IOException, URISyntaxException, SaxonApiException {
         List<XdmNode> assertions = config.findAll(result, t_assert_xml, t_assert_xml_ref, t_assert_not_a_grammar, t_assert_not_a_sentence);
         if (assertions.isEmpty()) {
             throw new RuntimeException("Test case makes no assertion?: " + testCase.getAttributeValue(_name));
@@ -316,8 +407,6 @@ public class TestDriver {
         if (same) {
             tresult.state = TestState.PASS;
         } else {
-            System.err.println("Actual result:");
-            System.err.println(node);
             tresult.state = TestState.FAIL;
         }
     }
@@ -395,6 +484,7 @@ public class TestDriver {
     }
 
     private InvisibleXmlParser loadGrammar(TestConfiguration config) throws IOException, URISyntaxException {
+        invisibleXml = new InvisibleXml(options);
         InvisibleXmlParser parser;
         String ixml;
         if (t_ixml_grammar.equals(config.grammar.getNodeName())) {
@@ -534,14 +624,23 @@ public class TestDriver {
             throw new RuntimeException("Unexpected test string: " + testString.getNodeName());
         }
 
-        InvisibleXmlDocument doc = parser.parse(input);
-        result.documentParseTime = doc.parseTime();
-
-        if (doc.getNumberOfParses() == 0) {
-            result.state = TestState.PASS;
-        } else {
+        try {
+            InvisibleXmlDocument doc = parser.parse(input);
+            result.documentParseTime = doc.parseTime();
+            if (doc.getNumberOfParses() == 0) {
+                result.state = TestState.PASS;
+            } else {
+                result.state = TestState.FAIL;
+                result.xml = doc.getTree();
+            }
+        } catch (GrammarException ex) {
+            for (XdmNode assertion : assertions) {
+                if (t_assert_not_a_sentence.equals(assertion.getNodeName())) {
+                    result.state = TestState.PASS;
+                    return;
+                }
+            }
             result.state = TestState.FAIL;
-            result.xml = doc.getTree();
         }
     }
 

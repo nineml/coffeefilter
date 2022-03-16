@@ -20,4 +20,12 @@ public class IPragma extends XNonterminal {
         IPragma prolog = new IPragma(parent, name);
         return prolog;
     }
+
+    @Override
+    public String toString() {
+        if (pragmaData == null) {
+            return "{[" + name + "]}";
+        }
+        return "{[" + name + " " + pragmaData + "]}";
+    }
 }

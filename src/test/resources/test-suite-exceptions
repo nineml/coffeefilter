@@ -1,2 +1,4 @@
 set "expr1"
-    case "expr1" because Its output is not valid XML.
+    case "expr1" because its output is not valid XML.
+set "range"
+    case "range" because the test is incorrect, waiting for PR to be accepted.

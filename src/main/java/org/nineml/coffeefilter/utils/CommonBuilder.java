@@ -13,6 +13,7 @@ import org.nineml.coffeegrinder.util.ParserAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -37,7 +38,7 @@ public class CommonBuilder {
     public CommonBuilder(ParseTree tree, EarleyResult result, ParserOptions options) {
         this.options = options;
         if (tree == null) {
-            options.logger.trace(logcategory, "No tree");
+            options.getLogger().trace(logcategory, "No tree");
             return;
         }
         context.push('*');
@@ -51,7 +52,7 @@ public class CommonBuilder {
         prefix = result.prefixSucceeded();
     }
 
-    private void startNonterminal(ParseTree tree, char mark, String name) {
+    private void startNonterminal(ParseTree tree, char mark, String name, Map<String,String> parseAttributes) {
         //System.err.println("ST: " + tree);
         char ctx = mark;
         if (context.peek() == '@') {
@@ -63,7 +64,7 @@ public class CommonBuilder {
                 }
                 elementStack.push(name);
             }
-            PartialOutput top = new PartialOutput(mark, name);
+            PartialOutput top = new PartialOutput(mark, name, parseAttributes);
             stack.push(top);
         }
         context.push(ctx);
@@ -194,7 +195,7 @@ public class CommonBuilder {
             String acc = getAttribute(symbol, xsymbol, "acc");
             String rewrite = getAttribute(symbol, xsymbol, "rewrite");
 
-            char ch = ((TokenCharacter) token).getValue();
+            char ch = ((TokenCharacter) token).getCharacter();
             terminal(tree, mark, ch, acc != null, rewrite);
         } else {
             if (child1 != null) {
@@ -219,7 +220,7 @@ public class CommonBuilder {
             }
 
             localName = getAttribute(symbol, xsymbol, "name");
-            startNonterminal(tree, mark, localName);
+            startNonterminal(tree, mark, localName, getAttributes(symbol, xsymbol));
 
             if (child0 != null) {
                 constructTree(child0, child0Symbol);
@@ -241,6 +242,23 @@ public class CommonBuilder {
             return symbol.getAttribute(name).getValue();
         }
         return null;
+    };
+
+    private Map<String,String> getAttributes(Symbol symbol, Symbol xsymbol) {
+        HashMap<String, String> map = new HashMap<>();
+        if (xsymbol != null) {
+            for (ParserAttribute attr : xsymbol.getAttributes()) {
+                map.put(attr.getName(), attr.getValue());
+            }
+        }
+        if (symbol != null) {
+            for (ParserAttribute attr : symbol.getAttributes()) {
+                if (!map.containsKey(attr.getName())) {
+                    map.put(attr.getName(), attr.getValue());
+                }
+            }
+        }
+        return map;
     };
 
     private int getSymbol(Symbol seek, State state, int maxPos) {
@@ -282,10 +300,14 @@ public class CommonBuilder {
         private boolean accumulator = false;
         private final ArrayList<PartialOutput> attributes = new ArrayList<>();
         private final ArrayList<PartialOutput> children = new ArrayList<>();
+        private final HashMap<String,String> parseAttributes = new HashMap<>();
+        private final boolean discardEmpty;
 
-        public PartialOutput(char mark, String name) {
+        public PartialOutput(char mark, String name, Map<String,String> parseAttributes) {
             this.mark = mark;
             this.name = name;
+            this.parseAttributes.putAll(parseAttributes);
+            discardEmpty = parseAttributes.containsKey("discard") && "empty".equals(parseAttributes.get("discard"));
             text = null;
         }
 
@@ -294,12 +316,14 @@ public class CommonBuilder {
             name = null;
             text = "" + ch;
             accumulator = acc;
+            discardEmpty = false;
         }
 
         public PartialOutput(String text) {
             mark ='?';
             name = null;
             this.text = text;
+            discardEmpty = false;
         }
 
         public void add(PartialOutput item) {
@@ -345,6 +369,10 @@ public class CommonBuilder {
         }
 
         public void output(ContentHandler handler) throws SAXException {
+            if (discardEmpty && isEmpty()) {
+                return;
+            }
+
             if (mark != '-') {
                 if (name == null) {
                     handler.characters(text.toCharArray(), 0, text.length());
@@ -358,7 +386,10 @@ public class CommonBuilder {
                         } else {
                             value = attr.children.get(0).text;
                         }
-                        attrs.addAttribute(attr.name, value);
+
+                        if (!attr.discardEmpty || !"".equals(value)) {
+                            attrs.addAttribute(attr.name, value);
+                        }
                     }
 
                     if (documentElement) {
@@ -366,11 +397,11 @@ public class CommonBuilder {
 
                         String state = "";
                         String sep = "";
-                        if (ambiguous && !options.suppressIxmlAmbiguous) {
+                        if (ambiguous && !options.isSuppressedState("ambiguous")) {
                             state = "ambiguous";
                             sep = " ";
                         }
-                        if (prefix && !options.suppressIxmlPrefix) {
+                        if (prefix && !options.isSuppressedState("prefix")) {
                             state += sep + "prefix";
                         }
 
@@ -395,6 +426,18 @@ public class CommonBuilder {
             if (mark == '^' && name != null) {
                 handler.endElement("", name, name);
             }
+        }
+
+        private boolean isEmpty() {
+            if (mark == '-' || "empty".equals(parseAttributes.getOrDefault("discard", "false"))) {
+                for (PartialOutput child : children) {
+                    if (!child.isEmpty()) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
         }
 
         @Override
