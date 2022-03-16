@@ -78,8 +78,8 @@ public class PragmasTest {
             InvisibleXmlDocument doc = parser.parse(new File("src/main/resources/org/nineml/coffeefilter/pragmas.ixml"));
             String xml = doc.getTree();
             Assertions.assertFalse(xml.contains("<prolog"));
-            xml = parser.getCompiledParser();
-            System.out.println(xml);
+            //xml = parser.getCompiledParser();
+            //System.out.println(xml);
         } catch (Exception ex) {
             fail();
         }
@@ -121,37 +121,7 @@ public class PragmasTest {
         }
     }
 
-    @Test
-    public void compilerTest() {
-        try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
-            String xml = parser.getCompiledParser();
-            System.out.println(xml);
-        } catch (Exception ex) {
-            fail();
-        }
-    }
-
-    @Test
-    public void lettersOrNumbers() {
-        try {
-            ParserOptions options = new ParserOptions();
-            options.setPrettyPrint(true);
-            invisibleXml = new InvisibleXml(options);
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/letters-or-numbers.ixml"));
-            StringBuilder sb = new StringBuilder();
-            for (int count = 0; count < 20; count++) {
-                sb.append("abcde");
-                sb.append("01234");
-            }
-            InvisibleXmlDocument doc = parser.parse(sb.toString());
-            String xml = doc.getTree();
-            System.out.println(xml);
-        } catch (Exception ex) {
-            fail();
-        }
-    }
-
+    /*
     @Test
     public void unicodeData() {
         try {
@@ -162,10 +132,9 @@ public class PragmasTest {
             InvisibleXmlDocument doc = parser.parse(new File("../pot/scraps/chars/MediumData.txt"));
             //String xml = doc.getTree();
             System.out.println(doc.succeeded());
-            System.out.println(EarleyItem.totalItems() + " / " + ForestNode.totalNodes());
         } catch (Exception ex) {
             fail();
         }
     }
-
+     */
 }
