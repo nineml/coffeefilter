@@ -77,6 +77,14 @@ public class Ixml extends XNonterminal {
     }
 
     /**
+     * Get the parser options for this parser.
+     * @return the parser options.
+     */
+    public ParserOptions getOptions() {
+        return options;
+    }
+
+    /**
      * Copy the current node and its descendants.
      *
      * <p>The parent of the copy is often the same as the original, but

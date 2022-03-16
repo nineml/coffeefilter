@@ -229,7 +229,7 @@ public class InvisibleXml {
             Ixml ixml = new Ixml(options, grammar);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             InvisibleXmlParser parser = new InvisibleXmlParser(ixml, parseMillis);
-            parser.setOptions(options);
+            //parser.setOptions(options);
             return parser;
         } catch (CoffeeGrinderException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
@@ -256,7 +256,7 @@ public class InvisibleXml {
             Ixml ixml = handler.getIxml();
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             InvisibleXmlParser iparser = new InvisibleXmlParser(ixml, parseMillis);
-            iparser.setOptions(options);
+            //iparser.setOptions(options);
             return iparser;
         } catch (ParserConfigurationException|SAXException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
@@ -275,7 +275,7 @@ public class InvisibleXml {
      */
     public InvisibleXmlParser getParserFromIxml(InputStream stream, String charset) throws IOException {
         InvisibleXmlParser ixmlParser = getParser();
-        ixmlParser.setOptions(options);
+        //ixmlParser.setOptions(options);
 
         InvisibleXmlDocument doc = ixmlParser.parse(stream, charset);
         if (doc.getNumberOfParses() == 0) {

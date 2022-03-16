@@ -23,7 +23,7 @@ public class InvisibleXmlParser {
     private final Ixml ixml;
     private final InvisibleXmlDocument failedParse;
     private final long parseTime;
-    private ParserOptions options = new ParserOptions();
+    private final ParserOptions options;
     private Exception exception = null;
     private HygieneReport hygieneReport = null;
 
@@ -31,18 +31,21 @@ public class InvisibleXmlParser {
         this.ixml = ixml;
         this.parseTime = -1;
         failedParse = null;
+        options = ixml.getOptions();
     }
 
     protected InvisibleXmlParser(Ixml ixml, long parseMillis) {
         this.ixml = ixml;
         this.parseTime = parseMillis;
         failedParse = null;
+        options = ixml.getOptions();
     }
 
     protected InvisibleXmlParser(InvisibleXmlDocument failed, long parseMillis) {
         ixml = null;
         parseTime = parseMillis;
         failedParse = failed;
+        options = failed.getOptions();
     }
 
     protected InvisibleXmlParser(InvisibleXmlDocument failed, Exception exception, long parseMillis) {
@@ -63,10 +66,10 @@ public class InvisibleXmlParser {
      * Set the parser options.
      *
      * @param options the parser options
-     */
     public void setOptions(ParserOptions options) {
         this.options = options;
     }
+     */
 
     /**
      * Return the exception that caused an attempt to build a parser to fail.
