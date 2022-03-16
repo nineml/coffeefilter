@@ -38,9 +38,9 @@ public class TestDriver {
     public static final QName t_app_info = new QName("t", xmlns_t, "app-info");
     public static final QName t_options = new QName("t", xmlns_t, "options");
     public static final QName ap_multiple_definitions = new QName("ap", xmlns_ap, "multiple-definitions");
-    public static final QName ap_undefined_nonterminals = new QName("ap", xmlns_ap, "undefined-nonterminals");
-    public static final QName ap_unreachable_rules = new QName("ap", xmlns_ap, "unreachable-rules");
-    public static final QName ap_unproductive_nonterminals = new QName("ap", xmlns_ap, "unproductive-nonterminals");
+    public static final QName ap_undefined_symbols = new QName("ap", xmlns_ap, "undefined-symbols");
+    public static final QName ap_unreachable_symbols = new QName("ap", xmlns_ap, "unreachable-symbols");
+    public static final QName ap_unproductive_symbols = new QName("ap", xmlns_ap, "unproductive-symbols");
     public static final QName _name = new QName("", "name");
     public static final QName _href = new QName("", "href");
     private static final String USAGE = "Usage: TestDriver [-s:set] [-t:test] [-e:exceptions] catalog.xml";
@@ -210,17 +210,17 @@ public class TestDriver {
             if (appInfo != null) {
                 Map<QName,String> okopts = supportedOptions(appInfo);
                 if (okopts != null) {
-                    System.err.println("Running with appinfo");
+                    System.err.println("Running with app-info");
                     boolean allowUndefinedSymbols = options.getAllowUndefinedSymbols();
                     boolean allowUnreachableSymbols = options.getAllowUnreachableSymbols();
                     boolean allowUnproductiveRules = options.getAllowUnproductiveSymbols();
                     boolean allowMultiple = options.getAllowMultipleDefinitions();
 
-                    options.setAllowUnreachableSymbols(!"error".equals(okopts.getOrDefault(ap_unreachable_rules, "error")));
-                    options.setAllowUnproductiveSymbols(!"error".equals(okopts.getOrDefault(ap_unproductive_nonterminals, "error")));
+                    options.setAllowUnreachableSymbols(!"error".equals(okopts.getOrDefault(ap_unreachable_symbols, "error")));
+                    options.setAllowUnproductiveSymbols(!"error".equals(okopts.getOrDefault(ap_unproductive_symbols, "error")));
                     options.setAllowMultipleDefinitions(!"error".equals(okopts.getOrDefault(ap_multiple_definitions, "error")));
                     // Last because it also enables unproductive nonterminals
-                    options.setAllowUndefinedSymbols(!"error".equals(okopts.getOrDefault(ap_undefined_nonterminals, "error")));
+                    options.setAllowUndefinedSymbols(!"error".equals(okopts.getOrDefault(ap_undefined_symbols, "error")));
 
                     if (t_grammar_test.equals(testCase.getNodeName())) {
                         doGrammarTest(config, testCase, appInfo);
@@ -233,7 +233,7 @@ public class TestDriver {
                     options.setAllowUnreachableSymbols(allowUnreachableSymbols);
                     options.setAllowMultipleDefinitions(allowMultiple);
                 } else {
-                    System.err.println("No appinfo options are possible");
+                    System.err.println("No app-info options are possible");
                 }
             }
         } catch (Exception ex) {
@@ -266,9 +266,9 @@ public class TestDriver {
                     XdmNode attr = aiter.next();
                     String value = attr.getStringValue();
                     if (ap_multiple_definitions.equals(attr.getNodeName())
-                            || ap_undefined_nonterminals.equals(attr.getNodeName())
-                            || ap_unproductive_nonterminals.equals(attr.getNodeName())
-                            || ap_unreachable_rules.equals(attr.getNodeName())) {
+                            || ap_undefined_symbols.equals(attr.getNodeName())
+                            || ap_unproductive_symbols.equals(attr.getNodeName())
+                            || ap_unreachable_symbols.equals(attr.getNodeName())) {
                         if ("error".equals(value) || "warning".equals(value) || "silence".equals(value)) {
                             opts.put(attr.getNodeName(), value);
                         } else {
