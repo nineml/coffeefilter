@@ -77,10 +77,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/AbstractTreeBuilder.html#AbstractTreeBuilder-org.nineml.coffeefilter.ParserOptions-">AbstractTreeBuilder(ParserOptions)</a></span> - Constructor for class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/AbstractTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">AbstractTreeBuilder</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#allowUndefinedSymbols">allowUndefinedSymbols</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
-<dd>
-<div class="block">Allow undefined symbols.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/DataTree.html#asCSV-java.util.List-">asCSV(List&lt;CsvColumn&gt;)</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/DataText.html#asJSON--">asJSON()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/DataText.html" title="class in org.nineml.coffeefilter.trees">DataText</a></dt>
@@ -94,10 +90,6 @@
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/SimpleTree.html#asJSON--">asJSON()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/SimpleTree.html" title="class in org.nineml.coffeefilter.trees">SimpleTree</a></dt>
 <dd>
 <div class="block">Return a JSON representation of the tree.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#assertValidXmlNames">assertValidXmlNames</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
-<dd>
-<div class="block">Raise an exception if invalid XML names are used in nonterminals that are serialized.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/DataText.html#asXML--">asXML()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/DataText.html" title="class in org.nineml.coffeefilter.trees">DataText</a></dt>
 <dd>&nbsp;</dd>
@@ -195,6 +187,10 @@
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/StringTreeBuilder.html#endElement-java.lang.String-java.lang.String-java.lang.String-">endElement(String, String, String)</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/StringTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">StringTreeBuilder</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#exposeState-java.lang.String-">exposeState(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Expose a state.</div>
+</dd>
 </dl>
 <a name="I:F">
 <!--   -->
@@ -226,6 +222,26 @@
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/DataTree.html#getAll--">getAll()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a></dt>
 <dd>
 <div class="block">Get all the children of a node.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getAllowMultipleDefinitions--">getAllowMultipleDefinitions()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Allow multiple definitions?</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getAllowUndefinedSymbols--">getAllowUndefinedSymbols()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Allow undefined symbols?</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getAllowUnproductiveSymbols--">getAllowUnproductiveSymbols()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Allow unproductive symbols?</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getAllowUnreachableSymbols--">getAllowUnreachableSymbols()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Allow unreachable symbols?</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getAssertValidXmlNames--">getAssertValidXmlNames()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Raise an exception if invalid XML names are used in nonterminals that are serialized.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/SimpleTree.html#getAttribute-java.lang.String-">getAttribute(String)</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/SimpleTree.html" title="class in org.nineml.coffeefilter.trees">SimpleTree</a></dt>
 <dd>
@@ -273,11 +289,19 @@
 <dd>
 <div class="block">Get the underlying grammar</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getGraphviz--">getGraphviz()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Where's the GraphViz 'dot' command?</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/CsvColumn.html#getHeader--">getHeader()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/CsvColumn.html" title="class in org.nineml.coffeefilter.trees">CsvColumn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#getHygieneReport--">getHygieneReport()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
 <dd>
 <div class="block">Get the hygiene report for this parser's grammar</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getIgnoreTrailingWhitespace--">getIgnoreTrailingWhitespace()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Ignore trailing whitespace?</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlDocument.html#getLineNumber--">getLineNumber()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></dt>
 <dd>
@@ -373,6 +397,18 @@
 <dd>
 <div class="block">Return the underlying ParseTree for the current parse.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getPedantic--">getPedantic()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Enforce strict compliance to the Invisible XML specification.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getPrettyPrint--">getPrettyPrint()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Attempt to pretty print the result?</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getShowChart--">getShowChart()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Show the Earley chart in error results?</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/SimpleText.html#getText--">getText()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/SimpleText.html" title="class in org.nineml.coffeefilter.trees">SimpleText</a></dt>
 <dd>
 <div class="block">Get the value.</div>
@@ -417,20 +453,12 @@
 <dd>
 <div class="block">Return a string containing the XML serialization.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#graphviz">graphviz</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
-<dd>
-<div class="block">Where's the GraphViz 'dot' command?</div>
-</dd>
 </dl>
 <a name="I:I">
 <!--   -->
 </a>
 <h2 class="title">I</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#ignoreTrailingWhitespace">ignoreTrailingWhitespace</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
-<dd>
-<div class="block">Ignore trailing whitespace.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/exceptions/IxmlException.html#internalError-java.lang.String-">internalError(String)</a></span> - Static method in exception org.nineml.coffeefilter.exceptions.<a href="org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/exceptions/IxmlException.html#internalError-java.lang.String-java.lang.Exception-">internalError(String, Exception)</a></span> - Static method in exception org.nineml.coffeefilter.exceptions.<a href="org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></dt>
@@ -468,6 +496,10 @@
 <dt><a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter"><span class="typeNameLink">InvisibleXmlParser</span></a> - Class in <a href="org/nineml/coffeefilter/package-summary.html">org.nineml.coffeefilter</a></dt>
 <dd>
 <div class="block">A parser for a particular Invisible XML grammar.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#isSuppressedState-java.lang.String-">isSuppressedState(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Is the specified state suppressed?</div>
 </dd>
 <dt><a href="org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions"><span class="typeNameLink">IxmlException</span></a> - Exception in <a href="org/nineml/coffeefilter/exceptions/package-summary.html">org.nineml.coffeefilter.exceptions</a></dt>
 <dd>
@@ -592,25 +624,23 @@
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/exceptions/IxmlException.html#parseFailed-java.lang.Exception-">parseFailed(Exception)</a></span> - Static method in exception org.nineml.coffeefilter.exceptions.<a href="org/nineml/coffeefilter/exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter"><span class="typeNameLink">ParserOptions</span></a> - Class in <a href="org/nineml/coffeefilter/package-summary.html">org.nineml.coffeefilter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Options to the Invisible XML processor.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#ParserOptions--">ParserOptions()</a></span> - Constructor for class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
 <dd>
-<div class="block">The default constructor.</div>
+<div class="block">Create the parser options.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#ParserOptions-org.nineml.logging.Logger-">ParserOptions(Logger)</a></span> - Constructor for class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Create the parser options with an explicit logger.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlDocument.html#parseTime--">parseTime()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></dt>
 <dd>
 <div class="block">Returns the amount of time (roughly) spent parsing.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#pedantic">pedantic</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
-<dd>
-<div class="block">Enforce strict compliance to the Invisible XML specification.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/DataTree.html#prepareCsv--">prepareCsv()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#prettyPrint">prettyPrint</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
-<dd>
-<div class="block">Attempt to pretty print the result?</div>
-</dd>
 </dl>
 <a name="I:R">
 <!--   -->
@@ -633,19 +663,51 @@
 </a>
 <h2 class="title">S</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setAllowMultipleDefinitions-boolean-">setAllowMultipleDefinitions(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getAllowMultipleDefinitions--"><code>ParserOptions.getAllowMultipleDefinitions()</code></a> property.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setAllowUndefinedSymbols-boolean-">setAllowUndefinedSymbols(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getAllowUndefinedSymbols--"><code>ParserOptions.getAllowUndefinedSymbols()</code></a> property.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setAllowUnproductiveSymbols-boolean-">setAllowUnproductiveSymbols(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getAllowUnproductiveSymbols--"><code>ParserOptions.getAllowUnproductiveSymbols()</code></a> property.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setAllowUnreachableSymbols-boolean-">setAllowUnreachableSymbols(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getAllowUnreachableSymbols--"><code>ParserOptions.getAllowUnreachableSymbols()</code></a> property.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setAssertValidXmlNames-boolean-">setAssertValidXmlNames(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getAssertValidXmlNames--"><code>ParserOptions.getAssertValidXmlNames()</code></a> property.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setGraphviz-java.lang.String-">setGraphviz(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getGraphviz--"><code>ParserOptions.getGraphviz()</code></a> property.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/CsvColumn.html#setHeader-java.lang.String-">setHeader(String)</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/CsvColumn.html" title="class in org.nineml.coffeefilter.trees">CsvColumn</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setIgnoreTrailingWhitespace-boolean-">setIgnoreTrailingWhitespace(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getIgnoreTrailingWhitespace--"><code>ParserOptions.getIgnoreTrailingWhitespace()</code></a> property.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlDocument.html#setOptions-org.nineml.coffeefilter.ParserOptions-">setOptions(ParserOptions)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></dt>
 <dd>
 <div class="block">Set the parser options.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/InvisibleXmlParser.html#setOptions-org.nineml.coffeefilter.ParserOptions-">setOptions(ParserOptions)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></dt>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setPedantic-boolean-">setPedantic(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
 <dd>
-<div class="block">Set the parser options.</div>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getPedantic--"><code>ParserOptions.getPedantic()</code></a> property.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#showChart">showChart</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setPrettyPrint-boolean-">setPrettyPrint(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
 <dd>
-<div class="block">Show the Earley chart in error results?</div>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getPrettyPrint--"><code>ParserOptions.getPrettyPrint()</code></a> property.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setShowChart-boolean-">setShowChart(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getShowChart--"><code>ParserOptions.getShowChart()</code></a> property.</div>
 </dd>
 <dt><a href="org/nineml/coffeefilter/trees/SimpleText.html" title="class in org.nineml.coffeefilter.trees"><span class="typeNameLink">SimpleText</span></a> - Class in <a href="org/nineml/coffeefilter/trees/package-summary.html">org.nineml.coffeefilter.trees</a></dt>
 <dd>
@@ -703,13 +765,9 @@
 <dd>
 <div class="block">Did the parse succeed?</div>
 </dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#suppressIxmlAmbiguous">suppressIxmlAmbiguous</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#suppressState-java.lang.String-">suppressState(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
 <dd>
-<div class="block">Suppress the ixml:state=ambiguous annotation on the root element.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#suppressIxmlPrefix">suppressIxmlPrefix</a></span> - Variable in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
-<dd>
-<div class="block">Suppress the ixml:state=prefix annotation on the root element.</div>
+<div class="block">Suppress a state.</div>
 </dd>
 </dl>
 <a name="I:T">
