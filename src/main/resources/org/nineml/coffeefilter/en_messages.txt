@@ -1,13 +1,16 @@
 E001: Repeated attribute: %1.
 E002: The Unicode character class ‘%1’ is invalid.
 E003: Invalid XML Name: %1.
-E004: More than one rule for nonterminal symbol: %1.
+E004: Multiple rules for nonterminal symbol: %1.
 E005: Invalid mark: %1.
 E006: Invalid tmark: %1.
 E007: Invalid hex: %1.
 E008: The root node (‘%1’) must not be marked ‘@’.
 E009: A second root note (‘%1’) is not allowed.
 E010: Range from ‘%1’ must not be larger than range to ‘%2’.
+E011: Undefined symbol(s): ‘%1’.
+E012: Unreachable symbol(s): ‘%1’.
+E013: Unproductive symbol(s): ‘%1’.
 I001: Internal error: failed to load ixml specification grammar: %1.
 I002: Internal error: failed to load ixml specification grammar: %1.
 I003: Internal error: %1.

@@ -130,7 +130,7 @@ public class Ixml extends XNonterminal {
             if (node instanceof IRule) {
                 IRule rule = (IRule) node;
                 if (definedSymbols.contains(rule.getName()) && !options.getAllowMultipleDefinitions()) {
-                    throw IxmlException.duplicateRuleForSymbol(rule.getName());
+                    throw IxmlException.multipleDefinitionsOfSymbol(rule.getName());
                 }
                 definedSymbols.add(rule.getName());
             }
