@@ -296,15 +296,15 @@ public class InvisibleXml {
             if (!report.isClean()) {
                 if (!report.getUndefinedSymbols().isEmpty() && !options.getAllowUndefinedSymbols()) {
                     // Treat this like a failed parse.
-                    parser = new InvisibleXmlParser(doc, doc.parseTime());
+                    parser = new InvisibleXmlParser(doc, IxmlException.undefinedSymbols(report.getUndefinedSymbols()), doc.parseTime());
                 }
                 if (!report.getUnreachableSymbols().isEmpty() && !options.getAllowUnreachableSymbols()) {
                     // Treat this like a failed parse.
-                    parser = new InvisibleXmlParser(doc, doc.parseTime());
+                    parser = new InvisibleXmlParser(doc, IxmlException.unreachableSymbols(report.getUnreachableSymbols()), doc.parseTime());
                 }
                 if (!report.getUnproductiveRules().isEmpty() && !(options.getAllowUnproductiveSymbols())) {
                     // Treat this like a failed parse.
-                    parser = new InvisibleXmlParser(doc, doc.parseTime());
+                    parser = new InvisibleXmlParser(doc, IxmlException.unproductiveSymbols(report.getUnproductiveSymbols()), doc.parseTime());
                 }
             }
 

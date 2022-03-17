@@ -1,6 +1,8 @@
 package org.nineml.coffeefilter.exceptions;
 
-import org.nineml.coffeefilter.model.Ixml;
+import org.nineml.coffeegrinder.parser.NonterminalSymbol;
+
+import java.util.Set;
 
 /**
  * An Ixml exception.
@@ -70,12 +72,25 @@ public class IxmlException extends RuntimeException {
     public static IxmlException repeatedAttribute(String name) { return getException("E001", name); }
     public static IxmlException invalidCharacterClass(String name) { return getException("E002", name); }
     public static IxmlException invalidXmlName(String name) { return getException("E003", name); }
-    public static IxmlException duplicateRuleForSymbol(String name) { return getException("E004", name); }
+    public static IxmlException multipleDefinitionsOfSymbol(String name) { return getException("E004", name); }
     public static IxmlException invalidMark(char mark) { return getException("E005", ""+mark); }
     public static IxmlException invalidTMark(char mark) { return getException("E006", ""+mark); }
     public static IxmlException invalidHex(String hex) { return getException("E007", hex); }
     public static IxmlException attributeRoot(String name) { return getException("E008", name); }
     public static IxmlException multipleRoots(String name) { return getException("E009", name); }
     public static IxmlException invalidRange(String from, String to) { return getException("E010", new String[] {from, to}); }
+    public static IxmlException undefinedSymbols(Set<NonterminalSymbol> symbols) { return getException("E011", symbolList(symbols)); }
+    public static IxmlException unreachableSymbols(Set<NonterminalSymbol> symbols) { return getException("E012", symbolList(symbols)); }
+    public static IxmlException unproductiveSymbols(Set<NonterminalSymbol> symbols) { return getException("E013", symbolList(symbols)); }
 
+    private static String symbolList(Set<NonterminalSymbol> symbols) {
+        StringBuilder sb = new StringBuilder();
+        String sep = "";
+        for (NonterminalSymbol symbol : symbols) {
+            sb.append(sep);
+            sb.append(symbol);
+            sep = ", ";
+        }
+        return sb.toString();
+    }
 }
