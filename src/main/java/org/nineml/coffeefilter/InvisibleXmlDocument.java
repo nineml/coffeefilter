@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An InvisibleXmlDocument represents a document created with an {@link InvisibleXmlParser}.
@@ -264,24 +265,20 @@ public class InvisibleXmlDocument {
                 }
             }
 
-            List<Token> oknext = couldBeNext(result.getChart(), result.getParser().getGrammar());
+            boolean predictedSome = false;
+            List<Token> oknext = couldBeNext(result.predictedTerminals());
             if (!oknext.isEmpty()) {
-                // I don't actually care about the order,
-                // but let's not just make it HashMap random for testing if nothing else.
-                ArrayList<String> chars = new ArrayList<>();
-                for (Token next : oknext) {
-                    chars.add(next.toString());
-                }
-                Collections.sort(chars);
+                predictedSome = true;
+                tokenList(handler, oknext, "permitted");
+            }
 
-                StringBuilder sb = new StringBuilder();
-                for (int pos = 0; pos < chars.size(); pos++) {
-                    if (pos > 0) {
-                        sb.append(", ");
-                    }
-                    sb.append(chars.get(pos));
+            oknext = couldBeNext(result.getChart(), result.getParser().getGrammar());
+            if (!oknext.isEmpty()) {
+                String elemName = "permitted";
+                if (predictedSome) {
+                    elemName = "also-predicted";
                 }
-                atomicValue(handler, "permitted", sb.toString());
+                tokenList(handler, oknext, elemName);
             }
 
             if (options.getShowChart()) {
@@ -318,6 +315,35 @@ public class InvisibleXmlDocument {
         handler.startElement("", name, name, AttributeBuilder.EMPTY_ATTRIBUTES);
         handler.characters(value.toCharArray(), 0, value.length());
         handler.endElement("", name, name);
+    }
+
+    private void tokenList(ContentHandler handler, List<Token> oknext, String elemName) throws SAXException {
+        // I don't actually care about the order,
+        // but let's not just make it HashMap random for testing if nothing else.
+        ArrayList<String> chars = new ArrayList<>();
+        for (Token next : oknext) {
+            chars.add(next.toString());
+        }
+        Collections.sort(chars);
+
+        StringBuilder sb = new StringBuilder();
+        for (int pos = 0; pos < chars.size(); pos++) {
+            if (pos > 0) {
+                sb.append(", ");
+            }
+            sb.append(chars.get(pos));
+        }
+        atomicValue(handler, elemName, sb.toString());
+    }
+
+    private List<Token> couldBeNext(Set<TerminalSymbol> symbols) {
+        ArrayList<Token> next = new ArrayList<>();
+        for (TerminalSymbol symbol : symbols) {
+            if (symbol.getToken() != null) {
+                next.add(symbol.getToken());
+            }
+        }
+        return next;
     }
 
     private List<Token> couldBeNext(EarleyChart chart, Grammar grammar) {

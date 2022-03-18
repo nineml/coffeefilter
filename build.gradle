@@ -289,6 +289,50 @@ task intro(type: SaxonXsltTask, dependsOn: ["intro_validate"]) {
 }
 website.finalizedBy intro
 
+task writing_validate(type: RelaxNGValidateTask) {
+  input "${projectDir}/src/website/docs/writing.xml"
+  output "${buildDir}/xml/writing.xml"
+  schema "${projectDir}/website/docbook.rnc"
+  compact true
+}
+
+task writing_copy() {
+  doFirst {
+    copy {
+      from ("${projectDir}/src/website/docs") {
+        include "*.png"
+      }
+      into "${buildDir}/xml"
+    }
+  }
+  doLast {
+    copy {
+      from ("${projectDir}/src/website/docs") {
+        include "*.png"
+      }
+      into "${buildDir}/website/docs"
+    }
+  }
+}
+
+task writing(type: SaxonXsltTask, dependsOn: ["writing_validate", "writing_copy"]) {
+  inputs.file "${projectDir}/tools/docbook.xsl"
+  inputs.file writing_validate.outputs.files.singleFile
+  outputs.file "${buildDir}/website/docs/writing.html"
+
+  input writing_validate.outputs.files.singleFile
+  output "${buildDir}/website/docs/writing.html"
+  stylesheet "${projectDir}/tools/docbook.xsl"
+  initializer 'org.docbook.xsltng.extensions.Register'
+  parameters (
+    'mediaobject-input-base-uri': "file:${buildDir}/xml/",
+    'mediaobject-output-base-uri': "./",
+    'chunk': 'writing.html',
+    'chunk-output-base-uri': "${buildDir}/website/docs/"
+  )
+}
+website.finalizedBy writing
+
 task website_javadoc(type: Copy, dependsOn: ["javadoc"]) {
   from javadoc.destinationDir
   into "${buildDir}/website/apidoc"
