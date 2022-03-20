@@ -17,7 +17,7 @@ Thanks.</para>
 
 <para>This article is a follow-up to the introduction to
 <link xlink:href="https://www.xml.com/articles/2022/03/01/invisible-xml/">Invisible XML</link> published
-at <link xlink:href="https://xml.com/">XML.com</link> on 1 March 2022.
+at <link xlink:href="https://www.xml.com/">XML.com</link> on 1 March 2022.
 In this article, we’re going to focus on the syntax of Invisible XML documents and how
 to write (and debug) grammars. If you’re not already familiar with the principles
 behind Invisible XML, you may want to read the introductory article first.</para>
@@ -96,8 +96,14 @@ First, we’ll look at the input, and then we’ll talk about the output.
 If you’re working through examples and starting to experiment with
 grammars on your own, you may want to know something about the output
 sooner rather than later. Feel free to skip back and forth. If you’ve never
-written grammars of this type before, do to read the first
+written grammars of this type before, do read the first
 few sections of “The input” about rules and matching first.</para>
+
+<para>Bear in mind as you go that the goal of Invisible XML is to produce “visible XML”.
+That’s not necessarily the final output form that you want. It’s “text to XML”, not
+“text to DocBook 5.2 with embedded MathML and SVG.” There are other, better tools to
+transform one flavor of XML into another, Invisible XML doesn’t have to do <emphasis>all</emphasis>
+the lifting.</para>
 
 </section>
 </section>
@@ -156,9 +162,11 @@ a “<code>that</code>”:</para>
 <programlisting linenumbering="unnumbered"
 >thing: this; that .</programlisting>
 
-<para>Whitespace around the punctuation is insignificant, “this;that”
-is the same as “this; that” is the same as “this ; that”. That’s true
-of all the rule punctuation.</para>
+<para>Whitespace around the punctuation is insignificant,
+“<code>this;that</code>” is the same as “<code>this; that</code>” is
+the same as “<code>this ; that</code>”. That’s true of all the rule
+punctuation except that there must be at least one whitspace character between
+consecutive rules.</para>
 
 <note>
 <para>Speaking of insigificant differences, Invisible XML allows
@@ -194,6 +202,22 @@ by parentheses. In other words, like content models or regular expressions, you 
 put parentheses around a set of alternatives and then use that group as
 a factor, a part of another grouping.
 </para>
+
+<para>For example, in the following rule:</para>
+
+<programlisting linenumbering="unnumbered"
+>memo: recipient, (date, sender ; sender, date), content .</programlisting>
+
+<para>The left hand side “<code role="symbol">memo</code>” is defined as
+a single alternative composed of three terms: “<code role="symbol">recipient</code>”,
+a grouped alternative in parentheses, and “<code role="symbol">content</code>”.
+The first and
+third terms contain a single factor each (and each of those
+factors is a nonterminal not defined in this example). The second term is
+a set of two alternatives enclosed in parenthesis; each of those
+alternatives is composed of two terms (each a single nonterminal
+factor) separated by commas.</para>
+
 </section>
 
 <section xml:id="literals">
@@ -208,12 +232,12 @@ There are a few options for matching characters in your input.</para>
 
 <para>You can match a literal string of text by using its quoted value.
 The following rule says that the nonterminal symbol
-<symbol>jan</symbol> matches the literal string “January”.</para>
+<code role="symbol">jan</code> matches the literal string “January”.</para>
 
 <programlisting linenumbering="unnumbered"
 >jan: "January".</programlisting>
 
-<para>This rule says that <symbol>month</symbol> matches any of the
+<para>This rule says that “<code role="symbol">month</code>” matches any of the
 Gregorian calendar month names in English:</para>
 
 <programlisting linenumbering="unnumbered"
@@ -225,19 +249,22 @@ Gregorian calendar month names in English:</para>
 lines in a plain text file named <filename>month.ixml</filename> and see
 if you can make your first XML document with Invisible XML.</para>
 
-<para>You can do it with CoffeePot at the command line or shell window
-like this:</para>
+<para>You can do this with <application>CoffeePot</application> at the command line like this:</para>
 
 <programlisting linenumbering="unnumbered"
 >coffeepot -g:month.ixml March</programlisting>
 
-<para>Which will print (possibly after some log messages, depending on
-how you have it configured):</para>
+<para>(Depending on how you’ve installed <application>CoffeePot</application>, you may need to
+use <code>java -jar</code> or some other variation to run <application>CoffeePot</application>. See
+the documentation for details. You may also get some additional log messages
+before the output shown below, depending on how you have things configured).</para>
+
+<para>Which will print:</para>
 
 <programlisting linenumbering="unnumbered"
 >&lt;month>March&lt;/month></programlisting>
 
-<para>Or using Steven’s form-based interface at
+<para>Or you can do this using Steven’s form-based interface at
 <link xlink:href="https://homepages.cwi.nl/~steven/ixml/tutorial/run.html"/>:
 </para>
 
@@ -264,11 +291,13 @@ the string <literal>"hello"</literal> with the quote marks; the string
 the apostrophe.</para>
 
 <para>If the string you want to match contains
-<emphasis>both</emphasis> double and single quotes, you can escape one
+<emphasis>both</emphasis> double <emphasis>and</emphasis> single quotes, you can escape one
 inside the other by doubling them. The string <code>"I said ""there""."</code>
 matches <literal>I said "there".</literal>. Similarly, <code>'don''t'</code>
 matches <literal>don't</literal>. Note that in each case, these are
-the ordinary, non-typographic quotes, " (U+0022) and ' (U+0027). If
+the ordinary, non-typographic quotes, "
+(<link xlink:href="https://unicode-explorer.com/c/0022">U+0022</link>) and '
+(<link xlink:href="https://unicode-explorer.com/c/0027">U+0027</link>). If
 your string contains typographic quotes, those are just ordinary
 characters as far as Invisible XML is concerned.</para>
 
@@ -284,7 +313,7 @@ examples.</para>
 <programlisting linenumbering="unnumbered"
 >coffeepot -g:month.ixml Marsh</programlisting>
 
-<para>CoffeePot will print:</para>
+<para><application>CoffeePot</application> will print:</para>
 
 <programlisting linenumbering="unnumbered"
 ><![CDATA[<fail xmlns:ixml="http://invisiblexml.org/NS" ixml:state="failed">
@@ -292,7 +321,8 @@ examples.</para>
    <column>4</column>
    <pos>3</pos>
    <unexpected>r</unexpected>
-   <permitted>'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</permitted>
+   <permitted>'c'</permitted>
+   <also-predicted>'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</also-predicted>
 </fail>]]></programlisting>
 
 <para>An Invisible XML processor always produces an XML result. In
@@ -316,9 +346,12 @@ in any meaningful sense, it just reports what state it was in when it gave up.</
 <title>Matching individual characters</title>
 
 <para>You can match any literal character, including newlines and
-<link xlink:href="nonxml">other
+<link linkend="nonxml">other
 control characters</link>, with an encoded character. An encoded character is
-a number sign (#) followed by hex digits. A newline is “#a” (or “#A” if you prefer).
+a number sign (#,
+<link xlink:href="https://unicode-explorer.com/c/0023">U+0023</link>)
+followed by hex digits. A newline is “#a” (or in capitals, “#A”, or with
+leading zeros, “#000a”, if you prefer).
 The encoded form can represent
 <link linkend="nonxml">any Unicode character.</link></para>
 
@@ -346,7 +379,8 @@ exclusive (any characters except these).
 
 <para>Character sets are delimited by square brackets and contain
 literal strings, encoded characters, character ranges, or Unicode
-character classes. If the opening square bracket is preceded by a “~”,
+character classes. If the opening square bracket is preceded by a “~”
+(<link xlink:href="https://unicode-explorer.com/c/007E">U+007E</link>),
 the set is exclusive, otherwise it’s inclusive.</para>
 
 <para>The following rule:</para>
@@ -363,15 +397,35 @@ one of “0”, “1”, “2”, …, “9”.</para>
 <programlisting linenumbering="unnumbered"
 >digit: ["0"-"9"] .</programlisting>
 
-<para>A range consists of a single character string (or an encoded character) followed
-by a hyphen (-), followed by another single character string (or encoded
-character).</para>
+<para>A range consists of a character string containing a single character (or an
+<link linkend="encoded">encoded character</link>)
+followed by a hyphen-minus
+(-, <link xlink:href="https://unicode-explorer.com/c/002D">U+002D</link>),
+followed by another single
+character string (or encoded character). Unlike ranges in most regular
+expressions, the members of a character set are always quoted or
+encoded, so you don’t need extra escaping. A character set that
+includes left square bracket, both kinds of quote marks, and all of
+the characters from “-” to “\” could be written:</para>
+
+<programlisting linenumbering="unnumbered"
+>["[", "'", '"', "-"-"\"]</programlisting>
+
+<para>though it might be a little easier to read as</para>
+
+<programlisting linenumbering="unnumbered"
+>["[", "'", '"', #2d-"\"]</programlisting>
+
+<para>or even</para>
+
+<programlisting linenumbering="unnumbered"
+>[#5b, "'", '"', #2d - "\"]</programlisting>
 
 <para>Finally, a set can identify a Unicode character class. Unicode groups
 similar characters together into classes identified by one- or two-letter codes.
 The code “P”, for example, identifies all punctuation characters while “Pd”
 identifies those punctuation characters that are dashes. You can use these
-classes in character sets. To define the nonterminal “punct” that matches
+classes in character sets. To define the nonterminal “<code role="symbol">punct</code>” that matches
 any single Unicode punctuation character, you can write this:</para>
 
 <programlisting linenumbering="unnumbered"
@@ -396,8 +450,10 @@ by placing a tilde in front of it:</para>
 <programlisting linenumbering="unnumbered"
 >notnumeric: ~[N].</programlisting>
 
-<para>The “notnumeric” nonterminal matches any single Unicode character
-that is not in the class of number characters.</para>
+<para>The “<code role="symbol">notnumeric</code>” nonterminal matches any single Unicode character
+that is not in the class of number characters.
+The set <code>~[]</code> matches any character that is not in the empty set, in other
+words, <emphasis>any</emphasis> character.</para>
 
 <para>(Invisible XML doesn’t let you build up more complicated
 character sets by composing them: you can’t mix inclusions and
@@ -410,7 +466,9 @@ exclusions together in the same set.)</para>
 
 <para>All the rules we’ve looked at so far match exactly one thing:
 one word, one symbol, or one character. What if you want to match more
-or less than one? Invisible XML gives you several options here as well.</para>
+or less than one? Invisible XML gives you several options here as well
+starting with “*”, “+”, and “?” which behave just as you’d expect if you’re
+familiar with regular expression languages.</para>
 
 <variablelist>
 <varlistentry><term><literal>factor*</literal></term>
@@ -419,8 +477,8 @@ or less than one? Invisible XML gives you several options here as well.</para>
 zero or more occurrences of that factor. Given this rule,
 </para>
 <programlisting linenumbering="unnumbered"
->S: 'a', '.'*, 'b'.</programlisting>
-<para>An <code>S</code> will match “<literal>ab</literal>”,
+>seq: 'a', '.'*, 'b'.</programlisting>
+<para>An “<code>seq</code>” will match “<literal>ab</literal>”,
 “<literal>a.b</literal>”, “<literal>a..b</literal>”, etc. with as many
 full stops as you like between the two letters.</para>
 </listitem>
@@ -431,8 +489,8 @@ full stops as you like between the two letters.</para>
 of that factor. Given this rule,
 </para>
 <programlisting linenumbering="unnumbered"
->S: 'a', '.'+, 'b'.</programlisting>
-<para>An <code>S</code> will match “<literal>a.b</literal>”,
+>seq: 'a', '.'+, 'b'.</programlisting>
+<para>An “<code>seq</code>” will match “<literal>a.b</literal>”,
 “<literal>a..b</literal>”, “<literal>a...b</literal>”, etc. with as many
 full stops as you like between the two letters, but it will not
 match “<literal>ab</literal>”.</para>
@@ -444,8 +502,8 @@ match “<literal>ab</literal>”.</para>
 occurrence of that factor. Given this rule:
 </para>
 <programlisting linenumbering="unnumbered"
->S: 'a'? .</programlisting>
-<para>An <code>S</code> will match either nothing or a single
+>seq: 'a'? .</programlisting>
+<para>An “<code>seq</code>” will match either nothing or a single
 “<literal>a</literal>”. Matching empty strings (accidentally or on purpose) as
 an important topic that we’ll come back to
 <link linkend="epsilon">later</link>.</para>
@@ -458,8 +516,8 @@ for grammar authors. If two factors are separated by a “*”, they will match
 zero or more occurrences of the first factor <emphasis>separated</emphasis> by
 the second factor. Given this rule:</para>
 <programlisting linenumbering="unnumbered"
->S: 'a'*',' .</programlisting>
-<para>An <code>S</code> will match “”, “<literal>a</literal>”,
+>seq: 'a'*',' .</programlisting>
+<para>An “<code>seq</code>” will match “”, “<literal>a</literal>”,
 “<literal>a,a</literal>”, “<literal>a,a,a</literal>”, etc. Matching as many
 “<literal>a</literal>”s as appear (including none) provided that they are separated by precisely
 one comma.</para>
@@ -474,8 +532,8 @@ spaces like this: <code>'a'*(',', ' '*)</code>.</para>
 one or more occurrences of the first factor <emphasis>separated</emphasis> by
 the second factor. Given this rule:</para>
 <programlisting linenumbering="unnumbered"
->S: 'a'+',' .</programlisting>
-<para>An <code>S</code> will match “<literal>a</literal>”, “<literal>a,a</literal>”,
+>seq: 'a'+',' .</programlisting>
+<para>An “<code>seq</code>” will match “<literal>a</literal>”, “<literal>a,a</literal>”,
 “<literal>a,a,a</literal>”, etc. Matching as many
 “<literal>a</literal>”s as appear provided that they are separated by precisely
 one comma.</para>
@@ -486,7 +544,7 @@ one comma.</para>
 <note>
 <para>Repetition can be subtle. The pattern “<code>sym* '}'</code>”
 matches zero or more occurrences of “<code>sym</code>” (whatever that
-is), separated by “<code>}</code>”. If what you
+is), <emphasis>separated</emphasis> by “<code>}</code>”s. If what you
 <emphasis>intended</emphasis> was zero or more occurrences of
 “<code>sym</code>” <emphasis>followed by</emphasis> a
 “<code>}</code>”, you need to write “<code>sym*, '}'</code>”. It is
@@ -501,8 +559,8 @@ repetition without a separator.</para>
 <title>Matching names and whitespace</title>
 
 <para>At this point, you have all the building blocks necessary to
-write your own grammars, but it will be instructive to look at two
-more examples from the Invisible XML specification: matching names and
+write your own grammars, but two common features deserve special
+attention: matching names (contiguous sequences of characters) and
 matching whitespace.</para>
 
 <section xml:id="names">
@@ -510,25 +568,53 @@ matching whitespace.</para>
 <para>Invisible XML grammars match characters in your input. There
 isn’t a lexer in front of it to group characters into tokens and there
 isn’t a “regular expression” matcher for grouping. If you want to
-construct input “tokens”, you have to it yourself.</para>
+construct input “tokens”, you have to do it yourself.</para>
 <para>You’ll find a pattern for this in the way that Invisible XML
-defines a <symbol>name</symbol>, for example the name of a
+defines a “<code role="symbol">name</code>”, for example the name of a
 rule:</para>
 
 <programlisting linenumbering="unnumbered"
->   name: namestart, namefollower*.
+>        name: namestart, namefollower*.
    namestart: ["_"; L].
 namefollower: namestart; ["-.·‿⁀"; Nd; Mn].</programlisting>
 
 <para>Those rules define names to begin with “_” or any letter,
 followed by zero or more characters that are themselves “_” or letters,
-or characters from a slightly broader repertoire including hyphens,
-full stops, etc.</para>
+or characters from a slightly broader repertoire:
+hyphen-minus (-, <link xlink:href="https://unicode-explorer.com/c/002D">U+002D</link>),
+full stop (., <link xlink:href="https://unicode-explorer.com/c/002E">U+002E</link>),
+middle dot (·, <link xlink:href="https://unicode-explorer.com/c/00B7">U+00B7</link>),
+undertie (‿, <link xlink:href="https://unicode-explorer.com/c/203F">U+203F</link>),
+character tie (⁀, <link xlink:href="https://unicode-explorer.com/c/2040">U+2040</link>,
+characters in the class Nd (decimal digit numbers),
+and characters in the class Mn (nonspacing marks).</para>
+
 <para>That’s the technique you have to employ if you want to make
 sequences of characters. This example is a tiny bit complicated by the
 fact that “name start” characters are different from the rest of the
 name characters. If the whole sequence came from the same repertoire, you
-could simply say something like: <code>name: namecharacter+</code>.</para>
+could simply say something like: “<code>name: namecharacter+</code>”.</para>
+
+<note>
+<title>What’s in a name?</title>
+<para>If you carefully compare what’s allowed as a name in Invisible XML with what’s
+allowed as a name in XML, you’ll discover a couple of things. First, you will find that
+the Invisible XML grammar is very, very slightly more generous than
+<link xlink:href="https://www.w3.org/TR/REC-xml/">XML 1.0 (Fifth Edition)</link>.
+Invisible XML allows three characters in names that XML forbids:
+feminine ordinal indicator,
+<link xlink:href="https://unicode-explorer.com/c/00AA">U+00AA</link>
+(ª),
+micro sign,
+<link xlink:href="https://unicode-explorer.com/c/00B5">U+00B5</link>
+(µ), and masculine ordinal indicator,
+<link xlink:href="https://unicode-explorer.com/c/00BA">U+00BA</link>
+(º). Second, you will find that very few XML parsers have really taken
+the broader repertoire of name characters defined in the fifth edition on board. The popular
+Apache Xerces parser, for example, rejects thousands of characters that should be allowed
+in names.</para>
+</note>
+
 </section>
 
 <section xml:id="whitespace">
@@ -540,15 +626,23 @@ could simply say something like: <code>name: namecharacter+</code>.</para>
   whitespace: [Zs]; tab; lf; cr.
          tab: #9.
           lf: #a.
-          cr: #d.</programlisting>
+          cr: #d.
+     comment: -"{", (cchar; comment)*, -"}".
+      -cchar: ~["{}"].</programlisting>
 
 <para>The crucial observation here is that whitespace is a “zero or more”
-symbol. That means everywhere that <symbol>s</symbol> appears in your
-grammar, it can be a space, a tab, a line feed, etc, or two of them or
-three of them, or <emphasis>none</emphasis> of them.</para>
+symbol. That means everywhere that the Invisible XML grammar allows an
+“<code role="symbol">s</code>” to appear in a
+grammar, it can be a space, a tab, a line feed, etc., or two of them or
+three of them, or <emphasis>none</emphasis> of them.
+As we’ll see in <xref linkend="epsilon"/>, this can lead to
+trouble (though it doesn’t in the Invisible XML specification grammar).</para>
 
-<para>As we’ll see in <xref linkend="epsilon"/>, this can lead to
-trouble.</para>
+<para>Comments in Invisible XML are considered whitespace. They’re
+delimited by curly brackets and they’re defined so that they nest
+properly. (You can comment out an arbitrary section of an Invisible
+XML grammar without worrying about whether or not there are comments
+in the section you’re commenting out!)</para>
 </section>
 </section>
 
@@ -560,58 +654,58 @@ xlink:href="https://www.xml.com/articles/2022/03/01/invisible-xml/">previous
 article</link>, grammars can be ambiguous and that’s not an error.
 Nevertheless, ambiguous grammars can slow down the parser and
 different implementations may give different answers, so it’s best to
-avoid it if you can. Consider this somewhat contrived example:</para>
+avoid them if you can. Consider this somewhat contrived example:</para>
 
-<programlisting linenumbering="unnumbered"><![CDATA[S: (A; B), '.'*.
+<programlisting linenumbering="unnumbered"><![CDATA[seq: (A; B), '.'*.
 A: 'a', '.'+ .
 B: 'b', '.'+ .
 ]]></programlisting>
 
-<para>An <symbol>S</symbol> is an <symbol>A</symbol> or a
-<symbol>B</symbol> followed optionally by full stops, an
-<symbol>A</symbol> is an <literal>a</literal> followed by one or more
-full stops, a <symbol>B</symbol> is an <literal>b</literal> followed
+<para>A “<code role="symbol">seq</code>” is an “<code role="symbol">A</code>” or a
+“<code role="symbol">B</code>” followed optionally by full stops, an
+“<code role="symbol">A</code>” is an “<literal>a</literal>” followed by one or more
+full stops, a “<code role="symbol">B</code>” is an “<literal>b</literal>” followed
 by one or more full stops.</para>
 
 <para>Asked to parse “<literal>a..</literal>”, the Invisible XML processor will report ambiguity:</para>
 
-<programlisting language="xml" linenumbering="unnumbered"><![CDATA[<S xmlns:ixml="http://invisiblexml.org/NS"
-   ixml:state="ambiguous">
+<programlisting language="xml" linenumbering="unnumbered"><![CDATA[<seq xmlns:ixml="http://invisiblexml.org/NS"
+     ixml:state="ambiguous">
    <A>a..</A>
-</S>
+</seq>
 ]]></programlisting>
 
-<para>CoffeePot will tell you that there were two possible parses, but
+<para><application>CoffeePot</application> will tell you that there were two possible parses, but
 it only returns one of them by default because that’s conformant
 behavior for a processor. Internally, it enumerates the parses and returns the first. You can
 ask for the other parse by passing <code>--parse:2</code> on the command line
 (alternatively, you can pass <code>--parse:all</code> for
 all of them.) Here’s the second parse:</para>
 
-<programlisting language="xml" linenumbering="unnumbered"><![CDATA[<S xmlns:ixml="http://invisiblexml.org/NS"
-   ixml:state="ambiguous">
-   <A>a.</A>.</S>
+<programlisting language="xml" linenumbering="unnumbered"><![CDATA[<seq xmlns:ixml="http://invisiblexml.org/NS"
+     ixml:state="ambiguous">
+   <A>a.</A>.</seq>
 ]]></programlisting>
 
 <para>Ambiguity arises because there’s more than one way to parse an
 input. In this case, it’s pretty easy to see that the ambiguity is
 whether the second “<literal>.</literal>” is part of the
-<symbol>A</symbol> or part of the <symbol>S</symbol>. Removing that
+<code role="symbol">A</code> or part of the “<code role="symbol">seq</code>”. Removing that
 ambiguity involves choosing one of the options and then adjusting the
 grammar to make that the only possible parse. In this case, one option
 is to make sure all the full stops are associated with either the
-<symbol>A</symbol> or the <symbol>B</symbol>:
+<code role="symbol">A</code> or the “<code role="symbol">B</code>”:
 </para>
 
-<programlisting linenumbering="unnumbered">S: A; B.
+<programlisting linenumbering="unnumbered">seq: A; B.
 A: 'a', '.'+ .
 B: 'b', '.'+ .</programlisting>
 
 <para>The other option is to make sure they’re all associated with the
-<symbol>S</symbol>:
+<code role="symbol">seq</code>:
 </para>
 
-<programlisting linenumbering="unnumbered">S: (A; B), '.'+.
+<programlisting linenumbering="unnumbered">seq: (A; B), '.'+.
 A: 'a'.
 B: 'b'.</programlisting>
 
@@ -623,34 +717,56 @@ It’s possible to make distinctions between <emphasis>grammars</emphasis> that 
 and <emphasis>parses</emphasis> that are ambiguous. Try parsing <literal>a.</literal>
 with the first grammar above and you’ll find that there’s only one parse. Invisible
 XML reports ambiguous parses, not ambiguous grammars. It’s also possible to write a
-grammar that has loops in it: <code>S: 's', S; S; .</code> An <symbol>S</symbol> is an
-<literal>s</literal> or an <symbol>S</symbol> or nothing. That grammar is infinitely
-ambiguous because it can have an unbounded number of “empty” <symbol>S</symbol> matches.
+grammar that has loops in it: <code>seq: 's', seq; seq; .</code> An “<code role="symbol">seq</code>” is an
+<literal>s</literal> or an “<code role="symbol">seq</code>” or nothing. That grammar is infinitely
+ambiguous because it can have an unbounded number of empty “<code role="symbol">seq</code>” matches.
 </para>
+
+<para>Asked to parse “sss” with that grammar,
+<application>CoffeePot</application> will report:</para>
+
+<programlisting linenumbering="unnumbered"><![CDATA[There is 1 parse, but the grammar is infinitely ambiguous
+<seq xmlns:ixml="http://invisiblexml.org/NS" ixml:state="ambiguous">s
+   <seq>s
+      <seq>s
+         <seq/>
+      </seq>
+   </seq>
+</seq>]]></programlisting>
+
+<para>(In the interests of space and time, <application>CoffeePot</application> won’t
+let you enumerate infinitely many parses; it ignores loops.)</para>
 
 <section xml:id="epsilon">
 <title>Matching nothing</title>
 
 <para>A very common place for ambiguity to arise is when a symbol can
-match nothing. Anytime you use a <code>*</code> or <code>?</code>
+match nothing. Anytime you use a “<code>*</code>” or “<code>?</code>”
 modifier on a symbol, you’re indicating that the symbol can be absent.
 Another way to think about “can be absent” is “can match the empty
 string”. Consider</para>
 
 <programlisting linenumbering="unnumbered"
->S: 'x', 'o'*, 'x'.</programlisting>
+>seq: 'x', 'o'*, 'x'.</programlisting>
 
-<para>That rule will allow <symbol>S</symbol> to match <code>xx</code>
-because <code>'o'*</code> can match zero occurrences of “o”. That’s
-not necessarily ambiguous (and it’s not ambiguous in this simple
-case), but consider a grammar for North American phone numbers.
-Ignoring the country code, a phone number in North America consists of
-an area code, a prefix, and a number, canonically:
-<link xlink:href="https://en.wikipedia.org/wiki/Fictitious_telephone_number">(512) 555-0100</link>.
-Unfortunately, you’ll also find 512-555-0100, 512 555 0100, or even
-5125550100. Sometimes the area code will be missing altogether since
-it isn’t always required. You might write a grammar for phone numbers
-like this:</para>
+<para>That rule will allow “<code role="symbol">seq</code>” to match
+“<code>xx</code>” because <code>'o'*</code> can match zero occurrences
+of “o”. That’s not necessarily ambiguous (and it’s not ambiguous in
+this simple case), but consider a grammar for <link
+xlink:href="https://en.wikipedia.org/wiki/North_American_Numbering_Plan">North
+American phone numbers</link>.
+</para>
+
+<para>Ignoring the country code, a phone number in North America
+consists of an area code, a prefix (technically a central office
+code), and a number (technically a station number), canonically: <link
+xlink:href="https://en.wikipedia.org/wiki/Fictitious_telephone_number">512‑555‑0100</link>
+Unfortunately, you’ll also find (512) 555‑0100, common before the
+prefix was largely mandatory, 512 555 0100, or even 5125550100.
+Sometimes the area code will be missing altogether since it isn’t
+<emphasis>always</emphasis> required. You might write a grammar for
+phone numbers like this (ignoring additional constraints on the digits
+in some parts of the number):</para>
 
 <programlisting>phone-number: (areacode, sep)?, prefix, sep, number .
 -sep: dash; space .
@@ -661,8 +777,8 @@ prefix: digits .
 areacode: digits; -'(', digits, -')' .
 -digits: ['0'-'9']+ .</programlisting>
 
-<para>(The extra dashes in front of some of the rules are explained in
-<xref linkend="output"/>.)</para>
+<para>(The extra hyphen-minus signs in front of some of the rules and
+symbols are explained in <xref linkend="output"/>.)</para>
 
 <para>Presented with 512-555-0100, it quietly does what you expect, returning:</para>
 
@@ -673,7 +789,7 @@ areacode: digits; -'(', digits, -')' .
 </phone-number>]]></programlisting>
 
 <para>Presented with 5125550100, things go a little sideways.
-CoffeePot will tell you that there are 48 possible parses, including this one:</para>
+<application>CoffeePot</application> will tell you that there are 48 possible parses, including this one:</para>
 
 <programlisting language="xml" linenumbering="unnumbered"><![CDATA[<phone-number xmlns:ixml="http://invisiblexml.org/NS"
               ixml:state="ambiguous">
@@ -684,8 +800,8 @@ CoffeePot will tell you that there are 48 possible parses, including this one:</
 
 <para>Can you see why there are 48 parses? That grammar allows
 optional punctuation between every digit and it allows one or more
-digits in each part. Of course, that’s not actually how phone numbers work. This
-is a better grammar that makes describes the area code, prefix, and number with
+digits in each part. Of course, that’s not actually how North American phone numbers work. This
+is a better grammar that describes the area code, prefix, and number with
 explicit lengths:</para>
 
 <programlisting>phone-number: (areacode, sep)?, prefix, sep, number .
@@ -701,7 +817,7 @@ areacode: digit, digit, digit;
 <para>This will correctly parse the number, but curiously it will still report ambiguity,
 asserting four possible parses. Can you see why?</para>
 
-<para>You can ask CoffeePot to tell you why with the <code>--describe-ambiguity</code>
+<para>You can ask <application>CoffeePot</application> to tell you why with the <code>--describe-ambiguity</code>
 option:</para>
 
 <programlisting linenumbering="unnumbered">There are 4 possible parses.
@@ -714,9 +830,9 @@ sep, 6, 6
         spaceⁿ, 6, 6</programlisting>
 
 <para>What this says, somewhat cryptically, is that
-<symbol>sep</symbol> matches the empty strings at positions 3 and 6 in
+<code role="symbol">sep</code> matches the empty strings at positions 3 and 6 in
 two different ways: either by matching an omitted dash or an omitted
-space. You can fix this changing how <symbol>sep</symbol> is defined:</para>
+space. You can fix this changing how “<code role="symbol">sep</code>” is defined:</para>
 
 <programlisting>phone-number: (areacode, sep)?, prefix, sep, number .
 -sep: (dash; space)? .
@@ -727,7 +843,7 @@ prefix: digit, digit, digit .
 areacode: digit, digit, digit; -'(', digit, digit, digit, -')' .
 -digit: ['0'-'9'] .</programlisting>
 
-<para>Now a <symbol>sep</symbol> is an optional dash or space, but
+<para>Now a “<code role="symbol">sep</code>” is an optional dash or space, but
 those aren’t independently optional. And the grammar is no longer
 ambiguous. (It also no longer accepts optional separators between
 every digit. Reader challenge: rewrite the grammar so that’s allowed
@@ -754,7 +870,7 @@ a little bit like Invisible XML:</para>
 <para>It only accepts a single rule with a name before the colon and a
 sequence of whitespace separated symbols after the colon. This grammar works perfectly well
 and will parse “<literal>a: b c</literal>” just the way you’d expect. Now let’s
-add optional marks:</para>
+add <link linkend="output">optional marks</link>:</para>
 
 <programlisting>         rule: name, s?, ':', s?, symbol+s .
        symbol: mark?, s?, name .
@@ -775,17 +891,17 @@ add optional marks:</para>
 <para>A symbol is now an optional mark, followed by optional whitespace. This introduces
 ambiguity in the parse of <literal>a: b c</literal>.
 If you look at the output of <literal>--describe-ambiguity</literal>,
-you’ll find that the problem is in the expansion of “<symbol>rule</symbol>”.
-Imagine how you might expand <symbol>rule</symbol>, substituting the value of
-<symbol>symbol</symbol> where it occurs in <symbol>rule</symbol>:</para>
+you’ll find that the problem is in the expansion of “<code role="symbol">rule</code>”.
+Imagine how you might expand “<code role="symbol">rule</code>”, substituting the value of
+<code role="symbol">symbol</code> where it occurs in “<code role="symbol">rule</code>”:</para>
 
 <programlisting linenumbering="unnumbered">rule ⇒ name, s?, ':', s?, mark?, s?, name …</programlisting>
 
-<para>Can you see the source of the ambiguity? There is no mark, but there’s
-a space after the colon. There are two ways to resolve that space.
+<para>Can you see the source of the ambiguity? If there is no mark in the input, but there
+is a space after the colon, there will be two ways to resolve that space.
 After the colon, we could match the empty string with the first <literal>s?</literal>,
-the empty string for <literal>mark?</literal>, and the space for the second <literal>s?</literal>,
-or we could do it the other way around: match the space before the mark and the
+the empty string for <literal>mark?</literal>, and the space for the second <literal>s?</literal>.
+Alternatively, we could do it the other way around: match the space before the mark and the
 empty string after it.</para>
 
 <para>One way to resolve this ambiguity is to change the definition of
@@ -817,7 +933,9 @@ But it will not parse <literal>a: ^b ^c</literal>. Can you work out why?
 
 <para>Even with entities and numeric character references, the
 repertoire of XML characters is limited. You can’t, for example, have
-<code>&amp;#x0;</code> (Unicode null) in a well-formed XML document. Consequently, if
+<code>&amp;#x0;</code>
+(<link xlink:href="https://unicode-explorer.com/c/0000">U+0000</link>)
+in a well-formed XML document. Consequently, if
 you attempt to output those characters from your Invisible XML
 grammar, you’ll get errors. Similarly, if you create a nonterminal
 with a name that includes characters not allowed in XML names, you’ll
@@ -908,8 +1026,9 @@ the text of the terminal.
 </varlistentry>
 </variablelist>
 
-<para>Now we can go back to the grammar and sort out those extra digit
-elements. Replacing the rule for <symbol>digit</symbol> with this one:</para>
+<para>Now we can go back to the grammar and suppress all those extra
+digit elements. Replacing the rule for
+“<code role="symbol">digit</code>” with this one:</para>
 
 <programlisting linenumbering="unnumbered">-digit: ["0"-"9"] .</programlisting>
 
@@ -946,26 +1065,28 @@ they had been marked “-”.</para>
 </listitem>
 <listitem>
 <para>Nonterminals marked with “@” don’t have to appear first in
-your input. In the preceding example, “<symbol>day</symbol>” and “<symbol>month</symbol>”
-come before “<symbol>year</symbol>”,
-but marking year with “@” still works. This is in contrast to languages
+your input. In the preceding example, “<code role="symbol">day</code>” and “<code role="symbol">month</code>”
+come before “<code role="symbol">year</code>”,
+but marking “<code role="symbol">year</code>” with “@” still works. This is in contrast to languages
 like XSLT and XQuery where attributes, if you have any, must come before
 the first non-attribute (and non-namespace) child.</para>
 </listitem>
 <listitem>
 <para>Even though you can have attributes that come “after” non-attributes,
 it’s still the grammar author’s responsibility to make sure you don’t
-attempt to put two attributes with the same name on an element. That’s
+attempt to put two attributes with the same name on a single element. That’s
 an error.</para>
 </listitem>
 </orderedlist>
 </note>
 
-<para>We’ve been “pretty printing” the XML output which has actually
-obscured a detail. The spaces between day and month and month and year
-are being output. That may be fine, but sometime’s it’s not. Let’s
-consider a grammar for
-<link xlink:href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</link> dates.
+<para>We’ve been “pretty printing” the XML output in this article
+because it’s easier to read that way. But it has actually obscured a
+detail. The spaces between day and month and month and year are being
+output. That may be fine, but sometime’s it’s not. Let’s consider a
+grammar for <link
+xlink:href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</link>
+dates.
 </para>
 
 <programlisting linenumbering="unnumbered">date: year, '-', month, '-', day .
@@ -1018,7 +1139,7 @@ you <emphasis>can’t</emphasis> do with Invisible XML.</para>
 <itemizedlist>
 <listitem>
 <para>You can’t reorder the input and you can’t generate output. You
-can’t, for example, parse “7 March 2022” and output “March 07, 2022”.
+can’t, for example, parse “7 March 2022” and output “March 07, 2022”.
 Not only is there no way to change the order, there’s no way to
 generate either the leading “0” or the “,” needed.</para>
 </listitem>
