@@ -1,0 +1,108 @@
+h1, h2, h3, h4, h5, h6, .title {
+    font-family: sans-serif;
+}
+
+.title {
+    padding-top: 1em;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.base-uri {
+    font-size: 80%;
+    color: #aaaaaa;
+    text-align: right;
+}
+
+.test-case {
+    padding-top: 0.5em;
+}
+
+.test-set .input {
+}
+
+.test-case .input {
+}
+
+pre {
+    background-color: #dddddd;
+    padding: 1em;
+}
+
+.test-catalog, .test-set {
+    border-top: 2px solid #aaaaaa;
+   /*
+    padding-left: 0.5em;
+    border-left: 2px solid #aaaaaa;
+   */
+}    
+
+.result {
+    border-left: 1em solid #dddddd;
+    border-top: 2px solid #dddddd;
+}
+
+.PASS {
+    border-left: 1em solid #aaeeaa;
+    border-top: 2px solid #aaeeaa;
+    padding-left: 1em;
+}
+
+.FAIL {
+    border-left: 1em solid #ffaaaa;
+    border-top: 2px solid #ffaaaa;
+    padding-left: 1em;
+}
+
+.SKIP {
+    border-left: 1em solid #ffff00;
+    border-top: 2px solid #ffff00;
+    padding-left: 1em;
+}
+
+.toc .pass {
+}
+
+.toc .fail {
+    background-color: #ffaaaa;
+}
+
+.toc .skip {
+    background-color: #ffff00;
+}
+
+.unmatched {
+    color: red;
+}
+
+.timing {
+    display: none;
+}
+
+.debug {
+    display: none;
+    background-color: #ffefdf;
+    padding: 1em;
+}
+
+
+/*
+
+.result {
+    background-color: #dddd00;
+    margin: 1em;
+}
+
+.comparison {
+    margin-bottom: 1em;
+}
+
+.comparisons .comparison {
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+    padding-left: 1em;
+    padding-bottom: 0.5em;
+}
+
+*/
+
