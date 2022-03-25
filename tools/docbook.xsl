@@ -23,7 +23,10 @@
 <xsl:template match="db:productname" mode="m:titlepage"
               expand-text="yes">
   <div class="versions">
-    <p class="app">CoffeeFilter version {../db:productnumber/string()}</p>
+    <p class="app">
+      <xsl:text>CoffeeFilter </xsl:text>
+      <a href="/test-report.html">version {../db:productnumber/string()}</a>
+    </p>
     <p class="lib">
       <xsl:text>(Based on CoffeeGrinder </xsl:text>
       <xsl:sequence select="../db:bibliomisc[@role='coffeegrinder']/string()"/>

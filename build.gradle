@@ -128,7 +128,8 @@ task pedanticTestSuite(type: JavaExec,
 
   classpath = configurations.testsuite
   main = 'org.nineml.coffeefilter.TestDriver'
-  args = ['-e:src/test/resources/test-suite-exceptions',
+  args = ["-e:${projectDir}/src/test/resources/test-suite-exceptions",
+          "-r:${buildDir}/test-report-pedantic.xml",
           '--pedantic',
           'ixml/tests/test-catalog.xml']
 }
@@ -141,12 +142,29 @@ task testSuite(type: JavaExec,
   inputs.files fileTree(dir: "${buildDir}/resources/test")
   inputs.files fileTree(dir: "${projectDir}/ixml/tests")
   inputs.file "${projectDir}/src/test/resources/test-suite-exceptions"
+  outputs.file "${buildDir}/test-report.xml"
 
   classpath = configurations.testsuite
   main = 'org.nineml.coffeefilter.TestDriver'
-  args = ['-e:src/test/resources/test-suite-exceptions',
+  args = ["-e:${projectDir}/src/test/resources/test-suite-exceptions",
+          "-r:${buildDir}/test-report.xml",
           'ixml/tests/test-catalog.xml']
 }
+
+task testSuiteReport(type: SaxonXsltTask, dependsOn: ["testSuite"]) {
+  inputs.files fileTree(dir: "${projectDir}/ixml/tests")
+  inputs.files files(testSuite)
+  inputs.file "${projectDir}/tools/test-report.xsl"
+  outputs.file "${buildDir}/website/test-report.html"
+
+  input "${projectDir}/ixml/tests/test-catalog.xml"
+  stylesheet "${projectDir}/tools/test-report.xsl"
+  output "${buildDir}/website/test-report.html"
+  parameters (
+    'results.file': "${buildDir}/test-report.xml"
+  )
+}
+testSuite.finalizedBy testSuiteReport
 
 jar {
   archiveBaseName = "${filterTitle}-${filterVersion}"

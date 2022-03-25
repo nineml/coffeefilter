@@ -45,19 +45,18 @@ public class TestDriver {
     public static final QName _href = new QName("", "href");
     private static final String USAGE = "Usage: TestDriver [-s:set] [-t:test] [-e:exceptions] catalog.xml";
 
-    public static ParserOptions options = new ParserOptions();
-    public static boolean runningEE = true;
-    public static Processor processor = null;
-    public static boolean ranOne = false;
-    public static int attempts = 0;
-    public static final TestReport report = new TestReport(options);
+    public ParserOptions options = new ParserOptions();
+    public boolean runningEE = true;
+    public Processor processor = null;
+    public boolean ranOne = false;
+    public int attempts = 0;
+    public final TestResults results = new TestResults(options);
 
     public InvisibleXml invisibleXml;
     public DataTree exceptions = null;
     public ArrayList<XdmNode> testsToRun = new ArrayList<>();
     public HashMap<XdmNode, TestConfiguration> testConfigurations = new HashMap<>();
     public ArrayList<XdmNode> testsToSkip = new ArrayList<>();
-    public HashMap<XdmNode, TestResult> testResults = new HashMap<>();
 
     public static void main(String[] args) throws IOException, SaxonApiException, URISyntaxException {
         TestDriver driver = new TestDriver();
@@ -69,6 +68,7 @@ public class TestDriver {
         String exfile = null;
         String set_name = null;
         String case_name = null;
+        String xmlreport = null;
 
         int pos = 0;
         while (pos < args.length) {
@@ -79,6 +79,8 @@ public class TestDriver {
                 set_name = arg.substring(3);
             } else if (arg.startsWith("-e:")) {
                 exfile = arg.substring(3);
+            } else if (arg.startsWith("-r:")) {
+                xmlreport = arg.substring(3);
             } else if ("--pedantic".equals(arg)) {
                 options.setPedantic(true);
             } else {
@@ -111,22 +113,36 @@ public class TestDriver {
         TestConfiguration config = new TestConfiguration(builder.build(cat), set_name, case_name);
         readCatalogDocument(config);
 
-        report.toRun(testsToRun.size());
-        report.toSkip(testsToSkip.size());
-
-        int count = 0;
-        for (XdmNode testCase : testsToRun) {
-            XdmNode testSet = testCase.getParent();
-            count++;
-            String name = testCase.getAttributeValue(_name);
-            report.start(count, name, testSet.getAttributeValue(_name));
-            runTest(testConfigurations.get(testCase), testCase);
-            TestResult result = testResults.get(testCase);
-            report.result(count, result);
+        for (XdmNode testCase : testsToSkip) {
+            XdmSequenceIterator<XdmNode> iter = testCase.axisIterator(Axis.CHILD);
+            while (iter.hasNext()) {
+                XdmNode elem = iter.next();
+                if (elem.getNodeKind() == XdmNodeKind.ELEMENT
+                        && (elem.getNodeName().equals(t_result)
+                            || elem.getNodeName().equals(t_app_info))) {
+                    TestResult result = results.createResult(elem);
+                    result.state = TestState.SKIP;
+                }
+            }
         }
 
-        report.finished();
-        if (!report.passedAll()) {
+        for (XdmNode testCase : testsToRun) {
+            XdmNode testSet = testCase.getParent();
+            String name = testCase.getAttributeValue(_name);
+            //report.start(count, name, testSet.getAttributeValue(_name), true);
+            runTest(testConfigurations.get(testCase), testCase);
+            //TestResult result = testResults.get(testCase);
+            //report.result(count, result);
+        }
+
+        if (xmlreport != null) {
+            PrintStream out = new PrintStream(xmlreport);
+            results.publish(out);
+            out.close();
+        }
+
+        System.err.println(results.summary());
+        if (results.failedTests()) {
             System.exit(1);
         }
     }
@@ -138,6 +154,10 @@ public class TestDriver {
         DataTreeBuilder builder = new DataTreeBuilder(new ParserOptions());
         doc.getTree(builder);
         exceptions = builder.getTree();
+        String xml = exceptions.asXML();
+        if (xml.contains("<fail")) {
+            throw new IllegalArgumentException("Failed to parse exceptions file: " + exfile);
+        }
     }
 
     private void readCatalogDocument(TestConfiguration config) throws SaxonApiException {
@@ -206,11 +226,9 @@ public class TestDriver {
                 doRunTest(config, testCase);
             }
 
-            XdmNode appInfo = appInfo(testCase);
-            if (appInfo != null) {
+            for (XdmNode appInfo : appInfo(testCase)) {
                 Map<QName,String> okopts = supportedOptions(appInfo);
                 if (okopts != null) {
-                    System.err.println("Running with app-info");
                     boolean allowUndefinedSymbols = options.getAllowUndefinedSymbols();
                     boolean allowUnreachableSymbols = options.getAllowUnreachableSymbols();
                     boolean allowUnproductiveRules = options.getAllowUnproductiveSymbols();
@@ -233,7 +251,8 @@ public class TestDriver {
                     options.setAllowUnreachableSymbols(allowUnreachableSymbols);
                     options.setAllowMultipleDefinitions(allowMultiple);
                 } else {
-                    System.err.println("No app-info options are possible");
+                    TestResult result = results.createResult(appInfo);
+                    result.state = TestState.INAPPLICABLE;
                 }
             }
         } catch (Exception ex) {
@@ -241,16 +260,19 @@ public class TestDriver {
         }
     }
 
-    private XdmNode appInfo(XdmNode node) {
+    private List<XdmNode> appInfo(XdmNode node) {
+        ArrayList<XdmNode> infos = new ArrayList<>();
+
         XdmSequenceIterator<XdmNode> iter = node.axisIterator(Axis.CHILD);
         while (iter.hasNext()) {
             XdmNode child = iter.next();
             if (child.getNodeKind() == XdmNodeKind.ELEMENT
                 && t_app_info.equals(child.getNodeName())) {
-                return child;
+                infos.add(child);
             }
         }
-        return null;
+
+        return infos;
     }
 
     private Map<QName,String> supportedOptions(XdmNode appInfo) {
@@ -303,12 +325,12 @@ public class TestDriver {
         }
 
         if (t_assert_not_a_grammar.equals(assertions.get(0).getNodeName())) {
-            doNotAGrammar(config, testCase, assertions);
+            doNotAGrammar(config, testCase, result, assertions);
             return;
         }
 
         if (t_assert_not_a_sentence.equals(assertions.get(0).getNodeName())) {
-            doNotASentence(config, testCase, assertions);
+            doNotASentence(config, testCase, result, assertions);
             return;
         }
 
@@ -321,7 +343,7 @@ public class TestDriver {
             throw new RuntimeException("Test case has no in-scope grammar?: " + testCase.getAttributeValue(_name));
         }
 
-        doValidParse(config, testCase, assertions);
+        doValidParse(config, testCase, result, assertions);
     }
 
     private void doGrammarTest(TestConfiguration config, XdmNode testCase) throws IOException, URISyntaxException, SaxonApiException {
@@ -338,8 +360,7 @@ public class TestDriver {
             throw new RuntimeException("Test case makes no assertion?: " + testCase.getAttributeValue(_name));
         }
 
-        TestResult tresult = new TestResult(testCase);
-        testResults.put(testCase, tresult);
+        TestResult tresult = results.createResult(result);
 
         if (config.grammar == null) {
             throw new RuntimeException("Test case has no in-scope grammar?: " + testCase.getAttributeValue(_name));
@@ -411,9 +432,8 @@ public class TestDriver {
         }
     }
 
-    private void doValidParse(TestConfiguration config, XdmNode testCase, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
-        TestResult result = new TestResult(testCase);
-        testResults.put(testCase, result);
+    private void doValidParse(TestConfiguration config, XdmNode testCase, XdmNode testResult, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
+        TestResult result = results.createResult(testResult);
 
         XdmNode testString = config.findOne(testCase, t_test_string, t_test_string_ref);
 
@@ -563,11 +583,11 @@ public class TestDriver {
     private boolean deepEqual(XdmValue left, XdmValue right, TestResult result) throws SaxonApiException {
         if (result.expected == null) {
             result.expected = new ArrayList<>();
-            result.expected.add(left);
             result.actual = new ArrayList<>();
-            result.actual.add(right);
             result.deepEqualMessages = new ArrayList<>();
         }
+        result.expected.add(left);
+        result.actual.add(right);
 
         QName a = new QName("", "a");
         QName b = new QName("", "b");
@@ -603,9 +623,8 @@ public class TestDriver {
         return item.getBooleanValue();
     }
 
-    private void doNotASentence(TestConfiguration config, XdmNode testCase, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
-        TestResult result = new TestResult(testCase);
-        testResults.put(testCase, result);
+    private void doNotASentence(TestConfiguration config, XdmNode testCase, XdmNode testResult, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
+        TestResult result = results.createResult(testResult);
 
         XdmNode testString = config.findOne(testCase, t_test_string, t_test_string_ref);
 
@@ -630,8 +649,15 @@ public class TestDriver {
             if (doc.getNumberOfParses() == 0) {
                 result.state = TestState.PASS;
             } else {
-                result.state = TestState.FAIL;
-                result.xml = doc.getTree();
+                // What if attempting to get a parse throws an exception?
+                // This happens, for example, if the result is not a sentence because it
+                // is not well-formed XML (repeated attribute values, etc.)
+                try {
+                    result.xml = doc.getTree();
+                    result.state = TestState.FAIL;
+                } catch (IxmlException ex) {
+                    result.state = TestState.PASS;
+                }
             }
         } catch (GrammarException ex) {
             for (XdmNode assertion : assertions) {
@@ -644,9 +670,8 @@ public class TestDriver {
         }
     }
 
-    private void doNotAGrammar(TestConfiguration config, XdmNode testCase, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
-        TestResult result = new TestResult(testCase);
-        testResults.put(testCase, result);
+    private void doNotAGrammar(TestConfiguration config, XdmNode testCase, XdmNode testResult, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
+        TestResult result = results.createResult(testResult);
 
         try {
             InvisibleXmlParser parser = loadGrammar(config);
