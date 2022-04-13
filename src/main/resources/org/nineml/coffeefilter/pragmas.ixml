@@ -3,96 +3,92 @@ ixml: {[nineml discard empty]} prolog, rule+s, s.
 { ixml with pragmas, hacked by ndw to remove qnames }
 { this comment is after the first rule so that the  }
 { prolog will be empty (and discarded).             }
+{ Based on the 2022-03-17 draft specification       }
 
-prolog: s, (ppragma+s, s)?. 
--ppragma: pragma, s, -'.'.
+       prolog: s, (ppragma+s, s)?. 
+     -ppragma: pragma, s, -'.'.
 
--s: (whitespace; comment)*.
--whitespace: -[Zs]; tab; lf; cr.
--tab: -#9.
--lf: -#a.
--cr: -#d.
-comment: -"{", ((comment; ~[#5B; #5D; "{}"]), (cchar; comment)*)?, -"}".
--cchar: ~["{}"].
+           -s: (whitespace; comment)*.
+  -whitespace: -[Zs]; tab; lf; cr.
+         -tab: -#9.
+          -lf: -#a.
+          -cr: -#d.
+      comment: -"{", ((comment; ~["[]{}"]), (cchar; comment)*)?, -"}".
+       -cchar: ~["{}"].
 
-rule: annotation, name, s, -["=:"], s, -alts, (pragma, sp)?, -".". 
+         rule: annotation, name, s, -["=:"], s, -alts, (pragma, sp)?, -".". 
+        @mark: ["@^-"].
+         alts: alt+(-[";|"], s).
+          alt: term*(-",", s).
+        -term: factor;
+               option;
+               repeat0;
+               repeat1.
+      -factor: terminal;
+               nonterminal;
+               -"(", s, alts, -")", s.
+      repeat0: factor, -"*", s, sep?.
+      repeat1: factor, -"+", s, sep?.
+       option: factor, -"?", s.
+          sep: factor.
 
-@mark: ["@^-"].
-alts: alt+(-[";|"], s).
-alt: term*(-",", s).
--term: factor;
-option;
-repeat0;
-repeat1.
--factor: terminal;
-nonterminal;
--"(", s, alts, -")", s.
-repeat0: factor, -"*", s, sep?.
-repeat1: factor, -"+", s, sep?.
-option: factor, -"?", s.
-sep: factor.
+  nonterminal: annotation, name, s.
+  -annotation: (pragma, sp)?, (mark, sp)?.
+          -sp: (whitespace; comment; pragma)*.
 
-nonterminal: annotation, name, s.
--annotation: (pragma, sp)?, (mark, sp)?.
--sp: (whitespace; comment; pragma)*.
+        @name: namestart, namefollower*.
+   -namestart: ["_"; L].
+-namefollower: namestart; ["-·‿⁀"; Nd; Mn].
 
--terminal: literal; 
-charset.
-literal: quoted;
-encoded.
--quoted: tannotation, string.
+    -terminal: literal; 
+               charset.
+      literal: quoted;
+               encoded.
+      -quoted: tannotation, string, s.
+ -tannotation: (pragma, sp)?, (tmark, sp)?.
 
-@name: namestart, namefollower*.
--namestart: ["_"; L].
--namefollower: namestart; ["-.·‿⁀"; Nd; Mn].
+       @tmark: ["^-"].
+      @string: -'"', dchar+, -'"';
+               -"'", schar+, -"'".
+        dchar: ~['"'; #a; #d];
+               '"', -'"'. {all characters except line breaks; quotes must be doubled}
+        schar: ~["'"; #a; #d];
+               "'", -"'". {all characters except line breaks; quotes must be doubled}
+     -encoded: tannotation, -"#", hex, s.
 
--tannotation: (pragma, sp)?, (tmark, sp)?.
+         @hex: ["0"-"9"; "a"-"f"; "A"-"F"]+.
 
-@tmark: ["^-"].
-@string: -'"', dchar+, -'"', s;
--"'", schar+, -"'", s.
-dchar: ~['"'; #a; #d];
-'"', -'"'. {all characters except line breaks; quotes must be doubled}
-schar: ~["'"; #a; #d];
-"'", -"'". {all characters except line breaks; quotes must be doubled}
+     -charset: inclusion; 
+               exclusion.
+    inclusion: tannotation,          set.
+    exclusion: tannotation, -"~", s, set.
+         -set: -"[", s,  member*(s, -[";|"], s), s, -"]", s.
+       member: string;
+               -"#", hex;
+               range;
+               class.
+       -range: from, s, -"-", s, to, s.
+        @from: character.
+          @to: character.
+   -character: -'"', dchar, -'"';
+               -"'", schar, -"'";
+               "#", hex.
+       -class: code, s.
+        @code: capital, letter?.
+     -capital: ["A"-"Z"].
+      -letter: ["a"-"z"].
 
--encoded: tannotation, -"#", @hex, s.
-
-hex: ["0"-"9"; "a"-"f"; "A"-"F"]+.
-
--charset: inclusion; 
-exclusion.
-inclusion: tannotation,          set.
-exclusion: tannotation, -"~", s, set.
--set: -"[", s,  member*(-[";|"], s), -"]", s.
--member: literal;
-range;
-class.
-range: from, s, -"-", s, to, s.
-@from: character.
-@to: character.
--character: -'"', dchar, -'"';
--"'", schar, -"'";
-"#", hex.
-class: code, s.
-@code: capital, letter?.
--capital: ["A"-"Z"].
--letter: ["a"-"z"].
-
-pragma: pld, @pmark?, @name, (whitespace, pragma-data)?, prd. 
+       pragma: -"{[", @pmark?, @name, (whitespace, pragma-data)?, -"]}" . 
 {
-@pname: -QName; -UQName. 
+       @pname: -QName; -UQName. 
 }
-@pmark: ["@^?"].
-pragma-data: (-pragma-char; -bracket-pair)*.
--pragma-char: ~["{}"].
+       @pmark: ["@^?"].
+  pragma-data: (-pragma-char; -bracket-pair)*.
+ -pragma-char: ~["{}"].
 -bracket-pair: '{', -pragma-data, '}'.
 
 {
--QName: -name, ':', -name.
--UQName: 'Q{', -ns-name, '}', -name.
--ns-name: ~["{}"; '"'; "'"]* .
+       -QName: -name, ':', -name.
+      -UQName: 'Q{', -ns-name, '}', -name.
+     -ns-name: ~["{}"; '"'; "'"]* .
 }
-
--pld: -"{[".
--prd: -"]}".

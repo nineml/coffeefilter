@@ -2,6 +2,7 @@ package org.nineml.coffeefilter;
 
 import net.sf.saxon.s9api.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.nineml.coffeegrinder.parser.Ambiguity;
@@ -15,8 +16,9 @@ import static org.junit.Assert.fail;
 public class AmbiguityTest {
     private static InvisibleXml invisibleXml = new InvisibleXml();
 
-    @Test
+    @Ignore
     public void parsePragmas() {
+        // What was this for? These files don't even exist anymore...
         try {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/pragmas.ixml"));
             InvisibleXmlDocument doc = parser.parse(new File("src/test/resources/pragmas-test.ixml"));

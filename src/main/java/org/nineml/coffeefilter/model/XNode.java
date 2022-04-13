@@ -83,43 +83,8 @@ public abstract class XNode {
             case "alts":
                 child = new IAlts(this);
                 break;
-            case "capital":
-                child = new ICapital(this);
-                break;
-            case "cchar":
-                child = new ICChar(this);
-                break;
-            case "character":
-                child = new ICharacter(this);
-                break;
-            case "charset":
-                child = new ICharset(this);
-                break;
-            case "class":
-                child = new IClass(this, attributes.getValue("code"));
-                break;
-            case "code":
-                child = new ICode(this);
-                break;
             case "comment":
                 child = new IComment(this);
-                break;
-            case "cr":
-                child = new ICr(this);
-                break;
-            case "dchar":
-                child = new IDChar(this);
-                break;
-            case "encoded":
-                tmark = attributes.getValue("tmark");
-                if (tmark == null) {
-                    child = new IEncoded(this, '^');
-                } else {
-                    if (tmark.length() != 1) {
-                        throw new IllegalArgumentException("tmark attribute must be a single character");
-                    }
-                    child = new IEncoded(this, tmark.charAt(0));
-                }
                 break;
             case "exclusion":
                 tmark = attributes.getValue("tmark");
@@ -132,15 +97,6 @@ public abstract class XNode {
                     child = new IExclusion(this, tmark.charAt(0));
                 }
                 break;
-            case "factor":
-                child = new IFactor(this);
-                break;
-            case "from":
-                child = new IFrom(this);
-                break;
-            case "hex":
-                child = new IHex(this);
-                break;
             case "inclusion":
                 tmark = attributes.getValue("tmark");
                 if (tmark == null) {
@@ -152,20 +108,8 @@ public abstract class XNode {
                     child = new IInclusion(this, tmark.charAt(0));
                 }
                 break;
-            case "letter":
-                child = new ILetter(this);
-                break;
-            case "lf":
-                child = new ILf(this);
-                break;
             case "literal":
                 String str = attributes.getValue("string");
-                if (str == null) {
-                    str = attributes.getValue("dstring");
-                }
-                if (str == null) {
-                    str = attributes.getValue("sstring");
-                }
                 tmark = attributes.getValue("tmark");
                 if (tmark == null) {
                     child = new ILiteral(this, '^', str, attributes.getValue("hex"));
@@ -176,20 +120,42 @@ public abstract class XNode {
                     child = new ILiteral(this, tmark.charAt(0), str, attributes.getValue("hex"));
                 }
                 break;
-            case "mark":
-                child = new IMark(this);
-                break;
             case "member":
-                child = new IMember(this);
-                break;
-            case "name":
-                child = new IName(this);
-                break;
-            case "namefollower":
-                child = new INamefollower(this);
-                break;
-            case "namestart":
-                child = new INamestart(this);
+                // Must have exactly one of:
+                // @string, @hex, @code or both of @from, @to
+                if (attributes.getIndex("string") >= 0
+                    && (attributes.getIndex("hex") >= 0
+                        || attributes.getIndex("code") >= 0
+                        || attributes.getIndex("from") >= 0
+                        || attributes.getIndex("to") >= 0)) {
+                    throw new IllegalArgumentException("Exactly one of string, hex, code, from/to must be specified on member");
+                }
+
+                if (attributes.getIndex("hex") >= 0
+                        && (attributes.getIndex("code") >= 0
+                        || attributes.getIndex("from") >= 0
+                        || attributes.getIndex("to") >= 0)) {
+                    throw new IllegalArgumentException("Exactly one of hex, code, from/to must be specified on member");
+                }
+
+                if (attributes.getIndex("code") >= 0
+                        && (attributes.getIndex("from") >= 0
+                        || attributes.getIndex("to") >= 0)) {
+                    throw new IllegalArgumentException("Exactly one of code, from/to must be specified on member");
+                }
+
+                IMember member = new IMember(this);
+                if (attributes.getIndex("string") >= 0) {
+                    member.setString(attributes.getValue("string"));
+                } else if (attributes.getIndex("hex") >= 0) {
+                    member.setHex(attributes.getValue("hex"));
+                } else if (attributes.getIndex("code") >= 0) {
+                    member.setCode(attributes.getValue("code"));
+                } else {
+                    member.setRange(attributes.getValue("from"), attributes.getValue("to"));
+                }
+
+                child = member;
                 break;
             case "nonterminal":
                 mark = attributes.getValue("mark");
@@ -204,20 +170,6 @@ public abstract class XNode {
                 break;
             case "option":
                 child = new IOption(this);
-                break;
-            case "quoted":
-                tmark = attributes.getValue("tmark");
-                if (tmark == null) {
-                    child = new IQuoted(this, '^');
-                } else {
-                    if (tmark.length() != 1) {
-                        throw new IllegalArgumentException("tmark attribute must be a single character");
-                    }
-                    child = new IQuoted(this, tmark.charAt(0));
-                }
-                break;
-            case "range":
-                child = new IRange(this, attributes.getValue("from"), attributes.getValue("to"));
                 break;
             case "repeat0":
                 child = new IRepeat0(this);
@@ -236,12 +188,6 @@ public abstract class XNode {
                     child = new IRule(this, attributes.getValue("name"), mark.charAt(0));
                 }
                 break;
-            case "s":
-                child = new IS(this);
-                break;
-            case "schar":
-                child = new ISChar(this);
-                break;
             case "sep":
                 child = new ISep(this);
                 break;
@@ -251,28 +197,11 @@ public abstract class XNode {
             case "string":
                 child = new IString(this);
                 break;
-            case "tab":
-                child = new ITab(this);
-                break;
-            case "term":
-                child = new ITerm(this);
-                break;
-            case "terminal":
-                child = new ITerminal(this);
-                break;
-            case "tmark":
-                child = new ITMark(this);
-                break;
-            case "to":
-                child = new ITo(this);
-                break;
-            case "whitespace":
-                child = new IWhitespace(this);
-                break;
             case "prolog":
                 child = new IProlog(this);
                 break;
             case "pragma":
+            case "ppragma":
                 String pname = attributes.getValue("name");
                 child = new IPragma(this, pname);
                 break;
