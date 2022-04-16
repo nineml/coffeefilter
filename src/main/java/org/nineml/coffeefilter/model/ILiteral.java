@@ -38,7 +38,7 @@ public class ILiteral extends XTerminal implements TMarked {
         if (string != null && hex != null) {
             throw new IllegalArgumentException("ILiteral needs exactly one of string or hex");
         }
-        if (tmark != '^' && tmark != '-') {
+        if (tmark != ' ' && tmark != '-' && tmark != '^') {
             throw IxmlException.invalidTMark(tmark);
         }
 
@@ -112,6 +112,17 @@ public class ILiteral extends XTerminal implements TMarked {
      */
     public String getHex() {
         return hex;
+    }
+
+    public String getTokenString() {
+        if (string != null) {
+            return string;
+        }
+
+        int cp = TokenUtils.convertHex(hex);
+        StringBuilder sb = new StringBuilder();
+        sb.appendCodePoint(cp);
+        return sb.substring(0, 1);
     }
 
     /**

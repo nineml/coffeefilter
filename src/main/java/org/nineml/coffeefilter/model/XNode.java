@@ -112,7 +112,7 @@ public abstract class XNode {
                 String str = attributes.getValue("string");
                 tmark = attributes.getValue("tmark");
                 if (tmark == null) {
-                    child = new ILiteral(this, '^', str, attributes.getValue("hex"));
+                    child = new ILiteral(this, ' ', str, attributes.getValue("hex"));
                 } else {
                     if (tmark.length() != 1) {
                         throw new IllegalArgumentException("tmark attribute must be a single character");
