@@ -3,6 +3,7 @@ package org.nineml.coffeefilter;
 import net.sf.saxon.s9api.*;
 import net.sf.saxon.s9api.DocumentBuilder;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -11,7 +12,15 @@ import java.io.File;
 import static org.junit.Assert.fail;
 
 public class ParserTest {
-    private static InvisibleXml invisibleXml = new InvisibleXml();
+    private InvisibleXml invisibleXml;
+    private ParserOptions options;
+
+    @Before
+    public void setup() {
+        options = new ParserOptions();
+        options.setPedantic(true);
+        invisibleXml = new InvisibleXml(options);
+    }
 
     @Test
     public void parseDate() {
@@ -55,7 +64,7 @@ public class ParserTest {
     @Test
     public void hash() {
         try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/hash.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/correct/hash.ixml"));
 
             String input = "#12.";
             InvisibleXmlDocument doc = parser.parse(input);
@@ -80,7 +89,7 @@ public class ParserTest {
     @Test
     public void vcard() {
         try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/vcard.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/correct/vcard.ixml"));
 
             String input = "BEGIN:VCARD\n" +
                     "VERSION:3.0\n" +
@@ -116,7 +125,7 @@ public class ParserTest {
     @Test
     public void css() {
         try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/css.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/ambiguous/css.ixml"));
             String input = "body { color: blue;}";
 
             InvisibleXmlDocument doc = parser.parse(input);

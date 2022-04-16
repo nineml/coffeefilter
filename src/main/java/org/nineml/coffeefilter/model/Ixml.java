@@ -9,10 +9,12 @@ import org.nineml.coffeegrinder.parser.Rule;
 import org.nineml.coffeegrinder.parser.Symbol;
 import org.nineml.coffeegrinder.parser.TerminalSymbol;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
+import org.nineml.coffeegrinder.tokens.TokenString;
 import org.nineml.coffeegrinder.util.ParserAttribute;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -255,15 +257,45 @@ public class Ixml extends XNonterminal {
         grammar = new Grammar(options);
 
         ArrayList<ParserAttribute> attributes = new ArrayList<>();
+        String insRule = null;
+        HashMap<Integer,String> insAfter = new HashMap<>();
         for (XNode child : children) {
+            int inspos = -1;
             if (child instanceof IRule) {
                 IRule rule = (IRule) child;
+
+                insRule = null;
+                insAfter.clear();
+                for (XNode cat: rule.children) {
+                    if (cat instanceof ILiteral && ((ILiteral) cat).getTMark() == '^') {
+                        final ILiteral lit = (ILiteral) cat;
+                        final String gentext = lit.getTokenString();
+                        if (inspos < 0) {
+                            if (insRule == null) {
+                                insRule = gentext;
+                            } else {
+                                insRule += gentext;
+                            }
+                        } else {
+                            if (insAfter.containsKey(inspos)) {
+                                insAfter.put(inspos, insAfter.get(inspos) + gentext);
+                            } else {
+                                insAfter.put(inspos, gentext);
+                            }
+                        }
+                    } else {
+                        inspos++;
+                    }
+                }
 
                 attributes.clear();
                 attributes.add(new ParserAttribute("mark", ""+rule.getMark()));
                 attributes.add(new ParserAttribute("name", rule.getName()));
                 if (rule.getName().startsWith("$")) {
                     attributes.add(ParserAttribute.PRUNING_ALLOWED);
+                }
+                if (insRule != null) {
+                    attributes.add(new ParserAttribute("insertion", insRule));
                 }
                 if (startRule.equals(rule.getName())) {
                     for (IPragma pragma : pragmas) {
@@ -285,15 +317,25 @@ public class Ixml extends XNonterminal {
 
                 NonterminalSymbol ruleSymbol = grammar.getNonterminal(rule.getName(), attributes);
 
+                inspos = -1;
                 ArrayList<Symbol> rhs = new ArrayList<>();
                 for (XNode cat: rule.children) {
                     attributes.clear();
+
+                    if (!(cat instanceof ILiteral) || ((ILiteral) cat).getTMark() != '^') {
+                        inspos++;
+                        if (insAfter.containsKey(inspos)) {
+                            attributes.add(new ParserAttribute("insertion", insAfter.get(inspos)));
+                        }
+                    }
 
                     if (cat.isOptional()) {
                         attributes.add(Symbol.OPTIONAL);
                     }
 
-                    if (cat instanceof XNonterminal) {
+                    if (cat instanceof ILiteral && ((ILiteral) cat).getTMark() == '^') {
+                        // ignore this
+                    } else if (cat instanceof XNonterminal) {
                         XNonterminal nt = (XNonterminal) cat;
                         if (cat instanceof INonterminal) {
                             attributes.add(new ParserAttribute("mark", ""+((INonterminal) cat).getMark()));
@@ -315,8 +357,10 @@ public class Ixml extends XNonterminal {
                         rhs.add(nts);
                     } else if (cat instanceof ILiteral) {
                         ILiteral lit = (ILiteral) cat;
+                        final String grammarTerminal = lit.getTokenString();
 
                         attributes.add(new ParserAttribute("tmark", ""+lit.getTMark()));
+
                         ArrayList<ParserAttribute> accumulator = attributes;
                         IPragmaRewrite rewrite = null;
                         for (IPragma pragma : cat.pragmas) {
@@ -333,18 +377,14 @@ public class Ixml extends XNonterminal {
                             attributes.add(new ParserAttribute("rewrite", rewrite.getPragmaData()));
                         }
 
-                        if (lit.getString() == null) {
-                            int cp = TokenUtils.convertHex(lit.getHex());
-                            StringBuilder sb = new StringBuilder();
-                            sb.appendCodePoint(cp);
-                            rhs.add(new TerminalSymbol(TokenCharacter.get(sb.toString().charAt(0)), attributes));
+                        if ("".equals(grammarTerminal)) {
+                            rhs.add(new TerminalSymbol(TokenString.get(""), attributes));
                         } else {
-                            String str = lit.getString();
-                            for (int pos = 0; pos < str.length(); pos++) {
-                                if (pos+1 == str.length()) {
-                                    rhs.add(new TerminalSymbol(TokenCharacter.get(str.charAt(pos)), attributes));
+                            for (int pos = 0; pos < grammarTerminal.length(); pos++) {
+                                if (pos+1 == grammarTerminal.length()) {
+                                    rhs.add(new TerminalSymbol(TokenCharacter.get(grammarTerminal.charAt(pos)), attributes));
                                 } else {
-                                    rhs.add(new TerminalSymbol(TokenCharacter.get(str.charAt(pos)), accumulator));
+                                    rhs.add(new TerminalSymbol(TokenCharacter.get(grammarTerminal.charAt(pos)), accumulator));
                                 }
                             }
                         }

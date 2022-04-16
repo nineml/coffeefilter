@@ -106,10 +106,15 @@ public class CommonBuilder {
         }
     }
 
-    private void terminal(ParseTree tree, char mark, char ch, boolean acc, String rewrite) {
+    private void terminal(ParseTree tree, char mark, char ch, boolean acc, String rewrite, String insertion) {
         //System.err.println("TT2: " + tree);
         if (mark == '-') {
             return;
+        }
+
+        if (rewrite != null && insertion != null) {
+            insertion = rewrite;
+            rewrite = null;
         }
 
         if (rewrite != null) {
@@ -122,6 +127,9 @@ public class CommonBuilder {
                 stack.push(item);
             } else {
                 stack.peek().add(item);
+            }
+            if (insertion != null) {
+                stack.peek().add(new PartialOutput(insertion));
             }
         }
     }
@@ -194,9 +202,10 @@ public class CommonBuilder {
 
             String acc = getAttribute(symbol, xsymbol, "acc");
             String rewrite = getAttribute(symbol, xsymbol, "rewrite");
+            String insertion = getAttribute(symbol, xsymbol, "insertion");
 
             char ch = ((TokenCharacter) token).getCharacter();
-            terminal(tree, mark, ch, acc != null, rewrite);
+            terminal(tree, mark, ch, acc != null, rewrite, insertion);
         } else {
             if (child1 != null) {
                 pos = getSymbol(child1.getSymbol(), state, state.getPosition());
@@ -222,6 +231,11 @@ public class CommonBuilder {
             localName = getAttribute(symbol, xsymbol, "name");
             startNonterminal(tree, mark, localName, getAttributes(symbol, xsymbol));
 
+            String gentext = symbol.getAttributeValue("insertion", null);
+            if (gentext != null) {
+                stack.peek().add(new PartialOutput(gentext));
+            }
+
             if (child0 != null) {
                 constructTree(child0, child0Symbol);
             }
@@ -231,6 +245,13 @@ public class CommonBuilder {
             }
 
             endNonterminal(tree, localName);
+
+            if (xsymbol != null) {
+                gentext = xsymbol.getAttributeValue("insertion", null);
+                if (gentext != null) {
+                    stack.peek().add(new PartialOutput(gentext));
+                }
+            }
         }
     }
 
@@ -340,19 +361,20 @@ public class CommonBuilder {
                 attributes.add(item);
                 return;
             }
+
             if (children.isEmpty()) {
                 children.add(item);
-                return;
-            }
-            if (item.name == null) {
-                PartialOutput last = children.get(children.size() - 1);
-                if (last.name == null && last.accumulator == item.accumulator) {
-                    last.text += item.text;
+            } else {
+                if (item.name == null) {
+                    PartialOutput last = children.get(children.size() - 1);
+                    if (last.name == null && last.accumulator == item.accumulator) {
+                        last.text += item.text;
+                    } else {
+                        children.add(item);
+                    }
                 } else {
                     children.add(item);
                 }
-            } else {
-                children.add(item);
             }
         }
 
