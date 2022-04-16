@@ -128,7 +128,7 @@ task pedanticTestSuite(type: JavaExec,
 
   classpath = configurations.testsuite
   main = 'org.nineml.coffeefilter.TestDriver'
-  args = ["-e:${projectDir}/src/test/resources/test-suite-exceptions",
+  args = ["-e:${projectDir}/src/test/resources/pedantic-test-suite-exceptions",
           "-r:${buildDir}/test-report-pedantic.xml",
           '--pedantic',
           'ixml/tests/test-catalog.xml']

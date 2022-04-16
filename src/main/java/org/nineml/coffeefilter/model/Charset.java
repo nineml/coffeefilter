@@ -35,8 +35,10 @@ public abstract class Charset extends XTerminal implements TMarked {
     public List<CharacterSet> getCharacterSets() {
         ArrayList<CharacterSet> setlist = new ArrayList<>();
         for (XNode child : children) {
-            if (child instanceof XTerminal) {
-                setlist.addAll(((XTerminal) child).getCharacterSets());
+            if (child instanceof IMember) {
+                setlist.add(((IMember) child).charset);
+            } else {
+                throw new RuntimeException("Charset child is not a member: " + child);
             }
         }
         return setlist;

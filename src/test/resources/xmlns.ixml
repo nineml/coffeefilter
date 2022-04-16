@@ -1,4 +1,4 @@
-{[nineml xmlns "http://example.com/"]} .
+{[+nineml xmlns "http://example.com/"]}
 date: year, -"-", {[nineml rename month]} nmonth, -"-", day.
 nmonth: d, d .
 year: d, d, d, d.

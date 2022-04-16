@@ -55,7 +55,7 @@ public class ParserTest {
     @Test
     public void hash() {
         try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/correct/hash.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/hash.ixml"));
 
             String input = "#12.";
             InvisibleXmlDocument doc = parser.parse(input);
@@ -80,7 +80,7 @@ public class ParserTest {
     @Test
     public void vcard() {
         try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/correct/vcard.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/vcard.ixml"));
 
             String input = "BEGIN:VCARD\n" +
                     "VERSION:3.0\n" +
@@ -116,7 +116,7 @@ public class ParserTest {
     @Test
     public void css() {
         try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/tests/ambiguous/css.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/css.ixml"));
             String input = "body { color: blue;}";
 
             InvisibleXmlDocument doc = parser.parse(input);

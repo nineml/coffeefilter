@@ -106,8 +106,6 @@ public class Ixml extends XNonterminal {
         for (XNode child : children) {
             if (child instanceof IRule) {
                 rules.add((IRule) child);
-            } else if (child instanceof IS) {
-                // ignore
             } else {
                 throw new RuntimeException(this + " child: " + child);
             }
