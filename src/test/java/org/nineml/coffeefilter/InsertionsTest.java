@@ -34,7 +34,6 @@ public class InsertionsTest {
             InvisibleXmlDocument doc = parser.parse("100,200,(300),400");
             String xml = doc.getTree();
             Assertions.assertEquals("<data xmlns=\"http://example.com/data\"><value>+100</value><value>+200</value><value>-300</value><value>+400</value></data>", xml);
-            System.err.println(xml);
         } catch (IOException ex) {
             fail();
         }

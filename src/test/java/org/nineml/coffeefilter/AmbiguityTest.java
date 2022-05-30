@@ -22,13 +22,13 @@ public class AmbiguityTest {
         try {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/pragmas.ixml"));
             InvisibleXmlDocument doc = parser.parse(new File("src/test/resources/pragmas-test.ixml"));
-            Ambiguity ambiguity = doc.getEarleyResult().getForest().getAmbiguity();
+            Ambiguity ambiguity = doc.getResult().getForest().getAmbiguity();
             Assertions.assertFalse(ambiguity.getAmbiguous());
             Assertions.assertFalse(ambiguity.getInfinitelyAmbiguous());
 
             InvisibleXmlParser parser2 = invisibleXml.getParser(new File("src/test/resources/pragmas.cxml"));
             InvisibleXmlDocument doc2 = parser2.parse(new File("src/test/resources/pragmas-test.ixml"));
-            ambiguity = doc2.getEarleyResult().getForest().getAmbiguity();
+            ambiguity = doc2.getResult().getForest().getAmbiguity();
             Assertions.assertFalse(ambiguity.getAmbiguous());
             Assertions.assertFalse(ambiguity.getInfinitelyAmbiguous());
 

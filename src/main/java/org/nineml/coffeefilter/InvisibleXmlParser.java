@@ -6,6 +6,8 @@ import org.nineml.coffeefilter.model.IxmlCompiler;
 import org.nineml.coffeefilter.model.IxmlContentHandler;
 import org.nineml.coffeefilter.utils.CharacterIterator;
 import org.nineml.coffeefilter.utils.CommonBuilder;
+import org.nineml.coffeegrinder.gll.GllParser;
+import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
@@ -13,6 +15,7 @@ import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import java.io.*;
 import java.net.URI;
 import java.net.URLConnection;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -215,14 +218,24 @@ public class InvisibleXmlParser {
 
         Grammar grammar = ixml.getGrammar(options);
 
+/*
+        GllParser gparser = (GllParser) grammar.getParser(ParserType.GLL, grammar.getNonterminal("$$"));
+        gparser.trace = false;
+        long start = Calendar.getInstance().getTimeInMillis();
+        GllResult gresult = gparser.parse(input);
+        long stop = Calendar.getInstance().getTimeInMillis();
+        System.err.println(stop - start);
+*/
+
         CharacterIterator iterator = new CharacterIterator(input);
-        EarleyParser parser = grammar.getParser(grammar.getNonterminal("$$"));
-        EarleyResult result = parser.parse(iterator);
+        GearleyParser parser = grammar.getParser(grammar.getNonterminal("$$"));
+        GearleyResult result = parser.parse(iterator);
 
         InvisibleXmlDocument doc;
-        if (!result.succeeded() && result.prefixSucceeded() && options.getIgnoreTrailingWhitespace()) {
+        if (parser.getParserType() == ParserType.Earley
+            && !result.succeeded() && result.prefixSucceeded() && options.getIgnoreTrailingWhitespace()) {
             boolean ok = true;
-            Iterator<Token> remaining = result.getContinuingIterator();
+            Iterator<Token> remaining = ((EarleyResult) result).getContinuingIterator();
             while (remaining.hasNext()) {
                 Token token = remaining.next();
                 ok = ok && (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCharacter());

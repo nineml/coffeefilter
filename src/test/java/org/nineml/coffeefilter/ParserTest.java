@@ -166,17 +166,4 @@ public class ParserTest {
         Assertions.assertEquals("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">a<sep>.</sep><sep/><sep/><sep/><sep/>b</S>",
                 doc.getTree());
     }
-
-    @Test
-    public void comments() {
-        try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/comments.ixml"));
-            String input = "hello";
-            InvisibleXmlDocument doc = parser.parse(input);
-            Assert.assertTrue(doc.getNumberOfParses() > 0);
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-            fail();
-        }
-    }
 }

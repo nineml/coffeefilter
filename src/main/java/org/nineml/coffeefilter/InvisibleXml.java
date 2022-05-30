@@ -282,15 +282,15 @@ public class InvisibleXml {
             return new InvisibleXmlParser(doc, doc.parseTime());
         }
 
-        ParseTree tree = doc.getEarleyResult().getForest().parse();
-        CommonBuilder builder = new CommonBuilder(tree, doc.getEarleyResult(), options);
+        ParseTree tree = doc.getResult().getForest().parse();
+        CommonBuilder builder = new CommonBuilder(tree, doc.getResult(), options);
 
         try {
             IxmlContentHandler handler = new IxmlContentHandler(options);
             builder.build(handler);
             Ixml ixml = handler.getIxml();
 
-            InvisibleXmlParser parser = new InvisibleXmlParser(ixml, doc.getEarleyResult().getParseTime());
+            InvisibleXmlParser parser = new InvisibleXmlParser(ixml, doc.getResult().getParseTime());
 
             HygieneReport report = parser.getHygieneReport();
             if (!report.isClean()) {

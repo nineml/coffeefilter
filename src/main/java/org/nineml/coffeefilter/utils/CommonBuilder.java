@@ -35,7 +35,7 @@ public class CommonBuilder {
     private boolean prefix = false;
     private String xmlns = "";
 
-    public CommonBuilder(ParseTree tree, EarleyResult result, ParserOptions options) {
+    public CommonBuilder(ParseTree tree, GearleyResult result, ParserOptions options) {
         this.options = options;
         if (tree == null) {
             options.getLogger().trace(logcategory, "No tree");

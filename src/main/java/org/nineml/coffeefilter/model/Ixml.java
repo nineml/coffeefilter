@@ -409,7 +409,7 @@ public class Ixml extends XNonterminal {
             }
         }
 
-        grammar.close();
+        grammar.close(grammar.getNonterminal("$$"));
     }
 
     /**

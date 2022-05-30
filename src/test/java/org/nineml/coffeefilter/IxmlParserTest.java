@@ -38,18 +38,4 @@ public class IxmlParserTest {
             fail();
         }
     }
-
-
-    /*
-    @Test
-    public void testParseProgram() {
-        try {
-            InvisibleXmlParser parser = InvisibleXml.getParser(new File("test-suite/correct/program.ixml"));
-            System.err.println(parser.getCompiledParser());
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-            fail();
-        }
-    }
-     */
 }

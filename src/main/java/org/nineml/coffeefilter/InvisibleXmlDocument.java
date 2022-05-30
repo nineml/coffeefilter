@@ -28,7 +28,7 @@ import java.util.Set;
  * there may be more than one.</p>
  */
 public class InvisibleXmlDocument {
-    private final EarleyResult result;
+    private final GearleyResult result;
     private final boolean prefixOk;
     private final TreeWalker treeWalker;
     private ParserOptions options;
@@ -37,7 +37,7 @@ public class InvisibleXmlDocument {
     private int columnNumber = -1;
     private int offset = -1;
 
-    protected InvisibleXmlDocument(EarleyResult result, ParserOptions options) {
+    protected InvisibleXmlDocument(GearleyResult result, ParserOptions options) {
         this.result = result;
         this.prefixOk = false;
         this.options = options;
@@ -48,7 +48,7 @@ public class InvisibleXmlDocument {
         }
     }
 
-    protected InvisibleXmlDocument(EarleyResult result, ParserOptions options, boolean prefixOk) {
+    protected InvisibleXmlDocument(GearleyResult result, ParserOptions options, boolean prefixOk) {
         this.result = result;
         this.prefixOk = prefixOk;
         this.options = options;
@@ -115,7 +115,7 @@ public class InvisibleXmlDocument {
      * Return the underlying {@link EarleyResult} result for this parse.
      * @return the result
      */
-    public EarleyResult getEarleyResult() {
+    public GearleyResult getResult() {
         return result;
     }
 
@@ -258,7 +258,7 @@ public class InvisibleXmlDocument {
 
             TokenCharacter tchar = (TokenCharacter) result.getLastToken();
             if (tchar != null) {
-                if (result.getParser().moreInput()) {
+                if (result.getParser().hasMoreInput()) {
                     atomicValue(handler, "unexpected", ""+tchar.getValue());
                 } else {
                     atomicValue(handler, "end-of-input", "true");
@@ -266,42 +266,45 @@ public class InvisibleXmlDocument {
             }
 
             boolean predictedSome = false;
-            List<Token> oknext = couldBeNext(result.predictedTerminals());
+            List<Token> oknext = couldBeNext(result.getPredictedTerminals());
             if (!oknext.isEmpty()) {
                 predictedSome = true;
                 tokenList(handler, oknext, "permitted");
             }
 
-            oknext = couldBeNext(result.getChart(), result.getParser().getGrammar());
-            if (!oknext.isEmpty()) {
-                String elemName = "permitted";
-                if (predictedSome) {
-                    elemName = "also-predicted";
-                }
-                tokenList(handler, oknext, elemName);
-            }
-
-            if (options.getShowChart()) {
-                handler.startElement("", "chart", "chart", AttributeBuilder.EMPTY_ATTRIBUTES);
-
-                for (int row = 0; row < result.getChart().size(); row++) {
-                    if (!result.getChart().get(row).isEmpty()) {
-                        attrs = new AttributeBuilder(options);
-                        attrs.addAttribute("n", ""+row);
-                        handler.startElement("", "row", "row", attrs);
-
-                        attrs = new AttributeBuilder(options);
-                        for (EarleyItem item : result.getChart().get(row)) {
-                            writeString(handler,"  ");
-                            handler.startElement("", "item", "item", attrs);
-                            writeString(handler, item.toString());
-                            handler.endElement("", "item", "item");
-                        }
-
-                        handler.endElement("", "row", "row");
+            if (result instanceof EarleyResult) {
+                EarleyResult eresult = (EarleyResult) result;
+                oknext = couldBeNext(eresult.getChart(), result.getParser().getGrammar());
+                if (!oknext.isEmpty()) {
+                    String elemName = "permitted";
+                    if (predictedSome) {
+                        elemName = "also-predicted";
                     }
+                    tokenList(handler, oknext, elemName);
                 }
-                handler.endElement("", "chart", "chart");
+
+                if (options.getShowChart()) {
+                    handler.startElement("", "chart", "chart", AttributeBuilder.EMPTY_ATTRIBUTES);
+
+                    for (int row = 0; row < eresult.getChart().size(); row++) {
+                        if (!eresult.getChart().get(row).isEmpty()) {
+                            attrs = new AttributeBuilder(options);
+                            attrs.addAttribute("n", ""+row);
+                            handler.startElement("", "row", "row", attrs);
+
+                            attrs = new AttributeBuilder(options);
+                            for (EarleyItem item : eresult.getChart().get(row)) {
+                                writeString(handler,"  ");
+                                handler.startElement("", "item", "item", attrs);
+                                writeString(handler, item.toString());
+                                handler.endElement("", "item", "item");
+                            }
+
+                            handler.endElement("", "row", "row");
+                        }
+                    }
+                    handler.endElement("", "chart", "chart");
+                }
             }
 
             handler.endElement("", "fail", "failed");
