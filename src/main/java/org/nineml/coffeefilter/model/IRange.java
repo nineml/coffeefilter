@@ -106,7 +106,7 @@ public class IRange extends XTerminal {
     @Override
     public String getName() {
         if (name == null) {
-            name = getRoot().nextRuleName() + "_range_" + from + "_" + to;
+            name = getRoot().nextRuleName("_range_" + from + "_" + to);
         }
         return name;
     }

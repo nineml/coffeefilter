@@ -64,7 +64,7 @@ public class IRule extends XNonterminal {
             if (child.children.isEmpty() || (child instanceof IInclusion) | (child instanceof IExclusion)) {
                 newchildren.add(child);
             } else {
-                String newname = root.nextRuleName() + "_" + child.getNodeName();
+                String newname = root.nextRuleName(child.getNodeName());
                 INonterminal newnt = new INonterminal(parent, newname, '-');
                 newchildren.add(newnt);
 

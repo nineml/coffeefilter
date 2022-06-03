@@ -112,13 +112,17 @@ public abstract class XNode {
                 String str = attributes.getValue("string");
                 tmark = attributes.getValue("tmark");
                 if (tmark == null) {
-                    child = new ILiteral(this, ' ', str, attributes.getValue("hex"));
+                    child = new ILiteral(this, '^', str, attributes.getValue("hex"));
                 } else {
                     if (tmark.length() != 1) {
                         throw new IllegalArgumentException("tmark attribute must be a single character");
                     }
                     child = new ILiteral(this, tmark.charAt(0), str, attributes.getValue("hex"));
                 }
+                break;
+            case "insertion":
+                str = attributes.getValue("string");
+                child = new IInsertion(this, str, attributes.getValue("hex"));
                 break;
             case "member":
                 // Must have exactly one of:
@@ -199,6 +203,10 @@ public abstract class XNode {
                 break;
             case "prolog":
                 child = new IProlog(this);
+                break;
+            case "version":
+                String version = attributes.getValue("string");
+                child = new IVersion(this, version);
                 break;
             case "pragma":
             case "ppragma":
@@ -406,6 +414,12 @@ public abstract class XNode {
                     for (IPragma pragma : child.pragmas) {
                         addPragma(pragma);
                     }
+                    for (XNode pchild : child.children) {
+                        if (pchild instanceof IVersion) {
+                            // Gross!
+                            ((Ixml) this).version = ((IVersion) pchild).getVersion();
+                        }
+                    }
                 } else if (child instanceof IPragma) {
                     IPragma pragma = (IPragma) child;
                     if ("nineml".equals(pragma.name)) {
@@ -477,7 +491,7 @@ public abstract class XNode {
                         root.emptyProduction = true;
                     }
                 } else {
-                    String altname = "|" + root.nextRuleName();
+                    String altname = root.nextRuleName("alt");
                     INonterminal altnt = new INonterminal(this, altname, '-');
                     newchildren.add(altnt);
 
@@ -523,16 +537,16 @@ public abstract class XNode {
                         }
 
                         // We need four new nonterminals
-                        String f_star_sep_name = root.nextRuleName();
+                        String f_star_sep_name = root.nextRuleName("f_star_sep");
                         INonterminal f_star_sep = new INonterminal(child, f_star_sep_name, '-');
 
-                        String f_plus_sep_name = root.nextRuleName();
+                        String f_plus_sep_name = root.nextRuleName("f_plus_sep");
                         INonterminal f_plus_sep = new INonterminal(child, f_plus_sep_name, '-');
 
-                        String f_star_name = root.nextRuleName();
+                        String f_star_name = root.nextRuleName("f_star");
                         INonterminal f_star = new INonterminal(child, f_star_name, '-');
 
-                        String f_star_prime_name = root.nextRuleName();
+                        String f_star_prime_name = root.nextRuleName("f_star_prime");
                         INonterminal f_star_prime = new INonterminal(child, f_star_prime_name, '-');
 
                         // f*sep = f-star-sep
@@ -623,11 +637,11 @@ public abstract class XNode {
 
                          */
                     } else { // f*
-                        String f_star_name = root.nextRuleName();
+                        String f_star_name = root.nextRuleName("f_star");
                         INonterminal f_star = new INonterminal(child, f_star_name, '-');
                         f_star.optional = true; // XXX
 
-                        String f_plus_name = root.nextRuleName();
+                        String f_plus_name = root.nextRuleName("f_plus");
                         INonterminal f_plus = new INonterminal(child, f_plus_name, '-');
                         f_plus.optional = true;
 
@@ -688,14 +702,14 @@ public abstract class XNode {
                             }
                         }
 
-                        String f_plus_sep_name = root.nextRuleName();
+                        String f_plus_sep_name = root.nextRuleName("f_plus_sep");
                         INonterminal f_plus_sep = new INonterminal(f_plus_sep_name);
 
-                        String sep_plus_f_star_name = root.nextRuleName();
+                        String sep_plus_f_star_name = root.nextRuleName("sep_plus_f_star");
                         INonterminal sep_plus_f_star = new INonterminal(sep_plus_f_star_name);
                         sep_plus_f_star.optional = true;
 
-                        String sep_plus_f_name = root.nextRuleName();
+                        String sep_plus_f_name = root.nextRuleName("sep_plus_f");
                         INonterminal sep_plus_f = new INonterminal(sep_plus_f_name);
                         sep_plus_f.optional = true;
 
@@ -725,13 +739,13 @@ public abstract class XNode {
                         root.addRule(sep_plus_f_star_rule);
                         root.addRule(sep_plus_f_rule);
                     } else { // f+
-                        String f_plus_name = root.nextRuleName();
+                        String f_plus_name = root.nextRuleName("f_plus");
                         INonterminal f_plus = new INonterminal(child, f_plus_name, '-');
 
-                        String f_star_name = root.nextRuleName();
+                        String f_star_name = root.nextRuleName("f_star");
                         INonterminal f_star = new INonterminal(child, f_star_name, '-');
 
-                        String f_star_prime_name = root.nextRuleName();
+                        String f_star_prime_name = root.nextRuleName("f_star_prime");
                         INonterminal f_star_prime = new INonterminal(child, f_star_prime_name, '-');
 
                         // f+ => f-plus

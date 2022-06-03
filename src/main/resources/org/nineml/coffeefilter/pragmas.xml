@@ -1,11 +1,12 @@
 <ixml>
+   <comment> ixml with pragmas, hacked by ndw to remove qnames. </comment>
+   <comment> Based on the 2022-05-28 draft specification        </comment>
    <rule name="ixml">
       <alt>
-         <nonterminal name="prolog">
-            <pragma name="nineml">
-               <pragma-data>discard empty</pragma-data>
-            </pragma>
-         </nonterminal>
+         <nonterminal name="s"/>
+         <option>
+            <nonterminal name="prolog"/>
+         </option>
          <repeat1>
             <nonterminal name="rule"/>
             <sep>
@@ -13,28 +14,6 @@
             </sep>
          </repeat1>
          <nonterminal name="s"/>
-      </alt>
-   </rule>
-   <comment> ixml with pragmas, hacked by ndw to remove qnames </comment>
-   <comment> this comment is after the first rule so that the  </comment>
-   <comment> prolog will be empty (and discarded).             </comment>
-   <comment> Based on the 2022-04-15 draft specification       </comment>
-   <rule name="prolog">
-      <alt>
-         <nonterminal name="s"/>
-         <option>
-            <alts>
-               <alt>
-                  <repeat1>
-                     <nonterminal name="ppragma"/>
-                     <sep>
-                        <nonterminal name="s"/>
-                     </sep>
-                  </repeat1>
-                  <nonterminal name="s"/>
-               </alt>
-            </alts>
-         </option>
       </alt>
    </rule>
    <rule mark="-" name="s">
@@ -137,6 +116,31 @@
          </exclusion>
       </alt>
    </rule>
+   <rule name="prolog">
+      <alt>
+         <option>
+            <nonterminal name="version"/>
+         </option>
+         <repeat0>
+            <nonterminal name="ppragma"/>
+            <sep>
+               <nonterminal name="s"/>
+            </sep>
+         </repeat0>
+         <nonterminal name="s"/>
+      </alt>
+   </rule>
+   <rule name="version">
+      <alt>
+         <literal tmark="-" string="ixml"/>
+         <nonterminal name="RS"/>
+         <literal tmark="-" string="version"/>
+         <nonterminal name="RS"/>
+         <nonterminal name="string"/>
+         <nonterminal name="s"/>
+         <literal tmark="-" string="."/>
+      </alt>
+   </rule>
    <rule name="rule">
       <alt>
          <nonterminal name="annotation"/>
@@ -217,6 +221,9 @@
       </alt>
       <alt>
          <nonterminal name="nonterminal"/>
+      </alt>
+      <alt>
+         <nonterminal name="insertion"/>
       </alt>
       <alt>
          <literal tmark="-" string="("/>
@@ -408,7 +415,7 @@
          <literal tmark="-" string="'"/>
       </alt>
    </rule>
-   <rule mark="-" name="dchar">
+   <rule name="dchar">
       <alt>
          <exclusion>
             <member string="&quot;"/>
@@ -422,7 +429,7 @@
       </alt>
    </rule>
    <comment>all characters except line breaks; quotes must be doubled</comment>
-   <rule mark="-" name="schar">
+   <rule name="schar">
       <alt>
          <exclusion>
             <member string="'"/>
@@ -578,6 +585,22 @@
          <inclusion>
             <member from="a" to="z"/>
          </inclusion>
+      </alt>
+   </rule>
+   <rule name="insertion">
+      <alt>
+         <literal tmark="-" string="+"/>
+         <nonterminal name="s"/>
+         <alts>
+            <alt>
+               <nonterminal name="string"/>
+            </alt>
+            <alt>
+               <literal tmark="-" string="#"/>
+               <nonterminal name="hex"/>
+            </alt>
+         </alts>
+         <nonterminal name='s'/>
       </alt>
    </rule>
    <rule name="pragma">

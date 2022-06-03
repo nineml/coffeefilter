@@ -283,7 +283,7 @@ public class InvisibleXml {
         }
 
         ParseTree tree = doc.getResult().getForest().parse();
-        CommonBuilder builder = new CommonBuilder(tree, doc.getResult(), options);
+        CommonBuilder builder = new CommonBuilder(tree, ixmlParser.getIxmlVersion(), doc.getResult(), options);
 
         try {
             IxmlContentHandler handler = new IxmlContentHandler(options);

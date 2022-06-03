@@ -2,11 +2,17 @@ package org.nineml.coffeefilter;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.nineml.coffeefilter.InvisibleXml;
 import org.nineml.coffeefilter.InvisibleXmlParser;
 import org.nineml.coffeegrinder.parser.Grammar;
+import org.nineml.coffeegrinder.parser.ParseTree;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.fail;
 
@@ -37,5 +43,29 @@ public class IxmlParserTest {
             System.err.println(ex.getMessage());
             fail();
         }
+    }
+
+    @Test
+    public void versionDeclaration() {
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParserFromIxml(Files.newInputStream(Paths.get("src/test/resources/version-decl.ixml")), "UTF-8");
+            Assert.assertEquals("1.0", parser.getIxmlVersion());
+            String input = "abc\uD83D\uDE3A";
+            InvisibleXmlDocument doc = parser.parse(input);
+            Assert.assertTrue(doc.succeeded());
+        } catch (IOException ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void unknownVersion() {
+        String grammar = "ixml version '13.3'. S='a'.";
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(grammar);
+        Assert.assertEquals("13.3", parser.getIxmlVersion());
+        String input = "a";
+        InvisibleXmlDocument doc = parser.parse(input);
+        String xml = doc.getTree();
+        Assert.assertTrue(xml.contains("version-mismatch"));
     }
 }

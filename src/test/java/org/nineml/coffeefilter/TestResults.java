@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class TestResults {
     public final ParserOptions options;
@@ -18,7 +19,11 @@ public class TestResults {
     }
 
     public TestResult createResult(XdmNode expectedResult) {
-        TestResult result = new TestResult(expectedResult);
+        return createResult(expectedResult, null);
+    }
+
+    public TestResult createResult(XdmNode expectedResult, List<XdmNode> assertions) {
+        TestResult result = new TestResult(expectedResult, assertions);
         XdmNode testCase = expectedResult.getParent();
         if (results.containsKey(testCase)) {
             results.get(testCase).add(result);

@@ -2,7 +2,6 @@ package org.nineml.coffeefilter.model;
 
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.utils.TokenUtils;
 import org.nineml.coffeegrinder.parser.Grammar;
 import org.nineml.coffeegrinder.parser.NonterminalSymbol;
 import org.nineml.coffeegrinder.parser.Rule;
@@ -23,7 +22,7 @@ import java.util.List;
  * This is what you get back if you parse a grammar.
  */
 public class Ixml extends XNonterminal {
-    protected int synCount = 0;
+    protected int symCount = 0;
     private boolean changed = true;
     private ArrayList<IRule> newRules = null;
     private final ArrayList<Rule> grammarRules = new ArrayList<>();
@@ -31,6 +30,7 @@ public class Ixml extends XNonterminal {
     protected final ParserOptions options;
     private Grammar grammar = null;
     protected boolean emptyProduction = false;
+    protected String version = "1.0";
 
     /**
      * Construct an Ixml.
@@ -47,9 +47,13 @@ public class Ixml extends XNonterminal {
     public Ixml(ParserOptions options, Grammar grammar) {
         super(null, "ixml", "$$_ixml");
         this.grammar = grammar;
-        synCount += grammar.getRules().size();
+        symCount += grammar.getRules().size();
         grammarRules.addAll(grammar.getRules());
         this.options = options;
+    }
+
+    public String getIxmlVersion() {
+        return version;
     }
 
     /**
@@ -64,9 +68,9 @@ public class Ixml extends XNonterminal {
      * Returns a new, unique rule name.
      * @return A new, unique name.
      */
-    public String nextRuleName() {
-        synCount += 1;
-        return "$" + synCount;
+    public String nextRuleName(String name) {
+        symCount += 1;
+        return "$" + symCount + "_" + name;
     }
 
     /**
@@ -257,46 +261,19 @@ public class Ixml extends XNonterminal {
         grammar = new Grammar(options);
 
         ArrayList<ParserAttribute> attributes = new ArrayList<>();
-        String insRule = null;
-        HashMap<Integer,String> insAfter = new HashMap<>();
         for (XNode child : children) {
             int inspos = -1;
             if (child instanceof IRule) {
                 IRule rule = (IRule) child;
 
-                insRule = null;
-                insAfter.clear();
-                for (XNode cat: rule.children) {
-                    if (cat instanceof ILiteral && ((ILiteral) cat).getTMark() == '^') {
-                        final ILiteral lit = (ILiteral) cat;
-                        final String gentext = lit.getTokenString();
-                        if (inspos < 0) {
-                            if (insRule == null) {
-                                insRule = gentext;
-                            } else {
-                                insRule += gentext;
-                            }
-                        } else {
-                            if (insAfter.containsKey(inspos)) {
-                                insAfter.put(inspos, insAfter.get(inspos) + gentext);
-                            } else {
-                                insAfter.put(inspos, gentext);
-                            }
-                        }
-                    } else {
-                        inspos++;
-                    }
-                }
-
                 attributes.clear();
                 attributes.add(new ParserAttribute("mark", ""+rule.getMark()));
                 attributes.add(new ParserAttribute("name", rule.getName()));
+
                 if (rule.getName().startsWith("$")) {
                     attributes.add(ParserAttribute.PRUNING_ALLOWED);
                 }
-                if (insRule != null) {
-                    attributes.add(new ParserAttribute("insertion", insRule));
-                }
+
                 if (startRule.equals(rule.getName())) {
                     for (IPragma pragma : pragmas) {
                         if (pragma instanceof IPragmaXmlns) {
@@ -305,13 +282,13 @@ public class Ixml extends XNonterminal {
                             options.getLogger().debug(logcategory, "Unknown pragma, or does not apply in the prologue: %s", pragma);
                         }
                     }
-                } else {
-                    for (IPragma pragma : rule.pragmas) {
-                        if (pragma instanceof IPragmaRegex) {
-                            attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
-                        } else {
-                            options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to rule: %s", pragma);
-                        }
+                }
+
+                for (IPragma pragma : rule.pragmas) {
+                    if (pragma instanceof IPragmaRegex) {
+                        attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
+                    } else {
+                        options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to rule: %s", pragma);
                     }
                 }
 
@@ -322,19 +299,24 @@ public class Ixml extends XNonterminal {
                 for (XNode cat: rule.children) {
                     attributes.clear();
 
-                    if (!(cat instanceof ILiteral) || ((ILiteral) cat).getTMark() != '^') {
-                        inspos++;
-                        if (insAfter.containsKey(inspos)) {
-                            attributes.add(new ParserAttribute("insertion", insAfter.get(inspos)));
-                        }
-                    }
-
                     if (cat.isOptional()) {
                         attributes.add(Symbol.OPTIONAL);
                     }
 
-                    if (cat instanceof ILiteral && ((ILiteral) cat).getTMark() == '^') {
-                        // ignore this
+                    if (cat instanceof IInsertion) {
+                        IInsertion nt = (IInsertion) cat;
+                        attributes.add(new ParserAttribute("mark", "+"));
+                        attributes.add(new ParserAttribute("insertion", nt.getInsertion()));
+                        for (IPragma pragma : cat.pragmas) {
+                            options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a insertion: %s", pragma);
+                        }
+
+                        String iname = nt.getInsertion().replaceAll("\\s+", "_");
+                        iname = "+" + iname.replaceAll("[^A-Za-z_-]", "");
+
+                        NonterminalSymbol nts = new InsertionNonterminal(grammar, nextRuleName(iname), attributes);
+                        rhs.add(nts);
+                        grammar.addRule(nts);
                     } else if (cat instanceof XNonterminal) {
                         XNonterminal nt = (XNonterminal) cat;
                         if (cat instanceof INonterminal) {

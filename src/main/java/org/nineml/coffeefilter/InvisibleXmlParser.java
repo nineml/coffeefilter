@@ -56,6 +56,10 @@ public class InvisibleXmlParser {
         this.exception = exception;
     }
 
+    public String getIxmlVersion() {
+        return ixml.getIxmlVersion();
+    }
+
     /**
      * Get the parser options.
      *
@@ -218,15 +222,6 @@ public class InvisibleXmlParser {
 
         Grammar grammar = ixml.getGrammar(options);
 
-/*
-        GllParser gparser = (GllParser) grammar.getParser(ParserType.GLL, grammar.getNonterminal("$$"));
-        gparser.trace = false;
-        long start = Calendar.getInstance().getTimeInMillis();
-        GllResult gresult = gparser.parse(input);
-        long stop = Calendar.getInstance().getTimeInMillis();
-        System.err.println(stop - start);
-*/
-
         CharacterIterator iterator = new CharacterIterator(input);
         GearleyParser parser = grammar.getParser(grammar.getNonterminal("$$"));
         GearleyResult result = parser.parse(iterator);
@@ -238,11 +233,11 @@ public class InvisibleXmlParser {
             Iterator<Token> remaining = ((EarleyResult) result).getContinuingIterator();
             while (remaining.hasNext()) {
                 Token token = remaining.next();
-                ok = ok && (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCharacter());
+                ok = ok && (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCodepoint());
             }
-            doc = new InvisibleXmlDocument(result, options, ok);
+            doc = new InvisibleXmlDocument(result, ixml.getIxmlVersion(), options, ok);
         } else {
-            doc = new InvisibleXmlDocument(result, options);
+            doc = new InvisibleXmlDocument(result, ixml.getIxmlVersion(), options);
         }
 
         doc.setLocation(iterator.offset, iterator.lineNumber, iterator.columnNumber);

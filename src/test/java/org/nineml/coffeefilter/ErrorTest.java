@@ -86,6 +86,16 @@ public class ErrorTest {
     }
 
     @Test
+    public void badCharacterClass() {
+        String input = "S: [Xq] .";
+
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+        Assert.assertFalse(parser.constructed());
+        Assert.assertTrue(parser.getException() instanceof IxmlException);
+        Assert.assertEquals("S10", ((IxmlException) parser.getException()).getCode());
+    }
+
+    @Test
     public void redefinedNonterminal() {
         String input = "date: ['0123'], ['0'-'9'] .\n" +
                 "date: 'January' .";

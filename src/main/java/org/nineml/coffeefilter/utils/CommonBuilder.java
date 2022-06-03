@@ -2,7 +2,7 @@ package org.nineml.coffeefilter.utils;
 
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.model.IPragma;
+import org.nineml.coffeefilter.model.InsertionNonterminal;
 import org.nineml.coffeegrinder.parser.*;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -12,7 +12,6 @@ import org.nineml.coffeegrinder.util.ParserAttribute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -23,7 +22,6 @@ public class CommonBuilder {
     public static final String logcategory = "TreeBuilder";
     public static final String ixml_prefix = "ixml";
     public static final String ixml_ns = "http://invisiblexml.org/NS";
-
     private final ParserOptions options;
     private final Stack<PartialOutput> stack = new Stack<>();
     private final Stack<Character> context = new Stack<>();
@@ -34,8 +32,13 @@ public class CommonBuilder {
     private boolean ambiguous = false;
     private boolean prefix = false;
     private String xmlns = "";
+    private String grammarVersion = null;
 
     public CommonBuilder(ParseTree tree, GearleyResult result, ParserOptions options) {
+        this(tree, null, result, options);
+    }
+
+    public CommonBuilder(ParseTree tree, String ixmlVersion, GearleyResult result, ParserOptions options) {
         this.options = options;
         if (tree == null) {
             options.getLogger().trace(logcategory, "No tree");
@@ -50,6 +53,7 @@ public class CommonBuilder {
         constructTree(tree, null);
         ambiguous = tree.getForest().isAmbiguous();
         prefix = result.prefixSucceeded();
+        grammarVersion = ixmlVersion;
     }
 
     private void startNonterminal(ParseTree tree, char mark, String name, Map<String,String> parseAttributes) {
@@ -106,15 +110,10 @@ public class CommonBuilder {
         }
     }
 
-    private void terminal(ParseTree tree, char mark, char ch, boolean acc, String rewrite, String insertion) {
+    private void terminal(ParseTree tree, char mark, int codepoint, boolean acc, String rewrite) {
         //System.err.println("TT2: " + tree);
         if (mark == '-') {
             return;
-        }
-
-        if (rewrite != null && insertion != null) {
-            insertion = rewrite;
-            rewrite = null;
         }
 
         if (rewrite != null) {
@@ -122,14 +121,11 @@ public class CommonBuilder {
                 stack.peek().rewrite(rewrite);
             }
         } else {
-            PartialOutput item = new PartialOutput(ch, acc);
+            PartialOutput item = new PartialOutput(codepoint, acc);
             if (stack.isEmpty()) {
                 stack.push(item);
             } else {
                 stack.peek().add(item);
-            }
-            if (insertion != null) {
-                stack.peek().add(new PartialOutput(insertion));
             }
         }
     }
@@ -202,10 +198,9 @@ public class CommonBuilder {
 
             String acc = getAttribute(symbol, xsymbol, "acc");
             String rewrite = getAttribute(symbol, xsymbol, "rewrite");
-            String insertion = getAttribute(symbol, xsymbol, "insertion");
 
-            char ch = ((TokenCharacter) token).getCharacter();
-            terminal(tree, mark, ch, acc != null, rewrite, insertion);
+            int ch = ((TokenCharacter) token).getCodepoint();
+            terminal(tree, mark, ch, acc != null, rewrite);
         } else {
             if (child1 != null) {
                 pos = getSymbol(child1.getSymbol(), state, state.getPosition());
@@ -228,29 +223,24 @@ public class CommonBuilder {
                 }
             }
 
-            localName = getAttribute(symbol, xsymbol, "name");
-            startNonterminal(tree, mark, localName, getAttributes(symbol, xsymbol));
-
-            String gentext = symbol.getAttributeValue("insertion", null);
-            if (gentext != null) {
-                stack.peek().add(new PartialOutput(gentext));
-            }
-
-            if (child0 != null) {
-                constructTree(child0, child0Symbol);
-            }
-
-            if (child1 != null) {
-                constructTree(child1, child1Symbol);
-            }
-
-            endNonterminal(tree, localName);
-
-            if (xsymbol != null) {
-                gentext = xsymbol.getAttributeValue("insertion", null);
+            if (symbol instanceof InsertionNonterminal) {
+                String gentext = symbol.getAttributeValue("insertion", null);
                 if (gentext != null) {
                     stack.peek().add(new PartialOutput(gentext));
                 }
+            } else {
+                localName = getAttribute(symbol, xsymbol, "name");
+                startNonterminal(tree, mark, localName, getAttributes(symbol, xsymbol));
+
+                if (child0 != null) {
+                    constructTree(child0, child0Symbol);
+                }
+
+                if (child1 != null) {
+                    constructTree(child1, child1Symbol);
+                }
+
+                endNonterminal(tree, localName);
             }
         }
     }
@@ -332,10 +322,11 @@ public class CommonBuilder {
             text = null;
         }
 
-        public PartialOutput(char ch, boolean acc) {
+        public PartialOutput(int codepoint, boolean acc) {
             mark ='?';
             name = null;
-            text = "" + ch;
+            // Surely there's something more efficient than this?
+            text = new StringBuilder().appendCodePoint(codepoint).toString();
             accumulator = acc;
             discardEmpty = false;
         }
@@ -390,6 +381,67 @@ public class CommonBuilder {
             }
         }
 
+        private String assertValidName(String name) {
+            // Let's take the pedantic position that the valid name characters are the ones
+            // in the Fifth Edition. That's not what all parsers actually implement, but
+            // [expletive deleted].
+            if (name == null) {
+                throw new NullPointerException("XML names cannot be null");
+            }
+            if ("".equals(name) || name.charAt(0) == ':') {
+                throw IxmlException.invalidXmlName(name);
+            }
+            boolean first = true;
+            boolean colon = false;
+            for (int ch : name.codePoints().toArray()) {
+                if (ch == ':') {
+                    if (colon) {
+                        throw IxmlException.invalidXmlName(name);
+                    }
+                    colon = true;
+                } else if ((ch >= 'A' && ch <= 'Z') || ch == '_' || (ch >= 'a' && ch <= 'z')
+                        || (ch >= 0xC0&& ch <= 0xD6) || (ch >= 0xD8&& ch <= 0xF6) || (ch >= 0xF8&& ch <= 0x2FF)
+                        || (ch >= 0x370&& ch <= 0x37D) || (ch >= 0x37F&& ch <= 0x1FFF)
+                        || (ch >= 0x200C&& ch <= 0x200D) || (ch >= 0x2070&& ch <= 0x218F)
+                        || (ch >= 0x2C00&& ch <= 0x2FEF) || (ch >= 0x3001&& ch <= 0xD7FF)
+                        || (ch >= 0xF900&& ch <= 0xFDCF) || (ch >= 0xFDF0&& ch <= 0xFFFD)
+                        || (ch >= 0x10000&& ch <= 0xEFFFF)) {
+                    // ok
+                } else {
+                    if (first) {
+                        throw IxmlException.invalidXmlName(name);
+                    }
+                    if (ch == '-' || ch == '.' || (ch >= '0' && ch <= '9') || ch == 0xB7
+                            || (ch >= 0x0300 && ch <= 0x036F) || (ch >= 0x203F && ch <= 0x2040)) {
+                        // still ok
+                    } else {
+                        throw IxmlException.invalidXmlName(name);
+                    }
+                }
+                first = false;
+            }
+
+            return name;
+        }
+
+        private String assertValidChars(String text) {
+            if (text == null) {
+                throw new NullPointerException("Text cannot be null");
+            }
+            for (int ch : text.codePoints().toArray()) {
+                if (ch == 0x9 || ch == 0xA || ch == 0xD || (ch >= ' ' && ch <= 0xD7FF)
+                    || (ch >= 0xE000 & ch <= 0xFFFD) || (ch >= 0x10000 && ch <= 0x10FFFF)) {
+                    // ok
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    sb.appendCodePoint(ch);
+                    throw IxmlException.invalidXmlCharacter(sb.toString());
+                }
+            }
+
+            return text;
+        }
+
         public void output(ContentHandler handler) throws SAXException {
             if (discardEmpty && isEmpty()) {
                 return;
@@ -397,7 +449,7 @@ public class CommonBuilder {
 
             if (mark != '-') {
                 if (name == null) {
-                    handler.characters(text.toCharArray(), 0, text.length());
+                    handler.characters(assertValidChars(text).toCharArray(), 0, text.length());
                 } else {
                     AttributeBuilder attrs = new AttributeBuilder(options);
                     for (PartialOutput attr : attributes) {
@@ -410,7 +462,7 @@ public class CommonBuilder {
                         }
 
                         if (!attr.discardEmpty || !"".equals(value)) {
-                            attrs.addAttribute(attr.name, value);
+                            attrs.addAttribute(assertValidName(attr.name), assertValidChars(value));
                         }
                     }
 
@@ -426,6 +478,11 @@ public class CommonBuilder {
                         if (prefix && !options.isSuppressedState("prefix")) {
                             state += sep + "prefix";
                         }
+                        if (grammarVersion != null) {
+                            if (!"1.0".equals(grammarVersion) && !"1.0-nineml".equals(grammarVersion)) {
+                                state += sep + "version-mismatch";
+                            }
+                        }
 
                         if (!"".equals(xmlns)) {
                             handler.startPrefixMapping("", xmlns);
@@ -437,7 +494,7 @@ public class CommonBuilder {
                         }
                     }
 
-                    handler.startElement(xmlns, name, name, attrs);
+                    handler.startElement(xmlns, name, assertValidName(name), attrs);
                 }
             }
 

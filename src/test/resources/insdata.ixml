@@ -1,6 +1,6 @@
 data: @xmlns, value++-",".
-xmlns: ^"http://example.com/data".
+xmlns: +"http://example.com/data".
 value: pos; neg.
--pos: ^"+", digit+.
--neg: ^"-", -"(", digit+, -")".
+-pos: +"+", digit+.
+-neg: +"-", -"(", digit+, -")".
 -digit: ["0"-"9"].

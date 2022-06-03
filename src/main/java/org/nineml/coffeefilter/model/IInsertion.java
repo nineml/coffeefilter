@@ -7,42 +7,35 @@ import org.nineml.coffeegrinder.tokens.CharacterSet;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Model an Invisible XML 'literal'.
  */
-public class ILiteral extends XTerminal implements TMarked {
-    protected CharacterSet charset = null;
-    protected final char tmark;
+public class IInsertion extends XNonterminal implements TMarked {
     protected final String string;
     protected final String hex;
 
     /**
-     * Create an ILiteral.
+     * Create an IInsertion.
      *
-     * <p>The ILiteral can represent either a string of characters or a hex character. That's
-     * a distinction in the surface syntax of ixml, but doesn't matter to the implementation.</p>
+     * <p>Like ILiteral, the IInsertion can represent either a string of characters or a hex character. That's
+     * a distinction in the surface syntax of ixml, but doesn't matter to the implementation.
+     * Insertions are generated in the output but match nothing in the input.</p>
      *
      * @param parent The parent node.
-     * @param tmark The tmark.
      * @param string The string value of the literal.
      * @param hex The hex value of the literal.
      * @throws IllegalArgumentException if both 'string' and 'hex' are null or neither are null.
-     * @throws IllegalArgumentException if tmark is invalid.
      */
-    public ILiteral(XNode parent, char tmark, String string, String hex) {
-        super(parent, "literal");
+    public IInsertion(XNode parent, String string, String hex) {
+        super(parent, "insertion");
         if (string == null && hex == null) {
-            throw new IllegalArgumentException("ILiteral needs either string or hex");
+            throw new IllegalArgumentException("IInsertion needs either string or hex");
         }
         if (string != null && hex != null) {
-            throw new IllegalArgumentException("ILiteral needs exactly one of string or hex");
+            throw new IllegalArgumentException("IInsertion needs exactly one of string or hex");
         }
-        if (tmark != '-' && tmark != '^') {
-            throw IxmlException.invalidTMark(tmark);
-        }
-
-        this.tmark = tmark;
         this.string = string;
         this.hex = hex;
     }
@@ -53,7 +46,7 @@ public class ILiteral extends XTerminal implements TMarked {
      */
     @Override
     public XNode copy() {
-        ILiteral newnode = new ILiteral(parent, tmark, string, hex);
+        IInsertion newnode = new IInsertion(parent, string, hex);
         newnode.pragmas.addAll(pragmas);
         newnode.optional = optional;
         newnode.copyChildren(getChildren());
@@ -83,17 +76,9 @@ public class ILiteral extends XTerminal implements TMarked {
     }
 
     /**
-     * Get the tmark.
-     * @return The tmark.
-     */
-    public char getTMark() {
-        return tmark;
-    }
-
-    /**
      * Get the string value.
      *
-     * <p>If the literal was constructed with a hex value, this will return null.</p>
+     * <p>If the insertion was constructed with a hex value, this will return null.</p>
      *
      * @return The string.
      */
@@ -106,7 +91,7 @@ public class ILiteral extends XTerminal implements TMarked {
      *
      * <p>The hex value returned will be the code point that it represents, not the original hex string.</p>
      *
-     * <p>If the literal was constructed with a string, this will return null.</p>
+     * <p>If the insertion was constructed with a string, this will return null.</p>
      *
      * @return The string represented by the hex value.
      */
@@ -114,7 +99,12 @@ public class ILiteral extends XTerminal implements TMarked {
         return hex;
     }
 
-    public String getTokenString() {
+    @Override
+    public char getTMark() {
+        return '+';
+    }
+
+    public String getInsertion() {
         if (string != null) {
             return string;
         }
@@ -126,53 +116,15 @@ public class ILiteral extends XTerminal implements TMarked {
     }
 
     /**
-     * Return the {@link CharacterSet} that represents this literal.
-     *
-     * <p>This method returns a list because a list is required in the general case.
-     * For an <code>ILiteral</code>, only one character set is ever required.</p>
-     *
-     * @return The character set.
-     */
-    @Override
-    public List<CharacterSet> getCharacterSets() {
-        if (charset == null) {
-            if (string != null) {
-                charset = CharacterSet.literal(string);
-            } else {
-                int cp = TokenUtils.convertHex(hex);
-                charset = CharacterSet.range(cp, cp);
-            }
-        }
-        return Collections.singletonList(charset);
-    }
-
-    /**
      * Returns true iff the specified object is equal to this one.
      * @param obj the other object.
-     * @return True iff they represent the same literal.
+     * @return True iff they represent the same insertion.
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ILiteral) {
-            ILiteral literal = (ILiteral) obj;
-            boolean same = (tmark == literal.tmark);
-            same = same && (string == null && literal.string == null) || (string != null && literal.string != null);
-            same = same && (hex == null && literal.hex == null) || (hex != null && literal.hex != null);
-            if (!same) {
-                return false;
-            }
-
-            same = tmark == literal.tmark;
-
-            if (string != null) {
-                same = same && string.equals(literal.string);
-            }
-
-            if (hex != null) {
-                same = same && hex.equals(literal.hex);
-            }
-
-            return same;
+        if (obj instanceof IInsertion) {
+            IInsertion other = (IInsertion) obj;
+            return Objects.equals(string, other.string) && Objects.equals(hex, other.hex);
         }
         return false;
     }
@@ -187,24 +139,31 @@ public class ILiteral extends XTerminal implements TMarked {
         stream.print(indent);
         stream.print("<" + nodeName);
 
-        stream.print(" tmark='" + tmark + "'");
-
         if (string != null) {
             final StringBuilder xmls = new StringBuilder();
             string.codePoints().forEach(cp -> {
                 if (cp < ' ') {
                     xmls.append(String.format("&#x%x;", cp));
                 } else {
-                    xmls.appendCodePoint(cp);
+                    switch (cp) {
+                        case '<':
+                            xmls.append("&lt;");
+                            break;
+                        case '>':
+                            xmls.append("&gt;");
+                            break;
+                        case '&':
+                            xmls.append("&amp;");
+                            break;
+                        case '"':
+                            xmls.append("&quot;");
+                            break;
+                        default:
+                            xmls.appendCodePoint(cp);
+                    }
                 }
             });
-            String s = xmls.toString();
-            if (s.contains("'")) {
-                stream.print(" dstring=\"" + xmlAttr(s, "\"") + "\"");
-
-            } else {
-                stream.print(" sstring='" + xmlAttr(s, "'") + "'");
-            }
+            stream.printf(" string=\"%s\"", xmls.toString());
         }
         if (hex != null) {
             stream.print(" hex='" + hex + "'");
@@ -220,16 +179,13 @@ public class ILiteral extends XTerminal implements TMarked {
     public String toString() {
         String str;
         if (hex != null) {
-            str = "&0x" + hex + ";";
+            str = "+&0x" + hex + ";";
         } else {
             if (string.contains("\"")) {
-                str = "'" + string.replaceAll("'", "''") + "'";
+                str = "+'" + string.replaceAll("'", "''") + "'";
             } else {
-                str = "\"" + string + "\"";
+                str = "+\"" + string + "\"";
             }
-        }
-        if (optional) {
-            str += "?";
         }
         return str;
     }

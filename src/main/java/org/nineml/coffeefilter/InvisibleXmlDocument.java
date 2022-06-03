@@ -1,25 +1,19 @@
 package org.nineml.coffeefilter;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.trees.StringTreeBuilder;
+import org.nineml.coffeefilter.utils.AttributeBuilder;
+import org.nineml.coffeefilter.utils.CommonBuilder;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.DefaultTreeWalker;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.utils.AttributeBuilder;
-import org.nineml.coffeefilter.utils.CommonBuilder;
-import org.nineml.coffeefilter.trees.StringTreeBuilder;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An InvisibleXmlDocument represents a document created with an {@link InvisibleXmlParser}.
@@ -31,16 +25,18 @@ public class InvisibleXmlDocument {
     private final GearleyResult result;
     private final boolean prefixOk;
     private final TreeWalker treeWalker;
+    private final String parserVersion;
     private ParserOptions options;
     private boolean selectedFirst = false;
     private int lineNumber = -1;
     private int columnNumber = -1;
     private int offset = -1;
 
-    protected InvisibleXmlDocument(GearleyResult result, ParserOptions options) {
+    protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options) {
         this.result = result;
         this.prefixOk = false;
         this.options = options;
+        this.parserVersion = parserVersion;
         if (result.succeeded() || result.prefixSucceeded()) {
             treeWalker = new DefaultTreeWalker(result.getForest(), new ParseTreeBuilder());
         } else {
@@ -48,10 +44,11 @@ public class InvisibleXmlDocument {
         }
     }
 
-    protected InvisibleXmlDocument(GearleyResult result, ParserOptions options, boolean prefixOk) {
+    protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options, boolean prefixOk) {
         this.result = result;
         this.prefixOk = prefixOk;
         this.options = options;
+        this.parserVersion = parserVersion;
         if (result.succeeded() || result.prefixSucceeded()) {
             treeWalker = new DefaultTreeWalker(result.getForest(), new ParseTreeBuilder());
         } else {
@@ -187,7 +184,7 @@ public class InvisibleXmlDocument {
      */
     public String getTree() {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, result, options);
+        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(options);
         realize(builder, handler);
         return handler.getXml();
@@ -199,7 +196,7 @@ public class InvisibleXmlDocument {
      */
     public void getTree(PrintStream output) {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, result, options);
+        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(options, output);
         realize(builder, handler);
     }
@@ -219,7 +216,7 @@ public class InvisibleXmlDocument {
      */
     public void getTree(ContentHandler handler, ParserOptions options) {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, result, options);
+        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         realize(builder, handler);
     }
 

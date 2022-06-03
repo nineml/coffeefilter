@@ -1,10 +1,10 @@
 package org.nineml.coffeefilter;
 
-import net.sf.saxon.s9api.XdmNode;
-import net.sf.saxon.s9api.XdmValue;
+import net.sf.saxon.s9api.*;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestResult {
     public final XdmNode testResult;
@@ -12,14 +12,17 @@ public class TestResult {
     public long grammarParseTime = -1;
     public long documentParseTime = -1;
     public TestState state = TestState.UNKNOWN;
+    public String errorCode = null;
     public String xml = null;
 
     public ArrayList<XdmValue> expected = null;
+    public List<XdmNode> assertions = null;
     public ArrayList<XdmValue> actual = null;
     public ArrayList<String> deepEqualMessages = null;
 
-    public TestResult(XdmNode testResult) {
+    public TestResult(XdmNode testResult, List<XdmNode> assertions) {
         this.testResult = testResult;
+        this.assertions = assertions;
         this.testCase = testResult.getParent();
     }
 
@@ -58,6 +61,10 @@ public class TestResult {
     public void publish(PrintStream out) {
         out.printf("<result state='%s' ", state.toString());
 
+        if (errorCode != null) {
+            out.printf("error-code='%s' ", errorCode);
+        }
+
         if (grammarParseTime >= 0) {
             out.printf("grammarParse='%d' ", grammarParseTime);
         }
@@ -67,6 +74,47 @@ public class TestResult {
         }
 
         out.printf(">%n");
+
+        XdmSequenceIterator<XdmNode> iter = null;
+        if (testResult.getNodeName().equals(TestDriver.t_app_info)) {
+            out.print("<appinfo");
+            iter = testResult.axisIterator(Axis.NAMESPACE);
+            while (iter.hasNext()) {
+                XdmNode attr = iter.next();
+                if (!"xml".equals(attr.getNodeName().getLocalName())) {
+                    out.printf(" xmlns:%s=\"%s\"", attr.getNodeName(). getLocalName(), attr.getStringValue());
+                }
+            }
+            out.println(">");
+            iter = testResult.axisIterator(Axis.CHILD);
+            while (iter.hasNext()) {
+                XdmNode child = iter.next();
+                if (child.getNodeKind().equals(XdmNodeKind.ELEMENT) && child.getNodeName().equals(TestDriver.t_options)) {
+                    out.print("<options");
+                    XdmSequenceIterator<XdmNode> aiter = child.axisIterator(Axis.ATTRIBUTE);
+                    while (aiter.hasNext()) {
+                        XdmNode attr = aiter.next();
+                        out.printf(" %s=\"%s\"", attr.getNodeName(), attr.getStringValue());
+                    }
+                    out.println("/>");
+                }
+            }
+            out.println("</appinfo>");
+        }
+
+        if (assertions != null) {
+            out.println("<assertions>");
+            for (XdmNode assertion : assertions) {
+                out.printf("<%s", assertion.getNodeName().getLocalName());
+                iter = assertion.axisIterator(Axis.ATTRIBUTE);
+                while (iter.hasNext()) {
+                    XdmNode attr = iter.next();
+                    out.printf(" %s='%s'", attr.getNodeName().getLocalName(), attr.getStringValue());
+                }
+                out.println("/>");
+            }
+            out.println("</assertions>");
+        }
 
         if (expected != null) {
             assert actual != null;

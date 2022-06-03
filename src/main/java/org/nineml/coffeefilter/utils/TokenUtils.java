@@ -11,11 +11,11 @@ public class TokenUtils {
         try {
             long cp = Long.parseLong(hex, 16);
             if (cp > 0xffffffffL) {
-                throw IxmlException.invalidHex(hex);
+                throw IxmlException.invalidHexTooLarge(hex);
             }
 
             // Noncharacters
-            if ((cp&0xfffe) == 0xfffe || (cp&0xffff) == 0xffff || (cp >= 0xfdd0 && cp <= 0xfdef)) {
+            if ((cp & 0xfffe) == 0xfffe || (cp & 0xffff) == 0xffff || (cp >= 0xfdd0 && cp <= 0xfdef)) {
                 throw IxmlException.invalidHex(hex);
             }
 
@@ -26,9 +26,11 @@ public class TokenUtils {
 
             return (int) cp;
         } catch (NumberFormatException ex) {
-            // Can only have been too large because the ixml parse will only
-            // have provided hexidecimal digits.
-            throw IxmlException.invalidHex(hex);
+            if (hex.matches("^[0-9A-Fa-f]+$")) {
+                throw IxmlException.invalidHexTooLarge(hex);
+            } else {
+                throw IxmlException.invalidHexCharacters(hex);
+            }
         }
     }
 

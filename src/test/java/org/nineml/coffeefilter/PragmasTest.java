@@ -74,12 +74,19 @@ public class PragmasTest {
     @Test
     public void discardEmpty() {
         try {
-            InvisibleXmlParser parser = invisibleXml.getParser();
-            InvisibleXmlDocument doc = parser.parse(new File("src/main/resources/org/nineml/coffeefilter/pragmas.ixml"));
+            String grammar1 = "S = A, B, C. A = 'a'. B='b'?. C='c'.";
+            String grammar2 = "S = A, {[nineml discard empty]} B, C. A = 'a'. B='b'?. C='c'.";
+            String input = "ac";
+
+            InvisibleXmlParser parser = invisibleXml.getParserFromIxml(grammar1);
+            InvisibleXmlDocument doc = parser.parse(input);
             String xml = doc.getTree();
-            Assertions.assertFalse(xml.contains("<prolog"));
-            //xml = parser.getCompiledParser();
-            //System.out.println(xml);
+            Assertions.assertTrue(xml.contains("<B"));
+
+            parser = invisibleXml.getParserFromIxml(grammar2);
+            doc = parser.parse(input);
+            xml = doc.getTree();
+            Assertions.assertFalse(xml.contains("<B"));
         } catch (Exception ex) {
             fail();
         }
