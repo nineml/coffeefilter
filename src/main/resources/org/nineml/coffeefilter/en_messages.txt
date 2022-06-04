@@ -10,7 +10,8 @@ D02: Repeated attribute: %1.
 D03: Invalid XML Name: %1.
 D04: Invalid XML character: %1.
 D05: The root node (‘%1’) must not be marked ‘@’.
-D06: A second root note (‘%1’) is not allowed.
+D06: Document must have a single root element, found: ‘%1’.
+D07: An attribute named ‘%1’ is forbidden.
 E006: Invalid tmark: %1.
 E012: Unreachable symbol(s): ‘%1’.
 E013: Unproductive symbol(s): ‘%1’.

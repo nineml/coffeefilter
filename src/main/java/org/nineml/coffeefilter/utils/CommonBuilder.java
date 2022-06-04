@@ -64,7 +64,7 @@ public class CommonBuilder {
         } else {
             if (ctx == '^') {
                 if (rootFinished) {
-                    throw IxmlException.multipleRoots(name);
+                    throw IxmlException.notSingleRooted(name);
                 }
                 elementStack.push(name);
             }
@@ -135,6 +135,11 @@ public class CommonBuilder {
             handler.startDocument();
             documentElement = true;
             result.output(handler);
+
+            if (documentElement) {
+                throw IxmlException.notSingleRooted("");
+            }
+
             handler.endDocument();
         } catch (SAXException ex) {
             throw new RuntimeException(ex);
@@ -462,7 +467,11 @@ public class CommonBuilder {
                         }
 
                         if (!attr.discardEmpty || !"".equals(value)) {
-                            attrs.addAttribute(assertValidName(attr.name), assertValidChars(value));
+                            String name = assertValidName(attr.name);
+                            if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
+                                throw IxmlException.attributeNameForbidden(name);
+                            }
+                            attrs.addAttribute(name, assertValidChars(value));
                         }
                     }
 

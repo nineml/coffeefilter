@@ -80,7 +80,8 @@ public class IxmlException extends RuntimeException {
     public static IxmlException invalidHexTooLarge(String hex) { return getException("S07", hex); }
     public static IxmlException invalidHex(String hex) { return getException("S08", hex); }
     public static IxmlException attributeRoot(String name) { return getException("D05", name); }
-    public static IxmlException multipleRoots(String name) { return getException("D06", name); }
+    public static IxmlException notSingleRooted(String name) { return getException("D06", name); }
+    public static IxmlException attributeNameForbidden(String name) { return getException("D07"); }
     public static IxmlException invalidRange(String from, String to) { return getException("S09", new String[] {from, to}); }
     public static IxmlException undefinedSymbols(Set<NonterminalSymbol> symbols) { return getException("S02", symbolList(symbols)); }
     public static IxmlException unreachableSymbols(Set<NonterminalSymbol> symbols) { return getException("E012", symbolList(symbols)); }
