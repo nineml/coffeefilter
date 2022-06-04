@@ -852,8 +852,9 @@ public class TestDriver {
                 if (child.getNodeKind() == XdmNodeKind.ELEMENT
                         && (child.getNodeName().equals(t_test_case) || child.getNodeName().equals(t_grammar_test))) {
                     String thisCase = child.getAttributeValue(_name);
+                    boolean processCase = false;
                     if (caseName == null || caseName.equals(thisCase)) {
-                        boolean processCase = true;
+                        processCase = true;
                         if (caseName == null && dataSet != null) {
                             for (DataTree excase : dataSet.getAll("case")) {
                                 if (thisCase.equals(excase.get("id").getValue())) {
@@ -861,11 +862,11 @@ public class TestDriver {
                                 }
                             }
                         }
-                        if (process && processCase) {
-                            nodes.add(child);
-                        } else {
-                            testsToSkip.add(child);
-                        }
+                    }
+                    if (process && processCase) {
+                        nodes.add(child);
+                    } else {
+                        testsToSkip.add(child);
                     }
                 }
             }
