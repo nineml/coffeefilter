@@ -6,6 +6,8 @@ import org.nineml.coffeefilter.model.IxmlCompiler;
 import org.nineml.coffeefilter.model.IxmlContentHandler;
 import org.nineml.coffeefilter.utils.CharacterIterator;
 import org.nineml.coffeefilter.utils.CommonBuilder;
+import org.nineml.coffeegrinder.gll.GllParser;
+import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
@@ -13,6 +15,8 @@ import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import java.io.*;
 import java.net.URI;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -51,6 +55,10 @@ public class InvisibleXmlParser {
     protected InvisibleXmlParser(InvisibleXmlDocument failed, Exception exception, long parseMillis) {
         this(failed, parseMillis);
         this.exception = exception;
+    }
+
+    public String getIxmlVersion() {
+        return ixml.getIxmlVersion();
     }
 
     /**
@@ -177,7 +185,7 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(File source, String encoding) throws IOException {
-        return parse(new FileInputStream(source), encoding);
+        return parse(Files.newInputStream(source.toPath()), encoding);
     }
 
     /**
@@ -215,21 +223,24 @@ public class InvisibleXmlParser {
 
         Grammar grammar = ixml.getGrammar(options);
 
+        ParserType parserType = "Earley".equals(options.getParserType()) ? ParserType.Earley : ParserType.GLL;
+
         CharacterIterator iterator = new CharacterIterator(input);
-        EarleyParser parser = grammar.getParser(grammar.getNonterminal("$$"));
-        EarleyResult result = parser.parse(iterator);
+        GearleyParser parser = grammar.getParser(parserType, grammar.getNonterminal("$$"));
+        GearleyResult result = parser.parse(iterator);
 
         InvisibleXmlDocument doc;
-        if (!result.succeeded() && result.prefixSucceeded() && options.getIgnoreTrailingWhitespace()) {
+        if (parser.getParserType() == ParserType.Earley
+            && !result.succeeded() && result.prefixSucceeded() && options.getIgnoreTrailingWhitespace()) {
             boolean ok = true;
-            Iterator<Token> remaining = result.getContinuingIterator();
+            Iterator<Token> remaining = ((EarleyResult) result).getContinuingIterator();
             while (remaining.hasNext()) {
                 Token token = remaining.next();
-                ok = ok && (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCharacter());
+                ok = ok && (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCodepoint());
             }
-            doc = new InvisibleXmlDocument(result, options, ok);
+            doc = new InvisibleXmlDocument(result, ixml.getIxmlVersion(), options, ok);
         } else {
-            doc = new InvisibleXmlDocument(result, options);
+            doc = new InvisibleXmlDocument(result, ixml.getIxmlVersion(), options);
         }
 
         doc.setLocation(iterator.offset, iterator.lineNumber, iterator.columnNumber);

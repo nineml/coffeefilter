@@ -168,15 +168,19 @@ public class ParserTest {
     }
 
     @Test
-    public void comments() {
-        try {
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/comments.ixml"));
-            String input = "hello";
-            InvisibleXmlDocument doc = parser.parse(input);
-            Assert.assertTrue(doc.getNumberOfParses() > 0);
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-            fail();
-        }
+    public void versionDeclaration() {
+        // This test is for the bug where a terminal marked as optional was losing its optionality
+        String input = "ixml version '1.0-nineml'. S: 'a', 'b' .";
+
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+
+        Assertions.assertEquals("1.0-nineml", parser.getIxmlVersion());
+
+        input = "ab";
+        InvisibleXmlDocument doc = parser.parse(input);
+
+        Assertions.assertEquals("<S>ab</S>",
+                doc.getTree());
     }
+
 }

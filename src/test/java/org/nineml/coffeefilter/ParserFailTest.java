@@ -3,6 +3,7 @@ package org.nineml.coffeefilter;
 import net.sf.saxon.s9api.*;
 import org.junit.Assert;
 import org.junit.Test;
+import org.nineml.coffeegrinder.parser.ParserType;
 
 import java.io.File;
 
@@ -36,13 +37,13 @@ public class ParserFailTest {
             XdmNode node = bch.getDocumentNode();
 
             String str = node.toString();
-            Assert.assertTrue(str.contains("<line>1</line>"));
-            Assert.assertTrue(str.contains("<column>5</column>"));
-            Assert.assertTrue(str.contains("<pos>4</pos>"));
-            Assert.assertTrue(str.contains("<unexpected>J</unexpected>"));
-            Assert.assertTrue(str.contains("<permitted>' ', 'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</permitted>"));
-
-            //System.out.println(node);
+            if (doc.getParserType() == ParserType.Earley) {
+                Assert.assertTrue(str.contains("<line>1</line>"));
+                Assert.assertTrue(str.contains("<column>5</column>"));
+                Assert.assertTrue(str.contains("<pos>4</pos>"));
+                Assert.assertTrue(str.contains("<unexpected>J</unexpected>"));
+                Assert.assertTrue(str.contains("<permitted>' ', 'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</permitted>"));
+            }
         } catch (SaxonApiException ex) {
             System.err.println(ex.getMessage());
         }

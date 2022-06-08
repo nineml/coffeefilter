@@ -74,7 +74,8 @@ public class MessageGenerator {
                 int pnum = 1;
                 for (String param : params) {
                     String subst = "%" + pnum;
-                    message = message.replaceAll(subst, param);
+                    String repl = Matcher.quoteReplacement(param);
+                    message = message.replaceAll(subst, repl);
                     pnum++;
                 }
             }

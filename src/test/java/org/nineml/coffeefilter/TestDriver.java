@@ -3,6 +3,7 @@ package org.nineml.coffeefilter;
 import net.sf.saxon.lib.ErrorReporter;
 import net.sf.saxon.s9api.*;
 import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
 import org.nineml.coffeegrinder.exceptions.GrammarException;
@@ -11,13 +12,12 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class TestDriver {
-    public static final String xmlns_t = "https://github.com/cmsmcq/ixml-tests";
+    public static final String xmlns_t = "https://github.com/invisibleXML/ixml/test-catalog";
     public static final String xmlns_ap = "http://blackmesatech.com/2019/iXML/Aparecium";
     public static final QName t_test_catalog = new QName("t", xmlns_t, "test-catalog");
     public static final QName t_test_set = new QName("t", xmlns_t, "test-set");
@@ -35,6 +35,7 @@ public class TestDriver {
     public static final QName t_assert_xml = new QName("t", xmlns_t, "assert-xml");
     public static final QName t_assert_not_a_grammar = new QName("t", xmlns_t, "assert-not-a-grammar");
     public static final QName t_assert_not_a_sentence = new QName("t", xmlns_t, "assert-not-a-sentence");
+    public static final QName t_assert_dynamic_error = new QName("t", xmlns_t, "assert-dynamic-error");
     public static final QName t_app_info = new QName("t", xmlns_t, "app-info");
     public static final QName t_options = new QName("t", xmlns_t, "options");
     public static final QName ap_multiple_definitions = new QName("ap", xmlns_ap, "multiple-definitions");
@@ -43,6 +44,7 @@ public class TestDriver {
     public static final QName ap_unproductive_symbols = new QName("ap", xmlns_ap, "unproductive-symbols");
     public static final QName _name = new QName("", "name");
     public static final QName _href = new QName("", "href");
+    public static final QName _error_code = new QName("", "error-code");
     private static final String USAGE = "Usage: TestDriver [-s:set] [-t:test] [-e:exceptions] catalog.xml";
 
     public ParserOptions options = new ParserOptions();
@@ -319,7 +321,8 @@ public class TestDriver {
     private void doRunTest(TestConfiguration config, XdmNode testCase, XdmNode result) throws IOException, URISyntaxException, SaxonApiException {
         ranOne = true;
 
-        List<XdmNode> assertions = config.findAll(result, t_assert_xml, t_assert_xml_ref, t_assert_not_a_grammar, t_assert_not_a_sentence);
+        List<XdmNode> assertions = config.findAll(result, t_assert_xml, t_assert_xml_ref,
+                t_assert_not_a_grammar, t_assert_not_a_sentence, t_assert_dynamic_error);
         if (assertions.isEmpty()) {
             throw new RuntimeException("Test case makes no assertion?: " + testCase.getAttributeValue(_name));
         }
@@ -360,7 +363,7 @@ public class TestDriver {
             throw new RuntimeException("Test case makes no assertion?: " + testCase.getAttributeValue(_name));
         }
 
-        TestResult tresult = results.createResult(result);
+        TestResult tresult = results.createResult(result, assertions);
 
         if (config.grammar == null) {
             throw new RuntimeException("Test case has no in-scope grammar?: " + testCase.getAttributeValue(_name));
@@ -369,20 +372,33 @@ public class TestDriver {
         InvisibleXmlParser parser = invisibleXml.getParser();
         tresult.grammarParseTime = parser.getParseTime();
 
-        InvisibleXmlDocument doc = parseGrammar(config);
-        tresult.documentParseTime = doc.parseTime();
+        boolean parserConstructed = false;
+        IxmlException except = null;
+        XdmSequenceIterator<XdmNode> iter = null;
+        XdmNode node = null;
+        try {
+            InvisibleXmlDocument doc = parseGrammar(config);
+            tresult.documentParseTime = doc.parseTime();
 
-        // But is it a legitimate grammar?
-        InvisibleXmlParser grammarParser = loadGrammar(config);
+            // But is it a legitimate grammar?
+            InvisibleXmlParser grammarParser = loadGrammar(config);
+            parserConstructed = grammarParser.constructed();
 
-        DocumentBuilder builder = processor.newDocumentBuilder();
-        BuildingContentHandler bch = builder.newBuildingContentHandler();
-        doc.getTree(bch);
-        XdmNode node = bch.getDocumentNode();
+            if (grammarParser.getException() instanceof IxmlException) {
+                except = (IxmlException) grammarParser.getException();
+            }
 
-        XdmSequenceIterator<XdmNode> iter = node.axisIterator(Axis.CHILD);
-        while (iter.hasNext() && node.getNodeKind() != XdmNodeKind.ELEMENT) {
-            node = iter.next();
+            DocumentBuilder builder = processor.newDocumentBuilder();
+            BuildingContentHandler bch = builder.newBuildingContentHandler();
+            doc.getTree(bch);
+            node = bch.getDocumentNode();
+
+            iter = node.axisIterator(Axis.CHILD);
+            while (iter.hasNext() && node.getNodeKind() != XdmNodeKind.ELEMENT) {
+                node = iter.next();
+            }
+        } catch (IxmlException ex) {
+            except = ex;
         }
 
         boolean grammarExpected = true;
@@ -420,7 +436,16 @@ public class TestDriver {
                     break;
                 }
             } else {
-                same = !grammarParser.constructed();
+                String reported = except != null ? except.getCode() : "S12";
+                tresult.errorCode = reported;
+                List<String> codes = errorCodes(assertions);
+                boolean pass = codes.isEmpty() || codes.get(0).equals("none");
+                if (!pass) {
+                    for (String code : codes) {
+                        pass = pass || reported.equals(code);
+                    }
+                }
+                same = pass;
                 break;
             }
         }
@@ -433,7 +458,7 @@ public class TestDriver {
     }
 
     private void doValidParse(TestConfiguration config, XdmNode testCase, XdmNode testResult, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
-        TestResult result = results.createResult(testResult);
+        TestResult result = results.createResult(testResult, assertions);
 
         XdmNode testString = config.findOne(testCase, t_test_string, t_test_string_ref);
 
@@ -456,7 +481,26 @@ public class TestDriver {
 
         DocumentBuilder builder = processor.newDocumentBuilder();
         BuildingContentHandler bch = builder.newBuildingContentHandler();
-        doc.getTree(bch);
+
+        try {
+            doc.getTree(bch);
+        } catch (IxmlException ex) {
+            List<String> codes = errorCodes(assertions);
+            boolean pass = codes.isEmpty();
+            boolean dynamicErrorExpected = false;
+            for (XdmNode assertion : assertions) {
+                dynamicErrorExpected = dynamicErrorExpected || assertion.getNodeName().equals(t_assert_dynamic_error);
+            }
+            for (String code : codes) {
+                pass = pass || code.equals(ex.getCode());
+            }
+            result.state = pass ? TestState.PASS : TestState.FAIL;
+            if (dynamicErrorExpected) {
+                return;
+            }
+            throw ex;
+        }
+
         XdmNode node = bch.getDocumentNode();
 
         XdmSequenceIterator<XdmNode> iter = node.axisIterator(Axis.CHILD);
@@ -477,6 +521,18 @@ public class TestDriver {
                 }
             } else if (t_assert_xml_ref.equals(assertion.getNodeName())) {
                 expected = xmlFile(assertion.getBaseURI().resolve(assertion.getAttributeValue(_href)));
+            } else if (t_assert_dynamic_error.equals(assertion.getNodeName())) {
+                List<String> codes = errorCodes(assertions);
+                boolean pass = codes.isEmpty() || codes.get(0).equals("none");
+                if (!pass && parser.getException() instanceof IxmlException) {
+                    IxmlException except = (IxmlException) parser.getException();
+                    result.errorCode = except.getCode();
+                    for (String code : codes) {
+                        pass = pass || code.equals(except.getCode());
+                    }
+                }
+                result.state = pass ? TestState.PASS : TestState.FAIL;
+                return;
             } else {
                 throw new RuntimeException("Unexpected assertion: " + assertion);
             }
@@ -547,9 +603,16 @@ public class TestDriver {
             ixml = textFile(grammarURI);
             doc = parser.parse(ixml);
         } else if (t_vxml_grammar.equals(config.grammar.getNodeName())) {
-            throw new UnsupportedOperationException("Cannot parse a vxml grammar");
+            ixml = config.grammar.getStringValue();
+            ByteArrayInputStream bais = new ByteArrayInputStream(ixml.getBytes(StandardCharsets.UTF_8));
+            parser = invisibleXml.getParser(bais, null);
         } else if (t_vxml_grammar_ref.equals(config.grammar.getNodeName())) {
-            throw new UnsupportedOperationException("Cannot parse a vxml grammar");
+            String href = config.grammar.getAttributeValue(_href);
+            if (href.endsWith("/reference/ixml.xml")) {
+                parser = invisibleXml.getParser();
+            } else {
+                parser = invisibleXml.getParser(config.grammar.getBaseURI().resolve(href));
+            }
         } else {
             throw new RuntimeException("Unexpected grammar: " + config.grammar.getNodeName());
         }
@@ -559,7 +622,7 @@ public class TestDriver {
     private String textFile(URI uri) {
         try {
             String filename = uri.getPath();
-            InputStreamReader reader = new InputStreamReader(new FileInputStream(filename), "UTF-8");
+            InputStreamReader reader = new InputStreamReader(Files.newInputStream(Paths.get(filename)), "UTF-8");
             StringBuilder sb = new StringBuilder();
             char[] buffer = new char[4096];
             int len = reader.read(buffer);
@@ -624,7 +687,7 @@ public class TestDriver {
     }
 
     private void doNotASentence(TestConfiguration config, XdmNode testCase, XdmNode testResult, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
-        TestResult result = results.createResult(testResult);
+        TestResult result = results.createResult(testResult, assertions);
 
         XdmNode testString = config.findOne(testCase, t_test_string, t_test_string_ref);
 
@@ -671,7 +734,7 @@ public class TestDriver {
     }
 
     private void doNotAGrammar(TestConfiguration config, XdmNode testCase, XdmNode testResult, List<XdmNode> assertions) throws IOException, URISyntaxException, SaxonApiException {
-        TestResult result = results.createResult(testResult);
+        TestResult result = results.createResult(testResult, assertions);
 
         try {
             InvisibleXmlParser parser = loadGrammar(config);
@@ -679,11 +742,39 @@ public class TestDriver {
             if (parser.constructed()) {
                 result.state = TestState.FAIL;
             } else {
-                result.state = TestState.PASS;
+                List<String> codes = errorCodes(assertions);
+                boolean pass = codes.isEmpty() || codes.get(0).equals("none");
+                if (!pass && parser.getException() instanceof IxmlException) {
+                    IxmlException except = (IxmlException) parser.getException();
+                    result.errorCode = except.getCode();
+                    for (String code : codes) {
+                        pass = pass || code.equals(except.getCode());
+                    }
+                }
+
+                if (pass) {
+                    result.state = TestState.PASS;
+                } else {
+                    result.state = TestState.FAIL;
+                }
             }
         } catch (IxmlException ex) {
             result.state = TestState.PASS;
         }
+    }
+
+    private List<String> errorCodes(List<XdmNode> nodes) {
+        ArrayList<String> codes = new ArrayList<>();
+        for (XdmNode anode : nodes) {
+            if (anode.getNodeKind() == XdmNodeKind.ELEMENT) {
+                String codelist = anode.getAttributeValue(_error_code);
+                if (codelist != null && !"".equals(codelist)) {
+                    String[] values = codelist.split("\\s+");
+                    Collections.addAll(codes, values);
+                }
+            }
+        }
+        return codes;
     }
 
     private class TestConfiguration {
@@ -761,8 +852,9 @@ public class TestDriver {
                 if (child.getNodeKind() == XdmNodeKind.ELEMENT
                         && (child.getNodeName().equals(t_test_case) || child.getNodeName().equals(t_grammar_test))) {
                     String thisCase = child.getAttributeValue(_name);
+                    boolean processCase = false;
                     if (caseName == null || caseName.equals(thisCase)) {
-                        boolean processCase = true;
+                        processCase = true;
                         if (caseName == null && dataSet != null) {
                             for (DataTree excase : dataSet.getAll("case")) {
                                 if (thisCase.equals(excase.get("id").getValue())) {
@@ -770,11 +862,11 @@ public class TestDriver {
                                 }
                             }
                         }
-                        if (process && processCase) {
-                            nodes.add(child);
-                        } else {
-                            testsToSkip.add(child);
-                        }
+                    }
+                    if (process && processCase) {
+                        nodes.add(child);
+                    } else {
+                        testsToSkip.add(child);
                     }
                 }
             }

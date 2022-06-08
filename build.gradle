@@ -154,15 +154,30 @@ task testSuite(type: JavaExec,
 task testSuiteReport(type: SaxonXsltTask, dependsOn: ["testSuite"]) {
   inputs.files fileTree(dir: "${projectDir}/ixml/tests")
   inputs.files files(testSuite)
-  inputs.file "${projectDir}/tools/test-report.xsl"
-  outputs.file "${buildDir}/website/test-report.html"
+  inputs.file "${projectDir}/tools/test-report/test-report.xsl"
+  outputs.file "${buildDir}/website/test-report/index.html"
 
   input "${projectDir}/ixml/tests/test-catalog.xml"
-  stylesheet "${projectDir}/tools/test-report.xsl"
-  output "${buildDir}/website/test-report.html"
+  stylesheet "${projectDir}/tools/test-report/test-report.xsl"
+  output "${buildDir}/website/test-report/test-report.html"
   parameters (
-    'results.file': "${buildDir}/test-report.xml"
+    'test-report.xml': "${buildDir}/test-report.xml"
   )
+
+  doLast {
+    copy {
+      from ("${projectDir}/tools/test-report") {
+        include "*.css"
+      }
+      into "${buildDir}/website/test-report"
+    }
+    copy {
+      from ("${projectDir}/tools/test-report") {
+        include "*.svg"
+      }
+      into "${buildDir}/website/test-report/img"
+    }
+  }
 }
 testSuite.finalizedBy testSuiteReport
 

@@ -33,6 +33,19 @@ public final class AttributeBuilder implements Attributes {
         if (value == null) {
             throw new NullPointerException("Attribute value must not be null");
         }
+
+        if (options.getAssertValidXmlCharacters()) {
+            TokenUtils.assertXmlName(name);
+            if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
+                throw IxmlException.attributeNameForbidden(name);
+            }
+        }
+
+        if (options.getAssertValidXmlCharacters()) {
+            TokenUtils.assertXmlChars(value);
+        }
+
+
         if (names.contains(name)) {
             /* Allow them if they're the same value? Not per the current spec...
             int pos = getIndex(ns, name);

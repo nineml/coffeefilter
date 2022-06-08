@@ -1,25 +1,21 @@
 package org.nineml.coffeefilter;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.trees.StringTreeBuilder;
+import org.nineml.coffeefilter.utils.AttributeBuilder;
+import org.nineml.coffeefilter.utils.CommonBuilder;
+import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
+import org.nineml.coffeegrinder.tokens.TokenEOF;
 import org.nineml.coffeegrinder.util.DefaultTreeWalker;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.utils.AttributeBuilder;
-import org.nineml.coffeefilter.utils.CommonBuilder;
-import org.nineml.coffeefilter.trees.StringTreeBuilder;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An InvisibleXmlDocument represents a document created with an {@link InvisibleXmlParser}.
@@ -28,19 +24,21 @@ import java.util.Set;
  * there may be more than one.</p>
  */
 public class InvisibleXmlDocument {
-    private final EarleyResult result;
+    private final GearleyResult result;
     private final boolean prefixOk;
     private final TreeWalker treeWalker;
+    private final String parserVersion;
     private ParserOptions options;
     private boolean selectedFirst = false;
     private int lineNumber = -1;
     private int columnNumber = -1;
     private int offset = -1;
 
-    protected InvisibleXmlDocument(EarleyResult result, ParserOptions options) {
+    protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options) {
         this.result = result;
         this.prefixOk = false;
         this.options = options;
+        this.parserVersion = parserVersion;
         if (result.succeeded() || result.prefixSucceeded()) {
             treeWalker = new DefaultTreeWalker(result.getForest(), new ParseTreeBuilder());
         } else {
@@ -48,10 +46,11 @@ public class InvisibleXmlDocument {
         }
     }
 
-    protected InvisibleXmlDocument(EarleyResult result, ParserOptions options, boolean prefixOk) {
+    protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options, boolean prefixOk) {
         this.result = result;
         this.prefixOk = prefixOk;
         this.options = options;
+        this.parserVersion = parserVersion;
         if (result.succeeded() || result.prefixSucceeded()) {
             treeWalker = new DefaultTreeWalker(result.getForest(), new ParseTreeBuilder());
         } else {
@@ -115,8 +114,19 @@ public class InvisibleXmlDocument {
      * Return the underlying {@link EarleyResult} result for this parse.
      * @return the result
      */
-    public EarleyResult getEarleyResult() {
+    public GearleyResult getResult() {
         return result;
+    }
+
+    /**
+     * Return the parser type.
+     * @return the parser type
+     */
+    public ParserType getParserType() {
+        if (result instanceof GllResult) {
+            return ParserType.GLL;
+        }
+        return ParserType.Earley;
     }
 
     /**
@@ -187,7 +197,7 @@ public class InvisibleXmlDocument {
      */
     public String getTree() {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, result, options);
+        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(options);
         realize(builder, handler);
         return handler.getXml();
@@ -199,7 +209,7 @@ public class InvisibleXmlDocument {
      */
     public void getTree(PrintStream output) {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, result, options);
+        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(options, output);
         realize(builder, handler);
     }
@@ -219,7 +229,7 @@ public class InvisibleXmlDocument {
      */
     public void getTree(ContentHandler handler, ParserOptions options) {
         ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, result, options);
+        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         realize(builder, handler);
     }
 
@@ -256,52 +266,60 @@ public class InvisibleXmlDocument {
 
             atomicValue(handler, "pos", ""+result.getTokenCount());
 
-            TokenCharacter tchar = (TokenCharacter) result.getLastToken();
-            if (tchar != null) {
-                if (result.getParser().moreInput()) {
-                    atomicValue(handler, "unexpected", ""+tchar.getValue());
-                } else {
-                    atomicValue(handler, "end-of-input", "true");
+            if (result.getLastToken() == TokenEOF.EOF) {
+                // This only happens for the GLL parser.
+                atomicValue(handler, "end-of-input", "true");
+            } else {
+                TokenCharacter tchar = (TokenCharacter) result.getLastToken();
+                if (tchar != null) {
+                    if (result.getParser().hasMoreInput()) {
+                        atomicValue(handler, "unexpected", ""+tchar.getValue());
+                    } else {
+                        atomicValue(handler, "end-of-input", "true");
+                    }
                 }
             }
 
             boolean predictedSome = false;
-            List<Token> oknext = couldBeNext(result.predictedTerminals());
+            List<Token> oknext = couldBeNext(result.getPredictedTerminals());
             if (!oknext.isEmpty()) {
                 predictedSome = true;
                 tokenList(handler, oknext, "permitted");
             }
 
-            oknext = couldBeNext(result.getChart(), result.getParser().getGrammar());
-            if (!oknext.isEmpty()) {
-                String elemName = "permitted";
-                if (predictedSome) {
-                    elemName = "also-predicted";
-                }
-                tokenList(handler, oknext, elemName);
-            }
-
-            if (options.getShowChart()) {
-                handler.startElement("", "chart", "chart", AttributeBuilder.EMPTY_ATTRIBUTES);
-
-                for (int row = 0; row < result.getChart().size(); row++) {
-                    if (!result.getChart().get(row).isEmpty()) {
-                        attrs = new AttributeBuilder(options);
-                        attrs.addAttribute("n", ""+row);
-                        handler.startElement("", "row", "row", attrs);
-
-                        attrs = new AttributeBuilder(options);
-                        for (EarleyItem item : result.getChart().get(row)) {
-                            writeString(handler,"  ");
-                            handler.startElement("", "item", "item", attrs);
-                            writeString(handler, item.toString());
-                            handler.endElement("", "item", "item");
-                        }
-
-                        handler.endElement("", "row", "row");
+            if (result instanceof EarleyResult) {
+                EarleyResult eresult = (EarleyResult) result;
+                oknext = couldBeNext(eresult.getChart(), result.getParser().getGrammar());
+                if (!oknext.isEmpty()) {
+                    String elemName = "permitted";
+                    if (predictedSome) {
+                        elemName = "also-predicted";
                     }
+                    tokenList(handler, oknext, elemName);
                 }
-                handler.endElement("", "chart", "chart");
+
+                if (options.getShowChart()) {
+                    handler.startElement("", "chart", "chart", AttributeBuilder.EMPTY_ATTRIBUTES);
+
+                    for (int row = 0; row < eresult.getChart().size(); row++) {
+                        if (!eresult.getChart().get(row).isEmpty()) {
+                            attrs = new AttributeBuilder(options);
+                            attrs.addAttribute("n", ""+row);
+                            handler.startElement("", "row", "row", attrs);
+
+                            attrs = new AttributeBuilder(options);
+                            for (EarleyItem item : eresult.getChart().get(row)) {
+                                writeString(handler,"  ");
+                                handler.startElement("", "item", "item", attrs);
+                                writeString(handler, item.toString());
+                                handler.endElement("", "item", "item");
+                            }
+
+                            handler.endElement("", "row", "row");
+                        }
+                    }
+                    handler.endElement("", "chart", "chart");
+                }
             }
 
             handler.endElement("", "fail", "failed");

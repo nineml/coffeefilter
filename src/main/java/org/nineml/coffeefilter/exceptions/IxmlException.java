@@ -69,17 +69,22 @@ public class IxmlException extends RuntimeException {
     public static IxmlException parseFailed(Exception ex) {
         return getException("P005", new String[] { ex.getMessage() }, ex);
     }
-    public static IxmlException repeatedAttribute(String name) { return getException("E001", name); }
-    public static IxmlException invalidCharacterClass(String name) { return getException("E002", name); }
-    public static IxmlException invalidXmlName(String name) { return getException("E003", name); }
-    public static IxmlException multipleDefinitionsOfSymbol(String name) { return getException("E004", name); }
-    public static IxmlException invalidMark(char mark) { return getException("E005", ""+mark); }
+    public static IxmlException repeatedAttribute(String name) { return getException("D02", name); }
+    public static IxmlException invalidCharacterClass(String name) { return getException("S10", name); }
+    public static IxmlException invalidXmlName(String name) { return getException("D03", name); }
+    public static IxmlException invalidXmlNameCharacter(String name, int ch) { return getException("D03", new String[] {name, ""+ch}); }
+    public static IxmlException invalidXmlCharacter(String ch) { return getException("D04", ch); }
+    public static IxmlException multipleDefinitionsOfSymbol(String name) { return getException("S03", name); }
+    public static IxmlException invalidMark(char mark) { return getException("S05", ""+mark); }
     public static IxmlException invalidTMark(char mark) { return getException("E006", ""+mark); }
-    public static IxmlException invalidHex(String hex) { return getException("E007", hex); }
-    public static IxmlException attributeRoot(String name) { return getException("E008", name); }
-    public static IxmlException multipleRoots(String name) { return getException("E009", name); }
-    public static IxmlException invalidRange(String from, String to) { return getException("E010", new String[] {from, to}); }
-    public static IxmlException undefinedSymbols(Set<NonterminalSymbol> symbols) { return getException("E011", symbolList(symbols)); }
+    public static IxmlException invalidHexCharacters(String hex) { return getException("S06", hex); }
+    public static IxmlException invalidHexTooLarge(String hex) { return getException("S07", hex); }
+    public static IxmlException invalidHex(String hex) { return getException("S08", hex); }
+    public static IxmlException attributeRoot(String name) { return getException("D05", name); }
+    public static IxmlException notSingleRooted(String name) { return getException("D06", name); }
+    public static IxmlException attributeNameForbidden(String name) { return getException("D07", name); }
+    public static IxmlException invalidRange(String from, String to) { return getException("S09", new String[] {from, to}); }
+    public static IxmlException undefinedSymbols(Set<NonterminalSymbol> symbols) { return getException("S02", symbolList(symbols)); }
     public static IxmlException unreachableSymbols(Set<NonterminalSymbol> symbols) { return getException("E012", symbolList(symbols)); }
     public static IxmlException unproductiveSymbols(Set<NonterminalSymbol> symbols) { return getException("E013", symbolList(symbols)); }
 

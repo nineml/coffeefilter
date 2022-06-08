@@ -2,7 +2,7 @@ package org.nineml.coffeefilter.utils;
 
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.model.IPragma;
+import org.nineml.coffeefilter.model.InsertionNonterminal;
 import org.nineml.coffeegrinder.parser.*;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -12,7 +12,6 @@ import org.nineml.coffeegrinder.util.ParserAttribute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -23,7 +22,8 @@ public class CommonBuilder {
     public static final String logcategory = "TreeBuilder";
     public static final String ixml_prefix = "ixml";
     public static final String ixml_ns = "http://invisiblexml.org/NS";
-
+    public static final String nineml_prefix = "nineml";
+    public static final String nineml_ns = "http://nineml.org/ns/nineml";
     private final ParserOptions options;
     private final Stack<PartialOutput> stack = new Stack<>();
     private final Stack<Character> context = new Stack<>();
@@ -34,8 +34,13 @@ public class CommonBuilder {
     private boolean ambiguous = false;
     private boolean prefix = false;
     private String xmlns = "";
+    private String grammarVersion = null;
 
-    public CommonBuilder(ParseTree tree, EarleyResult result, ParserOptions options) {
+    public CommonBuilder(ParseTree tree, GearleyResult result, ParserOptions options) {
+        this(tree, null, result, options);
+    }
+
+    public CommonBuilder(ParseTree tree, String ixmlVersion, GearleyResult result, ParserOptions options) {
         this.options = options;
         if (tree == null) {
             options.getLogger().trace(logcategory, "No tree");
@@ -50,37 +55,44 @@ public class CommonBuilder {
         constructTree(tree, null);
         ambiguous = tree.getForest().isAmbiguous();
         prefix = result.prefixSucceeded();
+        grammarVersion = ixmlVersion;
     }
 
-    private void startNonterminal(ParseTree tree, char mark, String name, Map<String,String> parseAttributes) {
-        //System.err.println("ST: " + tree);
-        char ctx = mark;
+    private void startNonterminal(ParseTree tree, char useMark, char showMark, String name, Map<String,String> parseAttributes) {
+        char ctx = useMark;
         if (context.peek() == '@') {
             ctx = '@';
         } else {
             if (ctx == '^') {
                 if (rootFinished) {
-                    throw IxmlException.multipleRoots(name);
+                    throw IxmlException.notSingleRooted(name);
                 }
                 elementStack.push(name);
             }
-            PartialOutput top = new PartialOutput(mark, name, parseAttributes);
+            PartialOutput top = new PartialOutput(useMark, showMark, name, parseAttributes);
             stack.push(top);
         }
         context.push(ctx);
     }
 
-    private void endNonterminal(ParseTree tree, String name) {
-        //System.err.println("EN: " + tree);
+    private void endNonterminal(ParseTree tree, char mark, String name) {
         context.pop();
         if (context.peek() == '@') {
             return;
         }
 
         PartialOutput top = stack.pop();
-        if (!name.equals(top.name)) {
-            throw new RuntimeException("Missmatch on output stack");
+
+        if (name != null) {
+            if (!name.equals(top.name)) {
+                throw new RuntimeException("Mismatch on output stack");
+            }
+        } else {
+            if (top.name != null) {
+                throw new RuntimeException("Mismatch on output stack");
+            }
         }
+
         if (stack.isEmpty()) {
             result = top;
         } else {
@@ -106,30 +118,27 @@ public class CommonBuilder {
         }
     }
 
-    private void terminal(ParseTree tree, char mark, char ch, boolean acc, String rewrite, String insertion) {
-        //System.err.println("TT2: " + tree);
+    private void terminal(ParseTree tree, char mark, int codepoint, boolean acc, String rewrite) {
         if (mark == '-') {
             return;
         }
 
-        if (rewrite != null && insertion != null) {
-            insertion = rewrite;
-            rewrite = null;
-        }
-
         if (rewrite != null) {
             if (!stack.isEmpty()) {
+                if (options.getAssertValidXmlCharacters()) {
+                    TokenUtils.assertXmlChars(rewrite);
+                }
                 stack.peek().rewrite(rewrite);
             }
         } else {
-            PartialOutput item = new PartialOutput(ch, acc);
+            if (options.getAssertValidXmlCharacters()) {
+                TokenUtils.assertXmlChars(codepoint);
+            }
+            PartialOutput item = new PartialOutput(codepoint, acc);
             if (stack.isEmpty()) {
                 stack.push(item);
             } else {
                 stack.peek().add(item);
-            }
-            if (insertion != null) {
-                stack.peek().add(new PartialOutput(insertion));
             }
         }
     }
@@ -139,6 +148,11 @@ public class CommonBuilder {
             handler.startDocument();
             documentElement = true;
             result.output(handler);
+
+            if (documentElement) {
+                throw IxmlException.notSingleRooted("");
+            }
+
             handler.endDocument();
         } catch (SAXException ex) {
             throw new RuntimeException(ex);
@@ -193,7 +207,13 @@ public class CommonBuilder {
             return;
         }
 
-        char mark = getMark(xsymbol == null ? symbol : xsymbol);
+        char useMark = getMark(xsymbol == null ? symbol : xsymbol);
+        char showMark = '?';
+        if (options.getShowMarks()) {
+            showMark = useMark;
+            useMark = '^';
+        }
+
         if (symbol instanceof TerminalSymbol) {
             Token token = ((TerminalSymbol) tree.getSymbol()).getToken();
             if (!(token instanceof TokenCharacter)) {
@@ -202,10 +222,9 @@ public class CommonBuilder {
 
             String acc = getAttribute(symbol, xsymbol, "acc");
             String rewrite = getAttribute(symbol, xsymbol, "rewrite");
-            String insertion = getAttribute(symbol, xsymbol, "insertion");
 
-            char ch = ((TokenCharacter) token).getCharacter();
-            terminal(tree, mark, ch, acc != null, rewrite, insertion);
+            int ch = ((TokenCharacter) token).getCodepoint();
+            terminal(tree, useMark, ch, acc != null, rewrite);
         } else {
             if (child1 != null) {
                 pos = getSymbol(child1.getSymbol(), state, state.getPosition());
@@ -228,29 +247,48 @@ public class CommonBuilder {
                 }
             }
 
-            localName = getAttribute(symbol, xsymbol, "name");
-            startNonterminal(tree, mark, localName, getAttributes(symbol, xsymbol));
-
-            String gentext = symbol.getAttributeValue("insertion", null);
-            if (gentext != null) {
-                stack.peek().add(new PartialOutput(gentext));
-            }
-
-            if (child0 != null) {
-                constructTree(child0, child0Symbol);
-            }
-
-            if (child1 != null) {
-                constructTree(child1, child1Symbol);
-            }
-
-            endNonterminal(tree, localName);
-
-            if (xsymbol != null) {
-                gentext = xsymbol.getAttributeValue("insertion", null);
+            if (symbol instanceof InsertionNonterminal) {
+                String gentext = symbol.getAttributeValue("insertion", null);
                 if (gentext != null) {
-                    stack.peek().add(new PartialOutput(gentext));
+                    if (options.getAssertValidXmlCharacters()) {
+                        TokenUtils.assertXmlChars(gentext);
+                    }
+                    if (options.getShowMarks()) {
+                        startNonterminal(tree, '^', '+', "nineml:insertion", new HashMap<>());
+                        stack.peek().add(new PartialOutput(gentext));
+                        endNonterminal(tree, '^', "nineml:insertion");
+                    } else {
+                        stack.peek().add(new PartialOutput(gentext));
+                    }
                 }
+            } else {
+                localName = getAttribute(symbol, xsymbol, "name");
+                HashMap<String,String> attributes = getAttributes(symbol, xsymbol);
+
+                if (localName.startsWith("$")) {
+                    if (options.getShowBnfNonterminals()) {
+                        useMark = '^';
+                        showMark = '-';
+                        attributes.put("nineml:name", localName);
+                        localName = "nineml:nt";
+                    } else {
+                        if (options.getShowMarks()) {
+                            useMark = '-';
+                        }
+                    }
+                }
+
+                startNonterminal(tree, useMark, showMark, localName, attributes);
+
+                if (child0 != null) {
+                    constructTree(child0, child0Symbol);
+                }
+
+                if (child1 != null) {
+                    constructTree(child1, child1Symbol);
+                }
+
+                endNonterminal(tree, useMark, localName);
             }
         }
     }
@@ -265,7 +303,7 @@ public class CommonBuilder {
         return null;
     };
 
-    private Map<String,String> getAttributes(Symbol symbol, Symbol xsymbol) {
+    private HashMap<String,String> getAttributes(Symbol symbol, Symbol xsymbol) {
         HashMap<String, String> map = new HashMap<>();
         if (xsymbol != null) {
             for (ParserAttribute attr : xsymbol.getAttributes()) {
@@ -316,6 +354,7 @@ public class CommonBuilder {
 
     private class PartialOutput {
         private final char mark;
+        private final char showMark;
         private final String name;
         private String text;
         private boolean accumulator = false;
@@ -324,24 +363,28 @@ public class CommonBuilder {
         private final HashMap<String,String> parseAttributes = new HashMap<>();
         private final boolean discardEmpty;
 
-        public PartialOutput(char mark, String name, Map<String,String> parseAttributes) {
-            this.mark = mark;
+        public PartialOutput(char useMark, char showMark, String name, Map<String,String> parseAttributes) {
+            this.mark = useMark;
+            this.showMark = showMark;
             this.name = name;
             this.parseAttributes.putAll(parseAttributes);
             discardEmpty = parseAttributes.containsKey("discard") && "empty".equals(parseAttributes.get("discard"));
             text = null;
         }
 
-        public PartialOutput(char ch, boolean acc) {
+        public PartialOutput(int codepoint, boolean acc) {
             mark ='?';
+            showMark = '?';
             name = null;
-            text = "" + ch;
+            // Surely there's something more efficient than this?
+            text = new StringBuilder().appendCodePoint(codepoint).toString();
             accumulator = acc;
             discardEmpty = false;
         }
 
         public PartialOutput(String text) {
             mark ='?';
+            showMark = '?';
             name = null;
             this.text = text;
             discardEmpty = false;
@@ -410,8 +453,12 @@ public class CommonBuilder {
                         }
 
                         if (!attr.discardEmpty || !"".equals(value)) {
-                            attrs.addAttribute(attr.name, value);
+                            String name = attr.name;
+                            attrs.addAttribute(name, value);
                         }
+                    }
+                    if (parseAttributes.containsKey("nineml:name")) {
+                        attrs.addAttribute("nineml:name", parseAttributes.get("nineml:name"));
                     }
 
                     if (documentElement) {
@@ -426,6 +473,11 @@ public class CommonBuilder {
                         if (prefix && !options.isSuppressedState("prefix")) {
                             state += sep + "prefix";
                         }
+                        if (grammarVersion != null) {
+                            if (!"1.0".equals(grammarVersion) && !"1.0-nineml".equals(grammarVersion)) {
+                                state += sep + "version-mismatch";
+                            }
+                        }
 
                         if (!"".equals(xmlns)) {
                             handler.startPrefixMapping("", xmlns);
@@ -435,6 +487,17 @@ public class CommonBuilder {
                             handler.startPrefixMapping(ixml_prefix, ixml_ns);
                             attrs.addAttribute(ixml_ns, ixml_prefix + ":state", state);
                         }
+
+                        if (options.getShowMarks() || options.getShowBnfNonterminals()) {
+                            handler.startPrefixMapping(nineml_prefix, nineml_ns);
+                        }
+                    }
+                    if (options.getShowMarks() && showMark != '?') {
+                        attrs.addAttribute(nineml_ns, nineml_prefix+":mark", ""+showMark);
+                    }
+
+                    if (options.getAssertValidXmlNames()) {
+                        TokenUtils.assertXmlName(name);
                     }
 
                     handler.startElement(xmlns, name, name, attrs);

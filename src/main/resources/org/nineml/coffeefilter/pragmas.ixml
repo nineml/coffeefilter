@@ -1,11 +1,8 @@
-ixml: {[nineml discard empty]} prolog, rule++RS, s. 
+ixml version "1.0".
+{ ixml with pragmas, hacked by ndw to remove qnames. }
+{ Based on the 2022-06-07 grammar }
 
-{ ixml with pragmas, hacked by ndw to remove qnames }
-{ this comment is after the first rule so that the  }
-{ prolog will be empty (and discarded).             }
-{ Based on the 2022-04-15 draft specification       }
-
-       prolog: s, (ppragma++s, s)?. 
+         ixml: s, prolog?, rule++RS, s. 
 
            -s: (whitespace; comment)*. {Optional spacing}
           -RS: (whitespace; comment)+. {Required spacing}
@@ -15,6 +12,9 @@ ixml: {[nineml discard empty]} prolog, rule++RS, s.
           -cr: -#d.
       comment: -"{", ((comment; ~["[]{}"]), (cchar; comment)*)?, -"}".
        -cchar: ~["{}"].
+
+       prolog: ((version, ppragma**s) | ppragma++s), s. 
+      version: -"ixml", RS, -"version", RS, string, s, -'.' .
 
          rule: annotation, name, s, -["=:"], s, -alts, (pragma, sp)?, -".". 
         @mark: ["@^-"].
@@ -26,6 +26,7 @@ ixml: {[nineml discard empty]} prolog, rule++RS, s.
                repeat1.
       -factor: terminal;
                nonterminal;
+               insertion;
                -"(", s, alts, -")", s.
       repeat0: factor, (-"*", s; -"**", s, sep).
       repeat1: factor, (-"+", s; -"++", s, sep).
@@ -49,9 +50,9 @@ ixml: {[nineml discard empty]} prolog, rule++RS, s.
        @tmark: ["^-"].
       @string: -'"', dchar+, -'"';
                -"'", schar+, -"'".
-       -dchar: ~['"'; #a; #d];
+        dchar: ~['"'; #a; #d];
                '"', -'"'. {all characters except line breaks; quotes must be doubled}
-       -schar: ~["'"; #a; #d];
+        schar: ~["'"; #a; #d];
                "'", -"'". {all characters except line breaks; quotes must be doubled}
      -encoded: tannotation, -"#", hex, s.
          @hex: ["0"-"9"; "a"-"f"; "A"-"F"]+.
@@ -75,6 +76,7 @@ ixml: {[nineml discard empty]} prolog, rule++RS, s.
         @code: capital, letter?.
      -capital: ["A"-"Z"].
       -letter: ["a"-"z"].
+    insertion: -"+", s, (string; -"#", hex), s.
 
        pragma: -"{[", @pmark?, @name, (whitespace, pragma-data)?, -"]}" . 
       ppragma: -"{[+", @pmark?, @name, (whitespace, pragma-data)?, -"]}" . 

@@ -13,11 +13,9 @@ public class InsertionsTest {
 
     @Test
     public void parseText() {
-        String input = "demo: A, ^'between', B, C, D. A: 'a', ^'FromA'. B: ^'FromB', 'b'. @C: ^'attrvalue'. D: ^'gentext'.";
+        String input = "demo: A, +'between', B, C, D. A: 'a', +'FromA'. B: +'FromB', 'b'. @C: +'attrvalue'. D: +'gentext'.";
 
         InvisibleXmlDocument xdoc = invisibleXml.getParser().parse(input);
-        String xxml = xdoc.getTree();
-
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
 
         input = "ab";
@@ -33,10 +31,29 @@ public class InsertionsTest {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/insdata.ixml"));
             InvisibleXmlDocument doc = parser.parse("100,200,(300),400");
             String xml = doc.getTree();
-            Assertions.assertEquals("<data xmlns=\"http://example.com/data\"><value>+100</value><value>+200</value><value>-300</value><value>+400</value></data>", xml);
-            System.err.println(xml);
+            Assertions.assertEquals("<data><value>+100</value><value>+200</value><value>-300</value><value>+400</value></data>", xml);
         } catch (IOException ex) {
             fail();
         }
+    }
+
+    @Test
+    public void ambiguous() {
+        String input = " S: +'A' ; +'B'. ";
+
+        InvisibleXmlDocument xdoc = invisibleXml.getParser().parse(input);
+        String xxml = xdoc.getTree();
+
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+
+        input = "";
+        InvisibleXmlDocument doc = parser.parse(input);
+
+        doc.getResult().getForest().serialize("/tmp/insert.xml");
+
+        String xml = doc.getTree();
+
+        Assertions.assertTrue("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">A</S>".equals(xml)
+            || "<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">B</S>".equals(xml));
     }
 }

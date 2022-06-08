@@ -1,7 +1,6 @@
 package org.nineml.coffeefilter.model;
 
-import org.nineml.coffeegrinder.exceptions.GrammarException;
-import org.nineml.logging.Logger;
+import org.nineml.coffeegrinder.parser.NonterminalSymbol;
 import org.xml.sax.Attributes;
 
 import java.io.PrintStream;
@@ -48,14 +47,6 @@ public abstract class XNode {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Returns true if this node is optional.
-     * @return True iff the node is optional.
-     */
-    public boolean isOptional() {
-        return optional;
     }
 
     /**
@@ -112,13 +103,17 @@ public abstract class XNode {
                 String str = attributes.getValue("string");
                 tmark = attributes.getValue("tmark");
                 if (tmark == null) {
-                    child = new ILiteral(this, ' ', str, attributes.getValue("hex"));
+                    child = new ILiteral(this, '^', str, attributes.getValue("hex"));
                 } else {
                     if (tmark.length() != 1) {
                         throw new IllegalArgumentException("tmark attribute must be a single character");
                     }
                     child = new ILiteral(this, tmark.charAt(0), str, attributes.getValue("hex"));
                 }
+                break;
+            case "insertion":
+                str = attributes.getValue("string");
+                child = new IInsertion(this, str, attributes.getValue("hex"));
                 break;
             case "member":
                 // Must have exactly one of:
@@ -199,6 +194,10 @@ public abstract class XNode {
                 break;
             case "prolog":
                 child = new IProlog(this);
+                break;
+            case "version":
+                String version = attributes.getValue("string");
+                child = new IVersion(this, version);
                 break;
             case "pragma":
             case "ppragma":
@@ -406,6 +405,12 @@ public abstract class XNode {
                     for (IPragma pragma : child.pragmas) {
                         addPragma(pragma);
                     }
+                    for (XNode pchild : child.children) {
+                        if (pchild instanceof IVersion) {
+                            // Gross!
+                            ((Ixml) this).version = ((IVersion) pchild).getVersion();
+                        }
+                    }
                 } else if (child instanceof IPragma) {
                     IPragma pragma = (IPragma) child;
                     if ("nineml".equals(pragma.name)) {
@@ -477,7 +482,7 @@ public abstract class XNode {
                         root.emptyProduction = true;
                     }
                 } else {
-                    String altname = "|" + root.nextRuleName();
+                    String altname = root.nextRuleName("alt");
                     INonterminal altnt = new INonterminal(this, altname, '-');
                     newchildren.add(altnt);
 
@@ -496,158 +501,67 @@ public abstract class XNode {
         children = newchildren;
     }
 
-    /**
-     * Rewrite repeat0 constructs.
-     *
-     * <p>This method replaces all instances of repeat0 in this node and its descendants with
-     * a rewriting that does not use repeat0. The children are both mutated on the object and returned
-     * for convience.</p>
-     *
-     * @return The (possibly updated) children.
-     */
-    protected ArrayList<XNode> simplifyRepeat0() {
+    private XNode lastChild() {
+        if (!children.isEmpty()) {
+            return children.get(children.size() - 1);
+        }
+        return null;
+    }
+
+    private String getNewRuleName(XNode node, String suffix) {
+        String prefix = null;
+        if (!node.children.isEmpty()) {
+            XNode first = node.children.get(0);
+            if (first instanceof INonterminal) {
+                prefix = first.name;
+            } else if (first instanceof ILiteral) {
+                ILiteral literal = (ILiteral) first;
+                if (literal.hex == null) {
+                    prefix = "L" + literal.string;
+                } else {
+                    prefix = "0x" + literal.hex;
+                }
+            }
+        }
+
+        if (prefix == null) {
+            return getRoot().nextRuleName(suffix);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int ch : prefix.codePoints().toArray()) {
+            if (ch <= ' ' || ch > '~' || ch == '\'' || ch == '"' || ch == '&' || ch == '<' || ch == '>') {
+                sb.append(String.format("0x%h", ch));
+            } else {
+                sb.appendCodePoint(ch);
+            }
+        }
+        return getRoot().nextRuleName(sb + "-" + suffix);
+    }
+
+    protected ArrayList<XNode> simplifRepeat0Sep() {
         if (hasChild("repeat0")) {
             ArrayList<XNode> newchildren = new ArrayList<>();
             for (XNode child : children) {
-                child.children = child.simplifyRepeat0();
-                if (child instanceof IRepeat0) {
+                child.children = child.simplifRepeat0Sep();
+                if (child instanceof IRepeat0 && child.lastChild() instanceof ISep) {
                     Ixml root = getRoot();
+                    XNode parent = child.parent;
 
-                    XNode sep = child.children.get(child.children.size() - 1);
-                    if (sep instanceof ISep) { // f*sep
-                        ArrayList<XNode> factor = new ArrayList<>();
-                        for (XNode f : child.children) {
-                            if (f != sep) {
-                                factor.add(f);
-                            }
-                        }
+                    String name = getNewRuleName(child, "star-sep-option");
+                    INonterminal f_star_sep_option = new INonterminal(parent, name, '-');
+                    newchildren.add(f_star_sep_option);
 
-                        // We need four new nonterminals
-                        String f_star_sep_name = root.nextRuleName();
-                        INonterminal f_star_sep = new INonterminal(child, f_star_sep_name, '-');
+                    IRule f_star_sep_option_rule = new IRule(root, name, '-');
+                    root.addRule(f_star_sep_option_rule);
 
-                        String f_plus_sep_name = root.nextRuleName();
-                        INonterminal f_plus_sep = new INonterminal(child, f_plus_sep_name, '-');
-
-                        String f_star_name = root.nextRuleName();
-                        INonterminal f_star = new INonterminal(child, f_star_name, '-');
-
-                        String f_star_prime_name = root.nextRuleName();
-                        INonterminal f_star_prime = new INonterminal(child, f_star_prime_name, '-');
-
-                        // f*sep = f-star-sep
-                        newchildren.add(f_star_sep);
-
-                        // f-star-sep = f-plus-sep?
-                        IRule f_star_sep_rule = new IRule(root, f_star_sep_name, '-');
-                        XNode copy = f_star_sep_rule.addCopy(f_plus_sep);
-                        copy.optional = true;
-
-                        // f-plus-sep = f, f-star
-                        IRule f_plus_sep_rule = new IRule(root, f_plus_sep_name, '-');
-                        for (XNode f : factor) {
-                            f_plus_sep_rule.addCopy(f);
-                        }
-                        f_plus_sep_rule.addCopy(f_star);
-
-                        // f-star => f-star-prime?
-                        IRule f_star_rule = new IRule(root, f_star_name, '-');
-                        copy = f_star_rule.addCopy(f_star_prime);
-                        copy.optional = true;
-
-                        // f-star-prime => sep, f, f-star
-                        IRule f_star_prime_rule = new IRule(root, f_star_prime_name, '-');
-                        f_star_prime_rule.addCopy(sep);
-                        for (XNode f : factor) {
-                            f_star_prime_rule.addCopy(f);
-                        }
-                        f_star_prime_rule.addCopy(f_star);
-
-                        root.addRule(f_star_sep_rule);
-                        root.addRule(f_plus_sep_rule);
-                        root.addRule(f_star_rule);
-                        root.addRule(f_star_prime_rule);
-
-                        /*
-                        ArrayList<Node> factor = new ArrayList<>();
-                        for (Node f : child.children) {
-                            if (f != sep) {
-                                factor.add(f);
-                            }
-                        }
-
-                        String f_star_sep_name = root.nextRuleName();
-                        INonterminal f_star_sep = new INonterminal(child, f_star_sep_name, '-');
-
-                        String f_plus_sep_name = root.nextRuleName();
-                        INonterminal f_plus_sep = new INonterminal(child, f_plus_sep_name, '-');
-                        f_plus_sep.optional = true;
-
-                        String sep_plus_f_star_name = root.nextRuleName();
-                        INonterminal sep_plus_f_star = new INonterminal(child, sep_plus_f_star_name, '-');
-
-                        String sep_plus_f_name = root.nextRuleName();
-                        INonterminal sep_plus_f = new INonterminal(child, sep_plus_f_name, '-');
-                        sep_plus_f.optional = true;
-
-                        // f*sep = f-star-sep
-                        newchildren.add(f_star_sep);
-
-                        // f-star-sep = f-plus-sep?
-                        IRule f_star_sep_rule = new IRule(root, f_star_sep_name, '-');
-                        f_star_sep_rule.addCopy(f_plus_sep);
-
-                        // f-plus-sep = f, sep-plus-f-star
-                        IRule f_plus_sep_rule = new IRule(root, f_plus_sep_name, '-');
-                        for (Node f : factor) {
-                            f_plus_sep_rule.addCopy(f);
-                        }
-                        f_plus_sep_rule.addCopy(sep_plus_f_star);
-
-                        // sep-plus-f-star = sep-plus-f?
-                        IRule sep_plus_f_star_rule = new IRule(root, sep_plus_f_star_name, '-');
-                        sep_plus_f_star_rule.addCopy(sep_plus_f);
-
-                        // sep-plus-f = sep, f, sep-plus-f?
-                        IRule sep_plus_f_rule = new IRule(root, sep_plus_f_name, '-');
-                        sep_plus_f_rule.addCopy(sep);
-                        for (Node f : factor) {
-                            sep_plus_f_rule.addCopy(f);
-                        }
-                        sep_plus_f_rule.addCopy(sep_plus_f);
-
-                        root.addRule(f_star_sep_rule);
-                        root.addRule(f_plus_sep_rule);
-                        root.addRule(sep_plus_f_star_rule);
-                        root.addRule(sep_plus_f_rule);
-
-                         */
-                    } else { // f*
-                        String f_star_name = root.nextRuleName();
-                        INonterminal f_star = new INonterminal(child, f_star_name, '-');
-                        f_star.optional = true; // XXX
-
-                        String f_plus_name = root.nextRuleName();
-                        INonterminal f_plus = new INonterminal(child, f_plus_name, '-');
-                        f_plus.optional = true;
-
-                        // f* => f-star
-                        newchildren.add(f_star);
-
-                        // -f-star => f-plus?
-                        IRule f_star_rule = new IRule(root, f_star_name, '-');
-                        f_star_rule.addCopy(f_plus);
-
-                        // -f-plus => f, f-plus?
-                        IRule f_plus_rule = new IRule(root, f_plus_name, '-');
-                        for (XNode f : child.children) {
-                            f_plus_rule.addCopy(f);
-                        }
-                        f_plus_rule.addCopy(f_plus);
-
-                        root.addRule(f_star_rule);
-                        root.addRule(f_plus_rule);
+                    f_star_sep_option_rule = new IRule(root, name, '-');
+                    IRepeat1 f_plus_sep = new IRepeat1(f_star_sep_option_rule);
+                    for (XNode grandchild : child.children) {
+                        f_plus_sep.addCopy(grandchild);
                     }
+                    f_star_sep_option_rule.children.add(f_plus_sep);
+                    root.addRule(f_star_sep_option_rule);
                 } else {
                     newchildren.add(child);
                 }
@@ -655,22 +569,57 @@ public abstract class XNode {
             return newchildren;
         } else {
             for (XNode child : children) {
-                child.children = child.simplifyRepeat0();
+                child.children = child.simplifRepeat0Sep();
             }
         }
 
         return children;
     }
 
-    /**
-     * Rewrite repeat1 constructs.
-     *
-     * <p>This method replaces all instances of repeat1 in this node and its descendants with
-     * a rewriting that does not use repeat1. The children are both mutated on the object and returned
-     * for convience.</p>
-     *
-     * @return The (possibly updated) children.
-     */
+    protected ArrayList<XNode> simplifyRepeat1Sep() {
+        if (hasChild("repeat1")) {
+            ArrayList<XNode> newchildren = new ArrayList<>();
+            for (XNode child : children) {
+                child.children = child.simplifyRepeat1Sep();
+                if (child instanceof IRepeat1 && child.lastChild() instanceof ISep) {
+                    Ixml root = getRoot();
+                    XNode parent = child.parent;
+
+                    String name = getNewRuleName(child, "plus-sep");
+                    INonterminal f_plus_sep = new INonterminal(parent, name, '-');
+                    newchildren.add(f_plus_sep);
+
+                    IRule f_plus_sep_rule = new IRule(root, name, '-');
+                    for (int pos = 0; pos+1 < child.children.size(); pos++) {
+                        f_plus_sep_rule.addCopy(child.children.get(pos));
+                    }
+                    IRepeat0 repeat = new IRepeat0(f_plus_sep_rule);
+                    f_plus_sep_rule.children.add(repeat);
+
+                    ISep sep = (ISep) child.lastChild();
+                    assert sep != null;
+                    for (XNode grandchild : sep.children) {
+                        repeat.addCopy(grandchild);
+                    }
+                    for (int pos = 0; pos+1 < child.children.size(); pos++) {
+                        repeat.addCopy(child.children.get(pos));
+                    }
+
+                    root.addRule(f_plus_sep_rule);
+                } else {
+                    newchildren.add(child);
+                }
+            }
+            return newchildren;
+        } else {
+            for (XNode child : children) {
+                child.children = child.simplifyRepeat1Sep();
+            }
+        }
+
+        return children;
+    }
+
     protected ArrayList<XNode> simplifyRepeat1() {
         if (hasChild("repeat1")) {
             ArrayList<XNode> newchildren = new ArrayList<>();
@@ -678,88 +627,23 @@ public abstract class XNode {
                 child.children = child.simplifyRepeat1();
                 if (child instanceof IRepeat1) {
                     Ixml root = getRoot();
+                    XNode parent = child.parent;
 
-                    XNode sep = child.children.get(child.children.size() - 1);
-                    if (sep instanceof ISep) { // f+sep
-                        ArrayList<XNode> factor = new ArrayList<>();
-                        for (XNode f : child.children) {
-                            if (f != sep) {
-                                factor.add(f);
-                            }
-                        }
+                    String name = getNewRuleName(child, "plus");
+                    INonterminal f_plus = new INonterminal(parent, name, '-');
+                    newchildren.add(f_plus);
 
-                        String f_plus_sep_name = root.nextRuleName();
-                        INonterminal f_plus_sep = new INonterminal(f_plus_sep_name);
-
-                        String sep_plus_f_star_name = root.nextRuleName();
-                        INonterminal sep_plus_f_star = new INonterminal(sep_plus_f_star_name);
-                        sep_plus_f_star.optional = true;
-
-                        String sep_plus_f_name = root.nextRuleName();
-                        INonterminal sep_plus_f = new INonterminal(sep_plus_f_name);
-                        sep_plus_f.optional = true;
-
-                        // f+sep => f-plus-sep
-                        newchildren.add(f_plus_sep);
-
-                        // f-plus-sep = f, sep-plus-f-star
-                        IRule f_plus_sep_rule = new IRule(root, f_plus_sep_name, '-');
-                        for (XNode f : factor) {
-                            f_plus_sep_rule.addCopy(f);
-                        }
-                        f_plus_sep_rule.addCopy(sep_plus_f_star);
-
-                        // sep-plus-f-star = sep-plus-f?
-                        IRule sep_plus_f_star_rule = new IRule(root, sep_plus_f_star_name, '-');
-                        sep_plus_f_star_rule.addCopy(sep_plus_f);
-
-                        // sep-plus-f = sep, f, sep-plus-f?
-                        IRule sep_plus_f_rule = new IRule(root, sep_plus_f_name, '-');
-                        sep_plus_f_rule.addCopy(sep);
-                        for (XNode f : factor) {
-                            sep_plus_f_rule.addCopy(f);
-                        }
-                        sep_plus_f_rule.addCopy(sep_plus_f);
-
-                        root.addRule(f_plus_sep_rule);
-                        root.addRule(sep_plus_f_star_rule);
-                        root.addRule(sep_plus_f_rule);
-                    } else { // f+
-                        String f_plus_name = root.nextRuleName();
-                        INonterminal f_plus = new INonterminal(child, f_plus_name, '-');
-
-                        String f_star_name = root.nextRuleName();
-                        INonterminal f_star = new INonterminal(child, f_star_name, '-');
-
-                        String f_star_prime_name = root.nextRuleName();
-                        INonterminal f_star_prime = new INonterminal(child, f_star_prime_name, '-');
-
-                        // f+ => f-plus
-                        newchildren.add(f_plus);
-
-                        // f-plus => f, f-star
-                        IRule f_plus_rule = new IRule(root, f_plus_name, '-');
-                        for (XNode f : child.children) {
-                            f_plus_rule.addCopy(f);
-                        }
-                        f_plus_rule.addCopy(f_star);
-
-                        // f-star => f-star-prime?
-                        IRule f_star_rule = new IRule(root, f_star_name, '-');
-                        XNode copy = f_star_rule.addCopy(f_star_prime);
-                        copy.optional = true;
-
-                        // f-star-prime => f, f-star
-                        IRule f_star_prime_rule = new IRule(root, f_star_prime_name, '-');
-                        for (XNode f : child.children) {
-                            f_star_prime_rule.addCopy(f);
-                        }
-                        f_star_prime_rule.addCopy(f_star);
-
-                        root.addRule(f_plus_rule);
-                        root.addRule(f_star_rule);
-                        root.addRule(f_star_prime_rule);
+                    IRule f_plus_rule = new IRule(root, name, '-');
+                    for (int pos = 0; pos < child.children.size(); pos++) {
+                        f_plus_rule.addCopy(child.children.get(pos));
                     }
+                    IRepeat0 repeat = new IRepeat0(f_plus_rule);
+                    f_plus_rule.children.add(repeat);
+                    for (int pos = 0; pos < child.children.size(); pos++) {
+                        repeat.addCopy(child.children.get(pos));
+                    }
+
+                    root.addRule(f_plus_rule);
                 } else {
                     newchildren.add(child);
                 }
@@ -774,62 +658,76 @@ public abstract class XNode {
         return children;
     }
 
-    protected void trimAlts() {
-        for (XNode child : children) {
-            child.trimAlts();
-        }
-        ArrayList<XNode> newchildren = new ArrayList<>();
-        boolean changed = false;
-        for (XNode child : children) {
-            if (child instanceof IAlts) {
-                if (child.children.size() == 1 || !(child.children.get(0) instanceof IAlt)) {
-                    newchildren.addAll(child.children);
-                    changed = true;
+    protected ArrayList<XNode> simplifyRepeat0() {
+        if (hasChild("repeat0")) {
+            ArrayList<XNode> newchildren = new ArrayList<>();
+            for (XNode child : children) {
+                child.children = child.simplifyRepeat0();
+                if (child instanceof IRepeat0) {
+                    Ixml root = getRoot();
+                    XNode parent = child.parent;
+
+                    String name = getNewRuleName(child, "star");
+                    INonterminal f_star = new INonterminal(parent, name, '-');
+                    newchildren.add(f_star);
+
+                    IRule f_star_rule = new IRule(root, name, '-');
+                    IOption option = new IOption(parent);
+                    f_star_rule.children.add(option);
+                    for (int pos = 0; pos < child.children.size(); pos++) {
+                        option.addCopy(child.children.get(pos));
+                    }
+                    option.addCopy(f_star);
+
+                    root.addRule(f_star_rule);
                 } else {
                     newchildren.add(child);
                 }
-            } else {
-                newchildren.add(child);
+            }
+            return newchildren;
+        } else {
+            for (XNode child : children) {
+                child.children = child.simplifyRepeat0();
             }
         }
 
-        if (newchildren.size() == 1 && newchildren.get(0) instanceof IAlt) {
-            newchildren = newchildren.get(0).children;
-            changed = true;
-        }
-
-        if (changed) {
-            children.clear();
-            for (XNode child : newchildren) {
-                addCopy(child);
-            }
-        }
+        return children;
     }
 
-    protected void trimOptional() {
-        boolean changed = false;
-        ArrayList<XNode> newchildren = new ArrayList<>();
-        for (XNode child: children) {
-            child.trimOptional();
-            if (child instanceof IOption && child.children.size() == 1) {
-                changed = true;
-                XNode opt = child.children.get(0);
-                opt.optional = true;
-                newchildren.add(opt);
-            } else if (child instanceof ISep) {
-                changed = true;
-                newchildren.addAll(child.children);
-            } else {
-                newchildren.add(child);
+    protected ArrayList<XNode> simplifyOption() {
+        if (hasChild("option")) {
+            ArrayList<XNode> newchildren = new ArrayList<>();
+            for (XNode child : children) {
+                child.children = child.simplifyOption();
+                if (child instanceof IOption) {
+                    Ixml root = getRoot();
+                    XNode parent = child.parent;
+
+                    String name = getNewRuleName(child, "option");
+                    INonterminal f_option = new INonterminal(parent, name, '-');
+                    newchildren.add(f_option);
+
+                    IRule f_option_rule = new IRule(root, name, '-');
+                    root.addRule(f_option_rule);
+
+                    f_option_rule = new IRule(root, name, '-');
+                    for (int pos = 0; pos < child.children.size(); pos++) {
+                        f_option_rule.addCopy(child.children.get(pos));
+                    }
+
+                    root.addRule(f_option_rule);
+                } else {
+                    newchildren.add(child);
+                }
+            }
+            return newchildren;
+        } else {
+            for (XNode child : children) {
+                child.children = child.simplifyOption();
             }
         }
 
-        if (changed) {
-            children.clear();
-            for (XNode child : newchildren) {
-                addCopy(child);
-            }
-        }
+        return children;
     }
 
     protected ArrayList<XNode> copyAlternatives() {

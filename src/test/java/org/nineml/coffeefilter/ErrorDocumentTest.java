@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
 import org.nineml.coffeefilter.utils.TokenUtils;
-import org.nineml.coffeegrinder.parser.EarleyParser;
-import org.nineml.coffeegrinder.parser.EarleyResult;
-import org.nineml.coffeegrinder.parser.Grammar;
-import org.nineml.coffeegrinder.parser.NonterminalSymbol;
-import org.nineml.coffeegrinder.parser.TerminalSymbol;
+import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.util.GrammarCompiler;
 
 import java.io.File;
@@ -59,8 +55,10 @@ public class ErrorDocumentTest {
             InvisibleXmlDocument doc = parser.parse("Max");
             Assertions.assertFalse(doc.succeeded());
             String xml = doc.getTree();
-            Assertions.assertTrue(xml.contains("<permitted>'r', 'y'</permitted>"));
-            Assertions.assertTrue(xml.contains("<also-predicted>'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</also-predicted>"));
+            if (doc.getParserType() == ParserType.Earley) {
+                Assertions.assertTrue(xml.contains("<permitted>'r', 'y'</permitted>"));
+                Assertions.assertTrue(xml.contains("<also-predicted>'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</also-predicted>"));
+            }
         } catch (Exception ex) {
             Assert.fail();
         }
@@ -73,8 +71,10 @@ public class ErrorDocumentTest {
             InvisibleXmlDocument doc = parser.parse("Marsh");
             Assertions.assertFalse(doc.succeeded());
             String xml = doc.getTree();
-            Assertions.assertTrue(xml.contains("<permitted>'c'</permitted>"));
-            Assertions.assertTrue(xml.contains("<also-predicted>'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</also-predicted>"));
+            if (doc.getParserType() == ParserType.Earley) {
+                Assertions.assertTrue(xml.contains("<permitted>'c'</permitted>"));
+                Assertions.assertTrue(xml.contains("<also-predicted>'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</also-predicted>"));
+            }
         } catch (Exception ex) {
             Assert.fail();
         }
@@ -87,8 +87,10 @@ public class ErrorDocumentTest {
             InvisibleXmlDocument doc = parser.parse("XRay");
             Assertions.assertFalse(doc.succeeded());
             String xml = doc.getTree();
-            Assertions.assertTrue(xml.contains("<permitted>'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</permitted>"));
-            Assertions.assertFalse(xml.contains("<also-predicted>"));
+            if (doc.getParserType() == ParserType.Earley) {
+                Assertions.assertTrue(xml.contains("<permitted>'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</permitted>"));
+                Assertions.assertFalse(xml.contains("<also-predicted>"));
+            }
         } catch (Exception ex) {
             Assert.fail();
         }
