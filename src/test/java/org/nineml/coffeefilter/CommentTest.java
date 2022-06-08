@@ -2,6 +2,7 @@ package org.nineml.coffeefilter;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -32,7 +33,7 @@ public class CommentTest {
         }
     }
 
-    @Test
+    @Ignore
     public void longComments1() {
         try {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/long-comments1.ixml"));
@@ -46,7 +47,7 @@ public class CommentTest {
         }
     }
 
-    @Test
+    @Ignore
     public void longComments2() {
         try {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/long-comments2.ixml"));
