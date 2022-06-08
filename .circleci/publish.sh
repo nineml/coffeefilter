@@ -2,7 +2,6 @@
 
 if [ -z "$GPGKEYURI" ]; then
     echo "Environment not configured for publishing"
-    exit
 else
     curl -o secret.gpg $GPGKEYURI
     ./gradlew -PsonatypeUsername="$SONATYPEUSER" -PsonatypePassword="$SONATYPEPASS" \
@@ -27,13 +26,14 @@ if [ `git branch -r | grep "origin/gh-pages" | wc -l` = 0 ]; then
     exit
 fi
 
+PUBLISH=1
 if [ -z "$GIT_EMAIL" -o -z "$GIT_USER" ]; then
     echo "No identity configured with GIT_USER/GIT_EMAIL"
-    exit
+    PUBLISH=0
+else
+    git config --global user.email $GIT_EMAIL
+    git config --global user.name $GIT_USER
 fi
-
-git config --global user.email $GIT_EMAIL
-git config --global user.name $GIT_USER
 
 # Save the website files
 pushd build/website > /dev/null
@@ -54,8 +54,9 @@ git clean -d -f
 tar zvxf /tmp/dist.$$.tar.gz
 rm /tmp/dist.$$.tar.gz
 
-git add --verbose .
-git commit -m "Successful CircleCI build $CIRCLE_BUILD_NUM [ci skip]"
-git push -fq origin gh-pages > /dev/null
-
-echo "Published website to gh-pages."
+if [ "$PUBLISH" = "1" ]; then
+    git add --verbose .
+    git commit -m "Successful CircleCI build $CIRCLE_BUILD_NUM [ci skip]"
+    git push -fq origin gh-pages > /dev/null
+    echo "Published website to gh-pages."
+fi
