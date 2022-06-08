@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -146,6 +146,11 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <div class="block">Create the parser options with an explicit logger.</div>
 </td>
 </tr>
+<tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#ParserOptions-org.nineml.coffeefilter.ParserOptions-">ParserOptions</a></span>(<a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;copy)</code>
+<div class="block">Create a new set of options from an existing set.</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -193,107 +198,135 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAssertValidXmlCharacters--">getAssertValidXmlCharacters</a></span>()</code>
+<div class="block">Raise an exception if invalid XML characters are used in text or attribute values that are serialized.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAssertValidXmlNames--">getAssertValidXmlNames</a></span>()</code>
 <div class="block">Raise an exception if invalid XML names are used in nonterminals that are serialized.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getGraphviz--">getGraphviz</a></span>()</code>
 <div class="block">Where's the GraphViz 'dot' command?</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getIgnoreTrailingWhitespace--">getIgnoreTrailingWhitespace</a></span>()</code>
 <div class="block">Ignore trailing whitespace?</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getPedantic--">getPedantic</a></span>()</code>
 <div class="block">Enforce strict compliance to the Invisible XML specification.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getPrettyPrint--">getPrettyPrint</a></span>()</code>
 <div class="block">Attempt to pretty print the result?</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getShowBnfNonterminals--">getShowBnfNonterminals</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getShowChart--">getShowChart</a></span>()</code>
 <div class="block">Show the Earley chart in error results?</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#getShowMarks--">getShowMarks</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#isSuppressedState-java.lang.String-">isSuppressedState</a></span>(java.lang.String&nbsp;state)</code>
 <div class="block">Is the specified state suppressed?</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setAllowMultipleDefinitions-boolean-">setAllowMultipleDefinitions</a></span>(boolean&nbsp;allow)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAllowMultipleDefinitions--"><code>getAllowMultipleDefinitions()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setAllowUndefinedSymbols-boolean-">setAllowUndefinedSymbols</a></span>(boolean&nbsp;allow)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAllowUndefinedSymbols--"><code>getAllowUndefinedSymbols()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setAllowUnproductiveSymbols-boolean-">setAllowUnproductiveSymbols</a></span>(boolean&nbsp;allow)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAllowUnproductiveSymbols--"><code>getAllowUnproductiveSymbols()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setAllowUnreachableSymbols-boolean-">setAllowUnreachableSymbols</a></span>(boolean&nbsp;allow)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAllowUnreachableSymbols--"><code>getAllowUnreachableSymbols()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i19" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setAssertValidXmlCharacters-boolean-">setAssertValidXmlCharacters</a></span>(boolean&nbsp;valid)</code>
+<div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAssertValidXmlCharacters--"><code>getAssertValidXmlCharacters()</code></a> property.</div>
+</td>
+</tr>
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setAssertValidXmlNames-boolean-">setAssertValidXmlNames</a></span>(boolean&nbsp;valid)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAssertValidXmlNames--"><code>getAssertValidXmlNames()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setGraphviz-java.lang.String-">setGraphviz</a></span>(java.lang.String&nbsp;dot)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getGraphviz--"><code>getGraphviz()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setIgnoreTrailingWhitespace-boolean-">setIgnoreTrailingWhitespace</a></span>(boolean&nbsp;ignore)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getIgnoreTrailingWhitespace--"><code>getIgnoreTrailingWhitespace()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setPedantic-boolean-">setPedantic</a></span>(boolean&nbsp;pedantic)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getPedantic--"><code>getPedantic()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setPrettyPrint-boolean-">setPrettyPrint</a></span>(boolean&nbsp;prettPrint)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getPrettyPrint--"><code>getPrettyPrint()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i25" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setShowBnfNonterminals-boolean-">setShowBnfNonterminals</a></span>(boolean&nbsp;show)</code>&nbsp;</td>
+</tr>
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setShowChart-boolean-">setShowChart</a></span>(boolean&nbsp;show)</code>
 <div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getShowChart--"><code>getShowChart()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i27" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#setShowMarks-boolean-">setShowMarks</a></span>(boolean&nbsp;show)</code>&nbsp;</td>
+</tr>
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/ParserOptions.html#suppressState-java.lang.String-">suppressState</a></span>(java.lang.String&nbsp;state)</code>
 <div class="block">Suppress a state.</div>
@@ -305,7 +338,7 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.nineml.coffeegrinder.parser.ParserOptions</h3>
-<code>getLogger, getPrefixParsing, getProgressMonitor, getReturnChart, getTreesWithStates, setLogger, setPrefixParsing, setProgressMonitor, setReturnChart, setTreesWithStates</code></li>
+<code>getLogger, getParserType, getPrefixParsing, getProgressMonitor, getReturnChart, getTreesWithStates, setLogger, setParserType, setPrefixParsing, setProgressMonitor, setReturnChart, setTreesWithStates</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -343,7 +376,7 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <a name="ParserOptions-org.nineml.logging.Logger-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ParserOptions</h4>
 <pre>public&nbsp;ParserOptions(org.nineml.logging.Logger&nbsp;logger)</pre>
@@ -351,6 +384,20 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>logger</code> - the logger.</dd>
+</dl>
+</li>
+</ul>
+<a name="ParserOptions-org.nineml.coffeefilter.ParserOptions-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ParserOptions</h4>
+<pre>public&nbsp;ParserOptions(<a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;copy)</pre>
+<div class="block">Create a new set of options from an existing set.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>copy</code> - the options to copy</dd>
 </dl>
 </li>
 </ul>
@@ -680,6 +727,34 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 </dl>
 </li>
 </ul>
+<a name="getAssertValidXmlCharacters--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAssertValidXmlCharacters</h4>
+<pre>public&nbsp;boolean&nbsp;getAssertValidXmlCharacters()</pre>
+<div class="block">Raise an exception if invalid XML characters are used in text or attribute values that are serialized.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if invalid XML characters should raise an exception</dd>
+</dl>
+</li>
+</ul>
+<a name="setAssertValidXmlCharacters-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAssertValidXmlCharacters</h4>
+<pre>public&nbsp;void&nbsp;setAssertValidXmlCharacters(boolean&nbsp;valid)</pre>
+<div class="block">Set the <a href="../../../org/nineml/coffeefilter/ParserOptions.html#getAssertValidXmlCharacters--"><code>getAssertValidXmlCharacters()</code></a> property.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>valid</code> - assert valid characters?</dd>
+</dl>
+</li>
+</ul>
 <a name="getPedantic--">
 <!--   -->
 </a>
@@ -699,7 +774,7 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <a name="setPedantic-boolean-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setPedantic</h4>
 <pre>public&nbsp;void&nbsp;setPedantic(boolean&nbsp;pedantic)</pre>
@@ -711,6 +786,42 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>pedantic</code> - be pedantic?</dd>
 </dl>
+</li>
+</ul>
+<a name="getShowMarks--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getShowMarks</h4>
+<pre>public&nbsp;boolean&nbsp;getShowMarks()</pre>
+</li>
+</ul>
+<a name="setShowMarks-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setShowMarks</h4>
+<pre>public&nbsp;void&nbsp;setShowMarks(boolean&nbsp;show)</pre>
+</li>
+</ul>
+<a name="getShowBnfNonterminals--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getShowBnfNonterminals</h4>
+<pre>public&nbsp;boolean&nbsp;getShowBnfNonterminals()</pre>
+</li>
+</ul>
+<a name="setShowBnfNonterminals-boolean-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setShowBnfNonterminals</h4>
+<pre>public&nbsp;void&nbsp;setShowBnfNonterminals(boolean&nbsp;show)</pre>
 </li>
 </ul>
 </li>
