@@ -27,10 +27,9 @@
 
   <xsl:variable name="merged" select="t:merge-catalog($expanded/t:test-catalog)"/>
 
-  <xsl:result-document href="/tmp/merged.xml"
-                       method="xml" indent="yes">
-    <xsl:sequence select="$merged"/>
-  </xsl:result-document>
+  <xsl:message>Loaded {$test-report.xml}</xsl:message>
+  <xsl:message>Base URI: {$merged/*/@xml:base/string()}</xsl:message>
+  <xsl:message>Output URI: {current-output-uri()}</xsl:message>
 
   <xsl:for-each select="$test-report//r:test-case">
     <xsl:variable name="id" select="generate-id(.)"/>
@@ -236,6 +235,7 @@
 
   <xsl:for-each select="t:test-catalog|t:test-set">
     <xsl:variable name="path" select="t:filepath(.) || '/index.html'"/>
+    <xsl:message>Writing {local-name(.)}: {$path} ({resolve-uri($path, current-output-uri())})</xsl:message>
     <xsl:result-document href="{$path}">
       <html>
         <head>
