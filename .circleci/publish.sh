@@ -30,7 +30,6 @@ PUBLISH=1
 if [ -z "$GIT_EMAIL" -o -z "$GIT_USER" ]; then
     echo "No identity configured with GIT_USER/GIT_EMAIL"
     PUBLISH=0
-    exit
 else
     git config --global user.email $GIT_EMAIL
     git config --global user.name $GIT_USER
