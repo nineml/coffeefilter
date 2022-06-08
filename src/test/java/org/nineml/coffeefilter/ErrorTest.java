@@ -13,12 +13,29 @@ public class ErrorTest {
 
     @Test
     public void invalidXmlNames() {
-        Assert.assertTrue(TokenUtils.xmlName("test"));
-        Assert.assertFalse(TokenUtils.xmlName("x:y")); // no qnames allowed
-        Assert.assertFalse(TokenUtils.xmlName("3a"));
-        Assert.assertTrue(TokenUtils.xmlName("_-.·‿⁀"));
-        // ixml allows all of [L] as name start characters; this is broader than XML
-        Assert.assertFalse(TokenUtils.xmlName("\u00AA")); // "ª" the feminine ordinal
+        try {
+            TokenUtils.assertXmlName("test");
+            TokenUtils.assertXmlName("x:y");
+            TokenUtils.assertXmlName("_-.·‿⁀");
+        } catch (IxmlException ex) {
+            fail();
+
+        }
+
+        try {
+            TokenUtils.assertXmlName("3a");
+            fail();
+        } catch (IxmlException ex) {
+            // ok
+        }
+
+        try {
+            // ixml allows all of [L] as name start characters; this is broader than XML
+            TokenUtils.assertXmlName("\u00AA"); // "ª" the feminine ordinal
+            fail();
+        } catch (IxmlException ex) {
+            // ok
+        }
     }
 
     @Test
@@ -35,14 +52,14 @@ public class ErrorTest {
             doc.getTree();
             fail();
         } catch (IxmlException ex) {
-            Assert.assertEquals("E003", ex.getCode());
+            Assert.assertEquals("D03", ex.getCode());
         }
 
         try {
             doc.getTree();
             fail();
         } catch (IxmlException ex) {
-            Assert.assertEquals("E003", ex.getCode());
+            Assert.assertEquals("D03", ex.getCode());
         }
     }
 
@@ -60,7 +77,7 @@ public class ErrorTest {
             ParserOptions options = new ParserOptions();
             options.setAssertValidXmlNames(false);
             DataTreeBuilder builder = new DataTreeBuilder(options);
-            doc.getTree(builder);
+            doc.getTree(builder, options);
             String json = builder.getTree().asJSON();
             Assert.assertEquals("{\"ª\":\"a\"}", json);
         } catch (IxmlException ex) {
@@ -81,7 +98,7 @@ public class ErrorTest {
             String tree = doc.getTree();
             fail();
         } catch (IxmlException ex) {
-            Assert.assertEquals("E001", ex.getCode());
+            Assert.assertEquals("D02", ex.getCode());
         }
     }
 
@@ -104,7 +121,7 @@ public class ErrorTest {
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E004", ((IxmlException) parser.getException()).getCode());
+        Assert.assertEquals("S03", ((IxmlException) parser.getException()).getCode());
     }
 
     @Test
@@ -115,7 +132,7 @@ public class ErrorTest {
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E007", ((IxmlException) parser.getException()).getCode());
+        Assert.assertEquals("S07", ((IxmlException) parser.getException()).getCode());
 
         input = "date: [#ffffffff0] .";
 
@@ -123,7 +140,7 @@ public class ErrorTest {
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E007", ((IxmlException) parser.getException()).getCode());
+        Assert.assertEquals("S07", ((IxmlException) parser.getException()).getCode());
 
         input = "date: [#fffe] .";
 
@@ -131,7 +148,7 @@ public class ErrorTest {
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E007", ((IxmlException) parser.getException()).getCode());
+        Assert.assertEquals("S08", ((IxmlException) parser.getException()).getCode());
 
         input = "date: [#1fffe] .";
 
@@ -139,7 +156,7 @@ public class ErrorTest {
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E007", ((IxmlException) parser.getException()).getCode());
+        Assert.assertEquals("S08", ((IxmlException) parser.getException()).getCode());
 
         input = "date: [#d801] .";
 
@@ -147,7 +164,7 @@ public class ErrorTest {
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E007", ((IxmlException) parser.getException()).getCode());
+        Assert.assertEquals("S08", ((IxmlException) parser.getException()).getCode());
     }
 
     @Test
@@ -158,7 +175,7 @@ public class ErrorTest {
 
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E002", ((IxmlException) parser.getException()).getCode());
+        Assert.assertEquals("S10", ((IxmlException) parser.getException()).getCode());
     }
 
     @Test
@@ -174,7 +191,7 @@ public class ErrorTest {
             String tree = doc.getTree();
             fail();
         } catch (IxmlException ex) {
-            Assert.assertEquals("E008", ex.getCode());
+            Assert.assertEquals("D05", ex.getCode());
         }
     }
 
@@ -191,7 +208,7 @@ public class ErrorTest {
             String tree = doc.getTree();
             fail();
         } catch (IxmlException ex) {
-            Assert.assertEquals("E008", ex.getCode());
+            Assert.assertEquals("D05", ex.getCode());
         }
     }
 
@@ -208,7 +225,7 @@ public class ErrorTest {
             String tree = doc.getTree();
             fail();
         } catch (IxmlException ex) {
-            Assert.assertEquals("E009", ex.getCode());
+            Assert.assertEquals("D06", ex.getCode());
         }
     }
 
@@ -232,7 +249,7 @@ public class ErrorTest {
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
         Assert.assertFalse(parser.constructed());
         Assert.assertNotNull(parser.getException());
-        Assert.assertEquals("E010", ((IxmlException) parser.getException()).getCode());
+        Assert.assertEquals("S09", ((IxmlException) parser.getException()).getCode());
     }
 
 }

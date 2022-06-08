@@ -72,7 +72,8 @@ public class IxmlException extends RuntimeException {
     public static IxmlException repeatedAttribute(String name) { return getException("D02", name); }
     public static IxmlException invalidCharacterClass(String name) { return getException("S10", name); }
     public static IxmlException invalidXmlName(String name) { return getException("D03", name); }
-    public static IxmlException invalidXmlCharacter(String name) { return getException("D04", name); }
+    public static IxmlException invalidXmlNameCharacter(String name, int ch) { return getException("D03", new String[] {name, ""+ch}); }
+    public static IxmlException invalidXmlCharacter(String ch) { return getException("D04", ch); }
     public static IxmlException multipleDefinitionsOfSymbol(String name) { return getException("S03", name); }
     public static IxmlException invalidMark(char mark) { return getException("S05", ""+mark); }
     public static IxmlException invalidTMark(char mark) { return getException("E006", ""+mark); }
@@ -81,7 +82,7 @@ public class IxmlException extends RuntimeException {
     public static IxmlException invalidHex(String hex) { return getException("S08", hex); }
     public static IxmlException attributeRoot(String name) { return getException("D05", name); }
     public static IxmlException notSingleRooted(String name) { return getException("D06", name); }
-    public static IxmlException attributeNameForbidden(String name) { return getException("D07"); }
+    public static IxmlException attributeNameForbidden(String name) { return getException("D07", name); }
     public static IxmlException invalidRange(String from, String to) { return getException("S09", new String[] {from, to}); }
     public static IxmlException undefinedSymbols(Set<NonterminalSymbol> symbols) { return getException("S02", symbolList(symbols)); }
     public static IxmlException unreachableSymbols(Set<NonterminalSymbol> symbols) { return getException("E012", symbolList(symbols)); }

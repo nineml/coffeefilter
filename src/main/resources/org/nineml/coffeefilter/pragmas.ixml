@@ -1,5 +1,6 @@
+ixml version "1.0".
 { ixml with pragmas, hacked by ndw to remove qnames. }
-{ Based on the 2022-05-28 draft specification        }
+{ Based on the 2022-06-07 grammar }
 
          ixml: s, prolog?, rule++RS, s. 
 
@@ -12,7 +13,7 @@
       comment: -"{", ((comment; ~["[]{}"]), (cchar; comment)*)?, -"}".
        -cchar: ~["{}"].
 
-       prolog: version?, ppragma**s, s. 
+       prolog: ((version, ppragma**s) | ppragma++s), s. 
       version: -"ixml", RS, -"version", RS, string, s, -'.' .
 
          rule: annotation, name, s, -["=:"], s, -alts, (pragma, sp)?, -".". 

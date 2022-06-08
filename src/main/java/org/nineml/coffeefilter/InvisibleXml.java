@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Calendar;
 
 /**
@@ -128,7 +129,7 @@ public class InvisibleXml {
      * @throws IxmlException if the source cannot be identified or is not a valid grammar
      */
     public InvisibleXmlParser getParser(File source) throws IOException {
-        return getParser(new FileInputStream(source), source.toURI().toString(), UTF_8);
+        return getParser(Files.newInputStream(source.toPath()), source.toURI().toString(), UTF_8);
     }
 
     /**
@@ -160,7 +161,7 @@ public class InvisibleXml {
      * @throws IxmlException if the source cannot be identified or is not a valid grammar
      */
     public InvisibleXmlParser getParser(File source, String encoding) throws IOException {
-        return getParser(new FileInputStream(source), source.toURI().toString(), encoding);
+        return getParser(Files.newInputStream(source.toPath()), source.toURI().toString(), encoding);
     }
 
     /**
@@ -228,9 +229,7 @@ public class InvisibleXml {
             Grammar grammar = compiler.parse(stream, systemId);
             Ixml ixml = new Ixml(options, grammar);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
-            InvisibleXmlParser parser = new InvisibleXmlParser(ixml, parseMillis);
-            //parser.setOptions(options);
-            return parser;
+            return new InvisibleXmlParser(ixml, parseMillis);
         } catch (CoffeeGrinderException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
         }
@@ -255,9 +254,7 @@ public class InvisibleXml {
             parser.parse(stream, handler, systemId);
             Ixml ixml = handler.getIxml();
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
-            InvisibleXmlParser iparser = new InvisibleXmlParser(ixml, parseMillis);
-            //iparser.setOptions(options);
-            return iparser;
+            return new InvisibleXmlParser(ixml, parseMillis);
         } catch (ParserConfigurationException|SAXException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
         } catch (CoffeeGrinderException ex) {
@@ -283,7 +280,11 @@ public class InvisibleXml {
         }
 
         ParseTree tree = doc.getResult().getForest().parse();
-        CommonBuilder builder = new CommonBuilder(tree, ixmlParser.getIxmlVersion(), doc.getResult(), options);
+
+        ParserOptions builderOptions = new ParserOptions(options);
+        builderOptions.setShowMarks(false);
+        builderOptions.setShowBnfNonterminals(false);
+        CommonBuilder builder = new CommonBuilder(tree, ixmlParser.getIxmlVersion(), doc.getResult(), builderOptions);
 
         try {
             IxmlContentHandler handler = new IxmlContentHandler(options);

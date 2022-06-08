@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.nineml.coffeegrinder.parser.Ambiguity;
 
+import static org.junit.Assert.fail;
+
 public class HygieneTests {
 
     @Test
@@ -80,8 +82,12 @@ public class HygieneTests {
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
 
         input = "b";
-        InvisibleXmlDocument doc = parser.parse(input);
+        try {
+            InvisibleXmlDocument doc = parser.parse(input);
+            Assertions.assertTrue(doc.succeeded());
+        } catch (Exception ex) {
+            fail();
+        }
 
-        Assertions.assertTrue(doc.succeeded());
     }
 }

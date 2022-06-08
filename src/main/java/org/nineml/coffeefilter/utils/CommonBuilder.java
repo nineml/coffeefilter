@@ -22,6 +22,8 @@ public class CommonBuilder {
     public static final String logcategory = "TreeBuilder";
     public static final String ixml_prefix = "ixml";
     public static final String ixml_ns = "http://invisiblexml.org/NS";
+    public static final String nineml_prefix = "nineml";
+    public static final String nineml_ns = "http://nineml.org/ns/nineml";
     private final ParserOptions options;
     private final Stack<PartialOutput> stack = new Stack<>();
     private final Stack<Character> context = new Stack<>();
@@ -56,9 +58,8 @@ public class CommonBuilder {
         grammarVersion = ixmlVersion;
     }
 
-    private void startNonterminal(ParseTree tree, char mark, String name, Map<String,String> parseAttributes) {
-        //System.err.println("ST: " + tree);
-        char ctx = mark;
+    private void startNonterminal(ParseTree tree, char useMark, char showMark, String name, Map<String,String> parseAttributes) {
+        char ctx = useMark;
         if (context.peek() == '@') {
             ctx = '@';
         } else {
@@ -68,23 +69,30 @@ public class CommonBuilder {
                 }
                 elementStack.push(name);
             }
-            PartialOutput top = new PartialOutput(mark, name, parseAttributes);
+            PartialOutput top = new PartialOutput(useMark, showMark, name, parseAttributes);
             stack.push(top);
         }
         context.push(ctx);
     }
 
-    private void endNonterminal(ParseTree tree, String name) {
-        //System.err.println("EN: " + tree);
+    private void endNonterminal(ParseTree tree, char mark, String name) {
         context.pop();
         if (context.peek() == '@') {
             return;
         }
 
         PartialOutput top = stack.pop();
-        if (!name.equals(top.name)) {
-            throw new RuntimeException("Missmatch on output stack");
+
+        if (name != null) {
+            if (!name.equals(top.name)) {
+                throw new RuntimeException("Mismatch on output stack");
+            }
+        } else {
+            if (top.name != null) {
+                throw new RuntimeException("Mismatch on output stack");
+            }
         }
+
         if (stack.isEmpty()) {
             result = top;
         } else {
@@ -111,16 +119,21 @@ public class CommonBuilder {
     }
 
     private void terminal(ParseTree tree, char mark, int codepoint, boolean acc, String rewrite) {
-        //System.err.println("TT2: " + tree);
         if (mark == '-') {
             return;
         }
 
         if (rewrite != null) {
             if (!stack.isEmpty()) {
+                if (options.getAssertValidXmlCharacters()) {
+                    TokenUtils.assertXmlChars(rewrite);
+                }
                 stack.peek().rewrite(rewrite);
             }
         } else {
+            if (options.getAssertValidXmlCharacters()) {
+                TokenUtils.assertXmlChars(codepoint);
+            }
             PartialOutput item = new PartialOutput(codepoint, acc);
             if (stack.isEmpty()) {
                 stack.push(item);
@@ -194,7 +207,13 @@ public class CommonBuilder {
             return;
         }
 
-        char mark = getMark(xsymbol == null ? symbol : xsymbol);
+        char useMark = getMark(xsymbol == null ? symbol : xsymbol);
+        char showMark = '?';
+        if (options.getShowMarks()) {
+            showMark = useMark;
+            useMark = '^';
+        }
+
         if (symbol instanceof TerminalSymbol) {
             Token token = ((TerminalSymbol) tree.getSymbol()).getToken();
             if (!(token instanceof TokenCharacter)) {
@@ -205,7 +224,7 @@ public class CommonBuilder {
             String rewrite = getAttribute(symbol, xsymbol, "rewrite");
 
             int ch = ((TokenCharacter) token).getCodepoint();
-            terminal(tree, mark, ch, acc != null, rewrite);
+            terminal(tree, useMark, ch, acc != null, rewrite);
         } else {
             if (child1 != null) {
                 pos = getSymbol(child1.getSymbol(), state, state.getPosition());
@@ -231,11 +250,35 @@ public class CommonBuilder {
             if (symbol instanceof InsertionNonterminal) {
                 String gentext = symbol.getAttributeValue("insertion", null);
                 if (gentext != null) {
-                    stack.peek().add(new PartialOutput(gentext));
+                    if (options.getAssertValidXmlCharacters()) {
+                        TokenUtils.assertXmlChars(gentext);
+                    }
+                    if (options.getShowMarks()) {
+                        startNonterminal(tree, '^', '+', "nineml:insertion", new HashMap<>());
+                        stack.peek().add(new PartialOutput(gentext));
+                        endNonterminal(tree, '^', "nineml:insertion");
+                    } else {
+                        stack.peek().add(new PartialOutput(gentext));
+                    }
                 }
             } else {
                 localName = getAttribute(symbol, xsymbol, "name");
-                startNonterminal(tree, mark, localName, getAttributes(symbol, xsymbol));
+                HashMap<String,String> attributes = getAttributes(symbol, xsymbol);
+
+                if (localName.startsWith("$")) {
+                    if (options.getShowBnfNonterminals()) {
+                        useMark = '^';
+                        showMark = '-';
+                        attributes.put("nineml:name", localName);
+                        localName = "nineml:nt";
+                    } else {
+                        if (options.getShowMarks()) {
+                            useMark = '-';
+                        }
+                    }
+                }
+
+                startNonterminal(tree, useMark, showMark, localName, attributes);
 
                 if (child0 != null) {
                     constructTree(child0, child0Symbol);
@@ -245,7 +288,7 @@ public class CommonBuilder {
                     constructTree(child1, child1Symbol);
                 }
 
-                endNonterminal(tree, localName);
+                endNonterminal(tree, useMark, localName);
             }
         }
     }
@@ -260,7 +303,7 @@ public class CommonBuilder {
         return null;
     };
 
-    private Map<String,String> getAttributes(Symbol symbol, Symbol xsymbol) {
+    private HashMap<String,String> getAttributes(Symbol symbol, Symbol xsymbol) {
         HashMap<String, String> map = new HashMap<>();
         if (xsymbol != null) {
             for (ParserAttribute attr : xsymbol.getAttributes()) {
@@ -311,6 +354,7 @@ public class CommonBuilder {
 
     private class PartialOutput {
         private final char mark;
+        private final char showMark;
         private final String name;
         private String text;
         private boolean accumulator = false;
@@ -319,8 +363,9 @@ public class CommonBuilder {
         private final HashMap<String,String> parseAttributes = new HashMap<>();
         private final boolean discardEmpty;
 
-        public PartialOutput(char mark, String name, Map<String,String> parseAttributes) {
-            this.mark = mark;
+        public PartialOutput(char useMark, char showMark, String name, Map<String,String> parseAttributes) {
+            this.mark = useMark;
+            this.showMark = showMark;
             this.name = name;
             this.parseAttributes.putAll(parseAttributes);
             discardEmpty = parseAttributes.containsKey("discard") && "empty".equals(parseAttributes.get("discard"));
@@ -329,6 +374,7 @@ public class CommonBuilder {
 
         public PartialOutput(int codepoint, boolean acc) {
             mark ='?';
+            showMark = '?';
             name = null;
             // Surely there's something more efficient than this?
             text = new StringBuilder().appendCodePoint(codepoint).toString();
@@ -338,6 +384,7 @@ public class CommonBuilder {
 
         public PartialOutput(String text) {
             mark ='?';
+            showMark = '?';
             name = null;
             this.text = text;
             discardEmpty = false;
@@ -386,67 +433,6 @@ public class CommonBuilder {
             }
         }
 
-        private String assertValidName(String name) {
-            // Let's take the pedantic position that the valid name characters are the ones
-            // in the Fifth Edition. That's not what all parsers actually implement, but
-            // [expletive deleted].
-            if (name == null) {
-                throw new NullPointerException("XML names cannot be null");
-            }
-            if ("".equals(name) || name.charAt(0) == ':') {
-                throw IxmlException.invalidXmlName(name);
-            }
-            boolean first = true;
-            boolean colon = false;
-            for (int ch : name.codePoints().toArray()) {
-                if (ch == ':') {
-                    if (colon) {
-                        throw IxmlException.invalidXmlName(name);
-                    }
-                    colon = true;
-                } else if ((ch >= 'A' && ch <= 'Z') || ch == '_' || (ch >= 'a' && ch <= 'z')
-                        || (ch >= 0xC0&& ch <= 0xD6) || (ch >= 0xD8&& ch <= 0xF6) || (ch >= 0xF8&& ch <= 0x2FF)
-                        || (ch >= 0x370&& ch <= 0x37D) || (ch >= 0x37F&& ch <= 0x1FFF)
-                        || (ch >= 0x200C&& ch <= 0x200D) || (ch >= 0x2070&& ch <= 0x218F)
-                        || (ch >= 0x2C00&& ch <= 0x2FEF) || (ch >= 0x3001&& ch <= 0xD7FF)
-                        || (ch >= 0xF900&& ch <= 0xFDCF) || (ch >= 0xFDF0&& ch <= 0xFFFD)
-                        || (ch >= 0x10000&& ch <= 0xEFFFF)) {
-                    // ok
-                } else {
-                    if (first) {
-                        throw IxmlException.invalidXmlName(name);
-                    }
-                    if (ch == '-' || ch == '.' || (ch >= '0' && ch <= '9') || ch == 0xB7
-                            || (ch >= 0x0300 && ch <= 0x036F) || (ch >= 0x203F && ch <= 0x2040)) {
-                        // still ok
-                    } else {
-                        throw IxmlException.invalidXmlName(name);
-                    }
-                }
-                first = false;
-            }
-
-            return name;
-        }
-
-        private String assertValidChars(String text) {
-            if (text == null) {
-                throw new NullPointerException("Text cannot be null");
-            }
-            for (int ch : text.codePoints().toArray()) {
-                if (ch == 0x9 || ch == 0xA || ch == 0xD || (ch >= ' ' && ch <= 0xD7FF)
-                    || (ch >= 0xE000 & ch <= 0xFFFD) || (ch >= 0x10000 && ch <= 0x10FFFF)) {
-                    // ok
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    sb.appendCodePoint(ch);
-                    throw IxmlException.invalidXmlCharacter(sb.toString());
-                }
-            }
-
-            return text;
-        }
-
         public void output(ContentHandler handler) throws SAXException {
             if (discardEmpty && isEmpty()) {
                 return;
@@ -454,7 +440,7 @@ public class CommonBuilder {
 
             if (mark != '-') {
                 if (name == null) {
-                    handler.characters(assertValidChars(text).toCharArray(), 0, text.length());
+                    handler.characters(text.toCharArray(), 0, text.length());
                 } else {
                     AttributeBuilder attrs = new AttributeBuilder(options);
                     for (PartialOutput attr : attributes) {
@@ -467,12 +453,12 @@ public class CommonBuilder {
                         }
 
                         if (!attr.discardEmpty || !"".equals(value)) {
-                            String name = assertValidName(attr.name);
-                            if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
-                                throw IxmlException.attributeNameForbidden(name);
-                            }
-                            attrs.addAttribute(name, assertValidChars(value));
+                            String name = attr.name;
+                            attrs.addAttribute(name, value);
                         }
+                    }
+                    if (parseAttributes.containsKey("nineml:name")) {
+                        attrs.addAttribute("nineml:name", parseAttributes.get("nineml:name"));
                     }
 
                     if (documentElement) {
@@ -501,9 +487,20 @@ public class CommonBuilder {
                             handler.startPrefixMapping(ixml_prefix, ixml_ns);
                             attrs.addAttribute(ixml_ns, ixml_prefix + ":state", state);
                         }
+
+                        if (options.getShowMarks() || options.getShowBnfNonterminals()) {
+                            handler.startPrefixMapping(nineml_prefix, nineml_ns);
+                        }
+                    }
+                    if (options.getShowMarks() && showMark != '?') {
+                        attrs.addAttribute(nineml_ns, nineml_prefix+":mark", ""+showMark);
                     }
 
-                    handler.startElement(xmlns, name, assertValidName(name), attrs);
+                    if (options.getAssertValidXmlNames()) {
+                        TokenUtils.assertXmlName(name);
+                    }
+
+                    handler.startElement(xmlns, name, name, attrs);
                 }
             }
 

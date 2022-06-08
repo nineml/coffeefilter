@@ -1,7 +1,5 @@
-<?xml version="1.0"?>
-<!-- From the 2022-05-28 editor's draft specification -->
 <ixml>
-   <comment>version 2022-05-28</comment>
+   <comment>version 2022-06-07</comment>
    <rule name='ixml'>
       <alt>
          <nonterminal name='s'/>

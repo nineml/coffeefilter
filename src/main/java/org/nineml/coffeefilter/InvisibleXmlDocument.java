@@ -4,9 +4,11 @@ import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.StringTreeBuilder;
 import org.nineml.coffeefilter.utils.AttributeBuilder;
 import org.nineml.coffeefilter.utils.CommonBuilder;
+import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
+import org.nineml.coffeegrinder.tokens.TokenEOF;
 import org.nineml.coffeegrinder.util.DefaultTreeWalker;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -114,6 +116,17 @@ public class InvisibleXmlDocument {
      */
     public GearleyResult getResult() {
         return result;
+    }
+
+    /**
+     * Return the parser type.
+     * @return the parser type
+     */
+    public ParserType getParserType() {
+        if (result instanceof GllResult) {
+            return ParserType.GLL;
+        }
+        return ParserType.Earley;
     }
 
     /**
@@ -253,12 +266,17 @@ public class InvisibleXmlDocument {
 
             atomicValue(handler, "pos", ""+result.getTokenCount());
 
-            TokenCharacter tchar = (TokenCharacter) result.getLastToken();
-            if (tchar != null) {
-                if (result.getParser().hasMoreInput()) {
-                    atomicValue(handler, "unexpected", ""+tchar.getValue());
-                } else {
-                    atomicValue(handler, "end-of-input", "true");
+            if (result.getLastToken() == TokenEOF.EOF) {
+                // This only happens for the GLL parser.
+                atomicValue(handler, "end-of-input", "true");
+            } else {
+                TokenCharacter tchar = (TokenCharacter) result.getLastToken();
+                if (tchar != null) {
+                    if (result.getParser().hasMoreInput()) {
+                        atomicValue(handler, "unexpected", ""+tchar.getValue());
+                    } else {
+                        atomicValue(handler, "end-of-input", "true");
+                    }
                 }
             }
 

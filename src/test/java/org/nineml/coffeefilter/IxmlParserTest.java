@@ -33,6 +33,22 @@ public class IxmlParserTest {
     }
 
     @Test
+    public void testParsePragmasIxml() {
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/main/resources/org/nineml/coffeefilter/pragmas.ixml"));
+            Grammar grammar = parser.getGrammar();
+            Assert.assertNotNull(grammar);
+            InvisibleXmlDocument doc = parser.parse(new File("src/main/resources/org/nineml/coffeefilter/pragmas.ixml"));
+            //doc.getResult().getForest().serialize("/tmp/out.xml");
+            //System.err.println(parser.getCompiledParser());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            fail();
+        }
+    }
+
+
+    @Test
     public void testParseExceptions() {
         try {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/exceptions.ixml"));

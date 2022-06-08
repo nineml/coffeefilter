@@ -20,9 +20,12 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     private boolean prettyPrint = false;
     private boolean showChart = false;
     private String graphviz = null;
-    private static HashSet<String> suppressedIxmlStates = new HashSet<>();
+    private final HashSet<String> suppressedIxmlStates;
     private boolean assertValidXmlNames = true;
+    private boolean assertValidXmlCharacters = true;
     private boolean pedantic = false;
+    private boolean showMarks = false;
+    private boolean showBnfNonterminals = false;
 
     /**
      * Create the parser options.
@@ -31,6 +34,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
      */
     public ParserOptions() {
         super();
+        suppressedIxmlStates = new HashSet<>();
     }
 
     /**
@@ -39,6 +43,28 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
      */
     public ParserOptions(Logger logger) {
         super(logger);
+        suppressedIxmlStates = new HashSet<>();
+    }
+
+    /**
+     * Create a new set of options from an existing set.
+     * @param copy the options to copy
+     */
+    public ParserOptions(ParserOptions copy) {
+        super(copy);
+        ignoreTrailingWhitespace = copy.ignoreTrailingWhitespace;
+        allowUndefinedSymbols = copy.allowUndefinedSymbols;
+        allowUnreachableSymbols = copy.allowUnreachableSymbols;
+        allowUnproductiveSymbols = copy.allowUnproductiveSymbols;
+        allowMultipleDefinitions = copy.allowMultipleDefinitions;
+        prettyPrint = copy.prettyPrint;
+        showChart = copy.showChart;
+        graphviz = copy.graphviz;
+        suppressedIxmlStates = new HashSet<>(copy.suppressedIxmlStates);
+        assertValidXmlNames = copy.assertValidXmlNames;
+        pedantic = copy.pedantic;
+        showMarks = copy.showMarks;
+        showBnfNonterminals = copy.showBnfNonterminals;
     }
 
     /**
@@ -242,6 +268,22 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     }
 
     /**
+     * Raise an exception if invalid XML characters are used in text or attribute values that are serialized.
+     * @return true if invalid XML characters should raise an exception
+     */
+    public boolean getAssertValidXmlCharacters() {
+        return assertValidXmlCharacters;
+    }
+
+    /**
+     * Set the {@link #getAssertValidXmlCharacters()} property.
+     * @param valid assert valid characters?
+     */
+    public void setAssertValidXmlCharacters(boolean valid) {
+        assertValidXmlCharacters = valid;
+    }
+
+    /**
      * Enforce strict compliance to the Invisible XML specification.
      * <p>In pedantic mode, the processor won't allow grammar extensions, like pragmas,
      * that are not yet officially incorporated into the specification.</p>
@@ -266,5 +308,18 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
             allowUnproductiveSymbols = true;
             allowMultipleDefinitions = false;
         }
+    }
+
+    public boolean getShowMarks() {
+        return showMarks;
+    }
+    public void setShowMarks(boolean show) {
+        showMarks = show;
+    }
+    public boolean getShowBnfNonterminals() {
+        return showBnfNonterminals;
+    }
+    public void setShowBnfNonterminals(boolean show) {
+        showBnfNonterminals = show;
     }
 }

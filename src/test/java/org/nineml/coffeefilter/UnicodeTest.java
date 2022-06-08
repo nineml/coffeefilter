@@ -3,6 +3,7 @@ package org.nineml.coffeefilter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.nineml.coffeegrinder.parser.ParserType;
 
 import java.io.File;
 

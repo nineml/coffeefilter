@@ -1,6 +1,9 @@
 <ixml>
-   <comment> ixml with pragmas, hacked by ndw to remove qnames. </comment>
-   <comment> Based on the 2022-05-28 draft specification        </comment>
+   <prolog>
+      <version string="1.0"/>
+      <comment> ixml with pragmas, hacked by ndw to remove qnames. </comment>
+      <comment> Based on the 2022-06-07 grammar </comment>
+   </prolog>
    <rule name="ixml">
       <alt>
          <nonterminal name="s"/>
@@ -118,15 +121,29 @@
    </rule>
    <rule name="prolog">
       <alt>
-         <option>
-            <nonterminal name="version"/>
-         </option>
-         <repeat0>
-            <nonterminal name="ppragma"/>
-            <sep>
-               <nonterminal name="s"/>
-            </sep>
-         </repeat0>
+         <alts>
+            <alt>
+               <alts>
+                  <alt>
+                     <nonterminal name="version"/>
+                     <repeat0>
+                        <nonterminal name="ppragma"/>
+                        <sep>
+                           <nonterminal name="s"/>
+                        </sep>
+                     </repeat0>
+                  </alt>
+               </alts>
+            </alt>
+            <alt>
+               <repeat1>
+                  <nonterminal name="ppragma"/>
+                  <sep>
+                     <nonterminal name="s"/>
+                  </sep>
+               </repeat1>
+            </alt>
+         </alts>
          <nonterminal name="s"/>
       </alt>
    </rule>
@@ -600,7 +617,7 @@
                <nonterminal name="hex"/>
             </alt>
          </alts>
-         <nonterminal name='s'/>
+         <nonterminal name="s"/>
       </alt>
    </rule>
    <rule name="pragma">

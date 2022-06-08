@@ -15,6 +15,7 @@ import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import java.io.*;
 import java.net.URI;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
@@ -184,7 +185,7 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(File source, String encoding) throws IOException {
-        return parse(new FileInputStream(source), encoding);
+        return parse(Files.newInputStream(source.toPath()), encoding);
     }
 
     /**
@@ -222,8 +223,10 @@ public class InvisibleXmlParser {
 
         Grammar grammar = ixml.getGrammar(options);
 
+        ParserType parserType = "Earley".equals(options.getParserType()) ? ParserType.Earley : ParserType.GLL;
+
         CharacterIterator iterator = new CharacterIterator(input);
-        GearleyParser parser = grammar.getParser(grammar.getNonterminal("$$"));
+        GearleyParser parser = grammar.getParser(parserType, grammar.getNonterminal("$$"));
         GearleyResult result = parser.parse(iterator);
 
         InvisibleXmlDocument doc;

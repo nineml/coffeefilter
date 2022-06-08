@@ -13,7 +13,6 @@ import org.nineml.coffeegrinder.util.ParserAttribute;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -191,40 +190,38 @@ public class Ixml extends XNonterminal {
 
         children.clear();
         children.addAll(newchildren);
+        newchildren = null;
 
-        changed = true;
-        while (changed) {
-            changed = false;
-            children = simplifyRepeat1();
-            if (newRules != null) {
-                children.addAll(newRules);
-                newRules = null;
-            }
-
-            children = simplifyRepeat0();
-            if (newRules != null) {
-                children.addAll(newRules);
-                newRules = null;
-            }
+        // N.B. The order of these steps matters
+        children = simplifRepeat0Sep();
+        if (newRules != null) {
+            children.addAll(newRules);
+            newRules = null;
         }
 
-        expandStrings();
-        trimOptional();
-    }
-
-    private void expandStrings() {
-        newRules = null;
-
-        ArrayList<XNode> newchildren = new ArrayList<>();
-        for (XNode child : children) {
-            if (child instanceof IRule) {
-                newchildren.add(child);
-            } else {
-                newchildren.add(child);
-            }
+        children = simplifyRepeat1Sep();
+        if (newRules != null) {
+            children.addAll(newRules);
+            newRules = null;
         }
 
-        children = newchildren;
+        children = simplifyRepeat1();
+        if (newRules != null) {
+            children.addAll(newRules);
+            newRules = null;
+        }
+
+        children = simplifyRepeat0();
+        if (newRules != null) {
+            children.addAll(newRules);
+            newRules = null;
+        }
+
+        children = simplifyOption();
+        if (newRules != null) {
+            children.addAll(newRules);
+            newRules = null;
+        }
     }
 
     protected void flattenNonterminals() {
@@ -299,10 +296,6 @@ public class Ixml extends XNonterminal {
                 for (XNode cat: rule.children) {
                     attributes.clear();
 
-                    if (cat.isOptional()) {
-                        attributes.add(Symbol.OPTIONAL);
-                    }
-
                     if (cat instanceof IInsertion) {
                         IInsertion nt = (IInsertion) cat;
                         attributes.add(new ParserAttribute("mark", "+"));
@@ -321,9 +314,10 @@ public class Ixml extends XNonterminal {
                         XNonterminal nt = (XNonterminal) cat;
                         if (cat instanceof INonterminal) {
                             attributes.add(new ParserAttribute("mark", ""+((INonterminal) cat).getMark()));
+                            String name = cat.getName();
                             for (IPragma pragma : cat.pragmas) {
                                 if (pragma instanceof IPragmaRename) {
-                                    attributes.add(new ParserAttribute("name", pragma.getPragmaData()));
+                                    name = pragma.getPragmaData();
                                 } else if (pragma instanceof IPragmaDiscardEmpty) {
                                     attributes.add(new ParserAttribute("discard", pragma.getPragmaData()));
                                 } else {
@@ -333,6 +327,7 @@ public class Ixml extends XNonterminal {
                             if (cat.getName().startsWith("$")) {
                                 attributes.add(ParserAttribute.PRUNING_ALLOWED);
                             }
+                            attributes.add(new ParserAttribute("name", name));
                         }
 
                         NonterminalSymbol nts = grammar.getNonterminal(nt.getName(), attributes);

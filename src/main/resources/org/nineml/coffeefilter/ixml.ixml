@@ -1,5 +1,4 @@
-{ From the 2022-05-28 editor's draft specification }
-
+{version 2022-06-07}
          ixml: s, prolog?, rule++RS, s.
 
            -s: (whitespace; comment)*. {Optional spacing}

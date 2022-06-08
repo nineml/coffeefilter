@@ -36,33 +36,35 @@ public class TokenUtils {
 
     /**
      * Is this a valid XML name?
+     * <p>Let's take the pedantic position that the valid name characters are the ones
+     * in the Fifth Edition. That's not what all parsers actually implement, but
+     * [expletive deleted] that.</p>
      * @param name the name
      * @return true if it is a valid XML 1.0 5th edition XML name.
      */
-    public static boolean xmlName(String name) {
+    public static void assertXmlName(String name) {
         if (name == null) {
             throw new NullPointerException("Name must not be null");
         }
 
-        if ("".equals(name)) {
-            return false;
+        if ("".equals(name) || name.charAt(0) == ':') {
+            throw IxmlException.invalidXmlName(name);
         }
 
-        // I didn't use regex for this because I wasn't sure how to represent
-        // the supplementary characters that are allowed in names.
-
-        if (name.length() == 1) {
-            return nameStartChar(name.codePointAt(0));
-        } else {
-            if (!nameStartChar(name.codePointAt(0))) {
-                return false;
-            }
-            for (int pos = 1; pos < name.length(); pos++) {
-                if (!nameChar(name.codePointAt(pos))) {
-                    return false;
+        boolean first = true;
+        boolean colon = false;
+        for (int ch : name.codePoints().toArray()) {
+            if (ch == ':') {
+                if (colon) {
+                    throw IxmlException.invalidXmlNameCharacter(name, ch);
+                }
+                colon = true;
+            } else {
+                if ((first && !nameStartChar(ch)) || !nameChar(ch)) {
+                    throw IxmlException.invalidXmlNameCharacter(name, ch);
                 }
             }
-            return true;
+            first = false;
         }
     }
 
@@ -100,5 +102,25 @@ public class TokenUtils {
                 || ch == 0xB7
                 || (ch >= 0x0300 && ch <= 0x036F)
                 || (ch >= 0x2034 && ch <= 0x2040);
+    }
+
+    // Not really about tokens, but this seems like the right place.
+    public static void assertXmlChars(String text) {
+        if (text == null) {
+            throw new NullPointerException("Text cannot be null");
+        }
+        for (int ch : text.codePoints().toArray()) {
+            assertXmlChars(ch);
+        }
+    }
+
+    // Not really about tokens, but this seems like the right place.
+    public static void assertXmlChars(int codepoint) {
+        if (codepoint == 0x9 || codepoint == 0xA || codepoint == 0xD || (codepoint >= ' ' && codepoint <= 0xD7FF)
+                || (codepoint >= 0xE000 & codepoint <= 0xFFFD) || (codepoint >= 0x10000 && codepoint <= 0x10FFFF)) {
+            // ok
+        } else {
+            throw IxmlException.invalidXmlCharacter(""+codepoint);
+        }
     }
 }

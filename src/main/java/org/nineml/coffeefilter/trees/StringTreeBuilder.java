@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 
 /**
  * Construct a "string tree".
@@ -26,6 +27,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
     private int state = FIRST;
     private ByteArrayOutputStream baos = null;
     private boolean documentElement = true;
+    private HashMap<String,String> prefixMapping = null;
 
     private final String iunit = "   ";
     private final PrintStream stream;
@@ -70,6 +72,16 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
     }
 
     @Override
+    public void startPrefixMapping (String prefix, String uri)
+            throws SAXException
+    {
+        if (prefixMapping == null) {
+            prefixMapping = new HashMap<>();
+        }
+        prefixMapping.put(prefix,uri);
+    }
+
+    @Override
     public void startElement (String uri, String localName,
                               String qName, Attributes attributes)
             throws SAXException
@@ -92,30 +104,26 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
             indent += iunit;
         }
 
-        if (options.getAssertValidXmlNames() && !TokenUtils.xmlName(localName)) {
-            throw IxmlException.invalidXmlName(localName);
-        }
-
         stream.printf("<%s", localName);
 
-        if (documentElement && !"".equals(uri)) {
-            uri = uri.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
-            uri = uri.replaceAll("\"", "&quot;");
-            stream.printf(" xmlns=\"%s\"", uri);
+        if (prefixMapping != null) {
+            for (String prefix : prefixMapping.keySet()) {
+                String nsuri = prefixMapping.get(prefix);
+                nsuri = nsuri.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
+                nsuri = nsuri.replaceAll("\"", "&quot;");
+                if ("".equals(prefix)) {
+                    stream.printf(" xmlns=\"%s\"", nsuri);
+                } else {
+                    stream.printf(" xmlns:%s=\"%s\"", prefix, nsuri);
+                }
+            }
+            prefixMapping = null;
         }
 
         for (int pos = 0; pos < attributes.getLength(); pos++) {
             stream.print(" ");
 
             String qname = attributes.getQName(pos);
-            if (qname.contains(":")) {
-                stream.printf("xmlns:%s=\"%s\" ", qname.substring(0, qname.indexOf(":")), attributes.getURI(pos));
-            } else {
-                if (options.getAssertValidXmlNames() && !TokenUtils.xmlName(qname)) {
-                    throw IxmlException.invalidXmlName(qname);
-                }
-            }
-
             String value = attributes.getValue(pos);
             value = value.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
             value = value.replaceAll("\"", "&quot;");
