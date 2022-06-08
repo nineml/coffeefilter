@@ -1,18 +1,15 @@
 #!/bin/bash
 
-if [ -z "$CIRCLE_TAG" ]; then
-    echo "Only tagged commits are published"
+if [ -z "$GPGKEYURI" ]; then
+    echo "Environment not configured for publishing"
+    exit
 else
-    if [ -z "$GPGKEYURI" ]; then
-        echo "Environment not configured for publishing"
-    else
-        curl -o secret.gpg $GPGKEYURI
-        ./gradlew -PsonatypeUsername="$SONATYPEUSER" -PsonatypePassword="$SONATYPEPASS" \
-                  -Psigning.keyId="$SIGNKEY" -Psigning.password="$SIGNPSW" \
-                  -Psigning.secretKeyRingFile=./secret.gpg \
-                  publish
-        rm -f secret.gpg
-    fi
+    curl -o secret.gpg $GPGKEYURI
+    ./gradlew -PsonatypeUsername="$SONATYPEUSER" -PsonatypePassword="$SONATYPEPASS" \
+              -Psigning.keyId="$SIGNKEY" -Psigning.password="$SIGNPSW" \
+              -Psigning.secretKeyRingFile=./secret.gpg \
+              publish
+    rm -f secret.gpg
 fi
 
 if [ "$CIRCLE_BRANCH" = "" ]; then
@@ -48,10 +45,13 @@ git checkout --track origin/gh-pages
 
 # Delete the cruft not related to gh-pages
 rm -rf ixml website
+
+ls -lAR
+
 git clean -d -f
 
 # Unpack the website files
-tar zxf /tmp/dist.$$.tar.gz
+tar zvxf /tmp/dist.$$.tar.gz
 rm /tmp/dist.$$.tar.gz
 
 git add --verbose .

@@ -125,6 +125,7 @@ task pedanticTestSuite(type: JavaExec,
   inputs.files fileTree(dir: "${buildDir}/resources/test")
   inputs.files fileTree(dir: "${projectDir}/ixml/tests")
   inputs.file "${projectDir}/src/test/resources/test-suite-exceptions"
+  outputs.file "${buildDir}/test-report-pedantic.xml"
 
   classpath = configurations.testsuite
   main = 'org.nineml.coffeefilter.TestDriver'
@@ -159,7 +160,7 @@ task testSuiteReport(type: SaxonXsltTask, dependsOn: ["testSuite"]) {
 
   input "${projectDir}/ixml/tests/test-catalog.xml"
   stylesheet "${projectDir}/tools/test-report/test-report.xsl"
-  output "${buildDir}/website/test-report/test-report.html"
+  output "${buildDir}/website/test-report/index.html"
   parameters (
     'test-report.xml': "${buildDir}/test-report.xml"
   )
