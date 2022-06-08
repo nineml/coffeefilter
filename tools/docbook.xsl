@@ -25,7 +25,7 @@
   <div class="versions">
     <p class="app">
       <xsl:text>CoffeeFilter </xsl:text>
-      <a href="/test-report.html">version {../db:productnumber/string()}</a>
+      <a href="/test-report/">version {../db:productnumber/string()}</a>
     </p>
     <p class="lib">
       <xsl:text>(Based on CoffeeGrinder </xsl:text>
