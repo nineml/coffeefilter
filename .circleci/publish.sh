@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exit
-
 if [ -z "$GPGKEYURI" ]; then
     echo "Environment not configured for publishing"
 else
