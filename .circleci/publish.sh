@@ -2,7 +2,6 @@
 
 if [ -z "$GPGKEYURI" ]; then
     echo "Environment not configured for publishing"
-    exit
 else
     curl -o secret.gpg $GPGKEYURI
     ./gradlew -PsonatypeUsername="$SONATYPEUSER" -PsonatypePassword="$SONATYPEPASS" \
