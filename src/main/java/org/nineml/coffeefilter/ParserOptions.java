@@ -65,6 +65,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
         pedantic = copy.pedantic;
         showMarks = copy.showMarks;
         showBnfNonterminals = copy.showBnfNonterminals;
+        assertValidXmlCharacters = copy.assertValidXmlCharacters;
     }
 
     /**

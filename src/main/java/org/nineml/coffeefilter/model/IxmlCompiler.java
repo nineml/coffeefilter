@@ -1,7 +1,9 @@
 package org.nineml.coffeefilter.model;
 
 import org.nineml.coffeefilter.ParserOptions;
+import org.nineml.coffeegrinder.parser.CompiledGrammar;
 import org.nineml.coffeegrinder.parser.Grammar;
+import org.nineml.coffeegrinder.parser.SourceGrammar;
 import org.nineml.coffeegrinder.util.GrammarCompiler;
 
 import java.io.File;
@@ -23,9 +25,10 @@ public class IxmlCompiler {
      * @param grammar the grammar
      * @return the compiled grammar
      */
-    public String compile(Grammar grammar) {
+    public String compile(SourceGrammar grammar) {
         GrammarCompiler compiler = new GrammarCompiler();
-        return compiler.compile(grammar);
+        CompiledGrammar cgrammar = grammar.getCompiledGrammar(grammar.getNonterminal("$$"));
+        return compiler.compile(cgrammar);
     }
 
     /**

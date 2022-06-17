@@ -2,11 +2,7 @@ package org.nineml.coffeefilter.model;
 
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeegrinder.parser.Grammar;
-import org.nineml.coffeegrinder.parser.NonterminalSymbol;
-import org.nineml.coffeegrinder.parser.Rule;
-import org.nineml.coffeegrinder.parser.Symbol;
-import org.nineml.coffeegrinder.parser.TerminalSymbol;
+import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.tokens.TokenString;
 import org.nineml.coffeegrinder.util.ParserAttribute;
@@ -27,7 +23,7 @@ public class Ixml extends XNonterminal {
     private final ArrayList<Rule> grammarRules = new ArrayList<>();
     private final String startRule = "$$";
     protected final ParserOptions options;
-    private Grammar grammar = null;
+    private SourceGrammar grammar = null;
     protected boolean emptyProduction = false;
     protected String version = "1.0";
 
@@ -43,7 +39,7 @@ public class Ixml extends XNonterminal {
      * Construct Ixml from a grammar.
      * @param grammar the grammar.
      */
-    public Ixml(ParserOptions options, Grammar grammar) {
+    public Ixml(ParserOptions options, SourceGrammar grammar) {
         super(null, "ixml", "$$_ixml");
         this.grammar = grammar;
         symCount += grammar.getRules().size();
@@ -149,6 +145,7 @@ public class Ixml extends XNonterminal {
                         throw new RuntimeException("Mixture of alts and other things?");
                     }
                     IRule newRule = new IRule(this, rule.getName(), rule.getMark());
+                    newRule.pragmas.addAll(rule.pragmas);
                     for (XNode gchild : alt.getChildren()) {
                         newRule.addCopy(gchild);
                     }
@@ -246,7 +243,7 @@ public class Ixml extends XNonterminal {
      * options will have no effect.</p>
      * @return The underlying grammar.
      */
-    public Grammar getGrammar(ParserOptions options) {
+    public SourceGrammar getGrammar(ParserOptions options) {
         if (grammar == null) {
             constructGrammar(options);
         }
@@ -255,11 +252,42 @@ public class Ixml extends XNonterminal {
     }
 
     private void constructGrammar(ParserOptions options) {
-        grammar = new Grammar(options);
+        grammar = new SourceGrammar(options);
+
+        /*
+        ArrayList<IPragma> grammarPragmas = new ArrayList<>();
+
+        // Process pragmas on rules first...
+        for (XNode child : children) {
+            if (child instanceof IRule) {
+                IRule rule = (IRule) child;
+                if (startRule.equals(rule.getName())) {
+                    for (IPragma pragma : pragmas) {
+                        if (pragma instanceof IPragmaXmlns) {
+                            grammarPragmas.add(pragma);
+                        } else {
+                            options.getLogger().debug(logcategory, "Unknown pragma, or does not apply in the prologue: %s", pragma);
+                        }
+                    }
+                }
+
+                for (IPragma pragma : rule.pragmas) {
+                    if (pragma instanceof IPragmaRegex) {
+                        attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
+                    } else if (pragma instanceof IPragmaPriority) {
+                        attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
+                    } else {
+                        options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to rule: %s", pragma);
+                    }
+                }
+
+            }
+        }
+
+         */
 
         ArrayList<ParserAttribute> attributes = new ArrayList<>();
         for (XNode child : children) {
-            int inspos = -1;
             if (child instanceof IRule) {
                 IRule rule = (IRule) child;
 
@@ -284,6 +312,8 @@ public class Ixml extends XNonterminal {
                 for (IPragma pragma : rule.pragmas) {
                     if (pragma instanceof IPragmaRegex) {
                         attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
+                    } else if (pragma instanceof IPragmaPriority) {
+                        attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
                     } else {
                         options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to rule: %s", pragma);
                     }
@@ -291,7 +321,6 @@ public class Ixml extends XNonterminal {
 
                 NonterminalSymbol ruleSymbol = grammar.getNonterminal(rule.getName(), attributes);
 
-                inspos = -1;
                 ArrayList<Symbol> rhs = new ArrayList<>();
                 for (XNode cat: rule.children) {
                     attributes.clear();
@@ -312,18 +341,35 @@ public class Ixml extends XNonterminal {
                         grammar.addRule(nts);
                     } else if (cat instanceof XNonterminal) {
                         XNonterminal nt = (XNonterminal) cat;
+                        boolean priority = false;
                         if (cat instanceof INonterminal) {
                             attributes.add(new ParserAttribute("mark", ""+((INonterminal) cat).getMark()));
                             String name = cat.getName();
                             for (IPragma pragma : cat.pragmas) {
                                 if (pragma instanceof IPragmaRename) {
                                     name = pragma.getPragmaData();
+                                } else if (pragma instanceof IPragmaPriority) {
+                                    attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
+                                    priority = true;
                                 } else if (pragma instanceof IPragmaDiscardEmpty) {
                                     attributes.add(new ParserAttribute("discard", pragma.getPragmaData()));
                                 } else {
                                     options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a nonterminal: %s", pragma);
                                 }
                             }
+                            if (!priority) {
+                                for (XNode find : children) {
+                                    if (find instanceof IRule && ((IRule) find).name.equals(cat.name)) {
+                                        for (IPragma pragma : find.pragmas) {
+                                            if (pragma instanceof IPragmaPriority) {
+                                                attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+
                             if (cat.getName().startsWith("$")) {
                                 attributes.add(ParserAttribute.PRUNING_ALLOWED);
                             }
@@ -385,8 +431,6 @@ public class Ixml extends XNonterminal {
                 grammar.addRule(grule);
             }
         }
-
-        grammar.close(grammar.getNonterminal("$$"));
     }
 
     /**

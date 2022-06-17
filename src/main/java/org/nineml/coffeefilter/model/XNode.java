@@ -387,6 +387,14 @@ public abstract class XNode {
                     return new IPragmaDiscardEmpty(pragma.parent, data);
                 }
                 getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
+            } else if (data.startsWith("priority ")) {
+                data = data.substring(9).trim();
+                try {
+                    double priority = Double.parseDouble(data);
+                    return new IPragmaPriority(pragma.parent, data);
+                } catch (NumberFormatException ex) {
+                    getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
+                }
             }
         }
 
@@ -427,6 +435,7 @@ public abstract class XNode {
                 }
             }
         }
+
         children.clear();
         children.addAll(newchildren);
         newchildren.clear();

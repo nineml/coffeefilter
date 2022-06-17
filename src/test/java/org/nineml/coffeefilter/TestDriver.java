@@ -7,6 +7,7 @@ import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
 import org.nineml.coffeegrinder.exceptions.GrammarException;
+import org.nineml.coffeegrinder.parser.ParserType;
 
 import java.io.*;
 import java.net.URI;
@@ -71,6 +72,7 @@ public class TestDriver {
         String set_name = null;
         String case_name = null;
         String xmlreport = null;
+        String parserType = null;
 
         int pos = 0;
         while (pos < args.length) {
@@ -85,6 +87,18 @@ public class TestDriver {
                 xmlreport = arg.substring(3);
             } else if ("--pedantic".equals(arg)) {
                 options.setPedantic(true);
+            } else if ("--gll".equals(arg)) {
+                if (parserType != null) {
+                    throw new IllegalArgumentException("Cannot specify more than one parser type.");
+                }
+                options.setParserType("GLL");
+                parserType = "GLL";
+            } else if ("--earley".equals(arg)) {
+                if (parserType != null) {
+                    throw new IllegalArgumentException("Cannot specify more than one parser type.");
+                }
+                options.setParserType("Earley");
+                parserType = "Earley";
             } else {
                 catalog = arg;
             }
@@ -221,6 +235,11 @@ public class TestDriver {
     }
 
     private void runTest(TestConfiguration config, XdmNode testCase) {
+        boolean allowUndefinedSymbols = options.getAllowUndefinedSymbols();
+        boolean allowUnreachableSymbols = options.getAllowUnreachableSymbols();
+        boolean allowUnproductiveRules = options.getAllowUnproductiveSymbols();
+        boolean allowMultiple = options.getAllowMultipleDefinitions();
+
         try {
             if (t_grammar_test.equals(testCase.getNodeName())) {
                 doGrammarTest(config, testCase);
@@ -231,11 +250,6 @@ public class TestDriver {
             for (XdmNode appInfo : appInfo(testCase)) {
                 Map<QName,String> okopts = supportedOptions(appInfo);
                 if (okopts != null) {
-                    boolean allowUndefinedSymbols = options.getAllowUndefinedSymbols();
-                    boolean allowUnreachableSymbols = options.getAllowUnreachableSymbols();
-                    boolean allowUnproductiveRules = options.getAllowUnproductiveSymbols();
-                    boolean allowMultiple = options.getAllowMultipleDefinitions();
-
                     options.setAllowUnreachableSymbols(!"error".equals(okopts.getOrDefault(ap_unreachable_symbols, "error")));
                     options.setAllowUnproductiveSymbols(!"error".equals(okopts.getOrDefault(ap_unproductive_symbols, "error")));
                     options.setAllowMultipleDefinitions(!"error".equals(okopts.getOrDefault(ap_multiple_definitions, "error")));
@@ -258,6 +272,10 @@ public class TestDriver {
                 }
             }
         } catch (Exception ex) {
+            options.setAllowUndefinedSymbols(allowUndefinedSymbols);
+            options.setAllowUnproductiveSymbols(allowUnproductiveRules);
+            options.setAllowUnreachableSymbols(allowUnreachableSymbols);
+            options.setAllowMultipleDefinitions(allowMultiple);
             System.err.println("EXCEPTION " + testCase.getAttributeValue(_name) + ": " + ex.getMessage());
         }
     }

@@ -40,5 +40,4 @@ public class IxmlTreeException extends IxmlException {
     public static IxmlTreeException noMixedContent() { return getException("DT01"); }
     public static IxmlTreeException duplicatesForbidden(String name) { return getException("DT02", name); }
     public static IxmlTreeException noCsv() { return getException("CV01"); }
-
 }

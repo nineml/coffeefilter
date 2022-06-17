@@ -104,6 +104,9 @@ buildConfig {
 
 ext {
   c_coffeefilter = "coffeefilter"
+  parserType = project.findProperty("parserType") ?: "earley"
+  ignoreFailure = (project.findProperty("ignoreFailure") ?: "false") == "true" ? true : false
+  pedantic = (project.findProperty("pedantic") ?: "false") == "true" ? true : false
 }
 
 saxon.configure {
@@ -117,24 +120,6 @@ docker_container.configure {
 
 // ============================================================
 
-task pedanticTestSuite(type: JavaExec,
-               dependsOn: ["compileTestJava", "processTestResources"]) {
-  inputs.files fileTree(dir: "${buildDir}/classes/java/main")
-  inputs.files fileTree(dir: "${buildDir}/classes/java/test")
-  inputs.files fileTree(dir: "${buildDir}/resources/main")
-  inputs.files fileTree(dir: "${buildDir}/resources/test")
-  inputs.files fileTree(dir: "${projectDir}/ixml/tests")
-  inputs.file "${projectDir}/src/test/resources/test-suite-exceptions"
-  outputs.file "${buildDir}/test-report-pedantic.xml"
-
-  classpath = configurations.testsuite
-  main = 'org.nineml.coffeefilter.TestDriver'
-  args = ["-e:${projectDir}/src/test/resources/pedantic-test-suite-exceptions",
-          "-r:${buildDir}/test-report-pedantic.xml",
-          '--pedantic',
-          'ixml/tests/test-catalog.xml']
-}
-
 task testSuite(type: JavaExec,
                dependsOn: ["compileTestJava", "processTestResources"]) {
   inputs.files fileTree(dir: "${buildDir}/classes/java/main")
@@ -142,13 +127,28 @@ task testSuite(type: JavaExec,
   inputs.files fileTree(dir: "${buildDir}/resources/main")
   inputs.files fileTree(dir: "${buildDir}/resources/test")
   inputs.files fileTree(dir: "${projectDir}/ixml/tests")
-  inputs.file "${projectDir}/src/test/resources/test-suite-exceptions"
-  outputs.file "${buildDir}/test-report.xml"
 
+  String exceptionsFile = null
+  String outputXML = null
+  
+  if (pedantic) {
+    exceptionsFile = "${projectDir}/src/test/resources/pedantic-test-suite-exceptions"
+    outputXML = "${buildDir}/test-report-${parserType}.xml"
+  } else {
+    exceptionsFile = "${projectDir}/src/test/resources/test-suite-exceptions"
+    outputXML = "${buildDir}/test-report-${parserType}.xml"
+  }
+
+  inputs.file exceptionsFile
+  outputs.file outputXML
+
+  ignoreExitValue = ignoreFailure
   classpath = configurations.testsuite
   main = 'org.nineml.coffeefilter.TestDriver'
-  args = ["-e:${projectDir}/src/test/resources/test-suite-exceptions",
-          "-r:${buildDir}/test-report.xml",
+  args = ["-e:${exceptionsFile}",
+          "-r:${outputXML}",
+          parserType == "earley" ? "--earley" : "--gll",
+          pedantic ? '--pedantic' : '--not-pedantic',
           'ixml/tests/test-catalog.xml']
 }
 
@@ -162,7 +162,7 @@ task testSuiteReport(type: SaxonXsltTask, dependsOn: ["testSuite"]) {
   stylesheet "${projectDir}/tools/test-report/test-report.xsl"
   output "${buildDir}/website/test-report/index.html"
   parameters (
-    'test-report.xml': "${buildDir}/test-report.xml"
+    'test-report.xml': "${buildDir}/test-report-${parserType}.xml"
   )
 
   doLast {
@@ -208,7 +208,7 @@ javadoc {
   options.charSet('utf-8')
 }
 
-task dist(dependsOn:["test", "testSuite", "pedanticTestSuite", "jar", "javadoc"]) {
+task dist(dependsOn:["test", "testSuite", "jar", "javadoc"]) {
   doLast {
     mkdir "${buildDir}/stage"
     mkdir "${buildDir}/stage/docs"

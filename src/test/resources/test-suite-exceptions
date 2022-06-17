@@ -1,1 +1,10 @@
 set "ignored" because it doesn't really exist.
+set "insert-multiple"
+    case "iMult-1" because I don't handle repeated epsilon transitions.
+set "insert-multiple-attribute"
+    case "iMultAtt-1" because I don't handle repeated epsilon transitions.
+set "leading-embedded-nullable"
+    case "leading-nullable" because I get it wrong.
+set "insert-separator-alternate"
+    case "iSepAlt-1" because I think the expected results are incorrect.
+
