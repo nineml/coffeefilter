@@ -208,7 +208,7 @@ javadoc {
   options.charSet('utf-8')
 }
 
-task dist(dependsOn:["test", "testSuite", "pedanticTestSuite", "jar", "javadoc"]) {
+task dist(dependsOn:["test", "testSuite", "jar", "javadoc"]) {
   doLast {
     mkdir "${buildDir}/stage"
     mkdir "${buildDir}/stage/docs"
