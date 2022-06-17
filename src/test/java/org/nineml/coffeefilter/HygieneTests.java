@@ -2,6 +2,7 @@ package org.nineml.coffeefilter;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeegrinder.parser.Ambiguity;
 
 import static org.junit.Assert.fail;
@@ -88,6 +89,27 @@ public class HygieneTests {
         } catch (Exception ex) {
             fail();
         }
-
     }
+
+    @Test
+    public void undefined_1_4() {
+        String input = "S = A; B; '(', S, ')'.\n" +
+                "A = 'a'; X, A.\n" +
+                "B = 'b'; B, X*.\n";
+
+        ParserOptions options = new ParserOptions();
+        InvisibleXml invisibleXml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+            if (parser.getException() != null) {
+                throw parser.getException();
+            }
+            fail();
+        } catch (Exception ex) {
+            Assertions.assertTrue(ex instanceof IxmlException);
+            Assertions.assertEquals("S02", ((IxmlException) ex).getCode());
+        }
+    }
+
 }

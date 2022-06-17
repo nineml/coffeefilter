@@ -143,6 +143,8 @@
       <xsl:variable name="fail" select="count(.//r:result[@state='FAIL'])"/>
       <xsl:variable name="skip" select="count(.//r:result[@state='SKIP'])"/>
       <xsl:variable name="tests" select="count(.//r:report)"/>
+      <xsl:variable name="anomaly" select="$total - ($pass+$skip+$fail)"/>
+
       <p>
         <xsl:text>{$tests} tests</xsl:text>
         <xsl:if test="$total != $tests">
@@ -150,8 +152,8 @@
         </xsl:if>
         <xsl:text>; {$pass} passed, </xsl:text>
         <xsl:text>{$skip} skipped; {$fail} failed. </xsl:text>
-        <xsl:if test="$pass+$skip+$fail != $total">
-          <xsl:text>{$pass+$skip+$fail - $total} anomalous results.</xsl:text>
+        <xsl:if test="$anomaly != 0">
+          <xsl:text>{$anomaly} anomalous result{if ($anomaly gt 1) then 's' else ()}.</xsl:text>
         </xsl:if>
       </p>
       <details class="note">
@@ -326,6 +328,11 @@
             <xsl:apply-templates select="t:created|t:modified|t:description"/>
             <xsl:apply-templates select="*[not(self::t:created or self::t:modified)]"/>
           </main>
+          <!--
+          <aside>TC:<pre><code>
+            <xsl:sequence select="serialize(.,map{'method':'xml','indent':true()})"/>
+          </code></pre></aside>
+          -->
         </body>
       </html>
     </xsl:result-document>
@@ -781,7 +788,7 @@
       </xsl:if>
     </div>
   </details>
-  <xsl:variable name="pos" select="count(preceding-sibling::t:app-info)+1"/>
+  <xsl:variable name="pos" select="count(preceding-sibling::t:app-info)+2"/>
   <xsl:apply-templates select="../r:report">
     <xsl:with-param name="result" select="../r:report/r:result[$pos]"/>
   </xsl:apply-templates>

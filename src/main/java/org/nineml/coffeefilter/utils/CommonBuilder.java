@@ -52,8 +52,8 @@ public class CommonBuilder {
             xmlns = tree.getSymbol().getAttribute("ns").getValue();
         }
 
-        constructTree(tree, null);
-        ambiguous = tree.getForest().isAmbiguous();
+        constructTree(tree);
+        ambiguous = result.isAmbiguous();
         prefix = result.prefixSucceeded();
         grammarVersion = ixmlVersion;
     }
@@ -159,137 +159,49 @@ public class CommonBuilder {
         }
     }
 
-    private void constructTree(ParseTree tree, Symbol xsymbol) {
-        ParseTree child0 = null;
-        Symbol child0Symbol = null;
-        ParseTree child1 = null;
-        Symbol child1Symbol = null;
-        String localName = null;
-
-        assert tree != null;
-        State state = tree.getState();
-
-        if (!tree.getChildren().isEmpty()) {
-            child0 = tree.getChildren().get(0);
-            if (tree.getChildren().size() > 1) {
-                child1 = tree.getChildren().get(1);
-            }
-            assert tree.getChildren().size() <= 2;
-        }
-
-        int pos;
+    private void constructTree(ParseTree tree) {
         Symbol symbol = tree.getSymbol();
+
         if (symbol == null) {
-            assert child0 != null;
-            if (child1 != null) {
-                pos = getSymbol(child1.getSymbol(), state, state.getPosition());
-                if (pos >= 0) {
-                    child1Symbol = state.getRhs().get(pos);
-                } else {
-                    pos = state.getPosition();
-                }
-
-                pos = getSymbol(child0.getSymbol(), state, pos); // don't "pass" the second symbol
-                if (pos >= 0) {
-                    child0Symbol = state.getRhs().get(pos);
-                }
-
-                constructTree(child0, child0Symbol);
-                constructTree(child1, child1Symbol);
-            } else {
-                pos = getSymbol(child0.getSymbol(), state, state.getPosition());
-                if (pos >= 0) {
-                    child0Symbol = state.getRhs().get(pos);
-                }
-
-                constructTree(child0, child0Symbol);
-            }
-            return;
-        }
-
-        char useMark = getMark(xsymbol == null ? symbol : xsymbol);
-        char showMark = '?';
-        if (options.getShowMarks()) {
-            showMark = useMark;
-            useMark = '^';
-        }
-
-        if (symbol instanceof TerminalSymbol) {
-            Token token = ((TerminalSymbol) tree.getSymbol()).getToken();
+            Token token = tree.getToken();
             if (!(token instanceof TokenCharacter)) {
                 throw new RuntimeException("Unexpected token in tree (not a TokenCharacter): " + token);
             }
+            char useMark = tree.getAttribute("tmark", "^").charAt(0);
 
-            String acc = getAttribute(symbol, xsymbol, "acc");
-            String rewrite = getAttribute(symbol, xsymbol, "rewrite");
+            String acc = tree.getAttribute("acc", null);
+            String rewrite = tree.getAttribute("rewrite", null);
 
             int ch = ((TokenCharacter) token).getCodepoint();
             terminal(tree, useMark, ch, acc != null, rewrite);
         } else {
-            if (child1 != null) {
-                pos = getSymbol(child1.getSymbol(), state, state.getPosition());
-                if (pos >= 0) {
-                    child1Symbol = state.getRhs().get(pos);
+            char useMark = tree.getAttribute("mark", "^").charAt(0);
+            char showMark = useMark;
+            String localName = tree.getAttribute("name", symbol.toString());
+            HashMap<String,String> attributes = new HashMap<>(tree.getAttributes());
+
+            if (localName.startsWith("$")) {
+                if (options.getShowBnfNonterminals()) {
+                    useMark = '^';
+                    showMark = '-';
+                    attributes.put("nineml:name", localName);
+                    localName = "nineml:nt";
                 } else {
-                    pos = state.getPosition();
-                }
-
-                pos = getSymbol(child0.getSymbol(), state, pos); // don't "pass" the second symbol
-                if (pos >= 0) {
-                    child0Symbol = state.getRhs().get(pos);
-                }
-            } else {
-                if (child0 != null) {
-                    pos = getSymbol(child0.getSymbol(), state, state.getPosition()); // don't "pass" the second symbol
-                    if (pos >= 0) {
-                        child0Symbol = state.getRhs().get(pos);
-                    }
-                }
-            }
-
-            if (symbol instanceof InsertionNonterminal) {
-                String gentext = symbol.getAttributeValue("insertion", null);
-                if (gentext != null) {
-                    if (options.getAssertValidXmlCharacters()) {
-                        TokenUtils.assertXmlChars(gentext);
-                    }
                     if (options.getShowMarks()) {
-                        startNonterminal(tree, '^', '+', "nineml:insertion", new HashMap<>());
-                        stack.peek().add(new PartialOutput(gentext));
-                        endNonterminal(tree, '^', "nineml:insertion");
-                    } else {
-                        stack.peek().add(new PartialOutput(gentext));
+                        useMark = '-';
                     }
                 }
-            } else {
-                localName = getAttribute(symbol, xsymbol, "name");
-                HashMap<String,String> attributes = getAttributes(symbol, xsymbol);
-
-                if (localName.startsWith("$")) {
-                    if (options.getShowBnfNonterminals()) {
-                        useMark = '^';
-                        showMark = '-';
-                        attributes.put("nineml:name", localName);
-                        localName = "nineml:nt";
-                    } else {
-                        if (options.getShowMarks()) {
-                            useMark = '-';
-                        }
-                    }
-                }
-
-                startNonterminal(tree, useMark, showMark, localName, attributes);
-
-                if (child0 != null) {
-                    constructTree(child0, child0Symbol);
-                }
-
-                if (child1 != null) {
-                    constructTree(child1, child1Symbol);
-                }
-
-                endNonterminal(tree, useMark, localName);
             }
+
+            startNonterminal(tree, useMark, showMark, localName, attributes);
+
+            if (tree.children != null) {
+                for (ParseTree child : tree.children) {
+                    constructTree(child);
+                }
+            }
+
+            endNonterminal(tree, useMark, localName);
         }
     }
 

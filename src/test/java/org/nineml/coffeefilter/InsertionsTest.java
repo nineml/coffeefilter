@@ -39,10 +39,9 @@ public class InsertionsTest {
 
     @Test
     public void ambiguous() {
-        String input = " S: +'A' ; +'B'. ";
+        String input = " S: +'A' ; +'B'.";
 
         InvisibleXmlDocument xdoc = invisibleXml.getParser().parse(input);
-        String xxml = xdoc.getTree();
 
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
 

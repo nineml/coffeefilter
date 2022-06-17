@@ -31,10 +31,14 @@ public class ErrorDocumentTest {
     public void outOfInput() {
         String input = "S: (A; B), '.'+. A: 'a', '.'+ . B: 'b', '.'+ .";
 
-        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
-        InvisibleXmlDocument doc = parser.parse("a.");
-        String xml = doc.getTree();
-        Assertions.assertTrue(xml.contains("<end-of-input>true</end-of-input>"));
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+            InvisibleXmlDocument doc = parser.parse("a.");
+            String xml = doc.getTree();
+            Assertions.assertTrue(xml.contains("<end-of-input>true</end-of-input>"));
+        } catch (Exception ex) {
+            fail();
+        }
     }
 
     @Test

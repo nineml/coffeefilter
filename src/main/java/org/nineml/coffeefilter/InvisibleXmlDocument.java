@@ -4,12 +4,14 @@ import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.StringTreeBuilder;
 import org.nineml.coffeefilter.utils.AttributeBuilder;
 import org.nineml.coffeefilter.utils.CommonBuilder;
+import org.nineml.coffeefilter.utils.EventBuilder;
+import org.nineml.coffeegrinder.gll.BinarySubtree;
+import org.nineml.coffeegrinder.gll.BinarySubtreeSlot;
 import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.tokens.TokenEOF;
-import org.nineml.coffeegrinder.util.DefaultTreeWalker;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -26,7 +28,6 @@ import java.util.*;
 public class InvisibleXmlDocument {
     private final GearleyResult result;
     private final boolean prefixOk;
-    private final TreeWalker treeWalker;
     private final String parserVersion;
     private ParserOptions options;
     private boolean selectedFirst = false;
@@ -39,11 +40,6 @@ public class InvisibleXmlDocument {
         this.prefixOk = false;
         this.options = options;
         this.parserVersion = parserVersion;
-        if (result.succeeded() || result.prefixSucceeded()) {
-            treeWalker = new DefaultTreeWalker(result.getForest(), new ParseTreeBuilder());
-        } else {
-            treeWalker = null;
-        }
     }
 
     protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options, boolean prefixOk) {
@@ -51,11 +47,6 @@ public class InvisibleXmlDocument {
         this.prefixOk = prefixOk;
         this.options = options;
         this.parserVersion = parserVersion;
-        if (result.succeeded() || result.prefixSucceeded()) {
-            treeWalker = new DefaultTreeWalker(result.getForest(), new ParseTreeBuilder());
-        } else {
-            treeWalker = null;
-        }
     }
 
     protected void setLocation(int offset, int line, int col) {
@@ -152,20 +143,6 @@ public class InvisibleXmlDocument {
     }
 
     /**
-     * Return the exact number of successful parses of this document.
-     *
-     * <p>Will return 0 if there are no successful parses.</p>
-     *
-     * @return The number of parses.
-     */
-    public BigInteger getExactNumberOfParses() {
-        if (result.succeeded() || result.prefixSucceeded()) {
-            return result.getForest().getExactTotalParses();
-        }
-        return new BigInteger("0");
-    }
-
-    /**
      * Returns the amount of time (roughly) spent parsing.
      *
      * @return The number of milliseconds spent parsing.
@@ -179,16 +156,7 @@ public class InvisibleXmlDocument {
      * @return the parse tree
      */
     public ParseTree getParseTree() {
-        if (treeWalker == null) {
-            return null;
-
-        }
-        if (!selectedFirst) {
-            treeWalker.next();
-            selectedFirst = true;
-        }
-
-        return ((ParseTreeBuilder) treeWalker.getTreeBuilder()).getTree();
+        return result.getTree();
     }
 
     /**
@@ -196,10 +164,16 @@ public class InvisibleXmlDocument {
      * @return the XML.
      */
     public String getTree() {
+        /*
         ParseTree tree = getParseTree();
         CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(options);
         realize(builder, handler);
+        return handler.getXml();
+         */
+
+        StringTreeBuilder handler = new StringTreeBuilder(options);
+        getTree(handler, options);
         return handler.getXml();
     }
 
@@ -228,25 +202,38 @@ public class InvisibleXmlDocument {
      * @param options the options to use when constructing the tree
      */
     public void getTree(ContentHandler handler, ParserOptions options) {
+        /*
         ParseTree tree = getParseTree();
         CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         realize(builder, handler);
+        */
+
+        EventBuilder ebuilder = new EventBuilder(parserVersion, options);
+        realize(ebuilder, handler);
     }
 
     public boolean nextTree() {
-        if (treeWalker.hasNext()) {
-            treeWalker.next();
-            return true;
-        }
-        return false;
+        throw new UnsupportedOperationException("Fix this");
     }
 
     private void realize(CommonBuilder builder, ContentHandler handler) {
         if (result.succeeded() || (result.prefixSucceeded() && prefixOk)) {
             builder.build(handler);
-            return;
+        } else {
+            realizeErrorDocument(handler);
         }
+    }
 
+    private void realize(EventBuilder builder, ContentHandler handler) {
+        if (result.succeeded() || (result.prefixSucceeded() && prefixOk)) {
+            builder.setHandler(handler);
+            result.getTree(builder);
+        } else {
+            realizeErrorDocument(handler);
+        }
+    }
+
+    private void realizeErrorDocument(ContentHandler handler) {
         try {
             handler.startDocument();
 

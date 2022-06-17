@@ -3,9 +3,8 @@ package org.nineml.coffeefilter;
 import org.nineml.coffeefilter.utils.CommonBuilder;
 import org.nineml.coffeefilter.utils.GrammarSniffer;
 import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
-import org.nineml.coffeegrinder.parser.Grammar;
-import org.nineml.coffeegrinder.parser.HygieneReport;
-import org.nineml.coffeegrinder.parser.ParseTree;
+import org.nineml.coffeegrinder.gll.*;
+import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.util.GrammarCompiler;
 import org.xml.sax.SAXException;
 import org.nineml.coffeefilter.exceptions.IxmlException;
@@ -22,6 +21,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Calendar;
+import java.util.HashSet;
 
 /**
  * A static class for constructing instances of Invisible XML grammars.
@@ -226,7 +226,7 @@ public class InvisibleXml {
         try {
             GrammarCompiler compiler = new GrammarCompiler(options);
             long startMillis = Calendar.getInstance().getTimeInMillis();
-            Grammar grammar = compiler.parse(stream, systemId);
+            SourceGrammar grammar = compiler.parse(stream, systemId);
             Ixml ixml = new Ixml(options, grammar);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             return new InvisibleXmlParser(ixml, parseMillis);
@@ -279,11 +279,13 @@ public class InvisibleXml {
             return new InvisibleXmlParser(doc, doc.parseTime());
         }
 
-        ParseTree tree = doc.getResult().getForest().parse();
+        ParseTree tree = doc.getResult().getTree();
 
         ParserOptions builderOptions = new ParserOptions(options);
         builderOptions.setShowMarks(false);
         builderOptions.setShowBnfNonterminals(false);
+        builderOptions.setAssertValidXmlNames(false);
+        builderOptions.setAssertValidXmlCharacters(true);
         CommonBuilder builder = new CommonBuilder(tree, ixmlParser.getIxmlVersion(), doc.getResult(), builderOptions);
 
         try {
@@ -323,10 +325,12 @@ public class InvisibleXml {
      */
     public InvisibleXmlParser getParserFromIxml(String input) {
         ByteArrayInputStream bais = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+        final InvisibleXmlParser parser;
         try {
-            return getParserFromIxml(bais, UTF_8);
+            parser = getParserFromIxml(bais, UTF_8);
         } catch (IOException ex) {
             throw IxmlException.internalError("I/O error parsing a string in memory (!?)");
         }
+        return parser;
     }
 }

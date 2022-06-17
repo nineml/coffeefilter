@@ -11,6 +11,7 @@ import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
+import org.nineml.logging.Logger;
 
 import java.io.*;
 import java.net.URI;
@@ -24,18 +25,22 @@ import java.util.Map;
  * A parser for a particular Invisible XML grammar.
  */
 public class InvisibleXmlParser {
+    public static final String logcategory = "InvisibleXml";
     private final Ixml ixml;
     private final InvisibleXmlDocument failedParse;
     private final long parseTime;
     private final ParserOptions options;
     private Exception exception = null;
     private HygieneReport hygieneReport = null;
+    private boolean shownMessage = false;
+    private CompiledGrammar grammar = null;
 
     protected InvisibleXmlParser(Ixml ixml) {
         this.ixml = ixml;
         this.parseTime = -1;
         failedParse = null;
         options = ixml.getOptions();
+        options.getLogger().setDefaultLogLevel(Logger.INFO);
     }
 
     protected InvisibleXmlParser(Ixml ixml, long parseMillis) {
@@ -50,6 +55,7 @@ public class InvisibleXmlParser {
         parseTime = parseMillis;
         failedParse = failed;
         options = failed.getOptions();
+        options.getLogger().setDefaultLogLevel(Logger.INFO);
     }
 
     protected InvisibleXmlParser(InvisibleXmlDocument failed, Exception exception, long parseMillis) {
@@ -116,9 +122,15 @@ public class InvisibleXmlParser {
      * @return the hygiene report
      */
     public HygieneReport getHygieneReport() {
-        if (hygieneReport == null && getGrammar() != null) {
-            hygieneReport = getGrammar().checkHygiene("$$");
+        if (hygieneReport != null) {
+            return hygieneReport;
         }
+
+        SourceGrammar grammar = getGrammar();
+        if (grammar != null) {
+            hygieneReport = grammar.getHygieneReport(grammar.getNonterminal("$$"));
+        }
+
         return hygieneReport;
     }
 
@@ -170,6 +182,10 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(URI source, String encoding) throws IOException {
+        if (!shownMessage) {
+            options.getLogger().info(logcategory, "Parsing %s ixml grammar from %s", encoding, source);
+            shownMessage = true;
+        }
         URLConnection conn = source.toURL().openConnection();
         return parse(conn.getInputStream(), encoding);
 
@@ -185,6 +201,10 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(File source, String encoding) throws IOException {
+        if (!shownMessage) {
+            options.getLogger().info(logcategory, "Parsing %s ixml grammar from %s", encoding, source);
+            shownMessage = true;
+        }
         return parse(Files.newInputStream(source.toPath()), encoding);
     }
 
@@ -198,6 +218,10 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(InputStream stream, String encoding) throws IOException {
+        if (!shownMessage) {
+            options.getLogger().debug(logcategory, "Parsing %s ixml grammar from input stream", encoding);
+            shownMessage = true;
+        }
         InputStreamReader reader = new InputStreamReader(stream, encoding);
         StringBuilder sb = new StringBuilder();
         char[] buffer = new char[4096];
@@ -217,13 +241,17 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(String input) {
+        options.getLogger().debug(logcategory, "Parsing %,d characters with %s parser",
+                input.codePointCount(0, input.length()), options.getParserType());
+        shownMessage = false;
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
         }
 
-        Grammar grammar = ixml.getGrammar(options);
+        SourceGrammar grammar = ixml.getGrammar(options);
 
         ParserType parserType = "Earley".equals(options.getParserType()) ? ParserType.Earley : ParserType.GLL;
+        //parserType = ParserType.GLL;
 
         CharacterIterator iterator = new CharacterIterator(input);
         GearleyParser parser = grammar.getParser(parserType, grammar.getNonterminal("$$"));
@@ -265,7 +293,7 @@ public class InvisibleXmlParser {
      * @return the underlying CoffeeGrinder grammar
      * @throws NullPointerException if this parser has no grammar
      */
-    public Grammar getGrammar() {
+    public SourceGrammar getGrammar() {
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
         }
