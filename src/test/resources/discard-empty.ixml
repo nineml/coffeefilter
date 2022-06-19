@@ -1,8 +1,10 @@
-S: {[nineml discard empty]} A,
-                            B,
-   {[nineml discard empty]} C,
-   {[nineml discard empty]} @D,
-                            @E .
+{[+ixmlns:n "https://nineml.org/ns"]}
+
+S: {[n:discard empty]} A,
+                       B,
+   {[n:discard empty]} C,
+   {[n:discard empty]} @D,
+                       @E .
 A: 'a'? .
 B: 'b'? .
 C: 'c'? .

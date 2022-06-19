@@ -3,20 +3,18 @@ package org.nineml.coffeefilter;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.StringTreeBuilder;
 import org.nineml.coffeefilter.utils.AttributeBuilder;
-import org.nineml.coffeefilter.utils.CommonBuilder;
 import org.nineml.coffeefilter.utils.EventBuilder;
-import org.nineml.coffeegrinder.gll.BinarySubtree;
-import org.nineml.coffeegrinder.gll.BinarySubtreeSlot;
 import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.tokens.TokenEOF;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 import java.io.PrintStream;
-import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -29,8 +27,8 @@ public class InvisibleXmlDocument {
     private final GearleyResult result;
     private final boolean prefixOk;
     private final String parserVersion;
-    private ParserOptions options;
-    private boolean selectedFirst = false;
+    private final EventBuilder eventBuilder;
+    private final ParserOptions options;
     private int lineNumber = -1;
     private int columnNumber = -1;
     private int offset = -1;
@@ -40,6 +38,7 @@ public class InvisibleXmlDocument {
         this.prefixOk = false;
         this.options = options;
         this.parserVersion = parserVersion;
+        this.eventBuilder = new EventBuilder(parserVersion, options);
     }
 
     protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options, boolean prefixOk) {
@@ -47,6 +46,7 @@ public class InvisibleXmlDocument {
         this.prefixOk = prefixOk;
         this.options = options;
         this.parserVersion = parserVersion;
+        this.eventBuilder = new EventBuilder(parserVersion, options);
     }
 
     protected void setLocation(int offset, int line, int col) {
@@ -61,14 +61,6 @@ public class InvisibleXmlDocument {
      */
     public ParserOptions getOptions() {
         return options;
-    }
-
-    /**
-     * Set the parser options.
-     * @param options the parser options
-     */
-    public void setOptions(ParserOptions options) {
-        this.options = options;
     }
 
     /**
@@ -152,28 +144,12 @@ public class InvisibleXmlDocument {
     }
 
     /**
-     * Return the underlying ParseTree for the current parse.
-     * @return the parse tree
-     */
-    public ParseTree getParseTree() {
-        return result.getTree();
-    }
-
-    /**
      * Return an XML representation of the current parse.
      * @return the XML.
      */
     public String getTree() {
-        /*
-        ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(options);
-        realize(builder, handler);
-        return handler.getXml();
-         */
-
-        StringTreeBuilder handler = new StringTreeBuilder(options);
-        getTree(handler, options);
+        getTree(handler);
         return handler.getXml();
     }
 
@@ -182,10 +158,8 @@ public class InvisibleXmlDocument {
      * @param output the output stream.
      */
     public void getTree(PrintStream output) {
-        ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
         StringTreeBuilder handler = new StringTreeBuilder(options, output);
-        realize(builder, handler);
+        getTree(handler);
     }
 
     /**
@@ -193,41 +167,51 @@ public class InvisibleXmlDocument {
      * @param handler the content handler.
      */
     public void getTree(ContentHandler handler) {
-        getTree(handler, options);
+        realize(handler);
     }
 
     /**
-     * Write an XML representation of the current parse to a SAX ContentHandler.
+     * Write an XML representation of the current parse to a SAX ContentHandler
+     * using a different set of options.
      * @param handler the content handler.
-     * @param options the options to use when constructing the tree
+     * @param options the options.
      */
     public void getTree(ContentHandler handler, ParserOptions options) {
-        /*
-        ParseTree tree = getParseTree();
-        CommonBuilder builder = new CommonBuilder(tree, parserVersion, result, options);
-        realize(builder, handler);
-        */
-
-        EventBuilder ebuilder = new EventBuilder(parserVersion, options);
-        realize(ebuilder, handler);
+        ParserOptions saveOpts = eventBuilder.getOptions();
+        eventBuilder.setOptions(options);
+        realize(handler);
+        eventBuilder.setOptions(saveOpts);
     }
 
-    public boolean nextTree() {
-        throw new UnsupportedOperationException("Fix this");
-    }
-
-    private void realize(CommonBuilder builder, ContentHandler handler) {
+    /**
+     * Process the result with your own {@link TreeBuilder}.
+     * @param builder the tree builder.
+     */
+    public void getTree(TreeBuilder builder) {
         if (result.succeeded() || (result.prefixSucceeded() && prefixOk)) {
-            builder.build(handler);
-        } else {
-            realizeErrorDocument(handler);
+            result.getTree(builder);
         }
     }
 
-    private void realize(EventBuilder builder, ContentHandler handler) {
+    public void reset() {
+        eventBuilder.reset();
+    }
+
+    public boolean moreParses() {
+        return eventBuilder.moreTrees();
+    }
+
+    public boolean nextTree() {
+        if (moreParses()) {
+            realize(new NopHandler());
+        }
+        return moreParses();
+    }
+
+    private void realize(ContentHandler handler) {
         if (result.succeeded() || (result.prefixSucceeded() && prefixOk)) {
-            builder.setHandler(handler);
-            result.getTree(builder);
+            eventBuilder.setHandler(handler);
+            result.getTree(eventBuilder);
         } else {
             realizeErrorDocument(handler);
         }
@@ -237,10 +221,10 @@ public class InvisibleXmlDocument {
         try {
             handler.startDocument();
 
-            handler.startPrefixMapping(CommonBuilder.ixml_prefix, CommonBuilder.ixml_ns);
+            handler.startPrefixMapping(InvisibleXml.ixml_prefix, InvisibleXml.ixml_ns);
 
             AttributeBuilder attrs = new AttributeBuilder(options);
-            attrs.addAttribute(CommonBuilder.ixml_ns, CommonBuilder.ixml_prefix + ":state", "failed");
+            attrs.addAttribute(InvisibleXml.ixml_ns, InvisibleXml.ixml_prefix + ":state", "failed");
             handler.startElement("", "fail", "failed", attrs);
 
             if (lineNumber > 0) {
@@ -403,5 +387,62 @@ public class InvisibleXmlDocument {
 
     private void writeString(ContentHandler handler, String str) throws SAXException {
         handler.characters(str.toCharArray(), 0, str.length());
+    }
+
+    private static class NopHandler implements ContentHandler {
+        @Override
+        public void setDocumentLocator(Locator locator) {
+            // nop
+        }
+
+        @Override
+        public void startDocument() throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void endDocument() throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void startPrefixMapping(String prefix, String uri) throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void endPrefixMapping(String prefix) throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void processingInstruction(String target, String data) throws SAXException {
+            // nop
+        }
+
+        @Override
+        public void skippedEntity(String name) throws SAXException {
+            // nop
+        }
     }
 }
