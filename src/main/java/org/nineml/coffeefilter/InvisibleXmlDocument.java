@@ -184,12 +184,16 @@ public class InvisibleXmlDocument {
     }
 
     /**
-     * Process the result with your own {@link TreeBuilder}.
+     * Process the result with your own {@link EventBuilder}.
+     * <p>This API needs work. It should allow a {@link TreeBuilder}, but it needs the SAX handler
+     * to generate the error document.</p>
      * @param builder the tree builder.
      */
-    public void getTree(TreeBuilder builder) {
+    public void getTree(EventBuilder builder) {
         if (result.succeeded() || (result.prefixSucceeded() && prefixOk)) {
             result.getTree(builder);
+        } else {
+            realizeErrorDocument(builder.getHandler());
         }
     }
 

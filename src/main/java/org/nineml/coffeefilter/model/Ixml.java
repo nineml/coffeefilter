@@ -258,38 +258,6 @@ public class Ixml extends XNonterminal {
     private void constructGrammar(ParserOptions options) {
         grammar = new SourceGrammar(options);
 
-        /*
-        ArrayList<IPragma> grammarPragmas = new ArrayList<>();
-
-        // Process pragmas on rules first...
-        for (XNode child : children) {
-            if (child instanceof IRule) {
-                IRule rule = (IRule) child;
-                if (startRule.equals(rule.getName())) {
-                    for (IPragma pragma : pragmas) {
-                        if (pragma instanceof IPragmaXmlns) {
-                            grammarPragmas.add(pragma);
-                        } else {
-                            options.getLogger().debug(logcategory, "Unknown pragma, or does not apply in the prologue: %s", pragma);
-                        }
-                    }
-                }
-
-                for (IPragma pragma : rule.pragmas) {
-                    if (pragma instanceof IPragmaRegex) {
-                        attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
-                    } else if (pragma instanceof IPragmaPriority) {
-                        attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
-                    } else {
-                        options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to rule: %s", pragma);
-                    }
-                }
-
-            }
-        }
-
-         */
-
         ArrayList<ParserAttribute> attributes = new ArrayList<>();
         for (XNode child : children) {
             if (child instanceof IRule) {
@@ -384,6 +352,8 @@ public class Ixml extends XNonterminal {
                         for (IPragma pragma : cat.pragmas) {
                             if (pragma instanceof IPragmaRewrite) {
                                 rewrite = (IPragmaRewrite) pragma;
+                            } else if (pragma instanceof IPragmaPriority) {
+                                // nop
                             } else {
                                 options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a literal: %s", pragma);
                             }

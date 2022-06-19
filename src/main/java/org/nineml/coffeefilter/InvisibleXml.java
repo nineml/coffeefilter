@@ -233,7 +233,7 @@ public class InvisibleXml {
             SourceGrammar grammar = compiler.parse(stream, systemId);
             Ixml ixml = new Ixml(options, grammar);
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
-            return new InvisibleXmlParser(ixml, parseMillis);
+            return new InvisibleXmlParser(ixml, options, parseMillis);
         } catch (CoffeeGrinderException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
         }
@@ -258,7 +258,7 @@ public class InvisibleXml {
             parser.parse(stream, handler, systemId);
             Ixml ixml = handler.getIxml();
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
-            return new InvisibleXmlParser(ixml, parseMillis);
+            return new InvisibleXmlParser(ixml, options, parseMillis);
         } catch (ParserConfigurationException|SAXException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
         } catch (CoffeeGrinderException ex) {
@@ -276,29 +276,24 @@ public class InvisibleXml {
      */
     public InvisibleXmlParser getParserFromIxml(InputStream stream, String charset) throws IOException {
         InvisibleXmlParser ixmlParser = getParser();
-        //ixmlParser.setOptions(options);
 
         InvisibleXmlDocument doc = ixmlParser.parse(stream, charset);
         if (doc.getNumberOfParses() == 0) {
-            return new InvisibleXmlParser(doc, doc.parseTime());
+            return new InvisibleXmlParser(doc, options, doc.parseTime());
         }
-
-        //ParseTree tree = doc.getResult().getTree();
 
         ParserOptions builderOptions = new ParserOptions(options);
         builderOptions.setShowMarks(false);
         builderOptions.setShowBnfNonterminals(false);
         builderOptions.setAssertValidXmlNames(false);
         builderOptions.setAssertValidXmlCharacters(true);
-        //CommonBuilder builder = new CommonBuilder(tree, ixmlParser.getIxmlVersion(), doc.getResult(), builderOptions);
 
         try {
-            IxmlContentHandler handler = new IxmlContentHandler(options);
-            doc.getTree(handler);
-            //builder.build(handler);
+            IxmlContentHandler handler = new IxmlContentHandler(builderOptions);
+            doc.getTree(handler, builderOptions);
             Ixml ixml = handler.getIxml();
 
-            InvisibleXmlParser parser = new InvisibleXmlParser(ixml, doc.getResult().getParseTime());
+            InvisibleXmlParser parser = new InvisibleXmlParser(ixml, options, doc.getResult().getParseTime());
 
             HygieneReport report = parser.getHygieneReport();
             if (!report.isClean()) {

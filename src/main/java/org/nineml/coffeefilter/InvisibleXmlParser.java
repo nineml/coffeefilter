@@ -29,33 +29,31 @@ public class InvisibleXmlParser {
     private Exception exception = null;
     private HygieneReport hygieneReport = null;
     private boolean shownMessage = false;
-    private CompiledGrammar grammar = null;
 
-    protected InvisibleXmlParser(Ixml ixml) {
+    protected InvisibleXmlParser(Ixml ixml, ParserOptions options) {
         this.ixml = ixml;
         this.parseTime = -1;
         failedParse = null;
-        options = ixml.getOptions();
-        options.getLogger().setDefaultLogLevel(Logger.INFO);
+        this.options = options;
     }
 
-    protected InvisibleXmlParser(Ixml ixml, long parseMillis) {
+    protected InvisibleXmlParser(Ixml ixml, ParserOptions options, long parseMillis) {
         this.ixml = ixml;
         this.parseTime = parseMillis;
         failedParse = null;
-        options = ixml.getOptions();
+        this.options = options;
     }
 
-    protected InvisibleXmlParser(InvisibleXmlDocument failed, long parseMillis) {
+    protected InvisibleXmlParser(InvisibleXmlDocument failed, ParserOptions options, long parseMillis) {
         ixml = null;
         parseTime = parseMillis;
         failedParse = failed;
-        options = failed.getOptions();
+        this.options = options;
         options.getLogger().setDefaultLogLevel(Logger.INFO);
     }
 
     protected InvisibleXmlParser(InvisibleXmlDocument failed, Exception exception, long parseMillis) {
-        this(failed, parseMillis);
+        this(failed, failed.getOptions(), parseMillis);
         this.exception = exception;
     }
 
