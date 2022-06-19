@@ -57,6 +57,10 @@ public class EventBuilder extends TreeBuilder {
         this.handler = handler;
     }
 
+    public ContentHandler getHandler() {
+        return handler;
+    }
+
     @Override
     public int chooseFromRemaining(List<RuleChoice> alternatives) {
         ambiguous = true;
@@ -369,16 +373,19 @@ public class EventBuilder extends TreeBuilder {
                         handler.startPrefixMapping(InvisibleXml.nineml_prefix, InvisibleXml.nineml_ns);
                     }
 
-                    boolean okVersion = "1.0".equals(grammarVersion)
-                            || "1.0-9ml".equals(grammarVersion)
-                            || "1.0-nineml".equals(grammarVersion);
+                    boolean badVersion = !"1.0".equals(grammarVersion)
+                            && !"1.0-9ml".equals(grammarVersion)
+                            && !"1.0-nineml".equals(grammarVersion);
 
-                    if (ambiguous || !okVersion) {
+                    ambiguous = ambiguous && !options.isSuppressedState("ambiguous");
+                    badVersion = badVersion && !options.isSuppressedState("version-mismatch");
+
+                    if (ambiguous || badVersion) {
                         handler.startPrefixMapping(InvisibleXml.ixml_prefix, InvisibleXml.ixml_ns);
                     }
 
                     String state = ambiguous ? "ambiguous" : "";
-                    if (!okVersion) {
+                    if (badVersion) {
                         state += ("".equals(state) ? "" : " ") + "version-mismatch";
                     }
 
