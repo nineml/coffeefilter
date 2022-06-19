@@ -4,12 +4,16 @@ if [ -z "$GPGKEYURI" ]; then
     echo "Environment not configured for publishing"
     exit
 else
-    curl -o secret.gpg $GPGKEYURI
-    ./gradlew -PsonatypeUsername="$SONATYPEUSER" -PsonatypePassword="$SONATYPEPASS" \
-              -Psigning.keyId="$SIGNKEY" -Psigning.password="$SIGNPSW" \
-              -Psigning.secretKeyRingFile=./secret.gpg \
-              publish
-    rm -f secret.gpg
+    if [ -z "$CIRCLE_TAG" ]; then
+        echo "Only tagged commits are published to Maven"
+    else
+        curl -o secret.gpg $GPGKEYURI
+        ./gradlew -PsonatypeUsername="$SONATYPEUSER" -PsonatypePassword="$SONATYPEPASS" \
+                  -Psigning.keyId="$SIGNKEY" -Psigning.password="$SIGNPSW" \
+                  -Psigning.secretKeyRingFile=./secret.gpg \
+                  publish
+        rm -f secret.gpg
+    fi
 fi
 
 if [ "$CIRCLE_BRANCH" = "" ]; then
