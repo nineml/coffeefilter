@@ -11,6 +11,7 @@ import java.util.List;
  * The abstract class that is the supertype of all nodes in the Ixml model.
  */
 public abstract class XNode {
+    public static final String ninemlns = "https://nineml.org/ns";
     protected static final String logcategory = "InvisibleXml";
     protected final String nodeName;
     protected final ArrayList<IPragma> pragmas = new ArrayList<>();
@@ -201,7 +202,7 @@ public abstract class XNode {
                 break;
             case "pragma":
             case "ppragma":
-                String pname = attributes.getValue("name");
+                String pname = attributes.getValue("pname");
                 child = new IPragma(this, pname);
                 break;
             case "pragma-data":
@@ -344,14 +345,11 @@ public abstract class XNode {
         return false;
     }
 
-    private IPragma parsePragma(IPragma pragma) {
+    private IPragma parsePragma(IPragma pragma, String ptype) {
         String data = pragma.getPragmaData();
         if (data != null) {
             data = data.trim();
-            if (data.startsWith("rewrite ") || data.startsWith("xmlns ") || data.startsWith("regex ")) {
-                int pos = data.indexOf(" ");
-                String ptype = data.substring(0, pos);
-                data = data.substring(pos).trim();
+            if ("rewrite".equals(ptype) || "ns".equals(ptype) || "regex".equals(ptype)) {
                 if (!"".equals(data)) {
                     String quote = data.substring(0, 1);
                     if (("\"".equals(quote) || "'".equals(quote)) && data.endsWith(quote)) {
@@ -364,7 +362,7 @@ public abstract class XNode {
                         switch (ptype) {
                             case "rewrite":
                                 return new IPragmaRewrite(pragma.parent, data);
-                            case "xmlns":
+                            case "ns":
                                 return new IPragmaXmlns(pragma.parent, data);
                             case "regex":
                                 return new IPragmaRegex(pragma.parent, data);
@@ -375,23 +373,27 @@ public abstract class XNode {
                 }
 
                 getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
-            } else if (data.startsWith("rename ")) {
-                data = data.substring(7).trim();
+            } else if ("rename".equals(ptype)) {
                 if (!"".equals(data)) {
                     return new IPragmaRename(pragma.parent, data);
                 }
                 getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
-            } else if (data.startsWith("discard ")) {
-                data = data.substring(8).trim();
+            } else if ("discard".equals(ptype)) {
                 if ("empty".equals(data)) {
                     return new IPragmaDiscardEmpty(pragma.parent, data);
                 }
                 getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
-            } else if (data.startsWith("priority ")) {
-                data = data.substring(9).trim();
+            } else if ("priority".equals(ptype)) {
                 try {
                     double priority = Double.parseDouble(data);
                     return new IPragmaPriority(pragma.parent, data);
+                } catch (NumberFormatException ex) {
+                    getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
+                }
+            } else if ("default-priority".equals(ptype)) {
+                try {
+                    double priority = Double.parseDouble(data);
+                    return new IPragmaDefaultPriority(pragma.parent, data);
                 } catch (NumberFormatException ex) {
                     getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
                 }
@@ -421,8 +423,44 @@ public abstract class XNode {
                     }
                 } else if (child instanceof IPragma) {
                     IPragma pragma = (IPragma) child;
-                    if ("nineml".equals(pragma.name)) {
-                        addPragma(parsePragma((IPragma) child));
+                    if (pragma.name.startsWith("ixmlns:")) {
+                        String data = pragma.pragmaData.trim();
+                        if ("".equals(data)) {
+                            getRoot().options.getLogger().error(logcategory, "Invalid %s pragma, no URI", pragma.name);
+                        } else {
+                            String quote = data.substring(0, 1);
+                            if (("\"".equals(quote) || "'".equals(quote)) && data.endsWith(quote)) {
+                                String uri = data.substring(1, data.length() - 1);
+                                String prefix = pragma.name.substring(pragma.name.indexOf(':')+1);
+                                if (getRoot().ixmlns.containsKey(prefix)) {
+                                    getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, %s already defined", pragma.name, prefix);
+                                } else {
+                                    if ("xml".equals(prefix) || "xmlns".equals(prefix)) {
+                                        getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, %s cannot be declared", pragma.name, prefix);
+                                    } else {
+                                        if ("".equals(uri)) {
+                                            getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, %s cannot be declared as the default namespace", pragma.name, prefix);
+                                        } else {
+                                            getRoot().ixmlns.put(prefix, uri);
+                                        }
+                                    }
+                                }
+                            } else {
+                                getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, unparsable URI", pragma.name);
+                            }
+                        }
+                    } else {
+                        int pos = pragma.name.indexOf(':');
+                        String prefix = pragma.name.substring(0, pos);
+                        String localName = pragma.name.substring(pos+1);
+                        String uri = getRoot().ixmlns.getOrDefault(prefix, null);
+                        if (uri == null) {
+                            getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, no binding for %s", pragma.name, prefix);
+                        } else if (ninemlns.equals(uri)) {
+                            addPragma(parsePragma(pragma, localName));
+                        } else {
+                            getRoot().options.getLogger().debug(logcategory, "Ignoring unrecognized pragma: %s", pragma.name);
+                        }
                     }
                 } else if (child instanceof IPragmaData) {
                     if (this instanceof IPragma) {

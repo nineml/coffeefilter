@@ -1,7 +1,6 @@
 <ixml>
    <prolog>
       <version string="1.0"/>
-      <comment> ixml with pragmas, hacked by ndw to remove qnames. </comment>
       <comment> Based on the 2022-06-07 grammar </comment>
    </prolog>
    <rule name="ixml">
@@ -626,7 +625,7 @@
          <option>
             <nonterminal mark="@" name="pmark"/>
          </option>
-         <nonterminal mark="@" name="name"/>
+         <nonterminal mark="@" name="pname"/>
          <option>
             <alts>
                <alt>
@@ -644,7 +643,7 @@
          <option>
             <nonterminal mark="@" name="pmark"/>
          </option>
-         <nonterminal mark="@" name="name"/>
+         <nonterminal mark="@" name="pname"/>
          <option>
             <alts>
                <alt>
@@ -656,9 +655,14 @@
          <literal tmark="-" string="]}"/>
       </alt>
    </rule>
-   <comment>
-       @pname: -QName; -UQName. 
-</comment>
+   <rule mark="@" name="pname">
+      <alt>
+         <nonterminal mark="-" name="QName"/>
+      </alt>
+      <alt>
+         <nonterminal mark="-" name="UQName"/>
+      </alt>
+   </rule>
    <rule mark="@" name="pmark">
       <alt>
          <inclusion>
@@ -694,11 +698,30 @@
          <literal string="}"/>
       </alt>
    </rule>
-   <comment>
-       -QName: -name, ':', -name.
-      -UQName: 'Q
-      <comment>', -ns-name, '</comment>', -name.
-     -ns-name: ~["
-      <comment/>"; '"'; "'"]* .
-</comment>
+   <rule mark="-" name="QName">
+      <alt>
+         <nonterminal mark="-" name="name"/>
+         <literal string=":"/>
+         <nonterminal mark="-" name="name"/>
+      </alt>
+   </rule>
+   <rule mark="-" name="UQName">
+      <alt>
+         <literal string="Q{"/>
+         <nonterminal mark="-" name="ns-name"/>
+         <literal string="}"/>
+         <nonterminal mark="-" name="name"/>
+      </alt>
+   </rule>
+   <rule mark="-" name="ns-name">
+      <alt>
+         <repeat0>
+            <exclusion>
+               <member string="{}"/>
+               <member string="&quot;"/>
+               <member string="'"/>
+            </exclusion>
+         </repeat0>
+      </alt>
+   </rule>
 </ixml>

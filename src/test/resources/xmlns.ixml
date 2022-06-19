@@ -1,5 +1,6 @@
-{[+nineml xmlns "http://example.com/"]}
-date: year, -"-", {[nineml rename month]} nmonth, -"-", day.
+{[+ixmlns:n "https://nineml.org/ns"]}
+{[+n:ns "http://example.com/"]}
+date: year, -"-", {[n:rename month]} nmonth, -"-", day.
 nmonth: d, d .
 year: d, d, d, d.
 day: d, d.

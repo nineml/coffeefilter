@@ -1,15 +1,14 @@
 package org.nineml.coffeefilter;
 
-import org.nineml.coffeefilter.utils.CommonBuilder;
-import org.nineml.coffeefilter.utils.GrammarSniffer;
-import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
-import org.nineml.coffeegrinder.gll.*;
-import org.nineml.coffeegrinder.parser.*;
-import org.nineml.coffeegrinder.util.GrammarCompiler;
-import org.xml.sax.SAXException;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.model.IxmlContentHandler;
+import org.nineml.coffeefilter.utils.GrammarSniffer;
+import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
+import org.nineml.coffeegrinder.parser.HygieneReport;
+import org.nineml.coffeegrinder.parser.SourceGrammar;
+import org.nineml.coffeegrinder.util.GrammarCompiler;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -21,13 +20,18 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Calendar;
-import java.util.HashSet;
 
 /**
  * A static class for constructing instances of Invisible XML grammars.
  */
 public class InvisibleXml {
     public static final String logcategory = "InvisibleXml";
+
+    public static final String ixml_prefix = "ixml";
+    public static final String ixml_ns = "http://invisiblexml.org/NS";
+    public static final String nineml_prefix = "n";
+    public static final String nineml_ns = "https://nineml.org/ns/";
+
     private static final String ixml_cxml = "/org/nineml/coffeefilter/ixml.cxml";
     private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.xml";
     private static final String pragmas_cxml = "/org/nineml/coffeefilter/pragmas.cxml";
@@ -279,18 +283,19 @@ public class InvisibleXml {
             return new InvisibleXmlParser(doc, doc.parseTime());
         }
 
-        ParseTree tree = doc.getResult().getTree();
+        //ParseTree tree = doc.getResult().getTree();
 
         ParserOptions builderOptions = new ParserOptions(options);
         builderOptions.setShowMarks(false);
         builderOptions.setShowBnfNonterminals(false);
         builderOptions.setAssertValidXmlNames(false);
         builderOptions.setAssertValidXmlCharacters(true);
-        CommonBuilder builder = new CommonBuilder(tree, ixmlParser.getIxmlVersion(), doc.getResult(), builderOptions);
+        //CommonBuilder builder = new CommonBuilder(tree, ixmlParser.getIxmlVersion(), doc.getResult(), builderOptions);
 
         try {
             IxmlContentHandler handler = new IxmlContentHandler(options);
-            builder.build(handler);
+            doc.getTree(handler);
+            //builder.build(handler);
             Ixml ixml = handler.getIxml();
 
             InvisibleXmlParser parser = new InvisibleXmlParser(ixml, doc.getResult().getParseTime());

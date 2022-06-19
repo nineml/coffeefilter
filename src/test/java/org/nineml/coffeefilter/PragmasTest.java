@@ -25,6 +25,7 @@ public class PragmasTest {
     @Test
     public void renameNonterminal() {
         try {
+            //invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/two-dates.ixml"));
             InvisibleXmlDocument doc = parser.parse("1999-12-31");
             String xml = doc.getTree();
@@ -82,7 +83,7 @@ public class PragmasTest {
     public void discardEmpty() {
         try {
             String grammar1 = "S = A, B, C. A = 'a'. B='b'?. C='c'.";
-            String grammar2 = "S = A, {[nineml discard empty]} B, C. A = 'a'. B='b'?. C='c'.";
+            String grammar2 = "{[+ixmlns:n \"https://nineml.org/ns\"]} S = A, {[n:discard empty]} B, C. A = 'a'. B='b'?. C='c'.";
             String input = "ac";
 
             InvisibleXmlParser parser = invisibleXml.getParserFromIxml(grammar1);

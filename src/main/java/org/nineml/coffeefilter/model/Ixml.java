@@ -9,6 +9,7 @@ import org.nineml.coffeegrinder.util.ParserAttribute;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class Ixml extends XNonterminal {
     private final ArrayList<Rule> grammarRules = new ArrayList<>();
     private final String startRule = "$$";
     protected final ParserOptions options;
+    protected final HashMap<String,String> ixmlns;
     private SourceGrammar grammar = null;
     protected boolean emptyProduction = false;
     protected String version = "1.0";
@@ -33,6 +35,7 @@ public class Ixml extends XNonterminal {
     protected Ixml(ParserOptions options) {
         super(null, "ixml", "$$_ixml");
         this.options = options;
+        ixmlns = new HashMap<>();
     }
 
     /**
@@ -45,6 +48,7 @@ public class Ixml extends XNonterminal {
         symCount += grammar.getRules().size();
         grammarRules.addAll(grammar.getRules());
         this.options = options;
+        ixmlns = new HashMap<>();
     }
 
     public String getIxmlVersion() {
@@ -303,6 +307,8 @@ public class Ixml extends XNonterminal {
                     for (IPragma pragma : pragmas) {
                         if (pragma instanceof IPragmaXmlns) {
                             attributes.add(new ParserAttribute("ns", pragma.getPragmaData()));
+                        } else if (pragma instanceof IPragmaDefaultPriority) {
+                            attributes.add(new ParserAttribute("default-priority", pragma.getPragmaData()));
                         } else {
                             options.getLogger().debug(logcategory, "Unknown pragma, or does not apply in the prologue: %s", pragma);
                         }
@@ -341,32 +347,20 @@ public class Ixml extends XNonterminal {
                         grammar.addRule(nts);
                     } else if (cat instanceof XNonterminal) {
                         XNonterminal nt = (XNonterminal) cat;
-                        boolean priority = false;
                         if (cat instanceof INonterminal) {
                             attributes.add(new ParserAttribute("mark", ""+((INonterminal) cat).getMark()));
                             String name = cat.getName();
+
+                            checkPriority(cat, attributes);
                             for (IPragma pragma : cat.pragmas) {
                                 if (pragma instanceof IPragmaRename) {
                                     name = pragma.getPragmaData();
                                 } else if (pragma instanceof IPragmaPriority) {
-                                    attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
-                                    priority = true;
+                                    // nop
                                 } else if (pragma instanceof IPragmaDiscardEmpty) {
                                     attributes.add(new ParserAttribute("discard", pragma.getPragmaData()));
                                 } else {
                                     options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a nonterminal: %s", pragma);
-                                }
-                            }
-                            if (!priority) {
-                                for (XNode find : children) {
-                                    if (find instanceof IRule && ((IRule) find).name.equals(cat.name)) {
-                                        for (IPragma pragma : find.pragmas) {
-                                            if (pragma instanceof IPragmaPriority) {
-                                                attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
-                                            }
-                                        }
-                                        break;
-                                    }
                                 }
                             }
 
@@ -383,6 +377,7 @@ public class Ixml extends XNonterminal {
                         final String grammarTerminal = lit.getTokenString();
 
                         attributes.add(new ParserAttribute("tmark", ""+lit.getTMark()));
+                        checkPriority(cat, attributes);
 
                         ArrayList<ParserAttribute> accumulator = attributes;
                         IPragmaRewrite rewrite = null;
@@ -419,6 +414,8 @@ public class Ixml extends XNonterminal {
                             attributes.add(new ParserAttribute("tmark", ""+mark));
                         }
 
+                        checkPriority(cat, attributes);
+
                         rhs.add(new TerminalSymbol(term.getToken(), attributes));
                     } else {
                         throw new RuntimeException("Unexpected category: " + cat.getName());
@@ -429,6 +426,30 @@ public class Ixml extends XNonterminal {
 
                 grammarRules.add(grule);
                 grammar.addRule(grule);
+            }
+        }
+    }
+
+    private void checkPriority(XNode cat, ArrayList<ParserAttribute> attributes) {
+        boolean priority = false;
+
+        for (IPragma pragma : cat.pragmas) {
+            if (pragma instanceof IPragmaPriority) {
+                attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
+                priority = true;
+            }
+        }
+
+        if (!priority && cat instanceof XNonterminal) {
+            for (XNode find : children) {
+                if (find instanceof IRule && find.name.equals(cat.name)) {
+                    for (IPragma pragma : find.pragmas) {
+                        if (pragma instanceof IPragmaPriority) {
+                            attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
+                        }
+                    }
+                    break;
+                }
             }
         }
     }

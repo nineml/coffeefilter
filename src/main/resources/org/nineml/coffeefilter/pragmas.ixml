@@ -1,5 +1,4 @@
 ixml version "1.0".
-{ ixml with pragmas, hacked by ndw to remove qnames. }
 { Based on the 2022-06-07 grammar }
 
          ixml: s, prolog?, rule++RS, s. 
@@ -78,18 +77,16 @@ ixml version "1.0".
       -letter: ["a"-"z"].
     insertion: -"+", s, (string; -"#", hex), s.
 
-       pragma: -"{[", @pmark?, @name, (whitespace, pragma-data)?, -"]}" . 
-      ppragma: -"{[+", @pmark?, @name, (whitespace, pragma-data)?, -"]}" . 
-{
+       pragma: -"{[", @pmark?, @pname, (whitespace, pragma-data)?, -"]}" . 
+      ppragma: -"{[+", @pmark?, @pname, (whitespace, pragma-data)?, -"]}" . 
        @pname: -QName; -UQName. 
-}
+
        @pmark: ["@^?"].
   pragma-data: (-pragma-char; -bracket-pair)*.
  -pragma-char: ~["{}"].
 -bracket-pair: '{', -pragma-data, '}'.
 
-{
        -QName: -name, ':', -name.
       -UQName: 'Q{', -ns-name, '}', -name.
      -ns-name: ~["{}"; '"'; "'"]* .
-}
+

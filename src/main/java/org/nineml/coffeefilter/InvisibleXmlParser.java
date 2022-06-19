@@ -1,25 +1,21 @@
 package org.nineml.coffeefilter;
 
-import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.model.IxmlCompiler;
-import org.nineml.coffeefilter.model.IxmlContentHandler;
 import org.nineml.coffeefilter.utils.CharacterIterator;
-import org.nineml.coffeefilter.utils.CommonBuilder;
-import org.nineml.coffeegrinder.gll.GllParser;
-import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.logging.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLConnection;
 import java.nio.file.Files;
-import java.util.Calendar;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * A parser for a particular Invisible XML grammar.

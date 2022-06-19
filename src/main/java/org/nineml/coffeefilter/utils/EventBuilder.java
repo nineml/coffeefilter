@@ -1,5 +1,6 @@
 package org.nineml.coffeefilter.utils;
 
+import org.nineml.coffeefilter.InvisibleXml;
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeegrinder.parser.NonterminalSymbol;
@@ -17,20 +18,15 @@ import java.util.*;
 /**
  * This class transforms the output of a successful ixml parse into XML.
  */
-public class EventBuilder implements TreeBuilder {
+public class EventBuilder extends TreeBuilder {
     public static final String logcategory = "TreeBuilder";
-    public static final String ixml_prefix = "ixml";
-    public static final String ixml_ns = "http://invisiblexml.org/NS";
-    public static final String nineml_prefix = "nineml";
-    public static final String nineml_ns = "http://nineml.org/ns/nineml";
-    private final ParserOptions options;
+    private ParserOptions options;
     private final Stack<Child> output;
     private String xmlns = "";
+    private double defaultPriority = 0;
     private String grammarVersion = null;
     private ContentHandler handler = null;
-    private boolean ambiguous = false;
-    private boolean infinitelyAmbiguous = false;
-    private boolean root = false;
+    private boolean isRoot = false;
     private int depth;
 
     public EventBuilder(ParserOptions options) {
@@ -49,14 +45,12 @@ public class EventBuilder implements TreeBuilder {
         depth = 0;
     }
 
-    @Override
-    public boolean isAmbiguous() {
-        return ambiguous;
+    public ParserOptions getOptions() {
+        return options;
     }
 
-    @Override
-    public boolean isInfinitelyAmbiguous() {
-        return infinitelyAmbiguous;
+    public void setOptions(ParserOptions options) {
+        this.options = options;
     }
 
     public void setHandler(ContentHandler handler) {
@@ -64,7 +58,7 @@ public class EventBuilder implements TreeBuilder {
     }
 
     @Override
-    public int chooseAlternative(List<RuleChoice> alternatives) {
+    public int chooseFromRemaining(List<RuleChoice> alternatives) {
         ambiguous = true;
 
         int choice = 0;
@@ -73,16 +67,22 @@ public class EventBuilder implements TreeBuilder {
             double test = 0;
             // The alternative is null if it matches epsilon
             if (alternatives.get(idx) != null) {
+                Symbol nt = alternatives.get(idx).getSymbol();
                 Symbol[] rhs = alternatives.get(idx).getRightHandSide();
-                // The rhs is null if this is a non-terminal symbol (as opposed to an intermediate state)
-                if (rhs == null) {
-                    if (alternatives.get(idx).getSymbol().hasAttribute("priority")) {
-                        test += Double.parseDouble(alternatives.get(idx).getSymbol().getAttribute("priority").getValue());
-                    }
+
+                if (nt != null && nt.hasAttribute("priority")) {
+                    test = Double.parseDouble(alternatives.get(idx).getSymbol().getAttribute("priority").getValue());
                 } else {
-                    for (Symbol symbol : alternatives.get(idx).getRightHandSide()) {
-                        if (symbol.hasAttribute("priority")) {
-                            test += Double.parseDouble(symbol.getAttribute("priority").getValue());
+                    // The rhs is null if this is a non-terminal symbol (as opposed to an intermediate state)
+                    if (rhs == null) {
+                        test = defaultPriority;
+                    } else {
+                        for (Symbol symbol : alternatives.get(idx).getRightHandSide()) {
+                            if (symbol.hasAttribute("priority")) {
+                                test += Double.parseDouble(symbol.getAttribute("priority").getValue());
+                            } else {
+                                test += defaultPriority;
+                            }
                         }
                     }
                 }
@@ -97,21 +97,20 @@ public class EventBuilder implements TreeBuilder {
     }
 
     @Override
-    public void loop(RuleChoice alternative) {
-        ambiguous = true;
-        infinitelyAmbiguous = true;
-    }
-
-    @Override
     public void startTree() {
-        root = true;
+        super.startTree();
+        output.clear();
+        depth = 0;
+        isRoot = true;
         if (handler == null) {
-            options.getLogger().trace(logcategory, "No handler provided to tree builder");
+            options.getLogger().error(logcategory, "No handler provided to tree builder");
         }
     }
 
     @Override
     public void endTree() {
+        super.endTree();
+
         if (handler == null) {
             return;
         }
@@ -134,7 +133,7 @@ public class EventBuilder implements TreeBuilder {
 
         try {
             handler.startDocument();
-            root = true;
+            isRoot = true;
             output.peek().serialize(handler);
             handler.endDocument();
         } catch (SAXException ex) {
@@ -150,11 +149,15 @@ public class EventBuilder implements TreeBuilder {
 
         depth++;
 
-        if (root) {
-            root = false;
+        if (isRoot) {
+            isRoot = false;
             String ns = getAttributeValue(attributes, "ns", null);
             if (ns != null) {
                 xmlns = ns;
+            }
+            String defprio = getAttributeValue(attributes, "default-priority", null);
+            if (defprio != null) {
+                defaultPriority = Double.parseDouble(defprio);
             }
         }
 
@@ -307,8 +310,8 @@ public class EventBuilder implements TreeBuilder {
             try {
                 AttributeBuilder attrs = new AttributeBuilder(options);
 
-                if (root) {
-                    root = false;
+                if (isRoot) {
+                    isRoot = false;
 
                     if (!"".equals(xmlns)) {
                         handler.startPrefixMapping("", xmlns);
@@ -319,7 +322,7 @@ public class EventBuilder implements TreeBuilder {
                             || "1.0-nineml".equals(grammarVersion);
 
                     if (ambiguous || !okVersion) {
-                        handler.startPrefixMapping(ixml_prefix, ixml_ns);
+                        handler.startPrefixMapping(InvisibleXml.ixml_prefix, InvisibleXml.ixml_ns);
                     }
 
                     String state = ambiguous ? "ambiguous" : "";
@@ -328,7 +331,7 @@ public class EventBuilder implements TreeBuilder {
                     }
 
                     if (!"".equals(state)) {
-                        attrs.addAttribute(ixml_ns, ixml_prefix + ":state", state);
+                        attrs.addAttribute(InvisibleXml.ixml_ns, InvisibleXml.ixml_prefix + ":state", state);
                     }
                 }
 
