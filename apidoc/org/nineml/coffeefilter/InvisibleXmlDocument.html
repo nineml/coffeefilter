@@ -196,14 +196,14 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-java.io.PrintStream-">getTree</a></span>(java.io.PrintStream&nbsp;output)</code>
-<div class="block">Write an XML representation of the current parse to the stream.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-org.nineml.coffeefilter.utils.EventBuilder-">getTree</a></span>(org.nineml.coffeefilter.utils.EventBuilder&nbsp;builder)</code>
+<div class="block">Process the result with your own <code>EventBuilder</code>.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-org.nineml.coffeegrinder.parser.TreeBuilder-">getTree</a></span>(org.nineml.coffeegrinder.parser.TreeBuilder&nbsp;builder)</code>
-<div class="block">Process the result with your own <code>TreeBuilder</code>.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html#getTree-java.io.PrintStream-">getTree</a></span>(java.io.PrintStream&nbsp;output)</code>
+<div class="block">Write an XML representation of the current parse to the stream.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
@@ -445,14 +445,16 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="getTree-org.nineml.coffeegrinder.parser.TreeBuilder-">
+<a name="getTree-org.nineml.coffeefilter.utils.EventBuilder-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getTree</h4>
-<pre>public&nbsp;void&nbsp;getTree(org.nineml.coffeegrinder.parser.TreeBuilder&nbsp;builder)</pre>
-<div class="block">Process the result with your own <code>TreeBuilder</code>.</div>
+<pre>public&nbsp;void&nbsp;getTree(org.nineml.coffeefilter.utils.EventBuilder&nbsp;builder)</pre>
+<div class="block">Process the result with your own <code>EventBuilder</code>.
+ <p>This API needs work. It should allow a <code>TreeBuilder</code>, but it needs the SAX handler
+ to generate the error document.</p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>builder</code> - the tree builder.</dd>
