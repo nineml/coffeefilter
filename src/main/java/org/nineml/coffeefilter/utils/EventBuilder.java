@@ -161,15 +161,43 @@ public class EventBuilder extends TreeBuilder {
             }
         }
 
-        final String mark = getAttributeValue(attributes, "mark", "^");
+        String name = getAttributeValue(attributes, "name", symbol.toString());
+        String mark = getAttributeValue(attributes, "mark", "^");
+        String origName = null;
+        String origMark = null;
+
+        if (options.getShowMarks() || options.getShowBnfNonterminals()) {
+            String pruneStr = getAttributeValue(attributes, ParserAttribute.PRUNING, ParserAttribute.PRUNING_FORBIDDEN.getValue());
+            boolean prune = ParserAttribute.PRUNING_ALLOWED.getValue().equals(pruneStr);
+            boolean showHidden = options.getShowBnfNonterminals() && prune;
+            boolean showMarks = options.getShowMarks() && (!prune || showHidden);
+
+            if (showMarks) {
+                origMark = mark;
+                mark = "^";
+            }
+
+            if (showHidden) {
+                origName = name;
+                name = "n:symbol";
+            }
+        }
+
         if ("-".equals(mark)) {
             return;
         }
 
-        String name = getAttributeValue(attributes, "name", symbol.toString());
         Element element = new Element(mark, name, depth);
         element.discardEmpty = "empty".equals(getAttributeValue(attributes, "discard", "none"));
         output.push(element);
+
+        // The else/if is on purpose here, we need mark to be ^ to show hidden nonterminals,
+        // but there's no point in outputting the mark as it's always '-'.
+        if (origName != null) {
+            output.push(new Attribute(InvisibleXml.nineml_prefix + ":name", origName));
+        } else if (origMark != null) {
+            output.push(new Attribute(InvisibleXml.ixml_prefix + ":mark", origMark));
+        }
     }
 
     @Override
@@ -178,13 +206,29 @@ public class EventBuilder extends TreeBuilder {
             return;
         }
 
-        final String mark = getAttributeValue(attributes, "mark", "^");
+        String name = getAttributeValue(attributes, "name", symbol.toString());
+        String mark = getAttributeValue(attributes, "mark", "^");
+
+        if (options.getShowMarks() || options.getShowBnfNonterminals()) {
+            String pruneStr = getAttributeValue(attributes, ParserAttribute.PRUNING, ParserAttribute.PRUNING_FORBIDDEN.getValue());
+            boolean prune = ParserAttribute.PRUNING_ALLOWED.getValue().equals(pruneStr);
+            boolean showHidden = options.getShowBnfNonterminals() && prune;
+            boolean showMarks = options.getShowMarks() && (!prune || showHidden);
+
+            if (showMarks) {
+                mark = "^";
+            }
+
+            if (showHidden) {
+                name = "n:symbol";
+            }
+        }
+
         if ("-".equals(mark)) {
             depth--;
             return;
         }
 
-        String name = getAttributeValue(attributes, "name", symbol.toString());
         // Move my element and my children onto a new stack so that popping them will be in the right order
         Stack<Child> local = new Stack<>();
         Child child = output.pop();
@@ -317,6 +361,14 @@ public class EventBuilder extends TreeBuilder {
                         handler.startPrefixMapping("", xmlns);
                     }
 
+                    if (options.getShowMarks()) {
+                        handler.startPrefixMapping(InvisibleXml.ixml_prefix, InvisibleXml.ixml_ns);
+                    }
+
+                    if (options.getShowBnfNonterminals()) {
+                        handler.startPrefixMapping(InvisibleXml.nineml_prefix, InvisibleXml.nineml_ns);
+                    }
+
                     boolean okVersion = "1.0".equals(grammarVersion)
                             || "1.0-9ml".equals(grammarVersion)
                             || "1.0-nineml".equals(grammarVersion);
@@ -388,9 +440,17 @@ public class EventBuilder extends TreeBuilder {
         }
     }
     private static class Attribute extends Child {
+        public final String namespace;
         public final String name;
         public final String value;
+        public Attribute(String namespace, String name, String value) {
+            this.namespace = namespace;
+            this.name = name;
+            this.value = value;
+        }
+
         public Attribute(String name, String value) {
+            this.namespace = null;
             this.name = name;
             this.value = value;
         }

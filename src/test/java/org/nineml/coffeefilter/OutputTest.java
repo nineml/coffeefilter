@@ -19,6 +19,26 @@ public class OutputTest {
     }
 
     @Test
+    public void showMarksTest() {
+        String ixml = "S = (A | B)+. A = 'a'. B = 'b'.";
+
+        ParserOptions options = new ParserOptions();
+        options.setShowMarks(true);
+        InvisibleXmlParser parser = new InvisibleXml(options).getParserFromIxml(ixml);
+        InvisibleXmlDocument doc = parser.parse("aa");
+        String xml = doc.getTree();
+        System.out.println(xml);
+        Assertions.assertEquals("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:mark=\"^\"><A ixml:mark=\"^\">a</A><A ixml:mark=\"^\">a</A></S>", xml);
+
+        options.setShowBnfNonterminals(true);
+        parser = new InvisibleXml(options).getParserFromIxml(ixml);
+        doc = parser.parse("aa");
+        xml = doc.getTree();
+        System.out.println(xml);
+        Assertions.assertTrue(xml.startsWith("<n:symbol"));
+    }
+
+    @Test
     public void getTreeOutputTest() {
         String ixml = "S = A, B. A = 'a'. B = 'b'.";
         InvisibleXmlParser parser = new InvisibleXml().getParserFromIxml(ixml);
