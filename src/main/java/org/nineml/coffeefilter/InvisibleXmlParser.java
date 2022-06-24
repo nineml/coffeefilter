@@ -235,8 +235,10 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(String input) {
-        options.getLogger().debug(logcategory, "Parsing %,d characters with %s parser",
-                input.codePointCount(0, input.length()), options.getParserType());
+        if (options.getProgressMonitor() == null) {
+            options.getLogger().debug(logcategory, "Parsing %,d characters with %s parser",
+                    input.codePointCount(0, input.length()), options.getParserType());
+        }
         shownMessage = false;
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
@@ -244,28 +246,25 @@ public class InvisibleXmlParser {
 
         SourceGrammar grammar = ixml.getGrammar(options);
 
-        ParserType parserType = "Earley".equals(options.getParserType()) ? ParserType.Earley : ParserType.GLL;
-        //parserType = ParserType.GLL;
-
         CharacterIterator iterator = new CharacterIterator(input);
-        GearleyParser parser = grammar.getParser(parserType, grammar.getNonterminal("$$"));
+        GearleyParser parser = grammar.getParser(options, grammar.getNonterminal("$$"));
         GearleyResult result = parser.parse(iterator);
 
         InvisibleXmlDocument doc;
         if (parser.getParserType() == ParserType.Earley
             && !result.succeeded() && result.prefixSucceeded() && options.getIgnoreTrailingWhitespace()) {
             boolean ok = true;
-            Iterator<Token> remaining = ((EarleyResult) result).getContinuingIterator();
-            while (remaining.hasNext()) {
-                Token token = remaining.next();
-                ok = ok && (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCodepoint());
+            for (Token token : ((EarleyResult) result).getSuffix()) {
+                ok = (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCodepoint());
+                if (!ok) {
+                    break;
+                }
             }
             doc = new InvisibleXmlDocument(result, ixml.getIxmlVersion(), options, ok);
         } else {
             doc = new InvisibleXmlDocument(result, ixml.getIxmlVersion(), options);
         }
 
-        doc.setLocation(iterator.offset, iterator.lineNumber, iterator.columnNumber);
         return doc;
     }
 

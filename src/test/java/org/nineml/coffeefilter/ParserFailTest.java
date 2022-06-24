@@ -41,8 +41,13 @@ public class ParserFailTest {
                 Assert.assertTrue(str.contains("<line>1</line>"));
                 Assert.assertTrue(str.contains("<column>5</column>"));
                 Assert.assertTrue(str.contains("<pos>4</pos>"));
-                Assert.assertTrue(str.contains("<unexpected>J</unexpected>"));
                 Assert.assertTrue(str.contains("<permitted>' ', 'A', 'D', 'F', 'J', 'M', 'N', 'O', 'S'</permitted>"));
+            }
+            if (doc.getParserType() == ParserType.GLL) {
+                Assert.assertTrue(str.contains("<line>1</line>"));
+                Assert.assertTrue(str.contains("<column>5</column>"));
+                Assert.assertTrue(str.contains("<pos>5</pos>"));
+                Assert.assertTrue(str.contains("<unexpected>i</unexpected>"));
             }
         } catch (SaxonApiException ex) {
             System.err.println(ex.getMessage());

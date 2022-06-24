@@ -26,7 +26,7 @@ public class Ixml extends XNonterminal {
     protected final ParserOptions options;
     protected final HashMap<String,String> ixmlns;
     private SourceGrammar grammar = null;
-    protected boolean emptyProduction = false;
+    protected IRule emptyProduction = null;
     protected String version = "1.0";
 
     /**

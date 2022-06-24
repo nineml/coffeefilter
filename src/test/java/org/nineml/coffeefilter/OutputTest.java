@@ -27,14 +27,14 @@ public class OutputTest {
         InvisibleXmlParser parser = new InvisibleXml(options).getParserFromIxml(ixml);
         InvisibleXmlDocument doc = parser.parse("aa");
         String xml = doc.getTree();
-        System.out.println(xml);
+        //System.out.println(xml);
         Assertions.assertEquals("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:mark=\"^\"><A ixml:mark=\"^\">a</A><A ixml:mark=\"^\">a</A></S>", xml);
 
         options.setShowBnfNonterminals(true);
         parser = new InvisibleXml(options).getParserFromIxml(ixml);
         doc = parser.parse("aa");
         xml = doc.getTree();
-        System.out.println(xml);
+        //System.out.println(xml);
         Assertions.assertTrue(xml.startsWith("<n:symbol"));
     }
 
