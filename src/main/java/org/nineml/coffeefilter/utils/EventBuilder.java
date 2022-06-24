@@ -57,6 +57,11 @@ public class EventBuilder extends TreeBuilder {
         this.handler = handler;
     }
 
+    public void setAmbiguous(boolean ambiguous, boolean infinitelyAmbiguous) {
+        this.ambiguous = ambiguous;
+        this.infinitelyAmbiguous = infinitelyAmbiguous;
+    }
+
     public ContentHandler getHandler() {
         return handler;
     }

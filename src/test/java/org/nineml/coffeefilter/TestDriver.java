@@ -873,7 +873,7 @@ public class TestDriver {
                     boolean processCase = false;
                     if (caseName == null || caseName.equals(thisCase)) {
                         processCase = true;
-                        if (caseName == null && dataSet != null) {
+                        if (caseName == null && dataSet != null && thisCase != null) {
                             for (DataTree excase : dataSet.getAll("case")) {
                                 if (thisCase.equals(excase.get("id").getValue())) {
                                     processCase = false;

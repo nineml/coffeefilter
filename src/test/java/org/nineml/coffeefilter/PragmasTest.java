@@ -3,9 +3,6 @@ package org.nineml.coffeefilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.nineml.coffeegrinder.parser.Ambiguity;
-import org.nineml.coffeegrinder.parser.EarleyItem;
-import org.nineml.coffeegrinder.parser.ForestNode;
 
 import java.io.File;
 

@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.nineml.coffeegrinder.parser.ParserType;
+import org.nineml.coffeegrinder.util.DefaultProgressMonitor;
 import org.nineml.logging.Logger;
 
 import java.io.File;
@@ -24,8 +25,10 @@ public class UnicodeTest {
     public void small() {
         try {
             //invisibleXml.getOptions().getLogger().setDefaultLogLevel(Logger.DEBUG);
+            //invisibleXml.getOptions().setParserType("GLL");
+            //invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/unicode.ixml"));
-            InvisibleXmlDocument doc = parser.parse(new File("src/test/resources/TestData.txt"));
+            InvisibleXmlDocument doc = parser.parse(new File("src/test/resources/SmallData.txt"));
             Assert.assertTrue(doc.succeeded());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());

@@ -523,10 +523,10 @@ public abstract class XNode {
                     String altname = "$empty";
                     INonterminal altnt = new INonterminal(this, altname, '-');
                     newchildren.add(altnt);
-                    if (!root.emptyProduction) {
+                    if (root.emptyProduction == null) {
                         IRule altrule = new IRule(root, altname, '-');
                         root.addRule(altrule);
-                        root.emptyProduction = true;
+                        root.emptyProduction = altrule;
                     }
                 } else {
                     String altname = root.nextRuleName("alt");
@@ -744,25 +744,41 @@ public abstract class XNode {
     protected ArrayList<XNode> simplifyOption() {
         if (hasChild("option")) {
             ArrayList<XNode> newchildren = new ArrayList<>();
-            for (XNode child : children) {
+            for (int childno = 0; childno < children.size(); childno++) {
+                XNode child = children.get(childno);
                 child.children = child.simplifyOption();
+
                 if (child instanceof IOption) {
                     Ixml root = getRoot();
                     XNode parent = child.parent;
 
-                    String name = getNewRuleName(child, "option");
-                    INonterminal f_option = new INonterminal(parent, name, '-');
-                    newchildren.add(f_option);
-
-                    IRule f_option_rule = new IRule(root, name, '-');
-                    root.addRule(f_option_rule);
-
-                    f_option_rule = new IRule(root, name, '-');
-                    for (int pos = 0; pos < child.children.size(); pos++) {
-                        f_option_rule.addCopy(child.children.get(pos));
+                    boolean isEmpty = false;
+                    if (child.children.size() == 1) {
+                        XNode gchild = child.children.get(0);
+                        isEmpty = gchild instanceof XNonterminal && ("$empty".equals(((XNonterminal) gchild).name));
                     }
 
-                    root.addRule(f_option_rule);
+                    // An optional empty is just the same as empty; and this avoids a path
+                    // to ambigiuity...
+                    if (isEmpty) {
+                        XNode copy = child.children.get(0).copy();
+                        children.set(childno, copy);
+                        addCopy(child.children.get(0));
+                    } else {
+                        String name = getNewRuleName(child, "option");
+                        INonterminal f_option = new INonterminal(parent, name, '-');
+                        newchildren.add(f_option);
+
+                        IRule f_option_rule = new IRule(root, name, '-');
+                        root.addRule(f_option_rule);
+
+                        f_option_rule = new IRule(root, name, '-');
+                        for (int pos = 0; pos < child.children.size(); pos++) {
+                            f_option_rule.addCopy(child.children.get(pos));
+                        }
+
+                        root.addRule(f_option_rule);
+                    }
                 } else {
                     newchildren.add(child);
                 }

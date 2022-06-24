@@ -3,7 +3,6 @@ package org.nineml.coffeefilter;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeegrinder.parser.Ambiguity;
 
 import static org.junit.Assert.fail;
 

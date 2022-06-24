@@ -29,9 +29,6 @@ public class InvisibleXmlDocument {
     private final String parserVersion;
     private final EventBuilder eventBuilder;
     private final ParserOptions options;
-    private int lineNumber = -1;
-    private int columnNumber = -1;
-    private int offset = -1;
 
     protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options) {
         this.result = result;
@@ -39,6 +36,7 @@ public class InvisibleXmlDocument {
         this.options = options;
         this.parserVersion = parserVersion;
         this.eventBuilder = new EventBuilder(parserVersion, options);
+
     }
 
     protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options, boolean prefixOk) {
@@ -47,12 +45,6 @@ public class InvisibleXmlDocument {
         this.options = options;
         this.parserVersion = parserVersion;
         this.eventBuilder = new EventBuilder(parserVersion, options);
-    }
-
-    protected void setLocation(int offset, int line, int col) {
-        this.offset = offset;
-        lineNumber = line;
-        columnNumber = col;
     }
 
     /**
@@ -70,7 +62,7 @@ public class InvisibleXmlDocument {
      * @return the line number
      */
     public int getLineNumber() {
-        return lineNumber;
+        return result.getLineNumber();
     }
 
     /**
@@ -80,7 +72,7 @@ public class InvisibleXmlDocument {
      * @return the column number
      */
     public int getColumnNumber() {
-        return columnNumber;
+        return result.getColumnNumber();
     }
 
     /**
@@ -90,7 +82,7 @@ public class InvisibleXmlDocument {
      * @return the offset
      */
     public int getOffset() {
-        return offset;
+        return result.getOffset();
     }
 
     /**
@@ -215,6 +207,9 @@ public class InvisibleXmlDocument {
     private void realize(ContentHandler handler) {
         if (result.succeeded() || (result.prefixSucceeded() && prefixOk)) {
             eventBuilder.setHandler(handler);
+            // If the result is known to be ambiguous, pass that along so we know
+            // even if this particular parse misses it.
+            eventBuilder.setAmbiguous(result.isAmbiguous(), result.isInfinitelyAmbiguous());
             result.getTree(eventBuilder);
         } else {
             realizeErrorDocument(handler);
@@ -231,12 +226,12 @@ public class InvisibleXmlDocument {
             attrs.addAttribute(InvisibleXml.ixml_ns, InvisibleXml.ixml_prefix + ":state", "failed");
             handler.startElement("", "fail", "failed", attrs);
 
-            if (lineNumber > 0) {
-                atomicValue(handler, "line", ""+lineNumber);
+            if (getLineNumber() > 0) {
+                atomicValue(handler, "line", ""+getLineNumber());
             }
 
-            if (columnNumber > 0) {
-                atomicValue(handler, "column", ""+columnNumber);
+            if (getColumnNumber() > 0) {
+                atomicValue(handler, "column", ""+getColumnNumber());
             }
 
             atomicValue(handler, "pos", ""+result.getTokenCount());
