@@ -9,6 +9,7 @@ import org.nineml.coffeefilter.InvisibleXmlParser;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeegrinder.parser.Grammar;
 import org.nineml.coffeegrinder.parser.ParseTree;
+import org.nineml.coffeegrinder.util.DefaultProgressMonitor;
 import org.nineml.logging.Logger;
 
 import java.io.File;
@@ -50,7 +51,6 @@ public class IxmlParserTest {
             fail();
         }
     }
-
 
     @Test
     public void testParseExceptions() {
@@ -112,6 +112,18 @@ public class IxmlParserTest {
                 "rule: name, \"=\", value; .\n" +
                 "name: [L]+.\n" +
                 "value: [Nd]+.\n";
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(ixml);
+        InvisibleXmlDocument doc; // = invisibleXml.getParser().parse(ixml);
+        //System.out.println(doc.getTree());
+        String input = "{}";
+        doc = parser.parse(input);
+        Assert.assertTrue(doc.succeeded());
+    }
+
+    @Test
+    public void ambig7() {
+        String ixml = "block: \"{\", rule?, \"}\".\n" +
+                "rule: 'x' .\n";
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(ixml);
         InvisibleXmlDocument doc; // = invisibleXml.getParser().parse(ixml);
         //System.out.println(doc.getTree());
@@ -194,5 +206,51 @@ public class IxmlParserTest {
         InvisibleXmlDocument doc = parser.parse(input);
         String xml = doc.getTree();
         Assert.assertTrue(xml.contains("version-mismatch"));
+    }
+
+    /*
+    @Test
+    public void testParseOberon() {
+        try {
+            invisibleXml.getOptions().setParserType("GLL");
+            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("../ixml/samples/Oberon/Grammars/Oberon.ixml"));
+            Grammar grammar = parser.getGrammar();
+            Assert.assertNotNull(grammar);
+            InvisibleXmlDocument doc = parser.parse(new File("../ixml/samples/Oberon/Project-Oberon-2013-materials/ORB.Mod.txt"));
+            Assert.assertTrue(doc.succeeded());
+            String xml = doc.getTree();
+            System.err.println(xml);
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            fail();
+        }
+    }
+     */
+
+    @Test
+    public void testAmbig() {
+        try {
+            invisibleXml.getOptions().setParserType("GLL");
+            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
+
+            String input = "A: ; B. B: A.";
+            input = "A: A, A; {nil} .";
+            input = "S: X, X. X: 'a'; .";
+
+            InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+            Grammar grammar = parser.getGrammar();
+            Assert.assertNotNull(grammar);
+            InvisibleXmlDocument doc = parser.parse("aa");
+            doc.getResult().getForest().serialize("/tmp/ba.xml");
+            Assert.assertTrue(doc.succeeded());
+            String xml = doc.getTree();
+            System.err.println(xml);
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            fail();
+        }
     }
 }

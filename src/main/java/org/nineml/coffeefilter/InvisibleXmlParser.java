@@ -3,6 +3,7 @@ package org.nineml.coffeefilter;
 import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.model.IxmlCompiler;
 import org.nineml.coffeefilter.utils.CharacterIterator;
+import org.nineml.coffeefilter.utils.IxmlInputBuilder;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
@@ -235,24 +236,35 @@ public class InvisibleXmlParser {
      * @throws NullPointerException if this parser has no grammar
      */
     public InvisibleXmlDocument parse(String input) {
-        if (options.getProgressMonitor() == null) {
-            options.getLogger().debug(logcategory, "Parsing %,d characters with %s parser",
-                    input.codePointCount(0, input.length()), options.getParserType());
+        Token[] buffer = new Token[input.codePointCount(0, input.length())];
+        int pos = 0;
+        for (int cp : input.codePoints().toArray()) {
+            buffer[pos] = TokenCharacter.get(cp);
+            pos++;
         }
+        return parse(buffer);
+    }
+
+    /**
+     * Get a document from an array of tokens.
+     *
+     * @param input The input.
+     * @return A document.
+     * @throws NullPointerException if this parser has no grammar
+     */
+    public InvisibleXmlDocument parse(Token[] input) {
         shownMessage = false;
         if (ixml == null) {
             throw new NullPointerException("No grammar for this parser");
         }
 
         SourceGrammar grammar = ixml.getGrammar(options);
-
-        CharacterIterator iterator = new CharacterIterator(input);
         GearleyParser parser = grammar.getParser(options, grammar.getNonterminal("$$"));
-        GearleyResult result = parser.parse(iterator);
+        GearleyResult result = parser.parse(input);
 
         InvisibleXmlDocument doc;
         if (parser.getParserType() == ParserType.Earley
-            && !result.succeeded() && result.prefixSucceeded() && options.getIgnoreTrailingWhitespace()) {
+                && !result.succeeded() && result.prefixSucceeded() && options.getIgnoreTrailingWhitespace()) {
             boolean ok = true;
             for (Token token : ((EarleyResult) result).getSuffix()) {
                 ok = (token instanceof TokenCharacter) && Character.isWhitespace(((TokenCharacter) token).getCodepoint());

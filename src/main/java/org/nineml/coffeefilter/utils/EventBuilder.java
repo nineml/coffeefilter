@@ -151,7 +151,7 @@ public class EventBuilder extends TreeBuilder {
     }
 
     @Override
-    public void startNonterminal(NonterminalSymbol symbol, Collection<ParserAttribute> attributes, int leftExtent, int rightExtent) {
+    public void startNonterminal(NonterminalSymbol symbol, Map<String,String> attributes, int leftExtent, int rightExtent) {
         if (handler == null) {
             return;
         }
@@ -160,24 +160,24 @@ public class EventBuilder extends TreeBuilder {
 
         if (isRoot) {
             isRoot = false;
-            String ns = getAttributeValue(attributes, "ns", null);
+            String ns = attributes.getOrDefault("ns", null);
             if (ns != null) {
                 xmlns = ns;
             }
-            String defprio = getAttributeValue(attributes, "default-priority", null);
+            String defprio = attributes.getOrDefault("default-priority", null);
             if (defprio != null) {
                 defaultPriority = Double.parseDouble(defprio);
             }
         }
 
-        String name = getAttributeValue(attributes, "name", symbol.toString());
-        String mark = getAttributeValue(attributes, "mark", "^");
+        String name = attributes.getOrDefault("name", symbol.toString());
+        String mark = attributes.getOrDefault("mark", "^");
         String origName = null;
         String origMark = null;
 
         if (options.getShowMarks() || options.getShowBnfNonterminals()) {
-            String pruneStr = getAttributeValue(attributes, ParserAttribute.PRUNING, ParserAttribute.PRUNING_FORBIDDEN.getValue());
-            boolean prune = ParserAttribute.PRUNING_ALLOWED.getValue().equals(pruneStr);
+            String pruneStr = attributes.getOrDefault(ParserAttribute.PRUNING_NAME, ParserAttribute.NOT_ALLOWED_TO_PRUNE);
+            boolean prune = ParserAttribute.ALLOWED_TO_PRUNE.equals(pruneStr);
             boolean showHidden = options.getShowBnfNonterminals() && prune;
             boolean showMarks = options.getShowMarks() && (!prune || showHidden);
 
@@ -197,7 +197,7 @@ public class EventBuilder extends TreeBuilder {
         }
 
         Element element = new Element(mark, name, depth);
-        element.discardEmpty = "empty".equals(getAttributeValue(attributes, "discard", "none"));
+        element.discardEmpty = "empty".equals(attributes.getOrDefault("discard", "none"));
         output.push(element);
 
         // The else/if is on purpose here, we need mark to be ^ to show hidden nonterminals,
@@ -210,17 +210,17 @@ public class EventBuilder extends TreeBuilder {
     }
 
     @Override
-    public void endNonterminal(NonterminalSymbol symbol, Collection<ParserAttribute> attributes, int leftExtent, int rightExtent) {
+    public void endNonterminal(NonterminalSymbol symbol, Map<String,String> attributes, int leftExtent, int rightExtent) {
         if (handler == null) {
             return;
         }
 
-        String name = getAttributeValue(attributes, "name", symbol.toString());
-        String mark = getAttributeValue(attributes, "mark", "^");
+        String name = attributes.getOrDefault("name", symbol.toString());
+        String mark = attributes.getOrDefault("mark", "^");
 
         if (options.getShowMarks() || options.getShowBnfNonterminals()) {
-            String pruneStr = getAttributeValue(attributes, ParserAttribute.PRUNING, ParserAttribute.PRUNING_FORBIDDEN.getValue());
-            boolean prune = ParserAttribute.PRUNING_ALLOWED.getValue().equals(pruneStr);
+            String pruneStr = attributes.getOrDefault(ParserAttribute.PRUNING_NAME, ParserAttribute.NOT_ALLOWED_TO_PRUNE);
+            boolean prune = ParserAttribute.ALLOWED_TO_PRUNE.equals(pruneStr);
             boolean showHidden = options.getShowBnfNonterminals() && prune;
             boolean showMarks = options.getShowMarks() && (!prune || showHidden);
 
@@ -255,7 +255,7 @@ public class EventBuilder extends TreeBuilder {
                     sb.append(local.pop().stringValue());
                 }
                 String value = sb.toString();
-                if (!"".equals(value) || !"empty".equals(getAttributeValue(attributes, "discard", "none"))) {
+                if (!"".equals(value) || !"empty".equals(attributes.getOrDefault("discard", "none"))) {
                     child = new Attribute(root.name, sb.toString());
                     output.push(child);
                 }
@@ -285,7 +285,7 @@ public class EventBuilder extends TreeBuilder {
                 } else {
                     text = (Text) output.peek();
                 }
-                text.value.append(getAttributeValue(attributes, "insertion", ""));
+                text.value.append(attributes.getOrDefault("insertion", ""));
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected mark: " + root.mark);
@@ -295,17 +295,17 @@ public class EventBuilder extends TreeBuilder {
     }
 
     @Override
-    public void token(Token token, Collection<ParserAttribute> attributes) {
+    public void token(Token token, Map<String,String> attributes) {
         if (handler == null) {
             return;
         }
 
-        final String tmark = getAttributeValue(attributes, "tmark", "^");
+        final String tmark = attributes.getOrDefault("tmark", "^");
         if ("-".equals(tmark)) {
             return;
         }
 
-        if ("true".equals(getAttributeValue(attributes, "acc", "false"))) {
+        if ("true".equals(attributes.getOrDefault("acc", "false"))) {
             return;
         }
 
@@ -317,26 +317,12 @@ public class EventBuilder extends TreeBuilder {
             text = (Text) output.peek();
         }
 
-        String rewrite = getAttributeValue(attributes, "rewrite", null);
+        String rewrite = attributes.getOrDefault("rewrite", null);
         if (rewrite != null) {
             text.value.append(rewrite);
         } else {
             text.value.appendCodePoint(((TokenCharacter) token).getCodepoint());
         }
-    }
-
-    private String getAttributeValue(Collection<ParserAttribute> attributes, String name, String defaultValue) {
-        if (name == null) {
-            throw new NullPointerException("Attribute name must not be null");
-        }
-
-        for (ParserAttribute attr : attributes) {
-            if (name.equals(attr.getName())) {
-                return attr.getValue();
-            }
-        }
-
-        return defaultValue;
     }
 
     private abstract static class Child {

@@ -339,6 +339,22 @@ public class TestDriver {
     private void doRunTest(TestConfiguration config, XdmNode testCase, XdmNode result) throws IOException, URISyntaxException, SaxonApiException {
         ranOne = true;
 
+        String setName = null;
+        if (config.testSet != null) {
+            setName = config.testSet.getAttributeValue(_name);
+        }
+        String testName = testCase.getAttributeValue(_name);
+
+        if (setName == null) {
+            setName = "<anon>";
+        }
+
+        if (testName == null) {
+            testName = "<anon>";
+        }
+
+        System.err.printf("Running %s / %s%n", setName, testName);
+
         List<XdmNode> assertions = config.findAll(result, t_assert_xml, t_assert_xml_ref,
                 t_assert_not_a_grammar, t_assert_not_a_sentence, t_assert_dynamic_error);
         if (assertions.isEmpty()) {
