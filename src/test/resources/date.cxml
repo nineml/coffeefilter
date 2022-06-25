@@ -1,20 +1,20 @@
-<grammar xmlns="http://nineml.org/coffeegrinder/ns/grammar/compiled" version="0.9.4">
-<meta name='coffeepot-version' value='1.9.0'/>
-<meta name='date' value='2022-06-06T17:35:51Z'/>
+<grammar xmlns="http://nineml.org/coffeegrinder/ns/grammar/compiled" version="0.9.5">
+<meta name='coffeepot-version' value='1.99.4b'/>
+<meta name='date' value='2022-06-25T08:43:13Z'/>
 <meta name='uri' value='file:/Volumes/Projects/nineml/filter/src/test/resources/date.ixml'/>
-<ag xml:id="g1" name="$$" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g1" name="$$" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.attrǝ2f.prune="allowed" mark="-"/>
 <ag xml:id="g2" name="date" mark="^"/>
 <r n="$$" a="p" ag="g1"><nt n="date" ag="g2"/></r>
-<ag xml:id="g3" name="$3_s-option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g3" name="$3_s-option" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.attrǝ2f.prune="allowed" mark="-"/>
 <ag xml:id="g4" name="day" mark="^"/>
 <ag xml:id="g5" name="s" mark="-"/>
 <ag xml:id="g6" name="month" mark="^"/>
-<ag xml:id="g7" name="$4_s-option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g7" name="$4_s-option" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.attrǝ2f.prune="allowed" mark="-"/>
 <r n="date" ag="g2"><nt n="$3_s-option" a="p" ag="g3"/><nt n="day" ag="g4"/><nt n="s" ag="g5"/><nt n="month" ag="g6"/><nt n="$4_s-option" a="p" ag="g7"/></r>
-<ag xml:id="g8" name="$1_L0x20-plus" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g8" name="$1_L0x20-plus" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.attrǝ2f.prune="allowed" mark="-"/>
 <r n="s" ag="g5"><nt n="$1_L0x20-plus" a="p" ag="g8"/></r>
 <ag xml:id="g9" name="digit" mark="-"/>
-<ag xml:id="g10" name="$5_digit-option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g10" name="$5_digit-option" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.attrǝ2f.prune="allowed" mark="-"/>
 <r n="day" ag="g4"><nt n="digit" ag="g9"/><nt n="$5_digit-option" a="p" ag="g10"/></r>
 <ag xml:id="g11" tmark="^"/>
 <ag xml:id="g12"/>
@@ -41,12 +41,12 @@
 <r n="month" ag="g6"><t ag="g11"><c ag="g12" v="N"/></t><t ag="g11"><c ag="g12" v="o"/></t><t ag="g11"><c ag="g12" v="v"/></t><t ag="g11"><c ag="g12" v="e"/></t><t ag="g11"><c ag="g12" v="m"/></t><t ag="g11"><c ag="g12" v="b"/></t><t ag="g11"><c ag="g12" v="e"/></t><t ag="g11"><c ag="g12" v="r"/></t></r>
 <r n="month" ag="g6"><t ag="g11"><c ag="g12" v="D"/></t><t ag="g11"><c ag="g12" v="e"/></t><t ag="g11"><c ag="g12" v="c"/></t><t ag="g11"><c ag="g12" v="e"/></t><t ag="g11"><c ag="g12" v="m"/></t><t ag="g11"><c ag="g12" v="b"/></t><t ag="g11"><c ag="g12" v="e"/></t><t ag="g11"><c ag="g12" v="r"/></t></r>
 <ag xml:id="g13" name="year" mark="^"/>
-<ag xml:id="g14" name="$6_digit-option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g14" name="$6_digit-option" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.attrǝ2f.prune="allowed" mark="-"/>
 <r n="year" ag="g13"><nt n="$6_digit-option" a="p" ag="g14"/><nt n="digit" ag="g9"/><nt n="digit" ag="g9"/></r>
 <ag xml:id="g15" tmark="-"/>
-<ag xml:id="g16" name="$2_L0x20-star" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g16" name="$2_L0x20-star" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.attrǝ2f.prune="allowed" mark="-"/>
 <r n="$1_L0x20-plus" a="p" ag="g8"><t ag="g15"><c ag="g12" v=" "/></t><nt n="$2_L0x20-star" a="p" ag="g16"/></r>
-<ag xml:id="g17" name="$7_L0x20-option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g17" name="$7_L0x20-option" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.attrǝ2f.prune="allowed" mark="-"/>
 <r n="$2_L0x20-star" a="p" ag="g16"><nt n="$7_L0x20-option" a="p" ag="g17"/></r>
 <r n="$3_s-option" a="p" ag="g3"></r>
 <r n="$3_s-option" a="p" ag="g3"><nt n="s" ag="g5"/></r>
@@ -58,6 +58,6 @@
 <r n="$6_digit-option" a="p" ag="g14"><nt n="digit" ag="g9"/><nt n="digit" ag="g9"/></r>
 <r n="$7_L0x20-option" a="p" ag="g17"></r>
 <r n="$7_L0x20-option" a="p" ag="g17"><t ag="g15"><c ag="g12" v=" "/></t><nt n="$2_L0x20-star" a="p" ag="g16"/></r>
-<check Σ="d5935d8918ccedfd"/>
+<check Σ="9dc53a7acdd984fd"/>
 </grammar>
 
