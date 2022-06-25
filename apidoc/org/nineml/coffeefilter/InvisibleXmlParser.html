@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -228,11 +228,17 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-org.nineml.coffeegrinder.tokens.Token:A-">parse</a></span>(org.nineml.coffeegrinder.tokens.Token[]&nbsp;input)</code>
+<div class="block">Get a document from an array of tokens.</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-">parse</a></span>(java.net.URI&nbsp;source)</code>
 <div class="block">Get a document from a URI.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-java.lang.String-">parse</a></span>(java.net.URI&nbsp;source,
      java.lang.String&nbsp;encoding)</code>
@@ -498,6 +504,24 @@ extends java.lang.Object</pre>
 <h4>parse</h4>
 <pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parse(java.lang.String&nbsp;input)</pre>
 <div class="block">Get a document from a string.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>input</code> - The input.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A document.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.NullPointerException</code> - if this parser has no grammar</dd>
+</dl>
+</li>
+</ul>
+<a name="parse-org.nineml.coffeegrinder.tokens.Token:A-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>parse</h4>
+<pre>public&nbsp;<a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a>&nbsp;parse(org.nineml.coffeegrinder.tokens.Token[]&nbsp;input)</pre>
+<div class="block">Get a document from an array of tokens.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>input</code> - The input.</dd>
