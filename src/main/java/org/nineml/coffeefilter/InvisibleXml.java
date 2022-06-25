@@ -4,9 +4,11 @@ import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.model.IxmlContentHandler;
 import org.nineml.coffeefilter.utils.GrammarSniffer;
+import org.nineml.coffeefilter.utils.IxmlInputBuilder;
 import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
 import org.nineml.coffeegrinder.parser.HygieneReport;
 import org.nineml.coffeegrinder.parser.SourceGrammar;
+import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.util.GrammarCompiler;
 import org.xml.sax.SAXException;
 
@@ -259,9 +261,7 @@ public class InvisibleXml {
             Ixml ixml = handler.getIxml();
             long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
             return new InvisibleXmlParser(ixml, options, parseMillis);
-        } catch (ParserConfigurationException|SAXException ex) {
-            throw IxmlException.failedtoParse(systemId, ex);
-        } catch (CoffeeGrinderException ex) {
+        } catch (ParserConfigurationException | SAXException | CoffeeGrinderException ex) {
             throw IxmlException.failedtoParse(systemId, ex);
         }
     }
@@ -277,7 +277,17 @@ public class InvisibleXml {
     public InvisibleXmlParser getParserFromIxml(InputStream stream, String charset) throws IOException {
         InvisibleXmlParser ixmlParser = getParser();
 
-        InvisibleXmlDocument doc = ixmlParser.parse(stream, charset);
+        InputStreamReader reader = new InputStreamReader(stream, charset);
+        StringBuilder sb = new StringBuilder();
+        char[] buffer = new char[4096];
+        int len = reader.read(buffer);
+        while (len >= 0) {
+            sb.append(buffer, 0, len);
+            len = reader.read(buffer);
+        }
+
+        Token[] input = IxmlInputBuilder.fromString(sb.toString());
+        InvisibleXmlDocument doc = ixmlParser.parse(input);
         if (doc.getNumberOfParses() == 0) {
             return new InvisibleXmlParser(doc, options, doc.parseTime());
         }
