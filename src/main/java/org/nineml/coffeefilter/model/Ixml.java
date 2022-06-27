@@ -286,6 +286,8 @@ public class Ixml extends XNonterminal {
                 for (IPragma pragma : rule.pragmas) {
                     if (pragma instanceof IPragmaRegex) {
                         attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
+                    } else if (pragma instanceof IPragmaToken) {
+                        attributes.add(new ParserAttribute("token", pragma.getPragmaData()));
                     } else if (pragma instanceof IPragmaPriority) {
                         attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
                     } else {
@@ -352,6 +354,8 @@ public class Ixml extends XNonterminal {
                         for (IPragma pragma : cat.pragmas) {
                             if (pragma instanceof IPragmaRewrite) {
                                 rewrite = (IPragmaRewrite) pragma;
+                            } else if (pragma instanceof IPragmaRegex) {
+                                attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
                             } else if (pragma instanceof IPragmaPriority) {
                                 // nop
                             } else {

@@ -23,7 +23,7 @@ public class IPragma extends XNonterminal {
 
     @Override
     public String toString() {
-        if (pragmaData == null) {
+        if (pragmaData == null || "".equals(pragmaData)) {
             return "{[" + name + "]}";
         }
         return "{[" + name + " " + pragmaData + "]}";
