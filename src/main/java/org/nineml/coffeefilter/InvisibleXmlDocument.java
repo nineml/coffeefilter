@@ -9,6 +9,7 @@ import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.tokens.TokenEOF;
+import org.nineml.coffeegrinder.util.NopTreeBuilder;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -121,7 +122,12 @@ public class InvisibleXmlDocument {
      */
     public long getNumberOfParses() {
         if (result.succeeded() || result.prefixSucceeded()) {
-            return result.getForest().getTotalParses();
+            if (eventBuilder.getRevealedParses() == 0) {
+                TreeBuilder builder = new NopTreeBuilder();
+                result.getTree(builder);
+                return builder.getRevealedParses();
+            }
+            return eventBuilder.getRevealedParses();
         }
         return 0;
     }
@@ -194,7 +200,7 @@ public class InvisibleXmlDocument {
     }
 
     public boolean moreParses() {
-        return eventBuilder.moreTrees();
+        return eventBuilder.moreParses();
     }
 
     public boolean nextTree() {

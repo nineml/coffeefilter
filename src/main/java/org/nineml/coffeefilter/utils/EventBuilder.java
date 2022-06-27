@@ -9,6 +9,7 @@ import org.nineml.coffeegrinder.parser.Symbol;
 import org.nineml.coffeegrinder.parser.TreeBuilder;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
+import org.nineml.coffeegrinder.tokens.TokenString;
 import org.nineml.coffeegrinder.util.ParserAttribute;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -321,7 +322,11 @@ public class EventBuilder extends TreeBuilder {
         if (rewrite != null) {
             text.value.append(rewrite);
         } else {
-            text.value.appendCodePoint(((TokenCharacter) token).getCodepoint());
+            if (token instanceof TokenCharacter) {
+                text.value.appendCodePoint(((TokenCharacter) token).getCodepoint());
+            } else {
+                text.value.append(token.getValue());
+            }
         }
     }
 
@@ -368,14 +373,14 @@ public class EventBuilder extends TreeBuilder {
                             && !"1.0-9ml".equals(grammarVersion)
                             && !"1.0-nineml".equals(grammarVersion);
 
-                    ambiguous = ambiguous && !options.isSuppressedState("ambiguous");
+                    boolean markAmbiguous = ambiguous && !options.isSuppressedState("ambiguous");
                     badVersion = badVersion && !options.isSuppressedState("version-mismatch");
 
-                    if (ambiguous || badVersion) {
+                    if (markAmbiguous || badVersion) {
                         handler.startPrefixMapping(InvisibleXml.ixml_prefix, InvisibleXml.ixml_ns);
                     }
 
-                    String state = ambiguous ? "ambiguous" : "";
+                    String state = markAmbiguous ? "ambiguous" : "";
                     if (badVersion) {
                         state += ("".equals(state) ? "" : " ") + "version-mismatch";
                     }
