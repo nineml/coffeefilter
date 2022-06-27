@@ -347,61 +347,81 @@ public abstract class XNode {
 
     private IPragma parsePragma(IPragma pragma, String ptype) {
         String data = pragma.getPragmaData();
-        if (data != null) {
+        if (data == null) {
+            data = "";
+        } else {
             data = data.trim();
-            if ("rewrite".equals(ptype) || "ns".equals(ptype) || "regex".equals(ptype)) {
-                if (!"".equals(data)) {
-                    String quote = data.substring(0, 1);
-                    if (("\"".equals(quote) || "'".equals(quote)) && data.endsWith(quote)) {
-                        String other = "'";
-                        if ("'".equals(quote)) {
-                            other = "\"";
-                        }
-                        data = data.substring(1, data.length() - 1);
-                        data = data.replaceAll(quote + quote, quote);
-                        switch (ptype) {
-                            case "rewrite":
-                                return new IPragmaRewrite(pragma.parent, data);
-                            case "ns":
-                                return new IPragmaXmlns(pragma.parent, data);
-                            case "regex":
-                                return new IPragmaRegex(pragma.parent, data);
-                            default:
-                                throw new RuntimeException("Internal error, unexpected pragma type: " + ptype);
-                        }
-                    }
-                }
+        }
 
-                getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
-            } else if ("rename".equals(ptype)) {
-                if (!"".equals(data)) {
-                    return new IPragmaRename(pragma.parent, data);
-                }
-                getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
-            } else if ("discard".equals(ptype)) {
-                if ("empty".equals(data)) {
-                    return new IPragmaDiscardEmpty(pragma.parent, data);
-                }
-                getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
-            } else if ("priority".equals(ptype)) {
-                try {
-                    double priority = Double.parseDouble(data);
-                    return new IPragmaPriority(pragma.parent, data);
-                } catch (NumberFormatException ex) {
-                    getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
-                }
-            } else if ("default-priority".equals(ptype)) {
-                try {
-                    double priority = Double.parseDouble(data);
-                    return new IPragmaDefaultPriority(pragma.parent, data);
-                } catch (NumberFormatException ex) {
-                    getRoot().options.getLogger().error(logcategory, "Malformed pragma: %s", pragma.getPragmaData());
-                }
+        if ("rewrite".equals(ptype) || "ns".equals(ptype) || "regex".equals(ptype)) {
+            data = unquotedData(data);
+            if (data == null) {
+                getRoot().options.getLogger().error(logcategory, "Malformed %s pragma: %s",
+                        pragma.getName(), pragma.getPragmaData());
+                return null;
             }
         }
 
-        getRoot().options.getLogger().debug(logcategory, "Unrecognized pragma: %s", pragma.getPragmaData());
-        return pragma;
+        switch (ptype) {
+            case "rewrite":
+                return new IPragmaRewrite(pragma.parent, pragma.name, data);
+            case "ns":
+                return new IPragmaXmlns(pragma.parent, pragma.name, data);
+            case "regex":
+                return new IPragmaRegex(pragma.parent, pragma.name, data);
+            case "rename":
+                if (!"".equals(data)) {
+                    return new IPragmaRename(pragma.parent, pragma.name, data);
+                }
+                break;
+            case "discard":
+                if ("empty".equals(data)) {
+                    return new IPragmaDiscardEmpty(pragma.parent, pragma.name, data);
+                }
+                break;
+            case "priority":
+            case "default-priority":
+                try {
+                    double priority = Double.parseDouble(data);
+                    if ("priority".equals(ptype)) {
+                        return new IPragmaPriority(pragma.parent, pragma.name, data);
+                    }
+                    return new IPragmaDefaultPriority(pragma.parent, pragma.name, data);
+                } catch (NumberFormatException ex) {
+                    // ignore
+                }
+                break;
+            case "token":
+                if ("".equals(data)) {
+                    return new IPragmaToken(pragma.parent, pragma.name, data);
+                }
+                break;
+            default:
+                break;
+        }
+
+        getRoot().options.getLogger().error(logcategory, "Malformed %s pragma: %s",
+                pragma.getName(), pragma.getPragmaData());
+        return null;
+    }
+
+    private String unquotedData(String data) {
+        if ("".equals(data)) {
+            return null;
+        }
+
+        String quote = data.substring(0, 1);
+        if (("\"".equals(quote) || "'".equals(quote)) && data.endsWith(quote)) {
+            String other = "'";
+            if ("'".equals(quote)) {
+                other = "\"";
+            }
+            data = data.substring(1, data.length() - 1);
+            data = data.replaceAll(quote + quote, quote);
+            return data;
+        }
+
+        return null;
     }
 
     public void flatten() {
@@ -457,7 +477,10 @@ public abstract class XNode {
                         if (uri == null) {
                             getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, no binding for %s", pragma.name, prefix);
                         } else if (ninemlns.equals(uri)) {
-                            addPragma(parsePragma(pragma, localName));
+                            IPragma parsed = parsePragma(pragma, localName);
+                            if (parsed != null) {
+                                addPragma(parsed);
+                            }
                         } else {
                             getRoot().options.getLogger().debug(logcategory, "Ignoring unrecognized pragma: %s", pragma.name);
                         }

@@ -208,26 +208,24 @@ public class IxmlParserTest {
         Assert.assertTrue(xml.contains("version-mismatch"));
     }
 
-    /*
     @Test
     public void testParseOberon() {
         try {
             invisibleXml.getOptions().setParserType("GLL");
             invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
-            InvisibleXmlParser parser = invisibleXml.getParser(new File("../ixml/samples/Oberon/Grammars/Oberon.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/samples/Oberon/Grammars/Oberon.ixml"));
             Grammar grammar = parser.getGrammar();
             Assert.assertNotNull(grammar);
-            InvisibleXmlDocument doc = parser.parse(new File("../ixml/samples/Oberon/Project-Oberon-2013-materials/ORB.Mod.txt"));
+            InvisibleXmlDocument doc = parser.parse(new File("ixml/samples/Oberon/Project-Oberon-2013-materials/ORB.Mod.txt"));
             Assert.assertTrue(doc.succeeded());
-            String xml = doc.getTree();
-            System.err.println(xml);
+            //String xml = doc.getTree();
+            //System.err.println(xml);
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();
         }
     }
-     */
 
     @Test
     public void testAmbig() {

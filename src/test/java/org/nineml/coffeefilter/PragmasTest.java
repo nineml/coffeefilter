@@ -1,6 +1,7 @@
 package org.nineml.coffeefilter;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
@@ -128,6 +129,20 @@ public class PragmasTest {
             InvisibleXmlDocument doc = parser.parse("");
             String xml = doc.getTree();
             Assertions.assertEquals("<S E=\"\"><B/></S>", xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Ignore
+    public void greedy() {
+        try {
+            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            invisibleXml.getOptions().setParserType("GLL");
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/greedy.ixml"));
+            InvisibleXmlDocument doc = parser.parse("abbbc");
+            String xml = doc.getTree();
+            Assertions.assertEquals("<S><A>a</A><B>bbb</B><C>c</C></S>", xml);
         } catch (Exception ex) {
             fail();
         }
