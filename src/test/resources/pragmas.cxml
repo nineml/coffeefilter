@@ -1,23 +1,24 @@
-<grammar xmlns="http://nineml.org/coffeegrinder/ns/grammar/compiled" version="0.9.2">
-<meta name='coffeepot-version' value='0.9.0'/>
-<meta name='date' value='2022-03-10T17:54:55Z'/>
-<meta name='uri' value='file:/Volumes/Projects/nineml/pot/scraps/pragma.ixml'/>
-<ag xml:id="g1" name="$$" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns="http://nineml.org/coffeegrinder/ns/grammar/compiled" version="1.99.8">
+<meta name='coffeepot-version' value='1.99.8'/>
+<meta name='date' value='2022-06-30T17:29:19Z'/>
+<meta name='uri' value='file:/Volumes/Projects/nineml/filter/src/test/resources/pragmas.ixml'/>
+<ag xml:id="g1" name="$$" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
 <ag xml:id="g2" name="ixml" mark="^"/>
 <r n="$$" a="p" ag="g1"><nt n="ixml" ag="g2"/></r>
 <ag xml:id="g3" name="prolog" mark="^"/>
-<ag xml:id="g4" name="$6" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
+<ag xml:id="g4" name="$8_rule-plus-sep" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
 <ag xml:id="g5" name="s" mark="-"/>
-<r n="ixml" ag="g2"><nt n="prolog" ag="g3"/><nt n="$6" a="p" ag="g4"/><nt n="s" ag="g5"/></r>
-<ag xml:id="g6" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$45_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="prolog" ag="g3"><nt n="s" ag="g5"/><nt n="$45_option" a="?p" ag="g6"/></r>
+<r n="ixml" ag="g2"><nt n="prolog" ag="g3"/><nt n="$8_rule-plus-sep" a="p" ag="g4"/><nt n="s" ag="g5"/></r>
+<ag xml:id="g6" name="$31_$9_ppragma-plus-sep-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="prolog" ag="g3"><nt n="s" ag="g5"/><nt n="$31_$9_ppragma-plus-sep-option" a="p" ag="g6"/></r>
 <ag xml:id="g7" name="ppragma" mark="-"/>
 <ag xml:id="g8" name="pragma" mark="^"/>
 <ag xml:id="g9" tmark="-"/>
 <ag xml:id="g10"/>
 <r n="ppragma" ag="g7"><nt n="pragma" ag="g8"/><nt n="s" ag="g5"/><t ag="g9"><c ag="g10" v="."/></t></r>
-<ag xml:id="g11" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$27" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="s" ag="g5"><nt n="$27" a="?p" ag="g11"/></r>
+<ag xml:id="g11" name="$17_$1_alt-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="s" ag="g5"><nt n="$17_$1_alt-star" a="p" ag="g11"/></r>
 <ag xml:id="g12" name="whitespace" mark="-"/>
 <r n="whitespace" ag="g12"><t ag="g9"><cs ag="g10" inclusion="Zs"/></t></r>
 <ag xml:id="g13" name="tab" mark="-"/>
@@ -30,8 +31,8 @@
 <r n="lf" ag="g14"><t ag="g9"><c ag="g10" v="&#xa;"/></t></r>
 <r n="cr" ag="g15"><t ag="g9"><c ag="g10" v="&#xd;"/></t></r>
 <ag xml:id="g16" name="comment" mark="^"/>
-<ag xml:id="g17" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$46_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="comment" ag="g16"><t ag="g9"><c ag="g10" v="{"/></t><nt n="$46_option" a="?p" ag="g17"/><t ag="g9"><c ag="g10" v="}"/></t></r>
+<ag xml:id="g17" name="$32_$3_alt-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="comment" ag="g16"><t ag="g9"><c ag="g10" v="{"/></t><nt n="$32_$3_alt-option" a="p" ag="g17"/><t ag="g9"><c ag="g10" v="}"/></t></r>
 <ag xml:id="g18" name="cchar" mark="-"/>
 <ag xml:id="g19" tmark="^"/>
 <r n="cchar" ag="g18"><t ag="g19"><cs ag="g10" exclusion="&quot;{}&quot;"/></t></r>
@@ -39,16 +40,16 @@
 <ag xml:id="g21" name="annotation" mark="-"/>
 <ag xml:id="g22" name="name" mark="@"/>
 <ag xml:id="g23" name="alts" mark="-"/>
-<ag xml:id="g24" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$47_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="rule" ag="g20"><nt n="annotation" ag="g21"/><nt n="name" ag="g22"/><nt n="s" ag="g5"/><t ag="g9"><cs ag="g10" inclusion="&quot;:=&quot;"/></t><nt n="s" ag="g5"/><nt n="alts" ag="g23"/><nt n="$47_option" a="?p" ag="g24"/><t ag="g9"><c ag="g10" v="."/></t></r>
+<ag xml:id="g24" name="$33_pragma-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="rule" ag="g20"><nt n="annotation" ag="g21"/><nt n="name" ag="g22"/><nt n="s" ag="g5"/><t ag="g9"><cs ag="g10" inclusion="&quot;:=&quot;"/></t><nt n="s" ag="g5"/><nt n="alts" ag="g23"/><nt n="$33_pragma-option" a="p" ag="g24"/><t ag="g9"><c ag="g10" v="."/></t></r>
 <ag xml:id="g25" name="mark" mark="@"/>
 <r n="mark" ag="g25"><t ag="g19"><cs ag="g10" inclusion="&quot;@-^&quot;"/></t></r>
 <ag xml:id="g26" name="alts" mark="^"/>
-<ag xml:id="g27" name="$12" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="alts" ag="g26"><nt n="$12" a="p" ag="g27"/></r>
+<ag xml:id="g27" name="$10_alt-plus-sep" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="alts" ag="g26"><nt n="$10_alt-plus-sep" a="p" ag="g27"/></r>
 <ag xml:id="g28" name="alt" mark="^"/>
-<ag xml:id="g29" name="$31" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="alt" ag="g28"><nt n="$31" a="p" ag="g29"/></r>
+<ag xml:id="g29" name="$6_term-star-sep-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="alt" ag="g28"><nt n="$6_term-star-sep-option" a="p" ag="g29"/></r>
 <ag xml:id="g30" name="term" mark="-"/>
 <ag xml:id="g31" name="factor" mark="-"/>
 <r n="term" ag="g30"><nt n="factor" ag="g31"/></r>
@@ -63,268 +64,230 @@
 <ag xml:id="g36" name="nonterminal" mark="^"/>
 <r n="factor" ag="g31"><nt n="nonterminal" ag="g36"/></r>
 <r n="factor" ag="g31"><t ag="g9"><c ag="g10" v="("/></t><nt n="s" ag="g5"/><nt n="alts" ag="g26"/><t ag="g9"><c ag="g10" v=")"/></t><nt n="s" ag="g5"/></r>
-<ag xml:id="g37" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="sep" mark="^"/>
-<r n="repeat0" ag="g33"><nt n="factor" ag="g31"/><t ag="g9"><c ag="g10" v="*"/></t><nt n="s" ag="g5"/><nt n="sep" a="?" ag="g37"/></r>
-<r n="repeat1" ag="g34"><nt n="factor" ag="g31"/><t ag="g9"><c ag="g10" v="+"/></t><nt n="s" ag="g5"/><nt n="sep" a="?" ag="g37"/></r>
+<ag xml:id="g37" name="$34_sep-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="repeat0" ag="g33"><nt n="factor" ag="g31"/><t ag="g9"><c ag="g10" v="*"/></t><nt n="s" ag="g5"/><nt n="$34_sep-option" a="p" ag="g37"/></r>
+<ag xml:id="g38" name="$35_sep-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="repeat1" ag="g34"><nt n="factor" ag="g31"/><t ag="g9"><c ag="g10" v="+"/></t><nt n="s" ag="g5"/><nt n="$35_sep-option" a="p" ag="g38"/></r>
 <r n="option" ag="g32"><nt n="factor" ag="g31"/><t ag="g9"><c ag="g10" v="?"/></t><nt n="s" ag="g5"/></r>
-<ag xml:id="g38" name="sep" mark="^"/>
-<r n="sep" ag="g38"><nt n="factor" ag="g31"/></r>
+<ag xml:id="g39" name="sep" mark="^"/>
+<r n="sep" ag="g39"><nt n="factor" ag="g31"/></r>
 <r n="nonterminal" ag="g36"><nt n="annotation" ag="g21"/><nt n="name" ag="g22"/><nt n="s" ag="g5"/></r>
-<ag xml:id="g39" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$48_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g40" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$49_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="annotation" ag="g21"><nt n="$48_option" a="?p" ag="g39"/><nt n="$49_option" a="?p" ag="g40"/></r>
-<ag xml:id="g41" name="sp" mark="-"/>
-<ag xml:id="g42" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$35" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="sp" ag="g41"><nt n="$35" a="?p" ag="g42"/></r>
-<ag xml:id="g43" name="literal" mark="^"/>
-<r n="terminal" ag="g35"><nt n="literal" ag="g43"/></r>
-<ag xml:id="g44" name="charset" mark="-"/>
-<r n="terminal" ag="g35"><nt n="charset" ag="g44"/></r>
-<ag xml:id="g45" name="quoted" mark="-"/>
-<r n="literal" ag="g43"><nt n="quoted" ag="g45"/></r>
-<ag xml:id="g46" name="encoded" mark="-"/>
-<r n="literal" ag="g43"><nt n="encoded" ag="g46"/></r>
-<ag xml:id="g47" name="tannotation" mark="-"/>
-<ag xml:id="g48" name="string" mark="@"/>
-<r n="quoted" ag="g45"><nt n="tannotation" ag="g47"/><nt n="string" ag="g48"/></r>
-<ag xml:id="g49" name="namestart" mark="-"/>
-<ag xml:id="g50" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$37" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="name" ag="g22"><nt n="namestart" ag="g49"/><nt n="$37" a="?p" ag="g50"/></r>
-<r n="namestart" ag="g49"><t ag="g19"><cs ag="g10" inclusion="&quot;_&quot;;L"/></t></r>
-<ag xml:id="g51" name="namefollower" mark="-"/>
-<r n="namefollower" ag="g51"><nt n="namestart" ag="g49"/></r>
-<r n="namefollower" ag="g51"><t ag="g19"><cs ag="g10" inclusion="&quot;⁀·-.‿&quot;;Nd;Mn"/></t></r>
-<ag xml:id="g52" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$50_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g53" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$51_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="tannotation" ag="g47"><nt n="$50_option" a="?p" ag="g52"/><nt n="$51_option" a="?p" ag="g53"/></r>
-<ag xml:id="g54" name="tmark" mark="@"/>
-<r n="tmark" ag="g54"><t ag="g19"><cs ag="g10" inclusion="&quot;-^&quot;"/></t></r>
-<ag xml:id="g55" name="$15" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="string" ag="g48"><t ag="g9"><c ag="g10" v="&quot;"/></t><nt n="$15" a="p" ag="g55"/><t ag="g9"><c ag="g10" v="&quot;"/></t><nt n="s" ag="g5"/></r>
-<ag xml:id="g56" name="$18" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="string" ag="g48"><t ag="g9"><c ag="g10" v="'"/></t><nt n="$18" a="p" ag="g56"/><t ag="g9"><c ag="g10" v="'"/></t><nt n="s" ag="g5"/></r>
-<ag xml:id="g57" name="dchar" mark="^"/>
-<r n="dchar" ag="g57"><t ag="g19"><cs ag="g10" exclusion="&quot;&amp;quot;&quot;;'&#xa;';'&#xd;'"/></t></r>
-<r n="dchar" ag="g57"><t ag="g19"><c ag="g10" v="&quot;"/></t><t ag="g9"><c ag="g10" v="&quot;"/></t></r>
-<ag xml:id="g58" name="schar" mark="^"/>
-<r n="schar" ag="g58"><t ag="g19"><cs ag="g10" exclusion="&quot;'&quot;;'&#xa;';'&#xd;'"/></t></r>
-<r n="schar" ag="g58"><t ag="g19"><c ag="g10" v="'"/></t><t ag="g9"><c ag="g10" v="'"/></t></r>
-<ag xml:id="g59" name="hex" mark="@"/>
-<r n="encoded" ag="g46"><nt n="tannotation" ag="g47"/><t ag="g9"><c ag="g10" v="#"/></t><nt n="hex" ag="g59"/><nt n="s" ag="g5"/></r>
-<ag xml:id="g60" name="hex" mark="^"/>
-<ag xml:id="g61" name="$21" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="hex" ag="g60"><nt n="$21" a="p" ag="g61"/></r>
-<ag xml:id="g62" name="inclusion" mark="^"/>
-<r n="charset" ag="g44"><nt n="inclusion" ag="g62"/></r>
-<ag xml:id="g63" name="exclusion" mark="^"/>
-<r n="charset" ag="g44"><nt n="exclusion" ag="g63"/></r>
-<ag xml:id="g64" name="set" mark="-"/>
-<r n="inclusion" ag="g62"><nt n="tannotation" ag="g47"/><nt n="set" ag="g64"/></r>
-<r n="exclusion" ag="g63"><nt n="tannotation" ag="g47"/><t ag="g9"><c ag="g10" v="~"/></t><nt n="s" ag="g5"/><nt n="set" ag="g64"/></r>
-<ag xml:id="g65" name="$39" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="set" ag="g64"><t ag="g9"><c ag="g10" v="["/></t><nt n="s" ag="g5"/><nt n="$39" a="p" ag="g65"/><t ag="g9"><c ag="g10" v="]"/></t><nt n="s" ag="g5"/></r>
-<ag xml:id="g66" name="member" mark="-"/>
-<r n="member" ag="g66"><nt n="literal" ag="g43"/></r>
-<ag xml:id="g67" name="range" mark="^"/>
-<r n="member" ag="g66"><nt n="range" ag="g67"/></r>
-<ag xml:id="g68" name="class" mark="^"/>
-<r n="member" ag="g66"><nt n="class" ag="g68"/></r>
-<ag xml:id="g69" name="from" mark="@"/>
-<ag xml:id="g70" name="to" mark="@"/>
-<r n="range" ag="g67"><nt n="from" ag="g69"/><nt n="s" ag="g5"/><t ag="g9"><c ag="g10" v="-"/></t><nt n="s" ag="g5"/><nt n="to" ag="g70"/><nt n="s" ag="g5"/></r>
-<ag xml:id="g71" name="character" mark="-"/>
-<r n="from" ag="g69"><nt n="character" ag="g71"/></r>
-<r n="to" ag="g70"><nt n="character" ag="g71"/></r>
-<r n="character" ag="g71"><t ag="g9"><c ag="g10" v="&quot;"/></t><nt n="dchar" ag="g57"/><t ag="g9"><c ag="g10" v="&quot;"/></t></r>
-<r n="character" ag="g71"><t ag="g9"><c ag="g10" v="'"/></t><nt n="schar" ag="g58"/><t ag="g9"><c ag="g10" v="'"/></t></r>
-<r n="character" ag="g71"><t ag="g19"><c ag="g10" v="#"/></t><nt n="hex" ag="g60"/></r>
-<ag xml:id="g72" name="code" mark="@"/>
-<r n="class" ag="g68"><nt n="code" ag="g72"/><nt n="s" ag="g5"/></r>
-<ag xml:id="g73" name="capital" mark="-"/>
-<ag xml:id="g74" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="letter" mark="-"/>
-<r n="code" ag="g72"><nt n="capital" ag="g73"/><nt n="letter" a="?" ag="g74"/></r>
-<r n="capital" ag="g73"><t ag="g19"><cs ag="g10" inclusion="'A'-'Z'"/></t></r>
-<ag xml:id="g75" name="letter" mark="-"/>
-<r n="letter" ag="g75"><t ag="g19"><cs ag="g10" inclusion="'a'-'z'"/></t></r>
-<ag xml:id="g76" name="pld" mark="-"/>
-<ag xml:id="g77" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="pmark" mark="@"/>
-<ag xml:id="g78" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$52_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g79" name="prd" mark="-"/>
-<r n="pragma" ag="g8"><nt n="pld" ag="g76"/><nt n="pmark" a="?" ag="g77"/><nt n="name" ag="g22"/><nt n="$52_option" a="?p" ag="g78"/><nt n="prd" ag="g79"/></r>
-<ag xml:id="g80" name="pmark" mark="@"/>
-<r n="pmark" ag="g80"><t ag="g19"><cs ag="g10" inclusion="&quot;@^?&quot;"/></t></r>
-<ag xml:id="g81" name="pragma-data" mark="^"/>
-<ag xml:id="g82" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$43" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="pragma-data" ag="g81"><nt n="$43" a="?p" ag="g82"/></r>
-<ag xml:id="g83" name="pragma-chars" mark="-"/>
-<ag xml:id="g84" name="$24" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="pragma-chars" ag="g83"><nt n="$24" a="p" ag="g84"/></r>
-<ag xml:id="g85" name="bracket-pair" mark="-"/>
-<ag xml:id="g86" name="pragma-data" mark="-"/>
-<r n="bracket-pair" ag="g85"><t ag="g19"><c ag="g10" v="{"/></t><nt n="pragma-data" ag="g86"/><t ag="g19"><c ag="g10" v="}"/></t></r>
-<r n="pld" ag="g76"><t ag="g9"><c ag="g10" v="{"/></t><t ag="g9"><c ag="g10" v="["/></t></r>
-<r n="prd" ag="g79"><t ag="g9"><c ag="g10" v="]"/></t><t ag="g9"><c ag="g10" v="}"/></t></r>
-<ag xml:id="g87" name="|$1" mark="-"/>
-<r n="|$1" ag="g87"><nt n="whitespace" ag="g12"/></r>
-<r n="|$1" ag="g87"><nt n="comment" ag="g16"/></r>
-<ag xml:id="g88" name="|$2" mark="-"/>
-<r n="|$2" ag="g88"><nt n="cchar" ag="g18"/></r>
-<r n="|$2" ag="g88"><nt n="comment" ag="g16"/></r>
-<ag xml:id="g89" name="|$3" mark="-"/>
-<r n="|$3" ag="g89"><nt n="comment" ag="g16"/></r>
-<r n="|$3" ag="g89"><t ag="g19"><cs ag="g10" exclusion="'[';']';&quot;{}&quot;"/></t></r>
-<ag xml:id="g90" name="|$4" mark="-"/>
-<r n="|$4" ag="g90"><nt n="whitespace" ag="g12"/></r>
-<r n="|$4" ag="g90"><nt n="comment" ag="g16"/></r>
-<r n="|$4" ag="g90"><nt n="pragma" ag="g8"/></r>
-<ag xml:id="g91" name="|$5" mark="-"/>
-<r n="|$5" ag="g91"><nt n="pragma-chars" ag="g83"/></r>
-<r n="|$5" ag="g91"><nt n="bracket-pair" ag="g85"/></r>
-<ag xml:id="g92" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$7" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$6" a="p" ag="g4"><nt n="rule" ag="g20"/><nt n="$7" a="?p" ag="g92"/></r>
-<ag xml:id="g93" name="$7" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g94" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$8" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$7" a="p" ag="g93"><nt n="$8" a="?p" ag="g94"/></r>
-<ag xml:id="g95" name="$8" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$8" a="p" ag="g95"><nt n="s" ag="g5"/><nt n="rule" ag="g20"/><nt n="$8" a="?p" ag="g94"/></r>
-<ag xml:id="g96" name="$9" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g97" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$10" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$9" a="p" ag="g96"><nt n="ppragma" ag="g7"/><nt n="$10" a="?p" ag="g97"/></r>
-<ag xml:id="g98" name="$10" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g99" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$11" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$10" a="p" ag="g98"><nt n="$11" a="?p" ag="g99"/></r>
-<ag xml:id="g100" name="$11" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$11" a="p" ag="g100"><nt n="s" ag="g5"/><nt n="ppragma" ag="g7"/><nt n="$11" a="?p" ag="g99"/></r>
-<ag xml:id="g101" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$13" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$12" a="p" ag="g27"><nt n="alt" ag="g28"/><nt n="$13" a="?p" ag="g101"/></r>
-<ag xml:id="g102" name="$13" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g103" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$14" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$13" a="p" ag="g102"><nt n="$14" a="?p" ag="g103"/></r>
-<ag xml:id="g104" name="$14" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$14" a="p" ag="g104"><t ag="g9"><cs ag="g10" inclusion="&quot;;|&quot;"/></t><nt n="s" ag="g5"/><nt n="alt" ag="g28"/><nt n="$14" a="?p" ag="g103"/></r>
-<ag xml:id="g105" name="$16" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$15" a="p" ag="g55"><nt n="dchar" ag="g57"/><nt n="$16" a="p" ag="g105"/></r>
-<ag xml:id="g106" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$17" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$16" a="p" ag="g105"><nt n="$17" a="?p" ag="g106"/></r>
-<ag xml:id="g107" name="$17" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$17" a="p" ag="g107"><nt n="dchar" ag="g57"/><nt n="$16" a="p" ag="g105"/></r>
-<ag xml:id="g108" name="$19" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$18" a="p" ag="g56"><nt n="schar" ag="g58"/><nt n="$19" a="p" ag="g108"/></r>
-<ag xml:id="g109" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$20" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$19" a="p" ag="g108"><nt n="$20" a="?p" ag="g109"/></r>
-<ag xml:id="g110" name="$20" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$20" a="p" ag="g110"><nt n="schar" ag="g58"/><nt n="$19" a="p" ag="g108"/></r>
-<ag xml:id="g111" name="$22" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$21" a="p" ag="g61"><t ag="g19"><cs ag="g10" inclusion="'0'-'9';'a'-'f';'A'-'F'"/></t><nt n="$22" a="p" ag="g111"/></r>
-<ag xml:id="g112" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$23" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$22" a="p" ag="g111"><nt n="$23" a="?p" ag="g112"/></r>
-<ag xml:id="g113" name="$23" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$23" a="p" ag="g113"><t ag="g19"><cs ag="g10" inclusion="'0'-'9';'a'-'f';'A'-'F'"/></t><nt n="$22" a="p" ag="g111"/></r>
-<ag xml:id="g114" name="$25" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$24" a="p" ag="g84"><t ag="g19"><cs ag="g10" exclusion="&quot;{}&quot;"/></t><nt n="$25" a="p" ag="g114"/></r>
-<ag xml:id="g115" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$26" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$25" a="p" ag="g114"><nt n="$26" a="?p" ag="g115"/></r>
-<ag xml:id="g116" name="$26" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$26" a="p" ag="g116"><t ag="g19"><cs ag="g10" exclusion="&quot;{}&quot;"/></t><nt n="$25" a="p" ag="g114"/></r>
-<ag xml:id="g117" name="$27" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g118" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$28" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$27" a="p" ag="g117"><nt n="$28" a="?p" ag="g118"/></r>
-<ag xml:id="g119" name="$28" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$28" a="p" ag="g119"><nt n="|$1" ag="g87"/><nt n="$28" a="?p" ag="g118"/></r>
-<ag xml:id="g120" name="$29" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g121" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$30" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$29" a="p" ag="g120"><nt n="$30" a="?p" ag="g121"/></r>
-<ag xml:id="g122" name="$30" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$30" a="p" ag="g122"><nt n="|$2" ag="g88"/><nt n="$30" a="?p" ag="g121"/></r>
-<ag xml:id="g123" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$32" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$31" a="p" ag="g29"><nt n="$32" a="?p" ag="g123"/></r>
-<ag xml:id="g124" name="$32" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g125" name="$33" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$32" a="p" ag="g124"><nt n="term" ag="g30"/><nt n="$33" a="p" ag="g125"/></r>
-<ag xml:id="g126" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$34" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$33" a="p" ag="g125"><nt n="$34" a="?p" ag="g126"/></r>
-<ag xml:id="g127" name="$34" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$34" a="p" ag="g127"><t ag="g9"><c ag="g10" v=","/></t><nt n="s" ag="g5"/><nt n="term" ag="g30"/><nt n="$33" a="p" ag="g125"/></r>
-<ag xml:id="g128" name="$35" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g129" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$36" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$35" a="p" ag="g128"><nt n="$36" a="?p" ag="g129"/></r>
-<ag xml:id="g130" name="$36" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$36" a="p" ag="g130"><nt n="|$4" ag="g90"/><nt n="$36" a="?p" ag="g129"/></r>
-<ag xml:id="g131" name="$37" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g132" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$38" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$37" a="p" ag="g131"><nt n="$38" a="?p" ag="g132"/></r>
-<ag xml:id="g133" name="$38" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$38" a="p" ag="g133"><nt n="namefollower" ag="g51"/><nt n="$38" a="?p" ag="g132"/></r>
-<ag xml:id="g134" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$40" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$39" a="p" ag="g65"><nt n="$40" a="?p" ag="g134"/></r>
-<ag xml:id="g135" name="$40" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g136" name="$41" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$40" a="p" ag="g135"><nt n="member" ag="g66"/><nt n="$41" a="p" ag="g136"/></r>
-<ag xml:id="g137" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$42" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$41" a="p" ag="g136"><nt n="$42" a="?p" ag="g137"/></r>
-<ag xml:id="g138" name="$42" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$42" a="p" ag="g138"><t ag="g9"><cs ag="g10" inclusion="&quot;;|&quot;"/></t><nt n="s" ag="g5"/><nt n="member" ag="g66"/><nt n="$41" a="p" ag="g136"/></r>
-<ag xml:id="g139" name="$43" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g140" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$44" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$43" a="p" ag="g139"><nt n="$44" a="?p" ag="g140"/></r>
-<ag xml:id="g141" name="$44" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$44" a="p" ag="g141"><nt n="|$5" ag="g91"/><nt n="$44" a="?p" ag="g140"/></r>
-<ag xml:id="g142" name="$45_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$45_option" a="p" ag="g142"><nt n="$9" a="p" ag="g96"/><nt n="s" ag="g5"/></r>
-<ag xml:id="g143" name="$46_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<ag xml:id="g144" httpsǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.CoffeeGrinderǝ2f.attributesǝ2f.optionality="optional" name="$29" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$46_option" a="p" ag="g143"><nt n="|$3" ag="g89"/><nt n="$29" a="?p" ag="g144"/></r>
-<ag xml:id="g145" name="$47_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$47_option" a="p" ag="g145"><nt n="pragma" ag="g8"/><nt n="sp" ag="g41"/></r>
-<ag xml:id="g146" name="$48_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$48_option" a="p" ag="g146"><nt n="pragma" ag="g8"/><nt n="sp" ag="g41"/></r>
-<ag xml:id="g147" name="$49_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$49_option" a="p" ag="g147"><nt n="mark" ag="g25"/><nt n="sp" ag="g41"/></r>
-<ag xml:id="g148" name="$50_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$50_option" a="p" ag="g148"><nt n="pragma" ag="g8"/><nt n="sp" ag="g41"/></r>
-<ag xml:id="g149" name="$51_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$51_option" a="p" ag="g149"><nt n="tmark" ag="g54"/><nt n="sp" ag="g41"/></r>
-<ag xml:id="g150" name="$52_option" httpǝ3a.ǝ2f.ǝ2f.ninemlǝ2e.orgǝ2f.coffeegrinderǝ2f.attributesǝ2f.prune="allowed" mark="-"/>
-<r n="$52_option" a="p" ag="g150"><nt n="whitespace" ag="g12"/><nt n="pragma-data" ag="g81"/></r>
-<r n="prolog" ag="g3"><nt n="s" ag="g5"/></r>
-<r n="comment" ag="g16"><t ag="g9"><c ag="g10" v="{"/></t><t ag="g9"><c ag="g10" v="}"/></t></r>
-<r n="rule" ag="g20"><nt n="annotation" ag="g21"/><nt n="name" ag="g22"/><nt n="s" ag="g5"/><t ag="g9"><cs ag="g10" inclusion="&quot;:=&quot;"/></t><nt n="s" ag="g5"/><nt n="alts" ag="g23"/><t ag="g9"><c ag="g10" v="."/></t></r>
-<r n="repeat0" ag="g33"><nt n="factor" ag="g31"/><t ag="g9"><c ag="g10" v="*"/></t><nt n="s" ag="g5"/></r>
-<r n="repeat1" ag="g34"><nt n="factor" ag="g31"/><t ag="g9"><c ag="g10" v="+"/></t><nt n="s" ag="g5"/></r>
-<r n="annotation" ag="g21"><nt n="$48_option" a="?p" ag="g39"/></r>
-<r n="annotation" ag="g21"><nt n="$49_option" a="?p" ag="g40"/></r>
-<r n="annotation" ag="g21"></r>
-<r n="tannotation" ag="g47"><nt n="$50_option" a="?p" ag="g52"/></r>
-<r n="tannotation" ag="g47"><nt n="$51_option" a="?p" ag="g53"/></r>
-<r n="tannotation" ag="g47"></r>
-<r n="code" ag="g72"><nt n="capital" ag="g73"/></r>
-<r n="pragma" ag="g8"><nt n="pld" ag="g76"/><nt n="pmark" a="?" ag="g77"/><nt n="name" ag="g22"/><nt n="prd" ag="g79"/></r>
-<r n="pragma" ag="g8"><nt n="pld" ag="g76"/><nt n="name" ag="g22"/><nt n="$52_option" a="?p" ag="g78"/><nt n="prd" ag="g79"/></r>
-<r n="pragma" ag="g8"><nt n="pld" ag="g76"/><nt n="name" ag="g22"/><nt n="prd" ag="g79"/></r>
-<r n="$7" a="p" ag="g93"></r>
-<r n="$8" a="p" ag="g95"><nt n="s" ag="g5"/><nt n="rule" ag="g20"/></r>
-<r n="$10" a="p" ag="g98"></r>
-<r n="$11" a="p" ag="g100"><nt n="s" ag="g5"/><nt n="ppragma" ag="g7"/></r>
-<r n="$13" a="p" ag="g102"></r>
-<r n="$14" a="p" ag="g104"><t ag="g9"><cs ag="g10" inclusion="&quot;;|&quot;"/></t><nt n="s" ag="g5"/><nt n="alt" ag="g28"/></r>
-<r n="$16" a="p" ag="g105"></r>
-<r n="$19" a="p" ag="g108"></r>
-<r n="$22" a="p" ag="g111"></r>
-<r n="$25" a="p" ag="g114"></r>
-<r n="$27" a="p" ag="g117"></r>
-<r n="$28" a="p" ag="g119"><nt n="|$1" ag="g87"/></r>
-<r n="$29" a="p" ag="g120"></r>
-<r n="$30" a="p" ag="g122"><nt n="|$2" ag="g88"/></r>
-<r n="$31" a="p" ag="g29"></r>
-<r n="$33" a="p" ag="g125"></r>
-<r n="$35" a="p" ag="g128"></r>
-<r n="$36" a="p" ag="g130"><nt n="|$4" ag="g90"/></r>
-<r n="$37" a="p" ag="g131"></r>
-<r n="$38" a="p" ag="g133"><nt n="namefollower" ag="g51"/></r>
-<r n="$39" a="p" ag="g65"></r>
-<r n="$41" a="p" ag="g136"></r>
-<r n="$43" a="p" ag="g139"></r>
-<r n="$44" a="p" ag="g141"><nt n="|$5" ag="g91"/></r>
-<check Σ="2f4e3cbe327913dd"/>
+<ag xml:id="g40" name="$36_pragma-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<ag xml:id="g41" name="$37_mark-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="annotation" ag="g21"><nt n="$36_pragma-option" a="p" ag="g40"/><nt n="$37_mark-option" a="p" ag="g41"/></r>
+<ag xml:id="g42" name="sp" mark="-"/>
+<ag xml:id="g43" name="$19_$4_alt-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="sp" ag="g42"><nt n="$19_$4_alt-star" a="p" ag="g43"/></r>
+<ag xml:id="g44" name="literal" mark="^"/>
+<r n="terminal" ag="g35"><nt n="literal" ag="g44"/></r>
+<ag xml:id="g45" name="charset" mark="-"/>
+<r n="terminal" ag="g35"><nt n="charset" ag="g45"/></r>
+<ag xml:id="g46" name="quoted" mark="-"/>
+<r n="literal" ag="g44"><nt n="quoted" ag="g46"/></r>
+<ag xml:id="g47" name="encoded" mark="-"/>
+<r n="literal" ag="g44"><nt n="encoded" ag="g47"/></r>
+<ag xml:id="g48" name="tannotation" mark="-"/>
+<ag xml:id="g49" name="string" mark="@"/>
+<r n="quoted" ag="g46"><nt n="tannotation" ag="g48"/><nt n="string" ag="g49"/></r>
+<ag xml:id="g50" name="namestart" mark="-"/>
+<ag xml:id="g51" name="$20_namefollower-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="name" ag="g22"><nt n="namestart" ag="g50"/><nt n="$20_namefollower-star" a="p" ag="g51"/></r>
+<r n="namestart" ag="g50"><t ag="g19"><cs ag="g10" inclusion="&quot;_&quot;;L"/></t></r>
+<ag xml:id="g52" name="namefollower" mark="-"/>
+<r n="namefollower" ag="g52"><nt n="namestart" ag="g50"/></r>
+<r n="namefollower" ag="g52"><t ag="g19"><cs ag="g10" inclusion="&quot;⁀·-.‿&quot;;Nd;Mn"/></t></r>
+<ag xml:id="g53" name="$38_pragma-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<ag xml:id="g54" name="$39_tmark-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="tannotation" ag="g48"><nt n="$38_pragma-option" a="p" ag="g53"/><nt n="$39_tmark-option" a="p" ag="g54"/></r>
+<ag xml:id="g55" name="tmark" mark="@"/>
+<r n="tmark" ag="g55"><t ag="g19"><cs ag="g10" inclusion="&quot;-^&quot;"/></t></r>
+<ag xml:id="g56" name="$13_dchar-plus" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="string" ag="g49"><t ag="g9"><c ag="g10" v="&quot;"/></t><nt n="$13_dchar-plus" a="p" ag="g56"/><t ag="g9"><c ag="g10" v="&quot;"/></t><nt n="s" ag="g5"/></r>
+<ag xml:id="g57" name="$14_schar-plus" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="string" ag="g49"><t ag="g9"><c ag="g10" v="'"/></t><nt n="$14_schar-plus" a="p" ag="g57"/><t ag="g9"><c ag="g10" v="'"/></t><nt n="s" ag="g5"/></r>
+<ag xml:id="g58" name="dchar" mark="^"/>
+<r n="dchar" ag="g58"><t ag="g19"><cs ag="g10" exclusion="&quot;&amp;quot;&quot;;'&#xa;';'&#xd;'"/></t></r>
+<r n="dchar" ag="g58"><t ag="g19"><c ag="g10" v="&quot;"/></t><t ag="g9"><c ag="g10" v="&quot;"/></t></r>
+<ag xml:id="g59" name="schar" mark="^"/>
+<r n="schar" ag="g59"><t ag="g19"><cs ag="g10" exclusion="&quot;'&quot;;'&#xa;';'&#xd;'"/></t></r>
+<r n="schar" ag="g59"><t ag="g19"><c ag="g10" v="'"/></t><t ag="g9"><c ag="g10" v="'"/></t></r>
+<ag xml:id="g60" name="hex" mark="@"/>
+<r n="encoded" ag="g47"><nt n="tannotation" ag="g48"/><t ag="g9"><c ag="g10" v="#"/></t><nt n="hex" ag="g60"/><nt n="s" ag="g5"/></r>
+<ag xml:id="g61" name="hex" mark="^"/>
+<ag xml:id="g62" name="$15_plus" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="hex" ag="g61"><nt n="$15_plus" a="p" ag="g62"/></r>
+<ag xml:id="g63" name="inclusion" mark="^"/>
+<r n="charset" ag="g45"><nt n="inclusion" ag="g63"/></r>
+<ag xml:id="g64" name="exclusion" mark="^"/>
+<r n="charset" ag="g45"><nt n="exclusion" ag="g64"/></r>
+<ag xml:id="g65" name="set" mark="-"/>
+<r n="inclusion" ag="g63"><nt n="tannotation" ag="g48"/><nt n="set" ag="g65"/></r>
+<r n="exclusion" ag="g64"><nt n="tannotation" ag="g48"/><t ag="g9"><c ag="g10" v="~"/></t><nt n="s" ag="g5"/><nt n="set" ag="g65"/></r>
+<ag xml:id="g66" name="$7_member-star-sep-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="set" ag="g65"><t ag="g9"><c ag="g10" v="["/></t><nt n="s" ag="g5"/><nt n="$7_member-star-sep-option" a="p" ag="g66"/><t ag="g9"><c ag="g10" v="]"/></t><nt n="s" ag="g5"/></r>
+<ag xml:id="g67" name="member" mark="-"/>
+<r n="member" ag="g67"><nt n="literal" ag="g44"/></r>
+<ag xml:id="g68" name="range" mark="^"/>
+<r n="member" ag="g67"><nt n="range" ag="g68"/></r>
+<ag xml:id="g69" name="class" mark="^"/>
+<r n="member" ag="g67"><nt n="class" ag="g69"/></r>
+<ag xml:id="g70" name="from" mark="@"/>
+<ag xml:id="g71" name="to" mark="@"/>
+<r n="range" ag="g68"><nt n="from" ag="g70"/><nt n="s" ag="g5"/><t ag="g9"><c ag="g10" v="-"/></t><nt n="s" ag="g5"/><nt n="to" ag="g71"/><nt n="s" ag="g5"/></r>
+<ag xml:id="g72" name="character" mark="-"/>
+<r n="from" ag="g70"><nt n="character" ag="g72"/></r>
+<r n="to" ag="g71"><nt n="character" ag="g72"/></r>
+<r n="character" ag="g72"><t ag="g9"><c ag="g10" v="&quot;"/></t><nt n="dchar" ag="g58"/><t ag="g9"><c ag="g10" v="&quot;"/></t></r>
+<r n="character" ag="g72"><t ag="g9"><c ag="g10" v="'"/></t><nt n="schar" ag="g59"/><t ag="g9"><c ag="g10" v="'"/></t></r>
+<r n="character" ag="g72"><t ag="g19"><c ag="g10" v="#"/></t><nt n="hex" ag="g61"/></r>
+<ag xml:id="g73" name="code" mark="@"/>
+<r n="class" ag="g69"><nt n="code" ag="g73"/><nt n="s" ag="g5"/></r>
+<ag xml:id="g74" name="capital" mark="-"/>
+<ag xml:id="g75" name="$40_letter-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="code" ag="g73"><nt n="capital" ag="g74"/><nt n="$40_letter-option" a="p" ag="g75"/></r>
+<r n="capital" ag="g74"><t ag="g19"><cs ag="g10" inclusion="'A'-'Z'"/></t></r>
+<ag xml:id="g76" name="letter" mark="-"/>
+<r n="letter" ag="g76"><t ag="g19"><cs ag="g10" inclusion="'a'-'z'"/></t></r>
+<ag xml:id="g77" name="pld" mark="-"/>
+<ag xml:id="g78" name="$41_pmark-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<ag xml:id="g79" name="$42_whitespace-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<ag xml:id="g80" name="prd" mark="-"/>
+<r n="pragma" ag="g8"><nt n="pld" ag="g77"/><nt n="$41_pmark-option" a="p" ag="g78"/><nt n="name" ag="g22"/><nt n="$42_whitespace-option" a="p" ag="g79"/><nt n="prd" ag="g80"/></r>
+<ag xml:id="g81" name="pmark" mark="@"/>
+<r n="pmark" ag="g81"><t ag="g19"><cs ag="g10" inclusion="&quot;@^?&quot;"/></t></r>
+<ag xml:id="g82" name="pragma-data" mark="^"/>
+<ag xml:id="g83" name="$21_$5_alt-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="pragma-data" ag="g82"><nt n="$21_$5_alt-star" a="p" ag="g83"/></r>
+<ag xml:id="g84" name="pragma-chars" mark="-"/>
+<ag xml:id="g85" name="$16_plus" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="pragma-chars" ag="g84"><nt n="$16_plus" a="p" ag="g85"/></r>
+<ag xml:id="g86" name="bracket-pair" mark="-"/>
+<ag xml:id="g87" name="pragma-data" mark="-"/>
+<r n="bracket-pair" ag="g86"><t ag="g19"><c ag="g10" v="{"/></t><nt n="pragma-data" ag="g87"/><t ag="g19"><c ag="g10" v="}"/></t></r>
+<r n="pld" ag="g77"><t ag="g9"><c ag="g10" v="{"/></t><t ag="g9"><c ag="g10" v="["/></t></r>
+<r n="prd" ag="g80"><t ag="g9"><c ag="g10" v="]"/></t><t ag="g9"><c ag="g10" v="}"/></t></r>
+<ag xml:id="g88" name="$1_alt" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$1_alt" a="p" ag="g88"><nt n="whitespace" ag="g12"/></r>
+<r n="$1_alt" a="p" ag="g88"><nt n="comment" ag="g16"/></r>
+<ag xml:id="g89" name="$2_alt" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$2_alt" a="p" ag="g89"><nt n="cchar" ag="g18"/></r>
+<r n="$2_alt" a="p" ag="g89"><nt n="comment" ag="g16"/></r>
+<ag xml:id="g90" name="$3_alt" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$3_alt" a="p" ag="g90"><nt n="comment" ag="g16"/></r>
+<r n="$3_alt" a="p" ag="g90"><t ag="g19"><cs ag="g10" exclusion="'[';']';&quot;{}&quot;"/></t></r>
+<ag xml:id="g91" name="$4_alt" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$4_alt" a="p" ag="g91"><nt n="whitespace" ag="g12"/></r>
+<r n="$4_alt" a="p" ag="g91"><nt n="comment" ag="g16"/></r>
+<r n="$4_alt" a="p" ag="g91"><nt n="pragma" ag="g8"/></r>
+<ag xml:id="g92" name="$5_alt" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$5_alt" a="p" ag="g92"><nt n="pragma-chars" ag="g84"/></r>
+<r n="$5_alt" a="p" ag="g92"><nt n="bracket-pair" ag="g86"/></r>
+<r n="$6_term-star-sep-option" a="p" ag="g29"></r>
+<ag xml:id="g93" name="$11_term-plus-sep" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$6_term-star-sep-option" a="p" ag="g29"><nt n="$11_term-plus-sep" a="p" ag="g93"/></r>
+<r n="$7_member-star-sep-option" a="p" ag="g66"></r>
+<ag xml:id="g94" name="$12_member-plus-sep" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$7_member-star-sep-option" a="p" ag="g66"><nt n="$12_member-plus-sep" a="p" ag="g94"/></r>
+<ag xml:id="g95" name="$22_s-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$8_rule-plus-sep" a="p" ag="g4"><nt n="rule" ag="g20"/><nt n="$22_s-star" a="p" ag="g95"/></r>
+<ag xml:id="g96" name="$9_ppragma-plus-sep" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<ag xml:id="g97" name="$23_s-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$9_ppragma-plus-sep" a="p" ag="g96"><nt n="ppragma" ag="g7"/><nt n="$23_s-star" a="p" ag="g97"/></r>
+<ag xml:id="g98" name="$24_star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$10_alt-plus-sep" a="p" ag="g27"><nt n="alt" ag="g28"/><nt n="$24_star" a="p" ag="g98"/></r>
+<ag xml:id="g99" name="$25_L,-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$11_term-plus-sep" a="p" ag="g93"><nt n="term" ag="g30"/><nt n="$25_L,-star" a="p" ag="g99"/></r>
+<ag xml:id="g100" name="$26_star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$12_member-plus-sep" a="p" ag="g94"><nt n="member" ag="g67"/><nt n="$26_star" a="p" ag="g100"/></r>
+<ag xml:id="g101" name="$27_dchar-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$13_dchar-plus" a="p" ag="g56"><nt n="dchar" ag="g58"/><nt n="$27_dchar-star" a="p" ag="g101"/></r>
+<ag xml:id="g102" name="$28_schar-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$14_schar-plus" a="p" ag="g57"><nt n="schar" ag="g59"/><nt n="$28_schar-star" a="p" ag="g102"/></r>
+<ag xml:id="g103" name="$29_star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$15_plus" a="p" ag="g62"><t ag="g19"><cs ag="g10" inclusion="'0'-'9';'a'-'f';'A'-'F'"/></t><nt n="$29_star" a="p" ag="g103"/></r>
+<ag xml:id="g104" name="$30_star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$16_plus" a="p" ag="g85"><t ag="g19"><cs ag="g10" exclusion="&quot;{}&quot;"/></t><nt n="$30_star" a="p" ag="g104"/></r>
+<ag xml:id="g105" name="$43_$1_alt-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$17_$1_alt-star" a="p" ag="g11"><nt n="$43_$1_alt-option" a="p" ag="g105"/></r>
+<ag xml:id="g106" name="$18_$2_alt-star" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<ag xml:id="g107" name="$44_$2_alt-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$18_$2_alt-star" a="p" ag="g106"><nt n="$44_$2_alt-option" a="p" ag="g107"/></r>
+<ag xml:id="g108" name="$45_$4_alt-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$19_$4_alt-star" a="p" ag="g43"><nt n="$45_$4_alt-option" a="p" ag="g108"/></r>
+<ag xml:id="g109" name="$46_namefollower-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$20_namefollower-star" a="p" ag="g51"><nt n="$46_namefollower-option" a="p" ag="g109"/></r>
+<ag xml:id="g110" name="$47_$5_alt-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$21_$5_alt-star" a="p" ag="g83"><nt n="$47_$5_alt-option" a="p" ag="g110"/></r>
+<ag xml:id="g111" name="$48_s-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$22_s-star" a="p" ag="g95"><nt n="$48_s-option" a="p" ag="g111"/></r>
+<ag xml:id="g112" name="$49_s-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$23_s-star" a="p" ag="g97"><nt n="$49_s-option" a="p" ag="g112"/></r>
+<ag xml:id="g113" name="$50_option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$24_star" a="p" ag="g98"><nt n="$50_option" a="p" ag="g113"/></r>
+<ag xml:id="g114" name="$51_L,-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$25_L,-star" a="p" ag="g99"><nt n="$51_L,-option" a="p" ag="g114"/></r>
+<ag xml:id="g115" name="$52_option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$26_star" a="p" ag="g100"><nt n="$52_option" a="p" ag="g115"/></r>
+<ag xml:id="g116" name="$53_dchar-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$27_dchar-star" a="p" ag="g101"><nt n="$53_dchar-option" a="p" ag="g116"/></r>
+<ag xml:id="g117" name="$54_schar-option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$28_schar-star" a="p" ag="g102"><nt n="$54_schar-option" a="p" ag="g117"/></r>
+<ag xml:id="g118" name="$55_option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$29_star" a="p" ag="g103"><nt n="$55_option" a="p" ag="g118"/></r>
+<ag xml:id="g119" name="$56_option" httpsE3a.E2f.E2f.ninemlE2e.orgE2f.attrE2f.prune="allowed" mark="-"/>
+<r n="$30_star" a="p" ag="g104"><nt n="$56_option" a="p" ag="g119"/></r>
+<r n="$31_$9_ppragma-plus-sep-option" a="p" ag="g6"></r>
+<r n="$31_$9_ppragma-plus-sep-option" a="p" ag="g6"><nt n="$9_ppragma-plus-sep" a="p" ag="g96"/><nt n="s" ag="g5"/></r>
+<r n="$32_$3_alt-option" a="p" ag="g17"></r>
+<r n="$32_$3_alt-option" a="p" ag="g17"><nt n="$3_alt" a="p" ag="g90"/><nt n="$18_$2_alt-star" a="p" ag="g106"/></r>
+<r n="$33_pragma-option" a="p" ag="g24"></r>
+<r n="$33_pragma-option" a="p" ag="g24"><nt n="pragma" ag="g8"/><nt n="sp" ag="g42"/></r>
+<r n="$34_sep-option" a="p" ag="g37"></r>
+<r n="$34_sep-option" a="p" ag="g37"><nt n="sep" ag="g39"/></r>
+<r n="$35_sep-option" a="p" ag="g38"></r>
+<r n="$35_sep-option" a="p" ag="g38"><nt n="sep" ag="g39"/></r>
+<r n="$36_pragma-option" a="p" ag="g40"></r>
+<r n="$36_pragma-option" a="p" ag="g40"><nt n="pragma" ag="g8"/><nt n="sp" ag="g42"/></r>
+<r n="$37_mark-option" a="p" ag="g41"></r>
+<r n="$37_mark-option" a="p" ag="g41"><nt n="mark" ag="g25"/><nt n="sp" ag="g42"/></r>
+<r n="$38_pragma-option" a="p" ag="g53"></r>
+<r n="$38_pragma-option" a="p" ag="g53"><nt n="pragma" ag="g8"/><nt n="sp" ag="g42"/></r>
+<r n="$39_tmark-option" a="p" ag="g54"></r>
+<r n="$39_tmark-option" a="p" ag="g54"><nt n="tmark" ag="g55"/><nt n="sp" ag="g42"/></r>
+<r n="$40_letter-option" a="p" ag="g75"></r>
+<r n="$40_letter-option" a="p" ag="g75"><nt n="letter" ag="g76"/></r>
+<r n="$41_pmark-option" a="p" ag="g78"></r>
+<r n="$41_pmark-option" a="p" ag="g78"><nt n="pmark" ag="g81"/></r>
+<r n="$42_whitespace-option" a="p" ag="g79"></r>
+<r n="$42_whitespace-option" a="p" ag="g79"><nt n="whitespace" ag="g12"/><nt n="pragma-data" ag="g82"/></r>
+<r n="$43_$1_alt-option" a="p" ag="g105"></r>
+<r n="$43_$1_alt-option" a="p" ag="g105"><nt n="$1_alt" a="p" ag="g88"/><nt n="$17_$1_alt-star" a="p" ag="g11"/></r>
+<r n="$44_$2_alt-option" a="p" ag="g107"></r>
+<r n="$44_$2_alt-option" a="p" ag="g107"><nt n="$2_alt" a="p" ag="g89"/><nt n="$18_$2_alt-star" a="p" ag="g106"/></r>
+<r n="$45_$4_alt-option" a="p" ag="g108"></r>
+<r n="$45_$4_alt-option" a="p" ag="g108"><nt n="$4_alt" a="p" ag="g91"/><nt n="$19_$4_alt-star" a="p" ag="g43"/></r>
+<r n="$46_namefollower-option" a="p" ag="g109"></r>
+<r n="$46_namefollower-option" a="p" ag="g109"><nt n="namefollower" ag="g52"/><nt n="$20_namefollower-star" a="p" ag="g51"/></r>
+<r n="$47_$5_alt-option" a="p" ag="g110"></r>
+<r n="$47_$5_alt-option" a="p" ag="g110"><nt n="$5_alt" a="p" ag="g92"/><nt n="$21_$5_alt-star" a="p" ag="g83"/></r>
+<r n="$48_s-option" a="p" ag="g111"></r>
+<r n="$48_s-option" a="p" ag="g111"><nt n="s" ag="g5"/><nt n="rule" ag="g20"/><nt n="$22_s-star" a="p" ag="g95"/></r>
+<r n="$49_s-option" a="p" ag="g112"></r>
+<r n="$49_s-option" a="p" ag="g112"><nt n="s" ag="g5"/><nt n="ppragma" ag="g7"/><nt n="$23_s-star" a="p" ag="g97"/></r>
+<r n="$50_option" a="p" ag="g113"></r>
+<r n="$50_option" a="p" ag="g113"><t ag="g9"><cs ag="g10" inclusion="&quot;;|&quot;"/></t><nt n="s" ag="g5"/><nt n="alt" ag="g28"/><nt n="$24_star" a="p" ag="g98"/></r>
+<r n="$51_L,-option" a="p" ag="g114"></r>
+<r n="$51_L,-option" a="p" ag="g114"><t ag="g9"><c ag="g10" v=","/></t><nt n="s" ag="g5"/><nt n="term" ag="g30"/><nt n="$25_L,-star" a="p" ag="g99"/></r>
+<r n="$52_option" a="p" ag="g115"></r>
+<r n="$52_option" a="p" ag="g115"><t ag="g9"><cs ag="g10" inclusion="&quot;;|&quot;"/></t><nt n="s" ag="g5"/><nt n="member" ag="g67"/><nt n="$26_star" a="p" ag="g100"/></r>
+<r n="$53_dchar-option" a="p" ag="g116"></r>
+<r n="$53_dchar-option" a="p" ag="g116"><nt n="dchar" ag="g58"/><nt n="$27_dchar-star" a="p" ag="g101"/></r>
+<r n="$54_schar-option" a="p" ag="g117"></r>
+<r n="$54_schar-option" a="p" ag="g117"><nt n="schar" ag="g59"/><nt n="$28_schar-star" a="p" ag="g102"/></r>
+<r n="$55_option" a="p" ag="g118"></r>
+<r n="$55_option" a="p" ag="g118"><t ag="g19"><cs ag="g10" inclusion="'0'-'9';'a'-'f';'A'-'F'"/></t><nt n="$29_star" a="p" ag="g103"/></r>
+<r n="$56_option" a="p" ag="g119"></r>
+<r n="$56_option" a="p" ag="g119"><t ag="g19"><cs ag="g10" exclusion="&quot;{}&quot;"/></t><nt n="$30_star" a="p" ag="g104"/></r>
+<check sum="995517a981ef93e6"/>
 </grammar>
 

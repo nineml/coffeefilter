@@ -1,7 +1,7 @@
 { ixml with pragmas, hacked by ndw to remove qnames }
 
-         ixml: prolog, rule+s, s. 
-       prolog: s, (ppragma+s, s)?. 
+         ixml: prolog, rule++s, s. 
+       prolog: s, (ppragma++s, s)?. 
      -ppragma: pragma, s, -'.'.
 
            -s: (whitespace; comment)*.
@@ -15,8 +15,8 @@
          rule: annotation, name, s, -["=:"], s, -alts, (pragma, sp)?, -".". 
 
         @mark: ["@^-"].
-         alts: alt+(-[";|"], s).
-          alt: term*(-",", s).
+         alts: alt++(-[";|"], s).
+          alt: term**(-",", s).
         -term: factor;
                option;
                repeat0;
@@ -62,7 +62,7 @@
                exclusion.
     inclusion: tannotation,          set.
     exclusion: tannotation, -"~", s, set.
-         -set: -"[", s,  member*(-[";|"], s), -"]", s.
+         -set: -"[", s,  member**(-[";|"], s), -"]", s.
       -member: literal;
                range;
                class.
