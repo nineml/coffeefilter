@@ -1,14 +1,12 @@
 package org.nineml.coffeefilter.model;
 
 import org.nineml.coffeefilter.ParserOptions;
-import org.nineml.coffeegrinder.parser.CompiledGrammar;
-import org.nineml.coffeegrinder.parser.Grammar;
+import org.nineml.coffeegrinder.parser.ParserGrammar;
 import org.nineml.coffeegrinder.parser.SourceGrammar;
 import org.nineml.coffeegrinder.util.GrammarCompiler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * An API to compiled grammars.
@@ -27,7 +25,7 @@ public class IxmlCompiler {
      */
     public String compile(SourceGrammar grammar) {
         GrammarCompiler compiler = new GrammarCompiler();
-        CompiledGrammar cgrammar = grammar.getCompiledGrammar(grammar.getNonterminal("$$"));
+        ParserGrammar cgrammar = grammar.getCompiledGrammar(grammar.getNonterminal("$$"));
         return compiler.compile(cgrammar);
     }
 
