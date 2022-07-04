@@ -24,3 +24,19 @@ P005: Parse failed: %2.
 DT01: Mixed content not allowed in data tree.
 DT02: Duplicate names forbidden: %2.
 CV01: Tree does not support CSV serialization.
+XB01: Document already started.
+XB02: Document not started.
+XB04: Attempt to redefine namespace prefix: %1.
+XB05: Attributes are only allowed immediately after starting an element.
+XB06: Attempt to redefine attribute: %1.
+XB07: Unbalanced start/end tags (‘%1’ expected).
+XB08: Unbalanced start/end tags (‘%1’ expected when ‘%2’ occurred).
+XB09: End element not allowed here.
+XB10: Comment not allowed here.
+XB11: Processing instruction not allowed here.
+XB12: Text not allowed here.
+XB13: Invalid character in XML name: ‘%1’.
+XB14: Invalid character in namespace prefix: ‘%1’.
+XB15: Unbalanced start/end tags (too many ends).
+XB16: Invalid character in text: ‘%1’.
+
