@@ -1,4 +1,4 @@
-package org.nineml.coffeefilter.utils;
+package org.nineml.coffeefilter.util;
 
 import org.nineml.coffeefilter.InvisibleXml;
 import org.nineml.coffeefilter.ParserOptions;
@@ -9,7 +9,6 @@ import org.nineml.coffeegrinder.parser.Symbol;
 import org.nineml.coffeegrinder.parser.TreeBuilder;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
-import org.nineml.coffeegrinder.tokens.TokenString;
 import org.nineml.coffeegrinder.util.ParserAttribute;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

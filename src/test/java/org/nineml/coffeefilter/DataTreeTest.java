@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
-import org.nineml.coffeefilter.utils.AttributeBuilder;
+import org.nineml.coffeefilter.util.AttributeBuilder;
 import org.xml.sax.SAXException;
 
 import static junit.framework.TestCase.fail;

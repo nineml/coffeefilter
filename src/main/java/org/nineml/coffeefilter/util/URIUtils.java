@@ -1,4 +1,4 @@
-package org.nineml.coffeefilter.utils;
+package org.nineml.coffeefilter.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;

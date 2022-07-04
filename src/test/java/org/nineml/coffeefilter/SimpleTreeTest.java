@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.nineml.coffeefilter.trees.SimpleText;
 import org.nineml.coffeefilter.trees.SimpleTree;
 import org.nineml.coffeefilter.trees.SimpleTreeBuilder;
-import org.nineml.coffeefilter.utils.AttributeBuilder;
+import org.nineml.coffeefilter.util.AttributeBuilder;
 
 import java.io.File;
 

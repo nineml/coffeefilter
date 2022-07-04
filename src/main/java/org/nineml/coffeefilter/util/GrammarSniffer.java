@@ -1,4 +1,4 @@
-package org.nineml.coffeefilter.utils;
+package org.nineml.coffeefilter.util;
 
 public class GrammarSniffer {
     public static final int UNK_SOURCE = -1;

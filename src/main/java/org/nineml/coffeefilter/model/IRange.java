@@ -1,7 +1,7 @@
 package org.nineml.coffeefilter.model;
 
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.utils.TokenUtils;
+import org.nineml.coffeefilter.util.TokenUtils;
 import org.nineml.coffeegrinder.tokens.CharacterSet;
 
 import java.io.PrintStream;

@@ -187,4 +187,22 @@ public class ParserTest {
                 doc.getTree());
     }
 
+    @Test
+    public void balisageExample() {
+        ParserOptions options = new ParserOptions();
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        String grammar = "S = A|B. A = 'a'. B = 'b'.";
+        InvisibleXmlParser parser = ixml.getParserFromIxml(grammar);
+
+        String input = "b";
+        InvisibleXmlDocument document = parser.parse(input);
+
+        String xml = document.getTree();
+
+        //System.out.println(xml);
+
+        Assertions.assertEquals("<S><B>b</B></S>", xml);
+    }
+
 }

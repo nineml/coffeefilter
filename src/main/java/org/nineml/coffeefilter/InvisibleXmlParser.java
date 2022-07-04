@@ -2,8 +2,6 @@ package org.nineml.coffeefilter;
 
 import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.model.IxmlCompiler;
-import org.nineml.coffeefilter.utils.CharacterIterator;
-import org.nineml.coffeefilter.utils.IxmlInputBuilder;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
@@ -16,7 +14,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLConnection;
 import java.nio.file.Files;
-import java.util.Iterator;
 
 /**
  * A parser for a particular Invisible XML grammar.

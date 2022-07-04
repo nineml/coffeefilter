@@ -4,7 +4,7 @@ import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
 import org.nineml.coffeefilter.trees.SimpleTree;
 import org.nineml.coffeefilter.trees.SimpleTreeBuilder;
-import org.nineml.coffeefilter.utils.AttributeBuilder;
+import org.nineml.coffeefilter.util.AttributeBuilder;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 

@@ -2,7 +2,7 @@ package org.nineml.coffeefilter;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.nineml.coffeefilter.utils.GrammarSniffer;
+import org.nineml.coffeefilter.util.GrammarSniffer;
 
 import java.nio.charset.StandardCharsets;
 

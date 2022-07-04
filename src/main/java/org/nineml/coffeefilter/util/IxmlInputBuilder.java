@@ -1,4 +1,4 @@
-package org.nineml.coffeefilter.utils;
+package org.nineml.coffeefilter.util;
 
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;

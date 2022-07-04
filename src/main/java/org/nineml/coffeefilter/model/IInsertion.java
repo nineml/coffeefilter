@@ -1,12 +1,8 @@
 package org.nineml.coffeefilter.model;
 
-import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.utils.TokenUtils;
-import org.nineml.coffeegrinder.tokens.CharacterSet;
+import org.nineml.coffeefilter.util.TokenUtils;
 
 import java.io.PrintStream;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**

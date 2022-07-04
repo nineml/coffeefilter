@@ -3,11 +3,7 @@ package org.nineml.coffeefilter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.trees.DataTreeBuilder;
-import org.nineml.coffeefilter.utils.TokenUtils;
 import org.nineml.coffeegrinder.parser.*;
-import org.nineml.coffeegrinder.util.GrammarCompiler;
 
 import java.io.File;
 

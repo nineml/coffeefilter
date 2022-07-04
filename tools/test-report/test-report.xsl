@@ -619,11 +619,16 @@
   <details>
     <summary>Invisible XML Grammar</summary>
     <div class="grammar">
-      <pre>
-        <code>
-          <xsl:sequence select="unparsed-text(resolve-uri(@href, base-uri(.)))"/>
-        </code>
-      </pre>
+      <xsl:try>
+        <pre>
+          <code>
+            <xsl:sequence select="unparsed-text(resolve-uri(@href, base-uri(.)))"/>
+          </code>
+        </pre>
+        <xsl:catch>
+          <p><em>Document could not be loaded (perhaps invalid XML characters?)</em></p>
+        </xsl:catch>
+      </xsl:try>
     </div>
   </details>
 </xsl:template>
@@ -659,10 +664,16 @@
 </xsl:template>
 
 <xsl:template match="t:test-string|t:test-string-ref">
-  <xsl:variable name="input"
-                select="if (self::t:test-string)
-                        then string(.)
-                        else unparsed-text(resolve-uri(@href, base-uri(.)))"/>
+  <xsl:variable name="input" as="xs:string">
+    <xsl:try>
+      <xsl:sequence select="if (self::t:test-string)
+                            then string(.)
+                            else unparsed-text(resolve-uri(@href, base-uri(.)))"/>
+      <xsl:catch>
+        <p><em>Document could not be loaded (perhaps invalid XML characters?)</em></p>
+      </xsl:catch>
+    </xsl:try>
+  </xsl:variable>
   <details>
     <summary>
       <xsl:text>Input string ({string-length($input)}</xsl:text>

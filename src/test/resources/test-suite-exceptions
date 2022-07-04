@@ -7,4 +7,6 @@ set "leading-embedded-nullable"
     case "leading-nullable" because I get it wrong.
 set "insert-separator-alternate"
     case "iSepAlt-1" because I think the expected results are incorrect.
-
+set "sample.grammar.57"
+    case "g57.c05" because my valid result isn't in the expected results.
+    case "g57.c10" because my valid result isn't in the expected results.
