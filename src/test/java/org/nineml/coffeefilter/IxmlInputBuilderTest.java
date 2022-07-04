@@ -2,7 +2,7 @@ package org.nineml.coffeefilter;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.nineml.coffeefilter.utils.IxmlInputBuilder;
+import org.nineml.coffeefilter.util.IxmlInputBuilder;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.ParserAttribute;

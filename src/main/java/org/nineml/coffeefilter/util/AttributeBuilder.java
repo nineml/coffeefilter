@@ -1,8 +1,7 @@
-package org.nineml.coffeefilter.utils;
+package org.nineml.coffeefilter.util;
 
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeegrinder.exceptions.GrammarException;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;

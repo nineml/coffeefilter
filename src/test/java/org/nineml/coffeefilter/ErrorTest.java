@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
-import org.nineml.coffeefilter.utils.TokenUtils;
+import org.nineml.coffeefilter.util.TokenUtils;
 
 import static junit.framework.TestCase.fail;
 

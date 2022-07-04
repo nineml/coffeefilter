@@ -2,8 +2,6 @@ package org.nineml.coffeefilter.trees;
 
 import org.nineml.coffeefilter.InvisibleXmlDocument;
 import org.nineml.coffeefilter.ParserOptions;
-import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.utils.TokenUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

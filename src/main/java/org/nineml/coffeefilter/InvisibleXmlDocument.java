@@ -2,8 +2,8 @@ package org.nineml.coffeefilter;
 
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.StringTreeBuilder;
-import org.nineml.coffeefilter.utils.AttributeBuilder;
-import org.nineml.coffeefilter.utils.EventBuilder;
+import org.nineml.coffeefilter.util.AttributeBuilder;
+import org.nineml.coffeefilter.util.EventBuilder;
 import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;

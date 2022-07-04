@@ -1,7 +1,6 @@
-package org.nineml.coffeefilter.utils;
+package org.nineml.coffeefilter.util;
 
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeegrinder.tokens.CharacterSet;
 
 /**
  * Utility methods for tokens and names.
@@ -40,7 +39,8 @@ public class TokenUtils {
      * in the Fifth Edition. That's not what all parsers actually implement, but
      * [expletive deleted] that.</p>
      * @param name the name
-     * @return true if it is a valid XML 1.0 5th edition XML name.
+     * @throws NullPointerException if the name is null
+     * @throws IxmlException if the name is invalid
      */
     public static void assertXmlName(String name) {
         if (name == null) {
@@ -68,7 +68,7 @@ public class TokenUtils {
         }
     }
 
-    private static boolean nameStartChar(int ch) {
+    public static boolean nameStartChar(int ch) {
         // [4] NameStartChar ::= [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF]
         //                       | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F]
         //                       | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD]
@@ -93,7 +93,7 @@ public class TokenUtils {
                 || (ch >= 0x10000 && ch <= 0xEFFFF);
     }
 
-    private static boolean nameChar(int ch) {
+    public static boolean nameChar(int ch) {
         // [4a]	NameChar ::= NameStartChar | "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
         return nameStartChar(ch)
                 || ch == '-'
@@ -115,11 +115,14 @@ public class TokenUtils {
     }
 
     // Not really about tokens, but this seems like the right place.
+    public static boolean xmlChar(int codepoint) {
+        return (codepoint == 0x9 || codepoint == 0xA || codepoint == 0xD || (codepoint >= ' ' && codepoint <= 0xD7FF)
+                || (codepoint >= 0xE000 & codepoint <= 0xFFFD)
+                || (codepoint >= 0x10000 && codepoint <= 0x10FFFF));
+    }
+
     public static void assertXmlChars(int codepoint) {
-        if (codepoint == 0x9 || codepoint == 0xA || codepoint == 0xD || (codepoint >= ' ' && codepoint <= 0xD7FF)
-                || (codepoint >= 0xE000 & codepoint <= 0xFFFD) || (codepoint >= 0x10000 && codepoint <= 0x10FFFF)) {
-            // ok
-        } else {
+        if (!xmlChar(codepoint)) {
             throw IxmlException.invalidXmlCharacter(""+codepoint);
         }
     }
