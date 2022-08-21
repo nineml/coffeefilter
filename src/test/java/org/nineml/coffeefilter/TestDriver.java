@@ -8,6 +8,7 @@ import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
 import org.nineml.coffeegrinder.exceptions.GrammarException;
 import org.nineml.coffeegrinder.parser.ParserType;
+import org.nineml.coffeegrinder.util.StopWatch;
 
 import java.io.*;
 import java.net.URI;
@@ -57,6 +58,8 @@ public class TestDriver {
 
     public InvisibleXml invisibleXml;
     public DataTree exceptions = null;
+    public int totalTests;
+    public int testsRun;
     public ArrayList<XdmNode> testsToRun = new ArrayList<>();
     public HashMap<XdmNode, TestConfiguration> testConfigurations = new HashMap<>();
     public ArrayList<XdmNode> testsToSkip = new ArrayList<>();
@@ -141,6 +144,9 @@ public class TestDriver {
                 }
             }
         }
+
+        totalTests = testsToRun.size();
+        testsRun = 0;
 
         for (XdmNode testCase : testsToRun) {
             XdmNode testSet = testCase.getParent();
@@ -240,11 +246,23 @@ public class TestDriver {
         boolean allowUnproductiveRules = options.getAllowUnproductiveSymbols();
         boolean allowMultiple = options.getAllowMultipleDefinitions();
 
+        testsRun++;
+        String setName = config.testSet.getAttributeValue(_name);
+        String caseName = testCase.getAttributeValue(_name);
+
         try {
+            StopWatch watch = new StopWatch();
             if (t_grammar_test.equals(testCase.getNodeName())) {
                 doGrammarTest(config, testCase);
             } else {
                 doRunTest(config, testCase);
+            }
+            watch.stop();
+
+            if (caseName == null) {
+                System.err.printf("%03d/%03d ran set %s in %s%n", testsRun, totalTests, setName, watch.elapsed());
+            } else {
+                System.err.printf("%03d/%03dRan set %s case %s in %s%n", testsRun, totalTests, setName, caseName, watch.elapsed());
             }
 
             for (XdmNode appInfo : appInfo(testCase)) {
@@ -256,10 +274,18 @@ public class TestDriver {
                     // Last because it also enables unproductive nonterminals
                     options.setAllowUndefinedSymbols(!"error".equals(okopts.getOrDefault(ap_undefined_symbols, "error")));
 
+                    watch = new StopWatch();
                     if (t_grammar_test.equals(testCase.getNodeName())) {
                         doGrammarTest(config, testCase, appInfo);
                     } else {
                         doRunTest(config, testCase, appInfo);
+                    }
+                    watch.stop();
+
+                    if (caseName == null) {
+                        System.err.printf("%03d/%03d ran set %s (with appinfo) in %s%n", testsRun, totalTests, setName, watch.elapsed());
+                    } else {
+                        System.err.printf("%03d/%03dRan set %s case %s (with appinfo) in %s%n", testsRun, totalTests, setName, caseName, watch.elapsed());
                     }
 
                     options.setAllowUndefinedSymbols(allowUndefinedSymbols);
@@ -580,6 +606,9 @@ public class TestDriver {
                 throw new RuntimeException("Did not find element to compare against in assertion?: " + testCase.getBaseURI());
             }
 
+            System.err.println("EX:" + expected);
+            System.err.println("AC:" + node);
+
             same = deepEqual(expected, node, result);
             if (same) {
                 break;
@@ -867,6 +896,11 @@ public class TestDriver {
             DataTree dataSet = null;
 
             String thisSet = testSet.getAttributeValue(_name);
+
+            if (thisSet == null) {
+                throw new RuntimeException("No name on test-set: " + testSet);
+            }
+
             boolean process = setName == null || setName.equals(thisSet);
             if (setName == null) {
                 // What about exceptions?

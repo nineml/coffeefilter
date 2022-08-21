@@ -107,6 +107,9 @@ ext {
   parserType = project.findProperty("parserType") ?: "earley"
   ignoreFailure = (project.findProperty("ignoreFailure") ?: "false") == "true" ? true : false
   pedantic = (project.findProperty("pedantic") ?: "false") == "true" ? true : false
+  suite = project.findProperty("testSuite") ?: null
+  testSet = project.findProperty("testSet") ?: null
+  testCase = project.findProperty("testCase") ?: null
 }
 
 saxon.configure {
@@ -130,6 +133,7 @@ task testSuite(type: JavaExec,
 
   String exceptionsFile = null
   String outputXML = null
+  String[] javaArgs = [];
   
   if (pedantic) {
     exceptionsFile = "${projectDir}/src/test/resources/pedantic-test-suite-exceptions"
@@ -142,14 +146,32 @@ task testSuite(type: JavaExec,
   inputs.file exceptionsFile
   outputs.file outputXML
 
+  javaArgs = ["-e:${exceptionsFile}",
+              "-r:${outputXML}",
+              parserType == "earley" ? "--earley" : "--gll",
+              pedantic ? '--pedantic' : '--not-pedantic']
+
+  if (testSet != null) {
+    javaArgs += "-s:${testSet}"
+  }
+
+  if (testCase != null) {
+    javaArgs += "-t:${testCase}"
+  }
+
+  if (suite == null) {
+    suite = 'ixml/tests/test-catalog.xml'
+  }
+  javaArgs += suite
+
+  doFirst {
+    println("TestDriver --${parserType} ${suite}");
+  }
+
   ignoreExitValue = ignoreFailure
   classpath = configurations.testsuite
   main = 'org.nineml.coffeefilter.TestDriver'
-  args = ["-e:${exceptionsFile}",
-          "-r:${outputXML}",
-          parserType == "earley" ? "--earley" : "--gll",
-          pedantic ? '--pedantic' : '--not-pedantic',
-          'ixml/tests/test-catalog.xml']
+  args javaArgs
 }
 
 task testSuiteReport(type: SaxonXsltTask, dependsOn: ["testSuite"]) {
@@ -180,7 +202,7 @@ task testSuiteReport(type: SaxonXsltTask, dependsOn: ["testSuite"]) {
     }
   }
 }
-testSuite.finalizedBy testSuiteReport
+tasks.findByName("testSuite").finalizedBy "testSuiteReport"
 
 jar {
   archiveBaseName = "${filterTitle}-${filterVersion}"
