@@ -9,6 +9,7 @@ public class IProlog extends XNonterminal {
     @Override
     protected XNode copy() {
         IProlog prolog = new IProlog(parent);
+        prolog.copyChildren(getChildren());
         return prolog;
     }
 }

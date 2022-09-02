@@ -28,7 +28,8 @@ public class Ixml extends XNonterminal {
     private SourceGrammar grammar = null;
     protected IRule emptyProduction = null;
     protected String version = "1.0";
-
+    protected final RuleRewriter ruleRewriter;
+    protected final ArrayList<XNode> originalRules;
     /**
      * Construct an Ixml.
      */
@@ -36,6 +37,19 @@ public class Ixml extends XNonterminal {
         super(null, "ixml", "$$_ixml");
         this.options = options;
         ixmlns = new HashMap<>();
+
+        if (options.getRuleRewriter() == null) {
+            if ("GLL".equals(options.getParserType())) {
+                ruleRewriter = new RuleRewriterSpec();
+            } else {
+                ruleRewriter = new RuleRewriterAlternate();
+            }
+        } else {
+            ruleRewriter = options.getRuleRewriter();
+        }
+
+        ruleRewriter.setRoot(this);
+        originalRules = new ArrayList<>();
     }
 
     /**
@@ -49,6 +63,19 @@ public class Ixml extends XNonterminal {
         grammarRules.addAll(grammar.getRules());
         this.options = options;
         ixmlns = new HashMap<>();
+
+        if (options.getRuleRewriter() == null) {
+            if ("GLL".equals(options.getParserType())) {
+                ruleRewriter = new RuleRewriterSpec();
+            } else {
+                ruleRewriter = new RuleRewriterAlternate();
+            }
+        } else {
+            ruleRewriter = options.getRuleRewriter();
+        }
+
+        ruleRewriter.setRoot(this);
+        originalRules = new ArrayList<>();
     }
 
     public String getIxmlVersion() {
@@ -139,6 +166,8 @@ public class Ixml extends XNonterminal {
             }
         }
 
+        setupOriginalRules();
+
         flatten();
 
         ArrayList<XNode> newchildren = new ArrayList<>();
@@ -172,6 +201,21 @@ public class Ixml extends XNonterminal {
         constructGrammar(options);
     }
 
+    private void setupOriginalRules() {
+        for (XNode child : children) {
+            XNode copied = child.copy();
+            originalRules.add(copied);
+            setupDerivation(child, copied);
+        }
+    }
+
+    private void setupDerivation(XNode original, XNode copy) {
+        original.derivedFrom = copy;
+        for (int pos = 0; pos < original.children.size(); pos++) {
+            setupDerivation(original.children.get(pos), copy.children.get(pos));
+        }
+    }
+
     protected void simplify() {
         // Make sure we have a top-level rule that will have only one rhs
         // even if the user's seed rule winds up having alternatives
@@ -194,34 +238,30 @@ public class Ixml extends XNonterminal {
         newchildren = null;
 
         // N.B. The order of these steps matters
-        children = simplifRepeat0Sep();
-        if (newRules != null) {
-            children.addAll(newRules);
-            newRules = null;
-        }
-
-        children = simplifyRepeat1Sep();
-        if (newRules != null) {
-            children.addAll(newRules);
-            newRules = null;
-        }
-
-        children = simplifyRepeat1();
-        if (newRules != null) {
-            children.addAll(newRules);
-            newRules = null;
-        }
-
-        children = simplifyRepeat0();
-        if (newRules != null) {
-            children.addAll(newRules);
-            newRules = null;
-        }
-
-        children = simplifyOption();
-        if (newRules != null) {
-            children.addAll(newRules);
-            newRules = null;
+        for (RuleRewrites rewrite : ruleRewriter.rewriteOrder()) {
+            switch (rewrite) {
+                case REPEAT0SEP:
+                    children = simplifyRepeat0Sep();
+                    break;
+                case REPEAT1SEP:
+                    children = simplifyRepeat1Sep();
+                    break;
+                case REPEAT0:
+                    children = simplifyRepeat0();
+                    break;
+                case REPEAT1:
+                    children = simplifyRepeat1();
+                    break;
+                case OPTION:
+                    children = simplifyOption();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected rewrite rule: " + rewrite);
+            }
+            if (newRules != null) {
+                children.addAll(newRules);
+                newRules = null;
+            }
         }
     }
 

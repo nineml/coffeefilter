@@ -66,12 +66,14 @@ public class IRule extends XNonterminal {
             } else {
                 String newname = root.nextRuleName(child.getNodeName());
                 INonterminal newnt = new INonterminal(parent, newname, '-');
+                newnt.derivedFrom = child;
                 newchildren.add(newnt);
 
                 newnt.optional = child.optional;
 
                 IRule rule;
                 rule = new IRule(root, newname, '-');
+                rule.derivedFrom = child;
                 rule.optional = newnt.optional;
 
                 for (XNode grandchild : child.children) {

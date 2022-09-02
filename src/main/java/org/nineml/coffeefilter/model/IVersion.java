@@ -19,6 +19,8 @@ public class IVersion extends XNonterminal {
     @Override
     protected XNode copy() {
         IVersion version = new IVersion(parent, name);
+        version.versionString = versionString;
+        version.copyChildren(getChildren());
         return version;
     }
 

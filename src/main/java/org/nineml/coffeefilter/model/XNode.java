@@ -1,6 +1,5 @@
 package org.nineml.coffeefilter.model;
 
-import org.nineml.coffeegrinder.parser.NonterminalSymbol;
 import org.xml.sax.Attributes;
 
 import java.io.PrintStream;
@@ -16,6 +15,7 @@ public abstract class XNode {
     protected final String nodeName;
     protected final ArrayList<IPragma> pragmas = new ArrayList<>();
     protected String name = null;
+    protected XNode derivedFrom = null;
     protected XNode parent;
     protected ArrayList<XNode> children;
     protected boolean optional = false;
@@ -245,6 +245,7 @@ public abstract class XNode {
         XNode copy = child.copy();
         copy.optional = child.optional;
         copy.parent = this;
+        copy.derivedFrom = derivedFrom;
         children.add(copy);
         return copy;
     }
@@ -571,14 +572,14 @@ public abstract class XNode {
         children = newchildren;
     }
 
-    private XNode lastChild() {
+    protected XNode lastChild() {
         if (!children.isEmpty()) {
             return children.get(children.size() - 1);
         }
         return null;
     }
 
-    private String getNewRuleName(XNode node, String suffix) {
+    public String getNewRuleName(XNode node, String suffix) {
         String prefix = null;
         if (!node.children.isEmpty()) {
             XNode first = node.children.get(0);
@@ -609,29 +610,15 @@ public abstract class XNode {
         return getRoot().nextRuleName(sb + "-" + suffix);
     }
 
-    protected ArrayList<XNode> simplifRepeat0Sep() {
+    protected ArrayList<XNode> simplifyRepeat0Sep() {
+        Ixml root = getRoot();
+
         if (hasChild("repeat0")) {
             ArrayList<XNode> newchildren = new ArrayList<>();
             for (XNode child : children) {
-                child.children = child.simplifRepeat0Sep();
+                child.children = child.simplifyRepeat0Sep();
                 if (child instanceof IRepeat0 && child.lastChild() instanceof ISep) {
-                    Ixml root = getRoot();
-                    XNode parent = child.parent;
-
-                    String name = getNewRuleName(child, "star-sep-option");
-                    INonterminal f_star_sep_option = new INonterminal(parent, name, '-');
-                    newchildren.add(f_star_sep_option);
-
-                    IRule f_star_sep_option_rule = new IRule(root, name, '-');
-                    root.addRule(f_star_sep_option_rule);
-
-                    f_star_sep_option_rule = new IRule(root, name, '-');
-                    IRepeat1 f_plus_sep = new IRepeat1(f_star_sep_option_rule);
-                    for (XNode grandchild : child.children) {
-                        f_plus_sep.addCopy(grandchild);
-                    }
-                    f_star_sep_option_rule.children.add(f_plus_sep);
-                    root.addRule(f_star_sep_option_rule);
+                    newchildren.addAll(root.ruleRewriter.rewriteRepeat0Sep((IRepeat0) child));
                 } else {
                     newchildren.add(child);
                 }
@@ -639,7 +626,7 @@ public abstract class XNode {
             return newchildren;
         } else {
             for (XNode child : children) {
-                child.children = child.simplifRepeat0Sep();
+                child.children = child.simplifyRepeat0Sep();
             }
         }
 
@@ -647,35 +634,14 @@ public abstract class XNode {
     }
 
     protected ArrayList<XNode> simplifyRepeat1Sep() {
+        Ixml root = getRoot();
+
         if (hasChild("repeat1")) {
             ArrayList<XNode> newchildren = new ArrayList<>();
             for (XNode child : children) {
                 child.children = child.simplifyRepeat1Sep();
                 if (child instanceof IRepeat1 && child.lastChild() instanceof ISep) {
-                    Ixml root = getRoot();
-                    XNode parent = child.parent;
-
-                    String name = getNewRuleName(child, "plus-sep");
-                    INonterminal f_plus_sep = new INonterminal(parent, name, '-');
-                    newchildren.add(f_plus_sep);
-
-                    IRule f_plus_sep_rule = new IRule(root, name, '-');
-                    for (int pos = 0; pos+1 < child.children.size(); pos++) {
-                        f_plus_sep_rule.addCopy(child.children.get(pos));
-                    }
-                    IRepeat0 repeat = new IRepeat0(f_plus_sep_rule);
-                    f_plus_sep_rule.children.add(repeat);
-
-                    ISep sep = (ISep) child.lastChild();
-                    assert sep != null;
-                    for (XNode grandchild : sep.children) {
-                        repeat.addCopy(grandchild);
-                    }
-                    for (int pos = 0; pos+1 < child.children.size(); pos++) {
-                        repeat.addCopy(child.children.get(pos));
-                    }
-
-                    root.addRule(f_plus_sep_rule);
+                    newchildren.addAll(root.ruleRewriter.rewriteRepeat1Sep((IRepeat1) child));
                 } else {
                     newchildren.add(child);
                 }
@@ -691,29 +657,14 @@ public abstract class XNode {
     }
 
     protected ArrayList<XNode> simplifyRepeat1() {
+        Ixml root = getRoot();
+
         if (hasChild("repeat1")) {
             ArrayList<XNode> newchildren = new ArrayList<>();
             for (XNode child : children) {
                 child.children = child.simplifyRepeat1();
                 if (child instanceof IRepeat1) {
-                    Ixml root = getRoot();
-                    XNode parent = child.parent;
-
-                    String name = getNewRuleName(child, "plus");
-                    INonterminal f_plus = new INonterminal(parent, name, '-');
-                    newchildren.add(f_plus);
-
-                    IRule f_plus_rule = new IRule(root, name, '-');
-                    for (int pos = 0; pos < child.children.size(); pos++) {
-                        f_plus_rule.addCopy(child.children.get(pos));
-                    }
-                    IRepeat0 repeat = new IRepeat0(f_plus_rule);
-                    f_plus_rule.children.add(repeat);
-                    for (int pos = 0; pos < child.children.size(); pos++) {
-                        repeat.addCopy(child.children.get(pos));
-                    }
-
-                    root.addRule(f_plus_rule);
+                    newchildren.addAll(root.ruleRewriter.rewriteRepeat1((IRepeat1) child));
                 } else {
                     newchildren.add(child);
                 }
@@ -729,27 +680,14 @@ public abstract class XNode {
     }
 
     protected ArrayList<XNode> simplifyRepeat0() {
+        Ixml root = getRoot();
+
         if (hasChild("repeat0")) {
             ArrayList<XNode> newchildren = new ArrayList<>();
             for (XNode child : children) {
                 child.children = child.simplifyRepeat0();
                 if (child instanceof IRepeat0) {
-                    Ixml root = getRoot();
-                    XNode parent = child.parent;
-
-                    String name = getNewRuleName(child, "star");
-                    INonterminal f_star = new INonterminal(parent, name, '-');
-                    newchildren.add(f_star);
-
-                    IRule f_star_rule = new IRule(root, name, '-');
-                    IOption option = new IOption(parent);
-                    f_star_rule.children.add(option);
-                    for (int pos = 0; pos < child.children.size(); pos++) {
-                        option.addCopy(child.children.get(pos));
-                    }
-                    option.addCopy(f_star);
-
-                    root.addRule(f_star_rule);
+                    newchildren.addAll(root.ruleRewriter.rewriteRepeat0((IRepeat0) child));
                 } else {
                     newchildren.add(child);
                 }
@@ -765,6 +703,8 @@ public abstract class XNode {
     }
 
     protected ArrayList<XNode> simplifyOption() {
+        Ixml root = getRoot();
+
         if (hasChild("option")) {
             ArrayList<XNode> newchildren = new ArrayList<>();
             for (int childno = 0; childno < children.size(); childno++) {
@@ -772,7 +712,6 @@ public abstract class XNode {
                 child.children = child.simplifyOption();
 
                 if (child instanceof IOption) {
-                    Ixml root = getRoot();
                     XNode parent = child.parent;
 
                     boolean isEmpty = false;
@@ -788,19 +727,7 @@ public abstract class XNode {
                         children.set(childno, copy);
                         addCopy(child.children.get(0));
                     } else {
-                        String name = getNewRuleName(child, "option");
-                        INonterminal f_option = new INonterminal(parent, name, '-');
-                        newchildren.add(f_option);
-
-                        IRule f_option_rule = new IRule(root, name, '-');
-                        root.addRule(f_option_rule);
-
-                        f_option_rule = new IRule(root, name, '-');
-                        for (int pos = 0; pos < child.children.size(); pos++) {
-                            f_option_rule.addCopy(child.children.get(pos));
-                        }
-
-                        root.addRule(f_option_rule);
+                        newchildren.addAll(root.ruleRewriter.rewriteOption((IOption) child));
                     }
                 } else {
                     newchildren.add(child);
