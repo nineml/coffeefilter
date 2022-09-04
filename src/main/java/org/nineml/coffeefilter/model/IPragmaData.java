@@ -25,6 +25,8 @@ public class IPragmaData extends XNonterminal {
     @Override
     protected XNode copy() {
         IPragmaData prolog = new IPragmaData(parent);
+        prolog.pragmaData.append(pragmaData);
+        prolog.copyChildren(getChildren());
         return prolog;
     }
 }

@@ -1,5 +1,7 @@
 package org.nineml.coffeefilter;
 
+import org.nineml.coffeefilter.model.RuleRewriter;
+import org.nineml.coffeefilter.model.RuleRewrites;
 import org.nineml.logging.DefaultLogger;
 import org.nineml.logging.Logger;
 
@@ -26,6 +28,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     private boolean pedantic = false;
     private boolean showMarks = false;
     private boolean showBnfNonterminals = false;
+    private RuleRewriter ruleRewriter = null;
 
     /**
      * Create the parser options.
@@ -66,6 +69,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
         showMarks = copy.showMarks;
         showBnfNonterminals = copy.showBnfNonterminals;
         assertValidXmlCharacters = copy.assertValidXmlCharacters;
+        ruleRewriter = copy.ruleRewriter;
     }
 
     /**
@@ -322,5 +326,12 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     }
     public void setShowBnfNonterminals(boolean show) {
         showBnfNonterminals = show;
+    }
+
+    public void setRuleRewriter(RuleRewriter rewriter) {
+        ruleRewriter = rewriter;
+    }
+    public RuleRewriter getRuleRewriter() {
+        return ruleRewriter;
     }
 }
