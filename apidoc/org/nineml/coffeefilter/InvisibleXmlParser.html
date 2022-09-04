@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -189,56 +189,62 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getIxmlVersion--">getIxmlVersion</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.util.List&lt;java.lang.String&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getMetadata--">getMetadata</a></span>()</code>
+<div class="block">Get metadata.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getOptions--">getOptions</a></span>()</code>
 <div class="block">Get the parser options.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#getParseTime--">getParseTime</a></span>()</code>
 <div class="block">Get the time spent parsing the input grammar.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.File-">parse</a></span>(java.io.File&nbsp;source)</code>
 <div class="block">Get a document from a file.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.File-java.lang.String-">parse</a></span>(java.io.File&nbsp;source,
      java.lang.String&nbsp;encoding)</code>
 <div class="block">Get a document from a file with an explicit encoding.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.io.InputStream-java.lang.String-">parse</a></span>(java.io.InputStream&nbsp;stream,
      java.lang.String&nbsp;encoding)</code>
 <div class="block">Get a document from a stream.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.lang.String-">parse</a></span>(java.lang.String&nbsp;input)</code>
 <div class="block">Get a document from a string.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-org.nineml.coffeegrinder.tokens.Token:A-">parse</a></span>(org.nineml.coffeegrinder.tokens.Token[]&nbsp;input)</code>
 <div class="block">Get a document from an array of tokens.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-">parse</a></span>(java.net.URI&nbsp;source)</code>
 <div class="block">Get a document from a URI.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../org/nineml/coffeefilter/InvisibleXmlDocument.html" title="class in org.nineml.coffeefilter">InvisibleXmlDocument</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/nineml/coffeefilter/InvisibleXmlParser.html#parse-java.net.URI-java.lang.String-">parse</a></span>(java.net.URI&nbsp;source,
      java.lang.String&nbsp;encoding)</code>
@@ -308,6 +314,23 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the parser options</dd>
+</dl>
+</li>
+</ul>
+<a name="getMetadata--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMetadata</h4>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.util.List&lt;java.lang.String&gt;&gt;&nbsp;getMetadata()</pre>
+<div class="block">Get metadata.
+
+ Pragmas in the prolog that aren't recognized by the processor are returned as
+ "data" pragmas associating a URI with (a list of) values.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the metadata</dd>
 </dl>
 </li>
 </ul>
