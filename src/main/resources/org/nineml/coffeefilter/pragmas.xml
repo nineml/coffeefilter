@@ -622,9 +622,6 @@
    <rule name="pragma">
       <alt>
          <literal tmark="-" string="{["/>
-         <option>
-            <nonterminal mark="@" name="pmark"/>
-         </option>
          <nonterminal mark="@" name="pname"/>
          <option>
             <alts>
@@ -640,9 +637,6 @@
    <rule name="ppragma">
       <alt>
          <literal tmark="-" string="{[+"/>
-         <option>
-            <nonterminal mark="@" name="pmark"/>
-         </option>
          <nonterminal mark="@" name="pname"/>
          <option>
             <alts>
@@ -657,17 +651,7 @@
    </rule>
    <rule mark="@" name="pname">
       <alt>
-         <nonterminal mark="-" name="QName"/>
-      </alt>
-      <alt>
-         <nonterminal mark="-" name="UQName"/>
-      </alt>
-   </rule>
-   <rule mark="@" name="pmark">
-      <alt>
-         <inclusion>
-            <member string="@^?"/>
-         </inclusion>
+         <nonterminal name="name"/>
       </alt>
    </rule>
    <rule name="pragma-data">

@@ -1,9 +1,9 @@
-{[+ixmlns:n "https://nineml.org/ns"]}
+{[+pragma n "https://nineml.org/ns/pragma/"]}
 
-S: {[n:discard empty]} A,
+S: {[n discard empty]} A,
                        B,
-   {[n:discard empty]} C,
-   {[n:discard empty]} @D,
+   {[n discard empty]} C,
+   {[n discard empty]} @D,
                        @E .
 A: 'a'? .
 B: 'b'? .

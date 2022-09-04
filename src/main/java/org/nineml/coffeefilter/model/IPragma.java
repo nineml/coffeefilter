@@ -11,7 +11,7 @@ public class IPragma extends XNonterminal {
         pragmaData = data;
     }
 
-    protected String getPragmaData() {
+    public String getPragmaData() {
         return pragmaData;
     }
 

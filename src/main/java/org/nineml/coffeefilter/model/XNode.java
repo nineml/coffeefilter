@@ -5,13 +5,19 @@ import org.xml.sax.Attributes;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The abstract class that is the supertype of all nodes in the Ixml model.
  */
 public abstract class XNode {
-    public static final String ninemlns = "https://nineml.org/ns";
+    public static final String ninemlpragmas = "https://nineml.org/ns/pragma/";
+    public static final String ninemloptions = "https://nineml.org/ns/pragma/options/";
+
     protected static final String logcategory = "InvisibleXml";
+    protected static final Pattern pragmaDecl = Pattern.compile("^(\\S+)\\s+(['\"])(.*)(['\"])\\s*$");
+    protected static final Pattern pragmaType = Pattern.compile("^(\\S+)\\s*(.*)$");
     protected final String nodeName;
     protected final ArrayList<IPragma> pragmas = new ArrayList<>();
     protected String name = null;
@@ -48,6 +54,14 @@ public abstract class XNode {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Return any pragmas associated with this node.
+     * @return a list of pragmas
+     */
+    public List<IPragma> getPragmas() {
+        return pragmas;
     }
 
     /**
@@ -346,14 +360,26 @@ public abstract class XNode {
         return false;
     }
 
-    private IPragma parsePragma(IPragma pragma, String ptype) {
-        String data = pragma.getPragmaData();
-        if (data == null) {
-            data = "";
-        } else {
-            data = data.trim();
+    private IPragma parsePragma(IPragma pragma, String uri, String data) {
+        // Options is a special case...
+        if (uri.startsWith(ninemloptions)) {
+            if (pragma.parent instanceof IProlog) {
+                return new IPragmaMetadata(pragma.parent, uri, data);
+            }
+            return null;
         }
 
+        if (uri.startsWith(ninemlpragmas)) {
+            return parseNineMLPragma(pragma, uri.substring(ninemlpragmas.length()), data);
+        } else {
+            if (pragma.parent instanceof IProlog) {
+                return new IPragmaMetadata(pragma.parent, uri, data);
+            }
+            return null;
+        }
+    }
+
+    private IPragma parseNineMLPragma(IPragma pragma, String ptype, String data) {
         if ("rewrite".equals(ptype) || "ns".equals(ptype) || "regex".equals(ptype)) {
             data = unquotedData(data);
             if (data == null) {
@@ -428,73 +454,89 @@ public abstract class XNode {
     public void flatten() {
         ArrayList<XNode> newchildren = new ArrayList<>();
         for (XNode child : children) {
-            if (!(child instanceof IComment)) {
-                child.flatten();
+            if (child instanceof IComment) {
+                continue;
+            }
 
-                if (child instanceof IProlog) {
-                    // Promote all the pragmas in the prolog to the parent Ixml node
-                    for (IPragma pragma : child.pragmas) {
-                        addPragma(pragma);
+            child.flatten();
+
+            if (child instanceof IProlog) {
+                // Promote all the pragmas in the prolog to the parent Ixml node
+                for (IPragma pragma : child.pragmas) {
+                    addPragma(pragma);
+                }
+                for (XNode pchild : child.children) {
+                    if (pchild instanceof IVersion) {
+                        // Gross!
+                        ((Ixml) this).version = ((IVersion) pchild).getVersion();
                     }
-                    for (XNode pchild : child.children) {
-                        if (pchild instanceof IVersion) {
-                            // Gross!
-                            ((Ixml) this).version = ((IVersion) pchild).getVersion();
-                        }
-                    }
-                } else if (child instanceof IPragma) {
-                    IPragma pragma = (IPragma) child;
-                    if (pragma.name.startsWith("ixmlns:")) {
+                }
+            } else if (child instanceof IPragma) {
+                IPragma pragma = (IPragma) child;
+                if ("pragma".equals(pragma.name)) {
+                    if (this instanceof IProlog) {
                         String data = pragma.pragmaData.trim();
-                        if ("".equals(data)) {
-                            getRoot().options.getLogger().error(logcategory, "Invalid %s pragma, no URI", pragma.name);
-                        } else {
-                            String quote = data.substring(0, 1);
-                            if (("\"".equals(quote) || "'".equals(quote)) && data.endsWith(quote)) {
-                                String uri = data.substring(1, data.length() - 1);
-                                String prefix = pragma.name.substring(pragma.name.indexOf(':')+1);
-                                if (getRoot().ixmlns.containsKey(prefix)) {
-                                    getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, %s already defined", pragma.name, prefix);
-                                } else {
-                                    if ("xml".equals(prefix) || "xmlns".equals(prefix)) {
-                                        getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, %s cannot be declared", pragma.name, prefix);
-                                    } else {
-                                        if ("".equals(uri)) {
-                                            getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, %s cannot be declared as the default namespace", pragma.name, prefix);
-                                        } else {
-                                            getRoot().ixmlns.put(prefix, uri);
-                                        }
-                                    }
-                                }
+
+                        Matcher match = pragmaDecl.matcher(data);
+                        if (match.matches() && match.group(2).equals(match.group(4))) {
+                            String pname = match.group(1);
+                            String puri = match.group(3);
+
+                            if ("".equals(puri)) {
+                                getRoot().options.getLogger().error(logcategory, "Invalid pragma declaration, no URI: {[+pragma %s]}", data);
                             } else {
-                                getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, unparsable URI", pragma.name);
+                                if (getRoot().pragmaDecl.containsKey(pname)) {
+                                    getRoot().options.getLogger().error(logcategory, "Malformed pragma declaration, %s already defined", pname);
+                                } else {
+                                    getRoot().pragmaDecl.put(pname, puri);
+                                }
                             }
+                        } else {
+                            getRoot().options.getLogger().error(logcategory, "Malformed %s pragma: {[+pragma %s]}", data);
                         }
                     } else {
-                        int pos = pragma.name.indexOf(':');
-                        String prefix = pragma.name.substring(0, pos);
-                        String localName = pragma.name.substring(pos+1);
-                        String uri = getRoot().ixmlns.getOrDefault(prefix, null);
-                        if (uri == null) {
-                            getRoot().options.getLogger().error(logcategory, "Malformed %s pragma, no binding for %s", pragma.name, prefix);
-                        } else if (ninemlns.equals(uri)) {
-                            IPragma parsed = parsePragma(pragma, localName);
+                        getRoot().options.getLogger().error(logcategory, "The 'pragma' pragma must be in the prolog");
+                    }
+                } else {
+                    String uri = getRoot().pragmaDecl.getOrDefault(pragma.name, "");
+                    if ("".equals(uri)) {
+                        getRoot().options.getLogger().error(logcategory, "Malformed pragma, no declaration for %s", pragma.name);
+                    } else {
+                        /* If the URI for a pragma ends with "/", there are two forms of the pragma:
+                         *   {[n type data]}   where n's URI is .../       or
+                         *   {[x data]}        where x's URI is .../type
+                         */
+                        String localName = "";
+                        String data = "";
+
+                        if (uri.endsWith("/")) {
+                            data = pragma.pragmaData.trim();
+                            Matcher match = pragmaType.matcher(data);
+                            if (match.matches()) {
+                                localName = match.group(1);
+                                data = match.group(2).trim();
+                            }
+                            IPragma parsed = parsePragma(pragma, uri + localName, data);
                             if (parsed != null) {
                                 addPragma(parsed);
                             }
                         } else {
-                            getRoot().options.getLogger().debug(logcategory, "Ignoring unrecognized pragma: %s", pragma.name);
+                            data = pragma.pragmaData.trim();
+                            IPragma parsed = parsePragma(pragma, uri, data);
+                            if (parsed != null) {
+                                addPragma(parsed);
+                            }
                         }
                     }
-                } else if (child instanceof IPragmaData) {
-                    if (this instanceof IPragma) {
-                        ((IPragma) this).setPragmaData(((IPragmaData) child).getPragmaData());
-                    } else {
-                        throw new RuntimeException("Pragma data not inside a pragma?");
-                    }
-                } else {
-                    newchildren.add(child);
                 }
+            } else if (child instanceof IPragmaData) {
+                if (this instanceof IPragma) {
+                    ((IPragma) this).setPragmaData(((IPragmaData) child).getPragmaData());
+                } else {
+                    throw new RuntimeException("Pragma data not inside a pragma?");
+                }
+            } else {
+                newchildren.add(child);
             }
         }
 
