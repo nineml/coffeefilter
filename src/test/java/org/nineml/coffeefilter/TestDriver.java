@@ -262,7 +262,7 @@ public class TestDriver {
             if (caseName == null) {
                 System.err.printf("%03d/%03d ran set %s in %s%n", testsRun, totalTests, setName, watch.elapsed());
             } else {
-                System.err.printf("%03d/%03dRan set %s case %s in %s%n", testsRun, totalTests, setName, caseName, watch.elapsed());
+                System.err.printf("%03d/%03d ran set %s case %s in %s%n", testsRun, totalTests, setName, caseName, watch.elapsed());
             }
 
             for (XdmNode appInfo : appInfo(testCase)) {
@@ -606,13 +606,13 @@ public class TestDriver {
                 throw new RuntimeException("Did not find element to compare against in assertion?: " + testCase.getBaseURI());
             }
 
-            System.err.println("EX:" + expected);
-            System.err.println("AC:" + node);
-
             same = deepEqual(expected, node, result);
             if (same) {
                 break;
             }
+
+            System.err.println("EX:" + expected);
+            System.err.println("AC:" + node);
         }
 
         if (same) {
