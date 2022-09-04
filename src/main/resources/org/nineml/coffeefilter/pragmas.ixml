@@ -77,11 +77,10 @@ ixml version "1.0".
       -letter: ["a"-"z"].
     insertion: -"+", s, (string; -"#", hex), s.
 
-       pragma: -"{[", @pmark?, @pname, (whitespace, pragma-data)?, -"]}" . 
-      ppragma: -"{[+", @pmark?, @pname, (whitespace, pragma-data)?, -"]}" . 
-       @pname: -QName; -UQName. 
+       pragma: -"{[", @pname, (whitespace, pragma-data)?, -"]}" . 
+      ppragma: -"{[+", @pname, (whitespace, pragma-data)?, -"]}" . 
+       @pname: name.
 
-       @pmark: ["@^?"].
   pragma-data: (-pragma-char; -bracket-pair)*.
  -pragma-char: ~["{}"].
 -bracket-pair: '{', -pragma-data, '}'.

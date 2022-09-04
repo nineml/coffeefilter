@@ -25,6 +25,7 @@ public class Ixml extends XNonterminal {
     private final String startRule = "$$";
     protected final ParserOptions options;
     protected final HashMap<String,String> ixmlns;
+    protected final HashMap<String,String> pragmaDecl;
     private SourceGrammar grammar = null;
     protected IRule emptyProduction = null;
     protected String version = "1.0";
@@ -37,6 +38,7 @@ public class Ixml extends XNonterminal {
         super(null, "ixml", "$$_ixml");
         this.options = options;
         ixmlns = new HashMap<>();
+        pragmaDecl = new HashMap<>();
 
         if (options.getRuleRewriter() == null) {
             if ("GLL".equals(options.getParserType())) {
@@ -63,6 +65,7 @@ public class Ixml extends XNonterminal {
         grammarRules.addAll(grammar.getRules());
         this.options = options;
         ixmlns = new HashMap<>();
+        pragmaDecl = new HashMap<>();
 
         if (options.getRuleRewriter() == null) {
             if ("GLL".equals(options.getParserType())) {

@@ -24,7 +24,7 @@ public class AmbiguityTest {
     @Test
     public void ambiguity1() {
         // This test is for the bug where a terminal marked as optional was losing its optionality
-        String input = "{[+ixmlns:n \"https://nineml.org/ns\"]} S = 'x', (A | {[n:priority 2]} B), 'y'.  {[n:priority 1]} A = 'a' | B. B = 'b' | A.";
+        String input = "{[+pragma n \"https://nineml.org/ns/pragma/\"]} S = 'x', (A | {[n priority 2]} B), 'y'.  {[n priority 1]} A = 'a' | B. B = 'b' | A.";
 
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
         input = "xay";

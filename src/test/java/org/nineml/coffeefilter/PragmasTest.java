@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.fail;
 
@@ -25,6 +27,8 @@ public class PragmasTest {
         try {
             //invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/two-dates.ixml"));
+            Map<String, List<String>> meta = parser.getMetadata();
+            Assertions.assertEquals(meta.get("http://purl.org/dc/elements/1.1/creator").get(0), "Norman Walsh");
             InvisibleXmlDocument doc = parser.parse("1999-12-31");
             String xml = doc.getTree();
             Assertions.assertEquals("<input><year>1999</year><month>12</month><day>31</day></input>", xml);
@@ -81,7 +85,7 @@ public class PragmasTest {
     public void discardEmpty() {
         try {
             String grammar1 = "S = A, B, C. A = 'a'. B='b'?. C='c'.";
-            String grammar2 = "{[+ixmlns:n \"https://nineml.org/ns\"]} S = A, {[n:discard empty]} B, C. A = 'a'. B='b'?. C='c'.";
+            String grammar2 = "{[+pragma n \"https://nineml.org/ns/pragma/\"]} S = A, {[n discard empty]} B, C. A = 'a'. B='b'?. C='c'.";
             String input = "ac";
 
             InvisibleXmlParser parser = invisibleXml.getParserFromIxml(grammar1);

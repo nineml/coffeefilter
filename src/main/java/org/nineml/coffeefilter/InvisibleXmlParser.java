@@ -1,5 +1,7 @@
 package org.nineml.coffeefilter;
 
+import org.nineml.coffeefilter.model.IPragma;
+import org.nineml.coffeefilter.model.IPragmaMetadata;
 import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.model.IxmlCompiler;
 import org.nineml.coffeegrinder.parser.*;
@@ -14,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.util.*;
 
 /**
  * A parser for a particular Invisible XML grammar.
@@ -69,13 +72,34 @@ public class InvisibleXmlParser {
     }
 
     /**
-     * Set the parser options.
+     * Get metadata.
      *
-     * @param options the parser options
-    public void setOptions(ParserOptions options) {
-        this.options = options;
-    }
+     * Pragmas in the prolog that aren't recognized by the processor are returned as
+     * "data" pragmas associating a URI with (a list of) values.
+     *
+     * @return the metadata
      */
+    public Map<String, List<String>> getMetadata() {
+        HashMap<String, List<String>> metadata = new HashMap<>();
+        HashSet<String> seen = new HashSet<>();
+        for (IPragma pragma : ixml.getPragmas()) {
+            if (pragma instanceof IPragmaMetadata) {
+                IPragmaMetadata meta = (IPragmaMetadata) pragma;
+                if (!seen.contains(meta.getPragmaURI())) {
+                    seen.add(meta.getPragmaURI());
+                    ArrayList<String> values = new ArrayList<>();
+                    for (IPragma xpragma : ixml.getPragmas()) {
+                        if (xpragma instanceof IPragmaMetadata
+                                && meta.getPragmaURI().equals(((IPragmaMetadata) xpragma).getPragmaURI())) {
+                            values.add(xpragma.getPragmaData());
+                        }
+                    }
+                    metadata.put(meta.getPragmaURI(), values);
+                }
+            }
+        }
+        return metadata;
+    }
 
     /**
      * Return the exception that caused an attempt to build a parser to fail.

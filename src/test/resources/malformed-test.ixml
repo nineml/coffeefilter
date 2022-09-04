@@ -1,5 +1,5 @@
-{[+ixmlns:n "https://nineml.org/ns"]}
-{[+ixmlns:o "http://example.com"]}
-{[+n:ns "http://example.com/]}                 { <-- syntax error }
-{[o:rule-pragma]}S: {[o:nonterminal-pragma]}A.
-A: ('a'; {[n:rewrite "a'c"]} 'b')+ .
+{[+pragma n "https://nineml.org/ns/pragma/"]}
+{[+pragma o "http://example.com"]}
+{[+n ns "http://example.com/]}                 { <-- syntax error }
+{[o rule-pragma]}S: {[o nonterminal-pragma]}A.
+A: ('a'; {[n rewrite "a'c"]} 'b')+ .
