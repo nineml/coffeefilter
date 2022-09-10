@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.Assert.fail;
 
@@ -204,5 +205,37 @@ public class ParserTest {
 
         Assertions.assertEquals("<S><B>b</B></S>", xml);
     }
+
+    @Test
+    public void simpleGrammar54bis() {
+        ParserOptions options = new ParserOptions();
+        options.setParserType("GLL");
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/sg54bis.ixml"));
+            String input = "32.5e+1";
+            InvisibleXmlDocument document = parser.parse(input);
+            String xml = document.getTree();
+            Assertions.assertEquals("<Number><Integer>32</Integer><Fraction>.5</Fraction><Scale1>e<Sign>+</Sign><Integer>1</Integer></Scale1></Number>", xml);
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void insertMultipleAttribute() {
+        ParserOptions options = new ParserOptions();
+        options.setParserType("GLL");
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        InvisibleXmlParser parser = ixml.getParserFromIxml("S: 'a', b, @b, b. b: +'xml'.");
+        System.err.println(parser.getCompiledParser());
+        String input = "a";
+        InvisibleXmlDocument document = parser.parse(input);
+        String xml = document.getTree();
+        System.out.println(xml);
+    }
+
 
 }
