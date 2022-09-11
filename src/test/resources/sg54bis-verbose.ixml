@@ -1,0 +1,13 @@
+Number: ["0" - "9"]
+      ; Integer, Digit
+      ; N1, Scale1
+      ; Integer, Fraction.
+N1:  Integer, Fraction.
+Integer:  ['0' - '9']; Integer, Digit.
+Fraction: T1, Integer.
+T1 : ".".
+Scale1: N2, Integer.
+N2:  T2, Sign.
+T2:  "e".
+Digit: ['0'-'9'].
+Sign: ["+"; '-' ].

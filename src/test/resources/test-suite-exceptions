@@ -1,6 +1,0 @@
-set "ignored" because it doesn't really exist.
-set "sample.grammar.12"
-    case "g12.c05" because my valid result isn't in the expected results.
-set "sample.grammar.57"
-    case "g57.c05" because my valid result isn't in the expected results.
-    case "g57.c10" because my valid result isn't in the expected results.

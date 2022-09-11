@@ -137,12 +137,13 @@ task testSuite(type: JavaExec,
   String exceptionsFile = null
   String outputXML = null
   String[] javaArgs = [];
+  String rsrc = "${projectDir}/src/test/resources"
   
   if (pedantic) {
-    exceptionsFile = "${projectDir}/src/test/resources/pedantic-test-suite-exceptions"
-    outputXML = "${buildDir}/test-report-${parserType}.xml"
+    exceptionsFile = "${rsrc}/test-suite-exceptions-${parserType}-pedantic.txt"
+    outputXML = "${buildDir}/test-report-${parserType}-pedantic.xml"
   } else {
-    exceptionsFile = "${projectDir}/src/test/resources/test-suite-exceptions"
+    exceptionsFile = "${rsrc}/test-suite-exceptions-${parserType}.txt"
     outputXML = "${buildDir}/test-report-${parserType}.xml"
   }
 
