@@ -1,10 +1,9 @@
 input: char*.
 
--char: C; L; LC; M; N; P; S; Z; Unassigned.
-Unassigned: ~[C; L; LC; M; N; P; S; Z].
+-char: C; LC; M; N; P; S; Z; Unassigned.
+Unassigned: ~[C; LC; M; N; P; S; Z].
 
 C: [ C].
-L: [L].
 LC: [LC].
 M: [M].
 N: [N].
