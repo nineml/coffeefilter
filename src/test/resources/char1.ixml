@@ -1,0 +1,13 @@
+input: char*.
+
+-char: C; L; LC; M; N; P; S; Z; Unassigned.
+Unassigned: ~[C; L; LC; M; N; P; S; Z].
+
+C: [ C].
+L: [L].
+LC: [LC].
+M: [M].
+N: [N].
+P: [P].
+S: [S].
+Z: [Z].
