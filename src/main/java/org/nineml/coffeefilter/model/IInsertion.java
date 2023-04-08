@@ -108,7 +108,7 @@ public class IInsertion extends XNonterminal implements TMarked {
         int cp = TokenUtils.convertHex(hex);
         StringBuilder sb = new StringBuilder();
         sb.appendCodePoint(cp);
-        return sb.substring(0, 1);
+        return sb.toString();
     }
 
     /**
