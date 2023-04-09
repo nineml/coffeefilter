@@ -7,7 +7,6 @@ import org.nineml.coffeefilter.model.IxmlCompiler;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
-import org.nineml.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +49,6 @@ public class InvisibleXmlParser {
         parseTime = parseMillis;
         failedParse = failed;
         this.options = options;
-        options.getLogger().setDefaultLogLevel(Logger.INFO);
     }
 
     protected InvisibleXmlParser(InvisibleXmlDocument failed, Exception exception, long parseMillis) {
