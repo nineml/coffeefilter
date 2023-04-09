@@ -7,6 +7,8 @@ import org.xml.sax.SAXException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 /**
@@ -39,7 +41,13 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
     public StringTreeBuilder(ParserOptions options) {
         super(options);
         baos = new ByteArrayOutputStream();
-        stream = new PrintStream(baos);
+        try {
+          stream = new PrintStream(baos, false, StandardCharsets.UTF_8.name());
+        }
+        catch (UnsupportedEncodingException e) {
+          // this can never happen
+          throw new RuntimeException(e);
+        }
         documentElement = true;
     }
 
@@ -64,7 +72,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
         if (baos == null) {
             return null;
         }
-        String xml = baos.toString();
+        String xml = new String(baos.toByteArray(), StandardCharsets.UTF_8);
         baos = null;
         return xml;
     }
