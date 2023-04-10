@@ -64,6 +64,8 @@ public class InsertionsTest {
             String xml = doc.getTree();
             Assertions.assertTrue(xml.contains("<transcode-fraktur>\uD835\uDD1F</transcode-fraktur>"));
         } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
             fail();
         }
     }
