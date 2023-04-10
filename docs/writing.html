@@ -1,11 +1,11 @@
-<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" class="no-js"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script><title>Writing Invisible XML grammars</title><link href="/css/pygments.css" rel="stylesheet"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="https://purl.org/dc/elements/1.1/" rel="schema.dc"/><meta name="dc.modified" content="2023-01-23T19:22:18Z"/><meta name="generator" content="DocBook xslTNG version 2.0.4 / 37c68d3 / SAXON HE 11.4"/><link href="/css/docbook-toc.css" rel="stylesheet"/><link href="/css/docbook.css" rel="stylesheet" media="screen"/><link href="/css/docbook-paged.css" rel="stylesheet" media="print"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><script src="https://kit.fontawesome.com/498b6706f0.js" type="text/javascript" crossorigin="anonymous"></script><link href="icon/CoffeeFilter.png" rel="shortcut icon"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="css/nineml.css" rel="stylesheet"/><link href="css/coffeefilter.css" rel="stylesheet"/></head><body class="home"><nav class="top"><span class="nav"><a title="" href=""><i class="fas fa-home"></i></a> <span class="inactive"><i class="fas fa-arrow-left"></i></span> <span class="inactive"><i class="fas fa-arrow-up"></i></span> <span class="inactive"><i class="fas fa-arrow-right"></i></span></span><span class="title"><i class="title">Writing Invisible XML grammars</i></span></nav><main><article class="article component"><header><h1>Writing Invisible XML grammars</h1><div class="author"><h3><span class="first-last personname"><span class="firstname">Norm</span> <span class="surname">Tovey-Walsh</span></span></h3></div><div class="copyright">Copyright © <span class="copyright-years"><span class="year">2022</span></span> <span class="holder">Norm Tovey-Walsh</span></div><div class="abstract"><p>This article is a draft that I intend to submit to
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" class="no-js"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script><title>Writing Invisible XML grammars</title><link href="/css/pygments.css" rel="stylesheet"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="https://purl.org/dc/elements/1.1/" rel="schema.dc"/><meta name="dc.modified" content="2023-04-10T16:09:38Z"/><meta name="generator" content="DocBook xslTNG version 2.1.2 / c75a917 / SAXON HE 11.5"/><link href="/css/docbook-toc.css" rel="stylesheet"/><link href="/css/docbook.css" rel="stylesheet" media="screen"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><script src="https://kit.fontawesome.com/498b6706f0.js" type="text/javascript" crossorigin="anonymous"></script><link href="icon/CoffeeFilter.png" rel="shortcut icon"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="css/nineml.css" rel="stylesheet"/><link href="css/coffeefilter.css" rel="stylesheet"/><script src="/js/persistent-toc.js" defer="defer"></script><script src="/js/copy-verbatim.js" defer="defer"></script><script src="/js/chunk-nav.js" defer="defer"></script></head><body class="home"><nav class="top"><span class="nav"><a title="" href=""><i class="fas fa-home"></i></a> <span class="inactive"><i class="fas fa-arrow-left"></i></span> <span class="inactive"><i class="fas fa-arrow-up"></i></span> <span class="inactive"><i class="fas fa-arrow-right"></i></span></span><span class="title"><i class="title">Writing Invisible XML grammars</i></span></nav><main><article class="article component"><header><h1>Writing Invisible XML grammars</h1><div class="author"><h3><span class="first-last personname"><span class="firstname">Norm</span> <span class="surname">Tovey-Walsh</span></span></h3></div><div class="copyright">Copyright © <span class="copyright-years"><span class="year">2022</span></span> <span class="holder">Norm Tovey-Walsh</span></div><div class="abstract"><p>This article is a draft that I intend to submit to
 XML.com for publication. Please don’t share this URI at this time.
-Thanks.</p></div></header><div class="list-of-titles"><div class="lot toc"><div class="title">Table of Contents</div><ul class="toc"><li><a href="#intro"><span class="label">1<span class="sep">.</span>1</span><span class="sep">. </span>Introduction</a></li><li><a href="#input"><span class="label">1<span class="sep">.</span>2</span><span class="sep">. </span>The input</a></li><li><a href="#output"><span class="label">1<span class="sep">.</span>3</span><span class="sep">. </span>The output</a></li></ul></div></div><p>This article is a follow-up to the introduction to
+Thanks.</p></div></header><div class="list-of-titles"><div class="lot toc"><div class="title">Table of Contents</div><ul class="toc"><li><a href="#intro"><span class="label">1</span><span class="sep">. </span>Introduction</a></li><li><a href="#input"><span class="label">2</span><span class="sep">. </span>The input</a></li><li><a href="#output"><span class="label">3</span><span class="sep">. </span>The output</a></li></ul></div></div><p>This article is a follow-up to the introduction to
 <a href="https://www.xml.com/articles/2022/03/01/invisible-xml/" class="link">Invisible XML</a> published
 at <a href="https://www.xml.com/" class="link">XML.com</a> on 1 March 2022.
 In this article, we’re going to focus on the syntax of Invisible XML documents and how
 to write (and debug) grammars. If you’re not already familiar with the principles
-behind Invisible XML, you may want to read the introductory article first.</p><section id="intro" class="section"><header><h2><span class="label">1<span class="sep">.</span>1</span><span class="sep">. </span>Introduction</h2></header><p>If you’re familiar with writing grammars in any
+behind Invisible XML, you may want to read the introductory article first.</p><section id="intro" class="section"><header><h2><span class="label">1</span><span class="sep">. </span>Introduction</h2></header><p>If you’re familiar with writing grammars in any
 <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form" class="link">BNF</a>
 (or <a href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form" class="link">EBNF</a>) form,
 you’ll find Invisible XML easy to use. If you’ve never written a
@@ -28,7 +28,7 @@ instance of itself. The
 grammar</a> is only about 45 rules. Printed, it would fit on one side
 of a sheet of standard office paper.</p><p>Let’s dig in. We’re going to bounce around a little bit at
 first, but eventually we’ll settle in to writing some longer, less
-contrived grammars.</p><section id="playalong" class="section"><header><h3><span class="label">1<span class="sep">.</span>1<span class="sep">.</span>1</span><span class="sep">. </span>Play along at home!</h3></header><p>As you read this article and look at the examples it contains,
+contrived grammars.</p><section id="playalong" class="section"><header><h3><span class="label">1<span class="sep">.</span>1</span><span class="sep">. </span>Play along at home!</h3></header><p>As you read this article and look at the examples it contains,
 we encourage you to play along at home. You’ll learn a lot from trying
 out the examples! As you learn new concepts, extend the examples and
 try matching your own inputs.</p><p>For an even more interactive introduction to Invisible XML, check out
@@ -39,7 +39,7 @@ in 2021.</p><p>Steven’s tutorial includes <a href="https://homepages.cwi.nl/~s
 online form</a> where you can upload a grammar and an input file to
 be processed. Alternatively, you can download <a href="https://coffeepot.nineml.org" class="link">CoffeePot</a>, a
 command line Invisible XML processor that’s part of the <a href="https://nineml.org/" class="link">NineML</a> family of Invisible XML
-tools. (It’s a Java application and should run easily on Linux, MacOS, and Windows computers.)</p></section><section id="howtoread" class="section"><header><h3><span class="label">1<span class="sep">.</span>1<span class="sep">.</span>2</span><span class="sep">. </span>Input or output?</h3></header><p>Writing grammars is about creating rules that match against
+tools. (It’s a Java application and should run easily on Linux, MacOS, and Windows computers.)</p></section><section id="howtoread" class="section"><header><h3><span class="label">1<span class="sep">.</span>2</span><span class="sep">. </span>Input or output?</h3></header><p>Writing grammars is about creating rules that match against
 things in the input. Those rules are, in turn, used to create XML elements
 and attributes that will appear in the output. These aren’t completely
 independent. Annotations that you put in the grammar will influence
@@ -53,7 +53,7 @@ few sections of “The input” about rules and matching first.</p><p>Bear in mi
 That’s not necessarily the final output form that you want. It’s “text to XML”, not
 “text to DocBook 5.2 with embedded MathML and SVG.” There are other, better tools to
 transform one flavor of XML into another, Invisible XML doesn’t have to do <em>all</em>
-the lifting.</p></section></section><section id="input" class="section"><header><h2><span class="label">1<span class="sep">.</span>2</span><span class="sep">. </span>The input</h2></header><p>Before we begin looking at rules, we need to think about what is being
+the lifting.</p></section></section><section id="input" class="section"><header><h2><span class="label">2</span><span class="sep">. </span>The input</h2></header><p>Before we begin looking at rules, we need to think about what is being
 processed by them. If you have any experience with parsing technologies, you
 may be used to the idea that processing an input has two phases: a lexical
 analysis phase (“the lexer”) and a parsing phase (“the parser”).</p><p>The lexer decides what parts of the input are the actual tokens.
@@ -69,7 +69,7 @@ sequence of characters.</p><p>What you’re matching in rules are the individual
 the input: every single one of them. This is one of the reasons that writing an
 Invisible XML grammar feels a little bit like writing a regular expression.
 As we’ll see, this makes some things a little more complicated, but overall
-it greatly simplifies Invisible XML.</p><section id="rules" class="section"><header><h3><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>1</span><span class="sep">. </span>Rules</h3></header><p>A rule has the form of a name (the left hand side) followed by a
+it greatly simplifies Invisible XML.</p><section id="rules" class="section"><header><h3><span class="label">2<span class="sep">.</span>1</span><span class="sep">. </span>Rules</h3></header><p>A rule has the form of a name (the left hand side) followed by a
 colon, followed by <a href="#epsilon" class="link">zero</a> or more symbols
 (the right hand side) followed by a full stop to end the rule. If more
 than one symbol appears on the right hand side, they must be separated
@@ -92,7 +92,7 @@ separators to mark alternatives: semicolon (“;”) or vertical line
 (“|”). In this article, I will consistently use “:” and “;”, but you’re
 free to use “=” and “|” if you find them easier to read or remember.</p></div></div></div></div><p>Most grammars contain more than one rule. Rules are
 separated by whitespace. It’s good practice, simply for readability,
-to start each rule on its own line, but it’s not strictly required.</p></section><section id="rhs" class="section"><header><h3><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>2</span><span class="sep">. </span>Organizing the “right hand side”</h3></header><p>The Invisible XML specification introduces a few nonterminals
+to start each rule on its own line, but it’s not strictly required.</p></section><section id="rhs" class="section"><header><h3><span class="label">2<span class="sep">.</span>2</span><span class="sep">. </span>Organizing the “right hand side”</h3></header><p>The Invisible XML specification introduces a few nonterminals
 (remember, Invisible XML is defined in Invisible XML!) to organize how
 we think about the symbols that appear on the right hand side of a
 rule. It will be convenient later to talk about how these are
@@ -115,9 +115,9 @@ third terms contain a single factor each (and each of those
 factors is a nonterminal not defined in this example). The second term is
 a set of two alternatives enclosed in parenthesis; each of those
 alternatives is composed of two terms (each a single nonterminal
-factor) separated by commas.</p></section><section id="literals" class="section"><header><h3><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>3</span><span class="sep">. </span>Matching literal characters</h3></header><p>A grammar consists of nonterminals, the symbols you define with rules,
+factor) separated by commas.</p></section><section id="literals" class="section"><header><h3><span class="label">2<span class="sep">.</span>3</span><span class="sep">. </span>Matching literal characters</h3></header><p>A grammar consists of nonterminals, the symbols you define with rules,
 and terminals, symbols that match characters explicitly in your input.
-There are a few options for matching characters in your input.</p><section id="strings" class="section"><header><h4><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>3<span class="sep">.</span>1</span><span class="sep">. </span>Matching strings</h4></header><p>You can match a literal string of text by using its quoted value.
+There are a few options for matching characters in your input.</p><section id="strings" class="section"><header><h4><span class="label">2<span class="sep">.</span>3<span class="sep">.</span>1</span><span class="sep">. </span>Matching strings</h4></header><p>You can match a literal string of text by using its quoted value.
 The following rule says that the nonterminal symbol
 <code class="symbol">jan</code> matches the literal string “January”.</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>jan: "January".</code></span></span>
 </pre></div><p>This rule says that “<code class="symbol">month</code>” matches any of the
@@ -133,7 +133,7 @@ the documentation for details. You may also get some additional log messages
 before the output shown below, depending on how you have things configured).</p><p>Which will print:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;month&gt;March&lt;/month&gt;</code></span></span>
 </pre></div><p>Or you can do this using Steven’s form-based interface at
 <a href="https://homepages.cwi.nl/~steven/ixml/tutorial/run.html" class="link">https://homepages.cwi.nl/~steven/ixml/tutorial/run.html</a>:
-</p><div class="mediaobject"><div class="media image"><span class="viewport-table" style="width:800px;"><span class="viewport-row"><span class="viewport-cell"><span><span class="viewport"><picture><img src="./form.png" style="width:800px;"/></picture></span></span></span></span></span></div></div><p>Which returns:</p><div class="mediaobject"><div class="media image"><span class="viewport-table" style="width:800px;"><span class="viewport-row"><span class="viewport-cell"><span><span class="viewport"><picture><img src="./result.png" style="width:800px;"/></picture></span></span></span></span></span></div></div><p>Strings can be delimited by either single quotes (') or double
+</p><div class="mediaobject"><div class="media image"><span class="viewport-table" style="width:800px;"><span class="viewport-row"><span class="viewport-cell"><span><span class="viewport"><picture class="imageobject"><img src="./form.png" style="width:800px;"/></picture></span></span></span></span></span></div></div><p>Which returns:</p><div class="mediaobject"><div class="media image"><span class="viewport-table" style="width:800px;"><span class="viewport-row"><span class="viewport-cell"><span><span class="viewport"><picture class="imageobject"><img src="./result.png" style="width:800px;"/></picture></span></span></span></span></span></div></div><p>Strings can be delimited by either single quotes (') or double
 quotes ("). There’s no difference between the two forms except that
 it’s easy to put double quotes inside single ones and single
 quotes inside double ones. The string <code>'"hello"'</code> matches
@@ -167,7 +167,7 @@ this case, the result has been annotated with a “<code>failed</code>”
 state and some attempt has been made to describe what went wrong. Like
 most error messages from computers, it needs to be taken with a grain
 of salt. The processor doesn’t <em>know</em> what’s wrong
-in any meaningful sense, it just reports what state it was in when it gave up.</p><p>Steven’s form offers a similar report:</p><div class="mediaobject"><div class="media image"><span class="viewport-table" style="width:800px;"><span class="viewport-row"><span class="viewport-cell"><span><span class="viewport"><picture><img src="./badresult.png" style="width:800px;"/></picture></span></span></span></span></span></div></div></section><section id="encoded" class="section"><header><h4><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>3<span class="sep">.</span>2</span><span class="sep">. </span>Matching individual characters</h4></header><p>You can match any literal character, including newlines and
+in any meaningful sense, it just reports what state it was in when it gave up.</p><p>Steven’s form offers a similar report:</p><div class="mediaobject"><div class="media image"><span class="viewport-table" style="width:800px;"><span class="viewport-row"><span class="viewport-cell"><span><span class="viewport"><picture class="imageobject"><img src="./badresult.png" style="width:800px;"/></picture></span></span></span></span></span></div></div></section><section id="encoded" class="section"><header><h4><span class="label">2<span class="sep">.</span>3<span class="sep">.</span>2</span><span class="sep">. </span>Matching individual characters</h4></header><p>You can match any literal character, including newlines and
 <a href="#nonxml" class="link">other
 control characters</a>, with an encoded character. An encoded character is
 a number sign (#,
@@ -179,7 +179,7 @@ The encoded form can represent
 in a string. So how would you match “one” followed by “two” separated by a single
 newline?</p><p>One way is like this:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>onetwo: "one", #a, "two" .</code></span></span>
 </pre></div><p>The commas that you put in to separate tokens don’t imply any delimiters
-in the input.</p></section><section id="sets" class="section"><header><h4><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>3<span class="sep">.</span>3</span><span class="sep">. </span>Character sets</h4></header><p>Strings and encoded characters match against the input exactly
+in the input.</p></section><section id="sets" class="section"><header><h4><span class="label">2<span class="sep">.</span>3<span class="sep">.</span>3</span><span class="sep">. </span>Character sets</h4></header><p>Strings and encoded characters match against the input exactly
 as they are written. Another way to match is with <em>character
 sets</em> which can be inclusive (all these characters) or
 exclusive (any characters except these).
@@ -223,7 +223,7 @@ that is not in the class of number characters.
 The set <code>~[]</code> matches any character that is not in the empty set, in other
 words, <em>any</em> character.</p><p>(Invisible XML doesn’t let you build up more complicated
 character sets by composing them: you can’t mix inclusions and
-exclusions together in the same set.)</p></section></section><section id="seq" class="section"><header><h3><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>4</span><span class="sep">. </span>Matching sequences</h3></header><p>All the rules we’ve looked at so far match exactly one thing:
+exclusions together in the same set.)</p></section></section><section id="seq" class="section"><header><h3><span class="label">2<span class="sep">.</span>4</span><span class="sep">. </span>Matching sequences</h3></header><p>All the rules we’ve looked at so far match exactly one thing:
 one word, one symbol, or one character. What if you want to match more
 or less than one? Invisible XML gives you several options here as well
 starting with “*”, “+”, and “?” which behave just as you’d expect if you’re
@@ -268,10 +268,10 @@ is), <em>separated</em> by “<code>}</code>”s. If what you
 possible that the Invisible XML grammar will be changed slightly to
 avoid this easy to miss error. For example, repetition with a
 separator might require “**” and “++” so that it’s distinct from
-repetition without a separator.</p></div></div></div></div></section><section id="names-ws" class="section"><header><h3><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>5</span><span class="sep">. </span>Matching names and whitespace</h3></header><p>At this point, you have all the building blocks necessary to
+repetition without a separator.</p></div></div></div></div></section><section id="names-ws" class="section"><header><h3><span class="label">2<span class="sep">.</span>5</span><span class="sep">. </span>Matching names and whitespace</h3></header><p>At this point, you have all the building blocks necessary to
 write your own grammars, but two common features deserve special
 attention: matching names (contiguous sequences of characters) and
-matching whitespace.</p><section id="names" class="section"><header><h4><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>5<span class="sep">.</span>1</span><span class="sep">. </span>Matching names</h4></header><p>Invisible XML grammars match characters in your input. There
+matching whitespace.</p><section id="names" class="section"><header><h4><span class="label">2<span class="sep">.</span>5<span class="sep">.</span>1</span><span class="sep">. </span>Matching names</h4></header><p>Invisible XML grammars match characters in your input. There
 isn’t a lexer in front of it to group characters into tokens and there
 isn’t a “regular expression” matcher for grouping. If you want to
 construct input “tokens”, you have to do it yourself.</p><p>You’ll find a pattern for this in the way that Invisible XML
@@ -307,7 +307,7 @@ micro sign,
 (º). Second, you will find that very few XML parsers have really taken
 the broader repertoire of name characters defined in the fifth edition on board. The popular
 Apache Xerces parser, for example, rejects thousands of characters that should be allowed
-in names.</p></div></div></div></div></section><section id="whitespace" class="section"><header><h4><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>5<span class="sep">.</span>2</span><span class="sep">. </span>Matching whitespace</h4></header><p>Whitespace in Invisible XML is defined as:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>           s: (whitespace; comment)*.</code></span></span>
+in names.</p></div></div></div></div></section><section id="whitespace" class="section"><header><h4><span class="label">2<span class="sep">.</span>5<span class="sep">.</span>2</span><span class="sep">. </span>Matching whitespace</h4></header><p>Whitespace in Invisible XML is defined as:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>           s: (whitespace; comment)*.</code></span></span>
 <span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>  whitespace: [Zs]; tab; lf; cr.</code></span></span>
 <span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>         tab: #9.</code></span></span>
 <span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>          lf: #a.</code></span></span>
@@ -319,12 +319,12 @@ symbol. That means everywhere that the Invisible XML grammar allows an
 “<code class="symbol">s</code>” to appear in a
 grammar, it can be a space, a tab, a line feed, etc., or two of them or
 three of them, or <em>none</em> of them.
-As we’ll see in <a href="#epsilon" class="xref xref-section">Section <span class="label">1<span class="sep">.</span>2<span class="sep">.</span>6<span class="sep">.</span>1</span>, “Matching nothing”</a>, this can lead to
+As we’ll see in <a href="#epsilon" class="xref xref-section">Section <span class="label">2<span class="sep">.</span>6<span class="sep">.</span>1</span>, “Matching nothing”</a>, this can lead to
 trouble (though it doesn’t in the Invisible XML specification grammar).</p><p>Comments in Invisible XML are considered whitespace. They’re
 delimited by curly brackets and they’re defined so that they nest
 properly. (You can comment out an arbitrary section of an Invisible
 XML grammar without worrying about whether or not there are comments
-in the section you’re commenting out!)</p></section></section><section id="ambiguity" class="section"><header><h3><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>6</span><span class="sep">. </span>Ambiguity</h3></header><p>As we saw in the <a href="https://www.xml.com/articles/2022/03/01/invisible-xml/" class="link">previous
+in the section you’re commenting out!)</p></section></section><section id="ambiguity" class="section"><header><h3><span class="label">2<span class="sep">.</span>6</span><span class="sep">. </span>Ambiguity</h3></header><p>As we saw in the <a href="https://www.xml.com/articles/2022/03/01/invisible-xml/" class="link">previous
 article</a>, grammars can be ambiguous and that’s not an error.
 Nevertheless, ambiguous grammars can slow down the parser and
 different implementations may give different answers, so it’s best to
@@ -335,18 +335,18 @@ avoid them if you can. Consider this somewhat contrived example:</p><div class="
 “<code class="symbol">B</code>” followed optionally by full stops, an
 “<code class="symbol">A</code>” is an “<code class="literal">a</code>” followed by one or more
 full stops, a “<code class="symbol">B</code>” is an “<code class="literal">b</code>” followed
-by one or more full stops.</p><p>Asked to parse “<code class="literal">a..</code>”, the Invisible XML processor will report ambiguity:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;seq xmlns:ixml="http://invisiblexml.org/NS"</code></span></span>
-<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>     ixml:state="ambiguous"&gt;</code></span></span>
-<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;A&gt;a..&lt;/A&gt;</code></span></span>
-<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;/seq&gt;</code></span></span>
+by one or more full stops.</p><p>Asked to parse “<code class="literal">a..</code>”, the Invisible XML processor will report ambiguity:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;seq</span> <span class="na">xmlns:ixml=</span><span class="s">"http://invisiblexml.org/NS"</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>     <span class="na">ixml:state=</span><span class="s">"ambiguous"</span><span class="nt">&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;A&gt;</span>a..<span class="nt">&lt;/A&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/seq&gt;</span></code></span></span>
 </pre></div><p><span class="application">CoffeePot</span> will tell you that there were two possible parses, but
 it only returns one of them by default because that’s conformant
 behavior for a processor. Internally, it enumerates the parses and returns the first. You can
 ask for the other parse by passing <code>--parse:2</code> on the command line
 (alternatively, you can pass <code>--parse:all</code> for
-all of them.) Here’s the second parse:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;seq xmlns:ixml="http://invisiblexml.org/NS"</code></span></span>
-<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>     ixml:state="ambiguous"&gt;</code></span></span>
-<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;A&gt;a.&lt;/A&gt;.&lt;/seq&gt;</code></span></span>
+all of them.) Here’s the second parse:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;seq</span> <span class="na">xmlns:ixml=</span><span class="s">"http://invisiblexml.org/NS"</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>     <span class="na">ixml:state=</span><span class="s">"ambiguous"</span><span class="nt">&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;A&gt;</span>a.<span class="nt">&lt;/A&gt;</span>.<span class="nt">&lt;/seq&gt;</span></code></span></span>
 </pre></div><p>Ambiguity arises because there’s more than one way to parse an
 input. In this case, it’s pretty easy to see that the ambiguity is
 whether the second “<code class="literal">.</code>” is part of the
@@ -382,7 +382,7 @@ ambiguous because it can have an unbounded number of empty “<code class="symbo
 <span class="line" db-line="7"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;/seq&gt;</code></span></span>
 <span class="line" db-line="8"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;/seq&gt;</code></span></span>
 </pre></div><p>(In the interests of space and time, <span class="application">CoffeePot</span> won’t
-let you enumerate infinitely many parses; it ignores loops.)</p><section id="epsilon" class="section"><header><h4><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>6<span class="sep">.</span>1</span><span class="sep">. </span>Matching nothing</h4></header><p>A very common place for ambiguity to arise is when a symbol can
+let you enumerate infinitely many parses; it ignores loops.)</p><section id="epsilon" class="section"><header><h4><span class="label">2<span class="sep">.</span>6<span class="sep">.</span>1</span><span class="sep">. </span>Matching nothing</h4></header><p>A very common place for ambiguity to arise is when a symbol can
 match nothing. Anytime you use a “<code>*</code>” or “<code>?</code>”
 modifier on a symbol, you’re indicating that the symbol can be absent.
 Another way to think about “can be absent” is “can match the empty
@@ -409,18 +409,18 @@ in some parts of the number):</p><div class="pre-wrap" db-startinglinenumber="1"
 <span class="line" db-line="7"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>areacode: digits; -'(', digits, -')' .</code></span></span>
 <span class="line" db-line="8"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>-digits: ['0'-'9']+ .</code></span></span>
 </pre></div><p>(The extra hyphen-minus signs in front of some of the rules and
-symbols are explained in <a href="#output" class="xref xref-section">Section <span class="label">1<span class="sep">.</span>3</span>, “The output”</a>.)</p><p>Presented with 512-555-0100, it quietly does what you expect, returning:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;phone-number&gt;</code></span></span>
-<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;areacode&gt;512&lt;/areacode&gt;</code></span></span>
-<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;prefix&gt;555&lt;/prefix&gt;</code></span></span>
-<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;number&gt;0100&lt;/number&gt;</code></span></span>
-<span class="line" db-line="5"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;/phone-number&gt;</code></span></span>
+symbols are explained in <a href="#output" class="xref xref-section">Section <span class="label">3</span>, “The output”</a>.)</p><p>Presented with 512-555-0100, it quietly does what you expect, returning:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;phone-number&gt;</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;areacode&gt;</span>512<span class="nt">&lt;/areacode&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;prefix&gt;</span>555<span class="nt">&lt;/prefix&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;number&gt;</span>0100<span class="nt">&lt;/number&gt;</span></code></span></span>
+<span class="line" db-line="5"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/phone-number&gt;</span></code></span></span>
 </pre></div><p>Presented with 5125550100, things go a little sideways.
-<span class="application">CoffeePot</span> will tell you that there are 48 possible parses, including this one:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;phone-number xmlns:ixml="http://invisiblexml.org/NS"</code></span></span>
-<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>              ixml:state="ambiguous"&gt;</code></span></span>
-<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;areacode&gt;51255501&lt;/areacode&gt;</code></span></span>
-<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;prefix&gt;0&lt;/prefix&gt;</code></span></span>
-<span class="line" db-line="5"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;number&gt;0&lt;/number&gt;</code></span></span>
-<span class="line" db-line="6"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;/phone-number&gt;</code></span></span>
+<span class="application">CoffeePot</span> will tell you that there are 48 possible parses, including this one:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;phone-number</span> <span class="na">xmlns:ixml=</span><span class="s">"http://invisiblexml.org/NS"</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>              <span class="na">ixml:state=</span><span class="s">"ambiguous"</span><span class="nt">&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;areacode&gt;</span>51255501<span class="nt">&lt;/areacode&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;prefix&gt;</span>0<span class="nt">&lt;/prefix&gt;</span></code></span></span>
+<span class="line" db-line="5"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;number&gt;</span>0<span class="nt">&lt;/number&gt;</span></code></span></span>
+<span class="line" db-line="6"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/phone-number&gt;</span></code></span></span>
 </pre></div><p>Can you see why there are 48 parses? That grammar allows
 optional punctuation between every digit and it allows one or more
 digits in each part. Of course, that’s not actually how North American phone numbers work. This
@@ -512,7 +512,7 @@ space after the colon:</p><div class="pre-wrap" db-startinglinenumber="1" db-num
 </pre></div><p>This will parse <code class="literal">a: b c</code> unambiguously. It will
 also parse <code class="literal">a: b ^c</code> and <code class="literal">a:^b ^c</code>.
 But it will not parse <code class="literal">a: ^b ^c</code>. Can you work out why?
-</p></section></section><section id="nonxml" class="section"><header><h3><span class="label">1<span class="sep">.</span>2<span class="sep">.</span>7</span><span class="sep">. </span>Non-XML characters</h3></header><p>Even with entities and numeric character references, the
+</p></section></section><section id="nonxml" class="section"><header><h3><span class="label">2<span class="sep">.</span>7</span><span class="sep">. </span>Non-XML characters</h3></header><p>Even with entities and numeric character references, the
 repertoire of XML characters is limited. You can’t, for example, have
 <code>&amp;#x0;</code>
 (<a href="https://unicode-explorer.com/c/0000" class="link">U+0000</a>)
@@ -524,7 +524,7 @@ get errors if it’s used for an element or attribute name.</p><p>Invisible XML 
 a sequence of letters separated by null characters:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>letters: letter+#0.</code></span></span>
 <span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>letter: ['A'-'Z'; 'a'-'z'].</code></span></span>
 </pre></div><p>As long as you don’t attempt to <em>output</em> any invalid
-characters, it’s not an error to use them.</p></section></section><section id="output" class="section"><header><h2><span class="label">1<span class="sep">.</span>3</span><span class="sep">. </span>The output</h2></header><p>Whatever else your processor may be capable of, if it claims
+characters, it’s not an error to use them.</p></section></section><section id="output" class="section"><header><h2><span class="label">3</span><span class="sep">. </span>The output</h2></header><p>Whatever else your processor may be capable of, if it claims
 to be a conformant Invisible XML processor, it must be able to produce
 XML documents.</p><p>As a general rule, the Invisible XML processor makes an XML element
 out of every nonterminal that it matches. Consider this simple grammar
@@ -535,18 +535,18 @@ for dates:</p><div class="pre-wrap" db-startinglinenumber="1" db-numberoflines="
 <span class="line" db-line="5"><span class="ln">5 <span class="nsep">|</span></span><span class="ld"><code>       "May"; "June"; "July"; "August";</code></span></span>
 <span class="line" db-line="6"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>       "September"; "October"; "November"; "December".</code></span></span>
 <span class="line" db-line="7"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>year: digit, digit, digit, digit .</code></span></span>
-</pre></div><p>If you parse a date, “7 March 2022”, with that grammar, you’ll get:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="12"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln"> 1 <span class="nsep">|</span></span><span class="ld"><code>&lt;date&gt;</code></span></span>
-<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;day&gt;</code></span></span>
-<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;digit&gt;7&lt;/digit&gt;</code></span></span>
-<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;/day&gt; </code></span></span>
-<span class="line" db-line="5"><span class="ln"> 5 <span class="nsep">|</span></span><span class="ld"><code>   &lt;month&gt;March&lt;/month&gt; </code></span></span>
-<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;year&gt;</code></span></span>
-<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;digit&gt;2&lt;/digit&gt;</code></span></span>
-<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;digit&gt;0&lt;/digit&gt;</code></span></span>
-<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;digit&gt;2&lt;/digit&gt;</code></span></span>
-<span class="line" db-line="10"><span class="ln">10 <span class="nsep">|</span></span><span class="ld"><code>      &lt;digit&gt;2&lt;/digit&gt;</code></span></span>
-<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;/year&gt;</code></span></span>
-<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>&lt;/date&gt;</code></span></span>
+</pre></div><p>If you parse a date, “7 March 2022”, with that grammar, you’ll get:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="12"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln"> 1 <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;date&gt;</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;day&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;digit&gt;</span>7<span class="nt">&lt;/digit&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;/day&gt;</span> </code></span></span>
+<span class="line" db-line="5"><span class="ln"> 5 <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;month&gt;</span>March<span class="nt">&lt;/month&gt;</span> </code></span></span>
+<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;year&gt;</span></code></span></span>
+<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;digit&gt;</span>2<span class="nt">&lt;/digit&gt;</span></code></span></span>
+<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;digit&gt;</span>0<span class="nt">&lt;/digit&gt;</span></code></span></span>
+<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;digit&gt;</span>2<span class="nt">&lt;/digit&gt;</span></code></span></span>
+<span class="line" db-line="10"><span class="ln">10 <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;digit&gt;</span>2<span class="nt">&lt;/digit&gt;</span></code></span></span>
+<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;/year&gt;</span></code></span></span>
+<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/date&gt;</span></code></span></span>
 </pre></div><p>Pretty soon after the observation, “cool, it works!”, you’ll
 probably want to see about getting rid of all those extra “digit” elements.
 The Invisible XML grammar allows you to annotate rules, nonterminals,
@@ -567,17 +567,17 @@ the text of the terminal.
 </p></dd></dl><p>Now we can go back to the grammar and suppress all those extra
 digit elements. Replacing the rule for
 “<code class="symbol">digit</code>” with this one:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>-digit: ["0"-"9"] .</code></span></span>
-</pre></div><p>Changes the output to:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="5"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">1 <span class="nsep">|</span></span><span class="ld"><code>&lt;date&gt;</code></span></span>
-<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;day&gt;7&lt;/day&gt; </code></span></span>
-<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;month&gt;March&lt;/month&gt; </code></span></span>
-<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;year&gt;2022&lt;/year&gt;</code></span></span>
-<span class="line" db-line="5"><span class="ln">5 <span class="nsep">|</span></span><span class="ld"><code>&lt;/date&gt;</code></span></span>
+</pre></div><p>Changes the output to:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="5"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">1 <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;date&gt;</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;day&gt;</span>7<span class="nt">&lt;/day&gt;</span> </code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;month&gt;</span>March<span class="nt">&lt;/month&gt;</span> </code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;year&gt;</span>2022<span class="nt">&lt;/year&gt;</span></code></span></span>
+<span class="line" db-line="5"><span class="ln">5 <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/date&gt;</span></code></span></span>
 </pre></div><p>Using an “@” mark will make an element into an attribute.
 Consider this alternative rule for year:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>@year: digit, digit, digit, digit .</code></span></span>
-</pre></div><p>With that rule, you’ll get:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="4"><pre class="language-xml numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;date year="2022"&gt;</code></span></span>
-<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;day&gt;7&lt;/day&gt; </code></span></span>
-<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;month&gt;March&lt;/month&gt;</code></span></span>
-<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>&lt;/date&gt;</code></span></span>
+</pre></div><p>With that rule, you’ll get:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="4"><pre class="language-xml numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;date</span> <span class="na">year=</span><span class="s">"2022"</span><span class="nt">&gt;</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;day&gt;</span>7<span class="nt">&lt;/day&gt;</span> </code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;month&gt;</span>March<span class="nt">&lt;/month&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/date&gt;</span></code></span></span>
 </pre></div><div class="admonition note"><div><div class="icon">ⓘ</div><div class="body"><header><div class="title">Notes about “@” marks</div></header><div><p>There are three special things to note about “@” marks.
 </p><ol class="orderedlist" type="1"><li><p>If a nonterminal is marked with “@”, the things that it matches
 become part of the attribute value. If that includes other
@@ -601,18 +601,18 @@ dates.
 <span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>month: digit, digit.</code></span></span>
 <span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>day: digit, digit.</code></span></span>
 <span class="line" db-line="5"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>-digit: ["0"-"9"].</code></span></span>
-</pre></div><p>If you parse a date, “2022-03-07”, with that grammar, you’ll get:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="5"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">1 <span class="nsep">|</span></span><span class="ld"><code>&lt;date&gt;</code></span></span>
-<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;year&gt;2022&lt;/year&gt;-</code></span></span>
-<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;month&gt;03&lt;/month&gt;-</code></span></span>
-<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;day&gt;07&lt;/day&gt;</code></span></span>
-<span class="line" db-line="5"><span class="ln">5 <span class="nsep">|</span></span><span class="ld"><code>&lt;/date&gt;</code></span></span>
+</pre></div><p>If you parse a date, “2022-03-07”, with that grammar, you’ll get:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="5"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">1 <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;date&gt;</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;year&gt;</span>2022<span class="nt">&lt;/year&gt;</span>-</code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;month&gt;</span>03<span class="nt">&lt;/month&gt;</span>-</code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;day&gt;</span>07<span class="nt">&lt;/day&gt;</span></code></span></span>
+<span class="line" db-line="5"><span class="ln">5 <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/date&gt;</span></code></span></span>
 </pre></div><p>Now those extra characters really stand out. Suppress them with “-”:
 </p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>date: year, -'-', month, -'-', day .</code></span></span>
-</pre></div><p>That yields:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="5"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">1 <span class="nsep">|</span></span><span class="ld"><code>&lt;date&gt;</code></span></span>
-<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;year&gt;2022&lt;/year&gt;</code></span></span>
-<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;month&gt;03&lt;/month&gt;</code></span></span>
-<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   &lt;day&gt;07&lt;/day&gt;</code></span></span>
-<span class="line" db-line="5"><span class="ln">5 <span class="nsep">|</span></span><span class="ld"><code>&lt;/date&gt;</code></span></span>
+</pre></div><p>That yields:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="5"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">1 <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;date&gt;</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;year&gt;</span>2022<span class="nt">&lt;/year&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;month&gt;</span>03<span class="nt">&lt;/month&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;day&gt;</span>07<span class="nt">&lt;/day&gt;</span></code></span></span>
+<span class="line" db-line="5"><span class="ln">5 <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/date&gt;</span></code></span></span>
 </pre></div><p>Note that suppressing nonterminals and terminals are independent.
 Try to predict what happens if you use this grammar:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>date: year, dash, month, dash, day .</code></span></span>
 <span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>-dash: '-'.</code></span></span>
@@ -621,7 +621,7 @@ Try to predict what happens if you use this grammar:</p><div class="pre-wrap"><p
 <span class="line" db-line="5"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>day: digit, digit.</code></span></span>
 <span class="line" db-line="6"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>-digit: ["0"-"9"].</code></span></span>
 </pre></div><p>Try it out. Were you right? Can you figure out where to put
-another “-” to fix the problem?</p><section id="cant" class="section"><header><h3><span class="label">1<span class="sep">.</span>3<span class="sep">.</span>1</span><span class="sep">. </span>What you can’t do</h3></header><p>This is a good place to observe that there are some things
+another “-” to fix the problem?</p><section id="cant" class="section"><header><h3><span class="label">3<span class="sep">.</span>1</span><span class="sep">. </span>What you can’t do</h3></header><p>This is a good place to observe that there are some things
 you <em>can’t</em> do with Invisible XML.</p><ul class="itemizedlist"><li><p>You can’t reorder the input and you can’t generate output. You
 can’t, for example, parse “7 March 2022” and output “March 07, 2022”.
 Not only is there no way to change the order, there’s no way to
@@ -638,4 +638,4 @@ non-XML input into a final output format. The goal of Invisible XML is
 to transform the structure that’s only indicated with whitespace and
 other informal conventions, into <em>explicit</em>
 XML structure that you can transform with XSLT or XProc or your
-tool of choice.</p><p>That’s its power.</p></section></section></article></main><nav class="bottom"><div class="navrow"><div class="navleft"></div><div class="navmiddle"></div><div class="navright"></div></div><div class="navrow"><div class="navleft navtitle"></div><div class="navmiddle"></div><div class="navright navtitle"></div></div><div class="infofooter"><span class="copyrightfooter">Copyright ©  Norman Walsh.</span></div><nav class="tocopen"></nav><nav class="toc"></nav><!-- Hide ToC details from user agents that don’t support JS --><script type="text/html" class="tocopen"><i class="far fa-book"></i></script><script type="text/html" class="toc"><header><span>Table of Contents</span><span class="close"><i class="far fa-window-close"></i></span><p class="ptoc-search"><input class="ptoc-search" placeholder="Search" style="width: 80%"/></p></header><div db-persistent-toc="persistent-toc.html" db-prefix="">Loading…</div></script></nav><script src="/js/persistent-toc.js"></script><script src="/js/chunk-nav.js"></script></body></html>
+tool of choice.</p><p>That’s its power.</p></section></section></article></main><nav class="bottom"><div class="navrow"><div class="navleft"></div><div class="navmiddle"></div><div class="navright"></div></div><div class="navrow"><div class="navleft navtitle"></div><div class="navmiddle"></div><div class="navright navtitle"></div></div><div class="infofooter"><span class="copyrightfooter">Copyright ©  Norman Walsh.</span></div><nav class="tocopen"></nav><nav class="toc"></nav><!-- Hide ToC details from user agents that don’t support JS --><script type="text/html" class="tocopen"><i class="far fa-book"></i></script><script type="text/html" class="toc"><header><span>Table of Contents</span><span class="close"><i class="far fa-window-close"></i></span><p class="ptoc-search"><input class="ptoc-search" placeholder="Search" style="width: 80%"/></p></header><div db-persistent-toc="persistent-toc.html" db-prefix="">Loading…</div></script></nav></body></html>
