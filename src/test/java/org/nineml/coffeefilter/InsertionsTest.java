@@ -55,4 +55,17 @@ public class InsertionsTest {
         Assertions.assertTrue("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">A</S>".equals(xml)
             || "<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">B</S>".equals(xml));
     }
+
+    @Test
+    public void astralPlane() {
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/astral.ixml"));
+            InvisibleXmlDocument doc = parser.parse("aaabgagbfafb");
+            String xml = doc.getTree();
+            Assertions.assertTrue(xml.contains("<transcode-fraktur>\uD835\uDD1F</transcode-fraktur>"));
+        } catch (IOException ex) {
+            fail();
+        }
+    }
+
 }
