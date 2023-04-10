@@ -9,8 +9,7 @@ buildscript {
     resolutionStrategy {
       force 'xml-apis:xml-apis:1.4.01',
         "${saxonGroup}:${saxonEdition}:${saxonVersion}",
-        "org.xmlresolver:xmlresolver:${xmlresolverVersion}",
-        'com.nwalsh:sinclude:4.0.0'
+        "org.xmlresolver:xmlresolver:${xmlresolverVersion}"
     }
   }
 
@@ -58,8 +57,7 @@ configurations.all {
   resolutionStrategy {
     force 'xml-apis:xml-apis:1.4.01',
       "${saxonGroup}:${saxonEdition}:${saxonVersion}",
-      "org.xmlresolver:xmlresolver:${xmlresolverVersion}",
-      'com.nwalsh:sinclude:4.0.0'
+      "org.xmlresolver:xmlresolver:${xmlresolverVersion}"
   }
 }
 
