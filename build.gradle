@@ -24,10 +24,10 @@ plugins {
   id "java"
   id "maven-publish"
   id "signing"
-  id 'com.github.gmazzo.buildconfig' version "3.0.3"
-  id 'com.nwalsh.gradle.saxon.saxon-gradle' version '0.9.3'
-  id 'com.nwalsh.gradle.relaxng.validate' version '0.0.8'
-  id 'com.nwalsh.gradle.docker.container' version '0.0.3'
+  id 'com.github.gmazzo.buildconfig' version "3.1.0"
+  id 'com.nwalsh.gradle.saxon.saxon-gradle' version '0.10.5'
+  id 'com.nwalsh.gradle.relaxng.validate' version '0.10.3'
+  id 'com.nwalsh.gradle.docker.container' version '0.0.5'
 }
 
 import com.nwalsh.gradle.saxon.SaxonXsltTask
@@ -113,11 +113,6 @@ ext {
   testCase = project.findProperty("testCase") ?: null
 }
 
-saxon.configure {
-  classpath configurations.transform
-  initializer 'org.docbook.xsltng.extensions.Register'
-}
-
 docker_container.configure {
   workingDir = "docker"
 }
@@ -179,8 +174,6 @@ task testSuite(type: JavaExec,
 task testSuiteReport(type: SaxonXsltTask, dependsOn: ["testSuite"]) {
   inputs.files fileTree(dir: "${projectDir}/ixml/tests")
   inputs.files files(testSuite)
-  inputs.file "${projectDir}/tools/test-report/test-report.xsl"
-  outputs.file "${buildDir}/website/test-report/index.html"
 
   input "${projectDir}/ixml/tests/test-catalog.xml"
   stylesheet "${projectDir}/tools/test-report/test-report.xsl"
@@ -282,11 +275,11 @@ tasks.withType(JavaCompile) {
 
 task manual_xinclude(type: SaxonXsltTask, dependsOn: ["copyResources"]) {
   inputs.files fileTree(dir: "${projectDir}/src/website/xml")
-  inputs.file "${projectDir}/website/xinclude.xsl"
 
   input "${projectDir}/src/website/xml/coffeefilter.xml"
   stylesheet "${projectDir}/website/xinclude.xsl"
   output "${buildDir}/tmp/coffeefilter.xml"
+  args(['-init:org.docbook.xsltng.extensions.Register'])
 }
 
 task manual_validate(type: RelaxNGValidateTask, dependsOn: ["manual_xinclude"]) {
@@ -313,7 +306,7 @@ task website(type: SaxonXsltTask, dependsOn: ["manual_augment", "javadoc"]) {
   input manual_augment.outputs.files.singleFile
   output "${buildDir}/website/index.html"
   stylesheet "${projectDir}/tools/docbook.xsl"
-  initializer 'org.docbook.xsltng.extensions.Register'
+  args(['-init:org.docbook.xsltng.extensions.Register'])
   parameters (
     'mediaobject-input-base-uri': "file:${buildDir}/aug/",
     'mediaobject-output-base-uri': "/",
@@ -337,7 +330,7 @@ task intro(type: SaxonXsltTask, dependsOn: ["intro_validate"]) {
   input intro_validate.outputs.files.singleFile
   output "${buildDir}/website/docs/invisible.html"
   stylesheet "${projectDir}/tools/docbook.xsl"
-  initializer 'org.docbook.xsltng.extensions.Register'
+  args(['-init:org.docbook.xsltng.extensions.Register'])
   parameters (
     'mediaobject-input-base-uri': "file:${buildDir}/aug/",
     'mediaobject-output-base-uri': "/",
@@ -381,7 +374,7 @@ task writing(type: SaxonXsltTask, dependsOn: ["writing_validate", "writing_copy"
   input writing_validate.outputs.files.singleFile
   output "${buildDir}/website/docs/writing.html"
   stylesheet "${projectDir}/tools/docbook.xsl"
-  initializer 'org.docbook.xsltng.extensions.Register'
+  args(['-init:org.docbook.xsltng.extensions.Register'])
   parameters (
     'mediaobject-input-base-uri': "file:${buildDir}/xml/",
     'mediaobject-output-base-uri': "./",
