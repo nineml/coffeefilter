@@ -1,0 +1,7 @@
+{ From https://github.com/nineml/coffeepot/issues/72 }
+data: (antiqua; fraktur; greek)*, -[Z; #a; #d; #9]*.
+antiqua: -'a', ['a'-'b'].
+fraktur: -'f', transcode-fraktur.
+greek: -'g', transcode-greek.
+transcode-fraktur: -'a', +'𝔞'; -'b', +#1D51F.
+transcode-greek: -'a', +'α'; -'b', +#03B2.
