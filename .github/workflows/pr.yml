@@ -63,4 +63,5 @@ jobs:
         run: |
           git submodule init
           git submodule update
-          ./gradlew dist website
+          /bin/ls -l src/test/resources
+          ./gradlew --stacktrace dist website
