@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -255,147 +255,161 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getIgnoreBOM()">getIgnoreBOM</a></span>()</code></th>
+<td class="colLast">
+<div class="block">If a UTF-8 input stream begins with a byte order mark (BOM), ignore it.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getIgnoreTrailingWhitespace()">getIgnoreTrailingWhitespace</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Ignore trailing whitespace?</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPedantic()">getPedantic</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Enforce strict compliance to the Invisible XML specification.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPrettyPrint()">getPrettyPrint</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Attempt to pretty print the result?</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>org.nineml.coffeefilter.model.RuleRewriter</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRuleRewriter()">getRuleRewriter</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getShowBnfNonterminals()">getShowBnfNonterminals</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getShowChart()">getShowChart</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Show the Earley chart in error results?</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getShowMarks()">getShowMarks</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSuppressedState(java.lang.String)">isSuppressedState</a></span>&#8203;(java.lang.String&nbsp;state)</code></th>
 <td class="colLast">
 <div class="block">Is the specified state suppressed?</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAllowMultipleDefinitions(boolean)">setAllowMultipleDefinitions</a></span>&#8203;(boolean&nbsp;allow)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getAllowMultipleDefinitions()"><code>getAllowMultipleDefinitions()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAllowUndefinedSymbols(boolean)">setAllowUndefinedSymbols</a></span>&#8203;(boolean&nbsp;allow)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getAllowUndefinedSymbols()"><code>getAllowUndefinedSymbols()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAllowUnproductiveSymbols(boolean)">setAllowUnproductiveSymbols</a></span>&#8203;(boolean&nbsp;allow)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getAllowUnproductiveSymbols()"><code>getAllowUnproductiveSymbols()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAllowUnreachableSymbols(boolean)">setAllowUnreachableSymbols</a></span>&#8203;(boolean&nbsp;allow)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getAllowUnreachableSymbols()"><code>getAllowUnreachableSymbols()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAssertValidXmlCharacters(boolean)">setAssertValidXmlCharacters</a></span>&#8203;(boolean&nbsp;valid)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getAssertValidXmlCharacters()"><code>getAssertValidXmlCharacters()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAssertValidXmlNames(boolean)">setAssertValidXmlNames</a></span>&#8203;(boolean&nbsp;valid)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getAssertValidXmlNames()"><code>getAssertValidXmlNames()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setGraphviz(java.lang.String)">setGraphviz</a></span>&#8203;(java.lang.String&nbsp;dot)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getGraphviz()"><code>getGraphviz()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setIgnoreBOM(boolean)">setIgnoreBOM</a></span>&#8203;(boolean&nbsp;ignore)</code></th>
+<td class="colLast">
+<div class="block">Set the <a href="#getIgnoreBOM()"><code>getIgnoreBOM()</code></a> ()} property.</div>
+</td>
+</tr>
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setIgnoreTrailingWhitespace(boolean)">setIgnoreTrailingWhitespace</a></span>&#8203;(boolean&nbsp;ignore)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getIgnoreTrailingWhitespace()"><code>getIgnoreTrailingWhitespace()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPedantic(boolean)">setPedantic</a></span>&#8203;(boolean&nbsp;pedantic)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getPedantic()"><code>getPedantic()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPrettyPrint(boolean)">setPrettyPrint</a></span>&#8203;(boolean&nbsp;prettPrint)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getPrettyPrint()"><code>getPrettyPrint()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setRuleRewriter(org.nineml.coffeefilter.model.RuleRewriter)">setRuleRewriter</a></span>&#8203;(org.nineml.coffeefilter.model.RuleRewriter&nbsp;rewriter)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setShowBnfNonterminals(boolean)">setShowBnfNonterminals</a></span>&#8203;(boolean&nbsp;show)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setShowChart(boolean)">setShowChart</a></span>&#8203;(boolean&nbsp;show)</code></th>
 <td class="colLast">
 <div class="block">Set the <a href="#getShowChart()"><code>getShowChart()</code></a> property.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setShowMarks(boolean)">setShowMarks</a></span>&#8203;(boolean&nbsp;show)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#suppressState(java.lang.String)">suppressState</a></span>&#8203;(java.lang.String&nbsp;state)</code></th>
 <td class="colLast">
@@ -910,10 +924,38 @@ extends org.nineml.coffeegrinder.parser.ParserOptions</pre>
 <a id="getRuleRewriter()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getRuleRewriter</h4>
 <pre class="methodSignature">public&nbsp;org.nineml.coffeefilter.model.RuleRewriter&nbsp;getRuleRewriter()</pre>
+</li>
+</ul>
+<a id="getIgnoreBOM()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getIgnoreBOM</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;getIgnoreBOM()</pre>
+<div class="block">If a UTF-8 input stream begins with a byte order mark (BOM), ignore it.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the ignore BOM setting.</dd>
+</dl>
+</li>
+</ul>
+<a id="setIgnoreBOM(boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setIgnoreBOM</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setIgnoreBOM&#8203;(boolean&nbsp;ignore)</pre>
+<div class="block">Set the <a href="#getIgnoreBOM()"><code>getIgnoreBOM()</code></a> ()} property.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ignore</code> - Ignore the BOM?</dd>
+</dl>
 </li>
 </ul>
 </li>
