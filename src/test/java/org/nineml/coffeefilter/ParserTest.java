@@ -379,7 +379,7 @@ public class ParserTest {
             InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/cr.ixml"));
             InvisibleXmlDocument document = parser.parse("abc");
             String xml = document.getTree();
-            Assertions.assertEquals("<S><a>a&#xd;</a><b x=\"x&#d;z\">b</b><c>c</c></S>", xml);
+            Assertions.assertEquals("<S><a>a&#xD;</a><b x=\"x&#xD;z\">b</b><c>c</c></S>", xml);
         } catch (IOException err) {
             fail();
         }
@@ -394,7 +394,7 @@ public class ParserTest {
             InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/crlf.ixml"));
             InvisibleXmlDocument document = parser.parse("abc");
             String xml = document.getTree();
-            Assertions.assertEquals("<S><a>a\r\n</a><b x=\"x\r\nz\">b</b><c>c</c></S>", xml);
+            Assertions.assertEquals("<S><a>a&#xD;\n</a><b x=\"x&#xD;&#xA;z\">b</b><c>c</c></S>", xml);
         } catch (IOException err) {
             fail();
         }
@@ -409,7 +409,7 @@ public class ParserTest {
             InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/crlf2.ixml"));
             InvisibleXmlDocument document = parser.parse("abcd");
             String xml = document.getTree();
-            Assertions.assertEquals("<S><a>a\r\n</a><b x=\"x\r\nz\">b&#xd;b</b><c y=\"a&#d;g\">c</c><d>&#xd;</d></S>", xml);
+            Assertions.assertEquals("<S><a>a&#xD;\n</a><b x=\"x&#xD;&#xA;z\">b&#xD;b</b><c y=\"a&#xD;g\">c</c><d>&#xD;</d></S>", xml);
         } catch (IOException err) {
             fail();
         }
