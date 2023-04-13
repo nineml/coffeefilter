@@ -10,6 +10,8 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Construct a "string tree".
@@ -131,8 +133,30 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
 
             String qname = attributes.getQName(pos);
             String value = attributes.getValue(pos);
-            value = value.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
-            value = value.replaceAll("\"", "&quot;");
+            value = value.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace("\"", "&quot;");
+
+            if (value.contains("\r")) {
+                StringBuffer sb = new StringBuffer();
+                Pattern crplus = Pattern.compile("\r.?", Pattern.DOTALL);
+                Matcher match = crplus.matcher(value);
+                while (match.find()) {
+                    String group = match.group();
+                    if ("\r\n".equals(group)) {
+                        match.appendReplacement(sb, group);
+                    } else {
+                        if (group.length() > 1) {
+                            match.appendReplacement(sb, "&#d;" + group.substring(1));
+                        } else {
+                            match.appendReplacement(sb, "&#d;");
+                        }
+                    }
+                }
+                match.appendTail(sb);
+                value = sb.toString();
+            }
+
             stream.printf("%s=\"%s\"", qname, value);
         }
 
@@ -188,6 +212,13 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                     break;
                 case '&':
                     stream.print("&amp;");
+                    break;
+                case '\r':
+                    if (pos+1 == start+length || (pos+1 < start+length && ch[pos+1] != '\n')) {
+                        stream.print("&#xd;");
+                    } else {
+                        stream.print(ch[pos]);
+                    }
                     break;
                 default:
                     stream.print(ch[pos]);

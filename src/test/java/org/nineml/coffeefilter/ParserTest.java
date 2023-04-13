@@ -369,4 +369,49 @@ public class ParserTest {
             fail();
         }
     }
+
+    @Test
+    public void encodeCR() {
+        ParserOptions options = new ParserOptions();
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/cr.ixml"));
+            InvisibleXmlDocument document = parser.parse("abc");
+            String xml = document.getTree();
+            Assertions.assertEquals("<S><a>a&#xd;</a><b x=\"x&#d;z\">b</b><c>c</c></S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void encodeCRLF() {
+        ParserOptions options = new ParserOptions();
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/crlf.ixml"));
+            InvisibleXmlDocument document = parser.parse("abc");
+            String xml = document.getTree();
+            Assertions.assertEquals("<S><a>a\r\n</a><b x=\"x\r\nz\">b</b><c>c</c></S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void encodeCRLF2() {
+        ParserOptions options = new ParserOptions();
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/crlf2.ixml"));
+            InvisibleXmlDocument document = parser.parse("abcd");
+            String xml = document.getTree();
+            Assertions.assertEquals("<S><a>a\r\n</a><b x=\"x\r\nz\">b&#xd;b</b><c y=\"a&#d;g\">c</c><d>&#xd;</d></S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
 }
