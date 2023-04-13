@@ -6,6 +6,36 @@
 
 <revhistory>
 <revision>
+  <revnumber>2.0.1</revnumber>
+  <date>2023-04-13</date>
+  <revdescription>
+    <itemizedlist>
+      <listitem>
+        <para>Fixed <link xlink:href="https://github.com/nineml/coffeefilter/issues/98">#98</link>.
+        Added an option to ignore the Unicode BOM on UTF-8 files. It’s
+        enabled by default.</para>
+      </listitem>
+      <listitem>
+        <para>Resolved <link xlink:href="https://github.com/nineml/coffeefilter/pull/97">#97</link>.
+        Improved the encoding of carriage returns in the output. If a
+        carriage return in the output is not followed by a line feed,
+        it will be encoded as <code>&amp;#d;</code> so that an XML
+        parse of the output won’t normalize it away.</para>
+      </listitem>
+      <listitem>
+        <para>Fixed <link xlink:href="https://github.com/nineml/coffeefilter/issues/96">#96</link>.
+        Improved error reporting. In the case where a parse fails with
+        an unexpected character, if the character is not a visible ASCII character,
+        the output includes the codepoint of the character.</para>
+      </listitem>
+      <listitem>
+        <para>Tinkered with the GitHub branch workflow so that it won’t attempt to use the SSH private
+        key if it isn’t configured as a secret.</para>
+      </listitem>
+    </itemizedlist>
+  </revdescription>
+</revision>
+<revision>
   <revnumber>2.0.0</revnumber>
   <date>2023-04-10</date>
   <revremark>Making the 2.x code base the current release.</revremark>
