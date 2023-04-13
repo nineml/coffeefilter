@@ -22,6 +22,7 @@ import java.util.*;
  */
 public class InvisibleXmlParser {
     public static final String logcategory = "InvisibleXml";
+    private static final int UnicodeBOM = 0xFEFF;
     private final Ixml ixml;
     private final InvisibleXmlDocument failedParse;
     private final long parseTime;
@@ -236,15 +237,8 @@ public class InvisibleXmlParser {
             options.getLogger().debug(logcategory, "Parsing %s ixml grammar from input stream", encoding);
             shownMessage = true;
         }
-        InputStreamReader reader = new InputStreamReader(stream, encoding);
-        StringBuilder sb = new StringBuilder();
-        char[] buffer = new char[4096];
-        int len = reader.read(buffer);
-        while (len >= 0) {
-            sb.append(buffer, 0, len);
-            len = reader.read(buffer);
-        }
-        return parse(sb.toString());
+
+        return parse(readInputStream(stream, encoding));
     }
 
     /**
@@ -323,5 +317,28 @@ public class InvisibleXmlParser {
         }
         return ixml.getGrammar(options);
     }
+
+    public String readInputStream(InputStream stream, String charset) throws IOException {
+        boolean ignoreBOM = options.getIgnoreBOM() && "utf-8".equalsIgnoreCase(charset);
+
+        InputStreamReader reader = new InputStreamReader(stream, charset);
+        StringBuilder sb = new StringBuilder();
+        int inputchar = reader.read();
+
+        if (inputchar != -1) {
+            if (!ignoreBOM || inputchar != UnicodeBOM) {
+                sb.append((char) inputchar);
+            }
+            inputchar = reader.read();
+        }
+
+        while (inputchar != -1) {
+            sb.append((char) inputchar);
+            inputchar = reader.read();
+        }
+
+        return sb.toString();
+    }
+
 }
 

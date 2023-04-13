@@ -277,16 +277,7 @@ public class InvisibleXml {
     public InvisibleXmlParser getParserFromIxml(InputStream stream, String charset) throws IOException {
         InvisibleXmlParser ixmlParser = getParser();
 
-        InputStreamReader reader = new InputStreamReader(stream, charset);
-        StringBuilder sb = new StringBuilder();
-        char[] buffer = new char[4096];
-        int len = reader.read(buffer);
-        while (len >= 0) {
-            sb.append(buffer, 0, len);
-            len = reader.read(buffer);
-        }
-
-        Token[] input = IxmlInputBuilder.fromString(sb.toString());
+        Token[] input = IxmlInputBuilder.fromString(ixmlParser.readInputStream(stream, charset));
         InvisibleXmlDocument doc = ixmlParser.parse(input);
         if (doc.getNumberOfParses() == 0) {
             return new InvisibleXmlParser(doc, options, doc.parseTime());
