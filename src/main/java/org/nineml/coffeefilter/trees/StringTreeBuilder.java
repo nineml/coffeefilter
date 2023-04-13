@@ -189,6 +189,9 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                 case '&':
                     stream.print("&amp;");
                     break;
+                case '\r':
+                    stream.print("&#xD;");
+                    break;
                 default:
                     stream.print(ch[pos]);
                     break;
