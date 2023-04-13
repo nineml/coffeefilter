@@ -249,7 +249,15 @@ public class InvisibleXmlDocument {
                 TokenCharacter tchar = (TokenCharacter) result.getLastToken();
                 if (tchar != null) {
                     if (result.getParser().hasMoreInput()) {
-                        atomicValue(handler, "unexpected", ""+tchar.getValue());
+                        // Special case so that we can include the code point
+                        attrs = new AttributeBuilder(options);
+                        if (tchar.getCodepoint() < 32 || tchar.getCodepoint() >= 127) {
+                            attrs.addAttribute("codepoint", String.format("#%04X", tchar.getCodepoint()));
+                        }
+                        handler.startElement("", "unexpected", "unexpected", attrs);
+                        String value = tchar.getValue();
+                        handler.characters(value.toCharArray(), 0, value.length());
+                        handler.endElement("", "unexpected", "unexpected");
                     } else {
                         atomicValue(handler, "end-of-input", "true");
                     }

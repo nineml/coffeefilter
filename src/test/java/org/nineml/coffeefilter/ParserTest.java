@@ -1,5 +1,6 @@
 package org.nineml.coffeefilter;
 
+import com.saxonica.ee.schema.Assertion;
 import net.sf.saxon.s9api.*;
 import net.sf.saxon.s9api.DocumentBuilder;
 import org.junit.Assert;
@@ -230,12 +231,187 @@ public class ParserTest {
         InvisibleXml ixml = new InvisibleXml(options);
 
         InvisibleXmlParser parser = ixml.getParserFromIxml("S: 'a', b, @b, b. b: +'xml'.");
-        System.err.println(parser.getCompiledParser());
+        //System.err.println(parser.getCompiledParser());
         String input = "a";
         InvisibleXmlDocument document = parser.parse(input);
         String xml = document.getTree();
-        System.out.println(xml);
+        //System.out.println(xml);
+        Assertions.assertEquals("<S b=\"xml\">a<b>xml</b><b>xml</b></S>", xml);
     }
 
+    @Test
+    public void ignoreBomWhenPresentInBoth() {
+        ParserOptions options = new ParserOptions();
+        options.setIgnoreBOM(true);
+        InvisibleXml ixml = new InvisibleXml(options);
 
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/bom-test-grammar-with-bom.ixml"));
+            InvisibleXmlDocument document = parser.parse(new File("src/test/resources/bom-test-with-bom.txt"));
+            String xml = document.getTree();
+            Assertions.assertEquals("<S>bom test</S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void ignoreBomWhenPresentInGrammar() {
+        ParserOptions options = new ParserOptions();
+        options.setIgnoreBOM(true);
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/bom-test-grammar-with-bom.ixml"));
+            InvisibleXmlDocument document = parser.parse(new File("src/test/resources/bom-test-without-bom.txt"));
+            String xml = document.getTree();
+            Assertions.assertEquals("<S>bom test</S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void ignoreBomWhenPresentInInput() {
+        ParserOptions options = new ParserOptions();
+        options.setIgnoreBOM(true);
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/bom-test-grammar-without-bom.ixml"));
+            InvisibleXmlDocument document = parser.parse(new File("src/test/resources/bom-test-with-bom.txt"));
+            String xml = document.getTree();
+            Assertions.assertEquals("<S>bom test</S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void ignoreBomWhenPresentInNeither() {
+        ParserOptions options = new ParserOptions();
+        options.setIgnoreBOM(true);
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/bom-test-grammar-without-bom.ixml"));
+            InvisibleXmlDocument document = parser.parse(new File("src/test/resources/bom-test-without-bom.txt"));
+            String xml = document.getTree();
+            Assertions.assertEquals("<S>bom test</S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void dontIgnoreBomWhenPresentInGrammar() {
+        ParserOptions options = new ParserOptions();
+        options.setIgnoreBOM(false);
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/bom-test-grammar-with-bom.ixml"));
+            Assertions.assertFalse(parser.constructed());
+            InvisibleXmlDocument document = parser.getFailedParse();
+            String xml = document.getTree();
+            Assertions.assertTrue(xml.startsWith("<fail"));
+            Assertions.assertTrue(xml.contains("#FEFF"));
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void dontIgnoreBomWhenPresentInInput() {
+        ParserOptions options = new ParserOptions();
+        options.setIgnoreBOM(false);
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/bom-test-grammar-without-bom.ixml"));
+            InvisibleXmlDocument document = parser.parse(new File("src/test/resources/bom-test-with-bom.txt"));
+            String xml = document.getTree();
+            Assertions.assertTrue(xml.startsWith("<fail"));
+            Assertions.assertTrue(xml.contains("#FEFF"));
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void dontIgnoreBomWhenPresentInNeither() {
+        ParserOptions options = new ParserOptions();
+        options.setIgnoreBOM(false);
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/bom-test-grammar-without-bom.ixml"));
+            InvisibleXmlDocument document = parser.parse(new File("src/test/resources/bom-test-without-bom.txt"));
+            String xml = document.getTree();
+            Assertions.assertEquals("<S>bom test</S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void dontIgnoreBomWhenExplicitlyInGrammar() {
+        ParserOptions options = new ParserOptions();
+        options.setIgnoreBOM(false);
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/bom-test-grammar-with-explicit-bom.ixml"));
+            InvisibleXmlDocument document = parser.parse(new File("src/test/resources/bom-test-with-bom.txt"));
+            String xml = document.getTree();
+            Assertions.assertEquals("<S><BOM/>bom test</S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void encodeCR() {
+        ParserOptions options = new ParserOptions();
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/cr.ixml"));
+            InvisibleXmlDocument document = parser.parse("abc");
+            String xml = document.getTree();
+            Assertions.assertEquals("<S><a>a&#xd;</a><b x=\"x&#d;z\">b</b><c>c</c></S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void encodeCRLF() {
+        ParserOptions options = new ParserOptions();
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/crlf.ixml"));
+            InvisibleXmlDocument document = parser.parse("abc");
+            String xml = document.getTree();
+            Assertions.assertEquals("<S><a>a\r\n</a><b x=\"x\r\nz\">b</b><c>c</c></S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
+
+    @Test
+    public void encodeCRLF2() {
+        ParserOptions options = new ParserOptions();
+        InvisibleXml ixml = new InvisibleXml(options);
+
+        try {
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/crlf2.ixml"));
+            InvisibleXmlDocument document = parser.parse("abcd");
+            String xml = document.getTree();
+            Assertions.assertEquals("<S><a>a\r\n</a><b x=\"x\r\nz\">b&#xd;b</b><c y=\"a&#d;g\">c</c><d>&#xd;</d></S>", xml);
+        } catch (IOException err) {
+            fail();
+        }
+    }
 }

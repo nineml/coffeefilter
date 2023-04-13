@@ -29,6 +29,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     private boolean showMarks = false;
     private boolean showBnfNonterminals = false;
     private RuleRewriter ruleRewriter = null;
+    private boolean ignoreBOM = true;
 
     /**
      * Create the parser options.
@@ -333,5 +334,21 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     }
     public RuleRewriter getRuleRewriter() {
         return ruleRewriter;
+    }
+
+    /**
+     * If a UTF-8 input stream begins with a byte order mark (BOM), ignore it.
+     * @return the ignore BOM setting.
+     */
+    public boolean getIgnoreBOM() {
+        return ignoreBOM;
+    }
+
+    /**
+     * Set the {@link #getIgnoreBOM()} ()} property.
+     * @param ignore Ignore the BOM?
+     */
+    public void setIgnoreBOM(boolean ignore) {
+        ignoreBOM = ignore;
     }
 }
