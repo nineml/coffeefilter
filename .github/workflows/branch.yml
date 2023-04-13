@@ -37,6 +37,7 @@ jobs:
     needs: check_branch
     env:
       HAVE_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN != '' }}
+      HAVE_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY != '' }}
       HAVE_GPGKEYURI: ${{ secrets.ACCESS_TOKEN != '' && secrets.GPGKEYURI != '' }}
       CIWORKFLOW: yes
       CI_SHA1: ${{ github.sha }}
@@ -48,6 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup SSH key
+        if: ${{ env.HAVE_PRIVATE_KEY == 'true' }}
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -62,7 +64,7 @@ jobs:
           ./gradlew dist website
 
       - name: Deploy main to gh-pages
-        if: ${{ env.HAVE_ACCESS_TOKEN == 'true' && env.CI_BRANCH == 'main' }}
+        if: ${{ env.HAVE_PRIVATE_KEY == 'true' && env.HAVE_ACCESS_TOKEN == 'true' && env.CI_BRANCH == 'main' }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build/website
