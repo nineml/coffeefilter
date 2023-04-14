@@ -25,6 +25,12 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
     private static final int END_TAG = 3;
     private static final int CHARS = 4;
 
+    private static final int CR = 0x000D;
+    private static final int LF = 0x000A;
+    private static final int TAB = 0x0009;
+    private static final int NEL = 0x0085;
+    private static final int LINE_SEPARATOR = 0x2028;
+
     private String indent = "";
     private int state = FIRST;
     private ByteArrayOutputStream baos = null;
@@ -133,31 +139,37 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
 
             String qname = attributes.getQName(pos);
             String value = attributes.getValue(pos);
-            value = value.replace("&", "&amp;")
-                    .replace("<", "&lt;")
-                    .replace("\"", "&quot;");
 
-            if (value.contains("\r")) {
-                StringBuffer sb = new StringBuffer();
-                Pattern crplus = Pattern.compile("\r.?", Pattern.DOTALL);
-                Matcher match = crplus.matcher(value);
-                while (match.find()) {
-                    String group = match.group();
-                    if ("\r\n".equals(group)) {
-                        match.appendReplacement(sb, group);
-                    } else {
-                        if (group.length() > 1) {
-                            match.appendReplacement(sb, "&#d;" + group.substring(1));
-                        } else {
-                            match.appendReplacement(sb, "&#d;");
-                        }
-                    }
+            StringBuilder sb = new StringBuilder();
+            int offset = 0;
+            int strlen = value.length();
+            while (offset < strlen) {
+                int ch = value.codePointAt(offset);
+                offset += Character.charCount(ch);
+
+                switch (ch) {
+                    case '<':
+                        sb.append("&lt;");
+                        break;
+                    case '&':
+                        sb.append("&amp;");
+                        break;
+                    case '"':
+                        sb.append("&quot;");
+                    case CR:
+                    case LF:
+                    case TAB:
+                    case NEL:
+                    case LINE_SEPARATOR:
+                        sb.append(String.format("&#x%X;", ch));
+                        break;
+                    default:
+                        sb.appendCodePoint(ch);
+                        break;
                 }
-                match.appendTail(sb);
-                value = sb.toString();
             }
 
-            stream.printf("%s=\"%s\"", qname, value);
+            stream.printf("%s=\"%s\"", qname, sb);
         }
 
         documentElement = false;
@@ -213,12 +225,10 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                 case '&':
                     stream.print("&amp;");
                     break;
-                case '\r':
-                    if (pos+1 == start+length || (pos+1 < start+length && ch[pos+1] != '\n')) {
-                        stream.print("&#xd;");
-                    } else {
-                        stream.print(ch[pos]);
-                    }
+                case CR:
+                case NEL:
+                case LINE_SEPARATOR:
+                    stream.printf("&#x%X;", (int) ch[pos]);
                     break;
                 default:
                     stream.print(ch[pos]);
