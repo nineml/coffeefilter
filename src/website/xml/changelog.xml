@@ -6,6 +6,25 @@
 
 <revhistory>
 <revision>
+  <revnumber>2.0.3</revnumber>
+  <date>2023-04-15</date>
+  <revdescription>
+    <para>Corrected the encoding of the C0 and C1 control characters. Changed the encoding of
+    <literal>&gt;</literal> so that it is always encoded as <literal>&amp;gt;</literal>. (This assures
+    that the output will never accidentally enclude <literal>]]&gt;</literal> which marks
+    the end of a CDATA section.)</para>
+  </revdescription>
+</revision>
+<revision>
+  <revnumber>2.0.2</revnumber>
+  <date>2023-04-14</date>
+  <revdescription>
+    <para>Fix encoding of characters per the
+  <link xlink:href="https://www.w3.org/TR/xslt-xquery-serialization-31/#xml-output">XML Output Method</link>
+  of <citetitle>XSLT and XQuery Serialization 3.1</citetitle>.</para>
+  </revdescription>
+</revision>
+<revision>
   <revnumber>2.0.1</revnumber>
   <date>2023-04-13</date>
   <revdescription>

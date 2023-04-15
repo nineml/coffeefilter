@@ -151,6 +151,9 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                     case '<':
                         sb.append("&lt;");
                         break;
+                    case '>':
+                        sb.append("&gt;");
+                        break;
                     case '&':
                         sb.append("&amp;");
                         break;
@@ -164,7 +167,11 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                         sb.append(String.format("&#x%X;", ch));
                         break;
                     default:
-                        sb.appendCodePoint(ch);
+                        if (ch <= 0x1F || (ch >= 0x7F && ch <= 0x9F)) {
+                            sb.append(String.format("&#x%X;", ch));
+                        } else {
+                            sb.appendCodePoint(ch);
+                        }
                         break;
                 }
             }
@@ -222,6 +229,9 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                 case '<':
                     stream.print("&lt;");
                     break;
+                case '>':
+                    stream.print("&gt;");
+                    break;
                 case '&':
                     stream.print("&amp;");
                     break;
@@ -230,8 +240,16 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                 case LINE_SEPARATOR:
                     stream.printf("&#x%X;", (int) ch[pos]);
                     break;
-                default:
+                case TAB:
+                case LF:
                     stream.print(ch[pos]);
+                    break;
+                default:
+                    if (ch[pos] <= 0x1F || (ch[pos] >= 0x7F && ch[pos] <= 0x9F)) {
+                        stream.printf("&#x%X;", (int) ch[pos]);
+                    } else {
+                        stream.print(ch[pos]);
+                    }
                     break;
             }
         }
