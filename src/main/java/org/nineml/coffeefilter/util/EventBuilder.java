@@ -3,10 +3,7 @@ package org.nineml.coffeefilter.util;
 import org.nineml.coffeefilter.InvisibleXml;
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeegrinder.parser.NonterminalSymbol;
-import org.nineml.coffeegrinder.parser.RuleChoice;
-import org.nineml.coffeegrinder.parser.Symbol;
-import org.nineml.coffeegrinder.parser.TreeBuilder;
+import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.util.ParserAttribute;
@@ -67,7 +64,7 @@ public class EventBuilder extends TreeBuilder {
     }
 
     @Override
-    public int chooseFromRemaining(List<RuleChoice> alternatives) {
+    public int chooseFromRemaining(ForestNode tree, List<RuleChoice> alternatives) {
         ambiguous = true;
 
         int choice = 0;
