@@ -210,7 +210,8 @@ extends org.nineml.coffeegrinder.parser.TreeBuilder</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#chooseFromRemaining(java.util.List)">chooseFromRemaining</a></span>&#8203;(java.util.List&lt;org.nineml.coffeegrinder.parser.RuleChoice&gt;&nbsp;alternatives)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#chooseFromRemaining(org.nineml.coffeegrinder.parser.ForestNode,java.util.List)">chooseFromRemaining</a></span>&#8203;(org.nineml.coffeegrinder.parser.ForestNode&nbsp;tree,
+                   java.util.List&lt;org.nineml.coffeegrinder.parser.RuleChoice&gt;&nbsp;alternatives)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -400,13 +401,14 @@ extends org.nineml.coffeegrinder.parser.TreeBuilder</pre>
 <pre class="methodSignature">public&nbsp;org.xml.sax.ContentHandler&nbsp;getHandler()</pre>
 </li>
 </ul>
-<a id="chooseFromRemaining(java.util.List)">
+<a id="chooseFromRemaining(org.nineml.coffeegrinder.parser.ForestNode,java.util.List)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>chooseFromRemaining</h4>
-<pre class="methodSignature">public&nbsp;int&nbsp;chooseFromRemaining&#8203;(java.util.List&lt;org.nineml.coffeegrinder.parser.RuleChoice&gt;&nbsp;alternatives)</pre>
+<pre class="methodSignature">public&nbsp;int&nbsp;chooseFromRemaining&#8203;(org.nineml.coffeegrinder.parser.ForestNode&nbsp;tree,
+                               java.util.List&lt;org.nineml.coffeegrinder.parser.RuleChoice&gt;&nbsp;alternatives)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>chooseFromRemaining</code>&nbsp;in class&nbsp;<code>org.nineml.coffeegrinder.parser.TreeBuilder</code></dd>
