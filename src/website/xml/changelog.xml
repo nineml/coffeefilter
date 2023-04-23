@@ -6,6 +6,12 @@
 
 <revhistory>
 <revision>
+  <revnumber>2.1.0</revnumber>
+  <date>2023-04-23</date>
+  <revremark>Updated the version number for parity with CoffeeGrinder and the other tools.
+  There are no actually changes in this release.</revremark>
+</revision>
+<revision>
   <revnumber>2.0.3</revnumber>
   <date>2023-04-15</date>
   <revdescription>
