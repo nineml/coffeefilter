@@ -173,14 +173,11 @@ public class EventBuilder extends TreeBuilder {
         String origMark = null;
 
         if (options.getShowMarks() || options.getShowBnfNonterminals()) {
-            String pruneStr = attributes.getOrDefault(ParserAttribute.PRUNING_NAME, ParserAttribute.NOT_ALLOWED_TO_PRUNE);
-            boolean prune = ParserAttribute.ALLOWED_TO_PRUNE.equals(pruneStr);
-            boolean showHidden = options.getShowBnfNonterminals() && prune;
-            boolean showMarks = options.getShowMarks() && (!prune || showHidden);
+            boolean showHidden = options.getShowBnfNonterminals();
+            boolean showMarks = options.getShowMarks() || showHidden;
 
             if (showMarks) {
                 origMark = mark;
-                mark = "^";
             }
 
             if (showHidden) {
@@ -189,8 +186,12 @@ public class EventBuilder extends TreeBuilder {
             }
         }
 
-        if ("-".equals(mark)) {
+        if (origName == null && "-".equals(mark)) {
             return;
+        }
+
+        if (origMark != null) {
+            mark = "^";
         }
 
         Element element = new Element(mark, name, depth);
@@ -214,23 +215,24 @@ public class EventBuilder extends TreeBuilder {
 
         String name = attributes.getOrDefault("name", symbol.toString());
         String mark = attributes.getOrDefault("mark", "^");
+        String origName = null;
+        String origMark = null;
 
         if (options.getShowMarks() || options.getShowBnfNonterminals()) {
-            String pruneStr = attributes.getOrDefault(ParserAttribute.PRUNING_NAME, ParserAttribute.NOT_ALLOWED_TO_PRUNE);
-            boolean prune = ParserAttribute.ALLOWED_TO_PRUNE.equals(pruneStr);
-            boolean showHidden = options.getShowBnfNonterminals() && prune;
-            boolean showMarks = options.getShowMarks() && (!prune || showHidden);
+            boolean showHidden = options.getShowBnfNonterminals();
+            boolean showMarks = options.getShowMarks() || showHidden;
 
             if (showMarks) {
-                mark = "^";
+                origMark = mark;
             }
 
             if (showHidden) {
+                origName = name;
                 name = "n:symbol";
             }
         }
 
-        if ("-".equals(mark)) {
+        if (origName == null && "-".equals(mark)) {
             depth--;
             return;
         }

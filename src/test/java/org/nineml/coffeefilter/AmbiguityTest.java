@@ -32,10 +32,27 @@ public class AmbiguityTest {
 
         try {
             String xml = doc.getTree();
-            //System.out.println(xml);
+            Assertions.assertTrue(xml.contains("x<B><A>a</A></B>y"));
         } catch (Exception ex) {
             fail();
         }
+    }
+
+    @Test
+    public void ambigmarks() {
+        String input = "S = A, B, C | A, @B, C . A = 'a' . B = 'b' . C = 'c' .";
+
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+        input = "abc";
+        InvisibleXmlDocument doc = parser.parse(input);
+
+        try {
+            String xml = doc.getTree();
+            Assertions.assertTrue(xml.contains("<A>a</A><B>b</B><C>c</C>") || xml.contains("a</A><C>c</C>"));
+        } catch (Exception ex) {
+            fail();
+        }
+
     }
 
     @Test

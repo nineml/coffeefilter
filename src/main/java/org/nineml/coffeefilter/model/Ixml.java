@@ -310,10 +310,6 @@ public class Ixml extends XNonterminal {
                 attributes.add(new ParserAttribute("mark", ""+rule.getMark()));
                 attributes.add(new ParserAttribute("name", rule.getName()));
 
-                if (rule.getName().startsWith("$")) {
-                    attributes.add(ParserAttribute.PRUNING_ALLOWED);
-                }
-
                 if (startRule.equals(rule.getName())) {
                     for (IPragma pragma : pragmas) {
                         if (pragma instanceof IPragmaXmlns) {
@@ -377,9 +373,6 @@ public class Ixml extends XNonterminal {
                                 }
                             }
 
-                            if (cat.getName().startsWith("$")) {
-                                attributes.add(ParserAttribute.PRUNING_ALLOWED);
-                            }
                             attributes.add(new ParserAttribute("name", name));
                         }
 

@@ -6,6 +6,25 @@
 
 <revhistory>
 <revision>
+  <revnumber>2.2.0</revnumber>
+  <date>2023-05-06</date>
+  <revdescription>
+<itemizedlist>
+<listitem>
+<para>Leveraging changes to the CoffeeGrinder implementation, the priority
+pragma now works correctly.
+</para>
+</listitem>
+<listitem>
+<para>References to “pruning” nonterminals has been removed (because it’s been
+removed from CoffeeGrinder).
+</para>
+</listitem>
+</itemizedlist>
+
+  </revdescription>
+</revision>
+<revision>
   <revnumber>2.1.0</revnumber>
   <date>2023-04-23</date>
   <revremark>Updated the version number for parity with CoffeeGrinder and the other tools.
