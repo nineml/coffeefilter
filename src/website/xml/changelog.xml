@@ -6,6 +6,13 @@
 
 <revhistory>
 <revision>
+  <revnumber>2.2.1</revnumber>
+  <date>2023-05-17</date>
+  <revdescription>
+    <para>Bumped version for dependency on CoffeeGrinder.</para>
+  </revdescription>
+</revision>
+<revision>
   <revnumber>2.2.0</revnumber>
   <date>2023-05-06</date>
   <revdescription>
