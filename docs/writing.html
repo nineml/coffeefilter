@@ -1,4 +1,4 @@
-<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" class="no-js"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script><title>Writing Invisible XML grammars</title><link href="/css/pygments.css" rel="stylesheet"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="https://purl.org/dc/elements/1.1/" rel="schema.dc"/><meta name="dc.modified" content="2023-05-17T11:51:09Z"/><meta name="generator" content="DocBook xslTNG version 2.1.2 / c75a917 / SAXON HE 11.5"/><link href="/css/docbook-toc.css" rel="stylesheet"/><link href="/css/docbook.css" rel="stylesheet" media="screen"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><script src="https://kit.fontawesome.com/498b6706f0.js" type="text/javascript" crossorigin="anonymous"></script><link href="icon/CoffeeFilter.png" rel="shortcut icon"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="css/nineml.css" rel="stylesheet"/><link href="css/coffeefilter.css" rel="stylesheet"/><script src="/js/persistent-toc.js" defer="defer"></script><script src="/js/copy-verbatim.js" defer="defer"></script><script src="/js/chunk-nav.js" defer="defer"></script></head><body class="home"><nav class="top"><span class="nav"><a title="" href=""><i class="fas fa-home"></i></a> <span class="inactive"><i class="fas fa-arrow-left"></i></span> <span class="inactive"><i class="fas fa-arrow-up"></i></span> <span class="inactive"><i class="fas fa-arrow-right"></i></span></span><span class="title"><i class="title">Writing Invisible XML grammars</i></span></nav><main><article class="article component"><header><h1>Writing Invisible XML grammars</h1><div class="author"><h3><span class="first-last personname"><span class="firstname">Norm</span> <span class="surname">Tovey-Walsh</span></span></h3></div><div class="copyright">Copyright © <span class="copyright-years"><span class="year">2022</span></span> <span class="holder">Norm Tovey-Walsh</span></div><div class="abstract"><p>This article is a draft that I intend to submit to
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" class="no-js"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script><title>Writing Invisible XML grammars</title><link href="/css/pygments.css" rel="stylesheet"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="https://purl.org/dc/elements/1.1/" rel="schema.dc"/><meta name="dc.modified" content="2023-06-15T13:49:30Z"/><meta name="generator" content="DocBook xslTNG version 2.1.6 / cf0b935 / SAXON HE 11.5"/><link href="/css/docbook-toc.css" rel="stylesheet"/><link href="/css/docbook.css" rel="stylesheet" media="screen"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><script src="https://kit.fontawesome.com/498b6706f0.js" type="text/javascript" crossorigin="anonymous"></script><link href="icon/CoffeeFilter.png" rel="shortcut icon"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="css/nineml.css" rel="stylesheet"/><link href="css/coffeefilter.css" rel="stylesheet"/><script src="/js/persistent-toc.js" defer="defer"></script><script src="/js/copy-verbatim.js" defer="defer"></script><script src="/js/chunk-nav.js" defer="defer"></script></head><body class="home"><nav class="top"><span class="nav"><a title="" href=""><i class="fas fa-home"></i></a> <span class="inactive"><i class="fas fa-arrow-left"></i></span> <span class="inactive"><i class="fas fa-arrow-up"></i></span> <span class="inactive"><i class="fas fa-arrow-right"></i></span></span><span class="title"><i class="title">Writing Invisible XML grammars</i></span></nav><main><article class="article component"><header><h1>Writing Invisible XML grammars</h1><div class="author"><h3><span class="first-last personname"><span class="firstname">Norm</span> <span class="surname">Tovey-Walsh</span></span></h3></div><div class="copyright">Copyright © <span class="copyright-years"><span class="year">2022</span></span> <span class="holder">Norm Tovey-Walsh</span></div><div class="abstract"><p>This article is a draft that I intend to submit to
 XML.com for publication. Please don’t share this URI at this time.
 Thanks.</p></div></header><div class="list-of-titles"><div class="lot toc"><div class="title">Table of Contents</div><ul class="toc"><li><a href="#intro"><span class="label">1</span><span class="sep">. </span>Introduction</a></li><li><a href="#input"><span class="label">2</span><span class="sep">. </span>The input</a></li><li><a href="#output"><span class="label">3</span><span class="sep">. </span>The output</a></li></ul></div></div><p>This article is a follow-up to the introduction to
 <a href="https://www.xml.com/articles/2022/03/01/invisible-xml/" class="link">Invisible XML</a> published
@@ -227,24 +227,24 @@ exclusions together in the same set.)</p></section></section><section id="seq" c
 one word, one symbol, or one character. What if you want to match more
 or less than one? Invisible XML gives you several options here as well
 starting with “*”, “+”, and “?” which behave just as you’d expect if you’re
-familiar with regular expression languages.</p><dl class="variablelist"><dt class="varlistentry"><span class="term"><code class="literal">factor*</code></span></dt><dd><p>A <a href="#rhs" class="link">factor</a> followed by a “*” will match
+familiar with regular expression languages.</p><dl class="variablelist"><div class="varlistentry"><dt><span class="term"><code class="literal">factor*</code></span></dt><dd><p>A <a href="#rhs" class="link">factor</a> followed by a “*” will match
 zero or more occurrences of that factor. Given this rule,
 </p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>seq: 'a', '.'*, 'b'.</code></span></span>
 </pre></div><p>An “<code>seq</code>” will match “<code class="literal">ab</code>”,
 “<code class="literal">a.b</code>”, “<code class="literal">a..b</code>”, etc. with as many
-full stops as you like between the two letters.</p></dd><dt class="varlistentry"><span class="term"><code class="literal">factor+</code></span></dt><dd><p>A factor followed by a “+” will match one or more occurrences
+full stops as you like between the two letters.</p></dd></div><div class="varlistentry"><dt><span class="term"><code class="literal">factor+</code></span></dt><dd><p>A factor followed by a “+” will match one or more occurrences
 of that factor. Given this rule,
 </p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>seq: 'a', '.'+, 'b'.</code></span></span>
 </pre></div><p>An “<code>seq</code>” will match “<code class="literal">a.b</code>”,
 “<code class="literal">a..b</code>”, “<code class="literal">a...b</code>”, etc. with as many
 full stops as you like between the two letters, but it will not
-match “<code class="literal">ab</code>”.</p></dd><dt class="varlistentry"><span class="term"><code class="literal">factor?</code></span></dt><dd><p>A factor followed by a “?” is optional. It will match zero or one
+match “<code class="literal">ab</code>”.</p></dd></div><div class="varlistentry"><dt><span class="term"><code class="literal">factor?</code></span></dt><dd><p>A factor followed by a “?” is optional. It will match zero or one
 occurrence of that factor. Given this rule:
 </p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>seq: 'a'? .</code></span></span>
 </pre></div><p>An “<code>seq</code>” will match either nothing or a single
 “<code class="literal">a</code>”. Matching empty strings (accidentally or on purpose) as
 an important topic that we’ll come back to
-<a href="#epsilon" class="link">later</a>.</p></dd><dt class="varlistentry"><span class="term"><code class="literal">factor1 * factor2</code></span></dt><dd><p>Invisible XML has two special forms of repeat that are convenient
+<a href="#epsilon" class="link">later</a>.</p></dd></div><div class="varlistentry"><dt><span class="term"><code class="literal">factor1 * factor2</code></span></dt><dd><p>Invisible XML has two special forms of repeat that are convenient
 for grammar authors. If two factors are separated by a “*”, they will match
 zero or more occurrences of the first factor <em>separated</em> by
 the second factor. Given this rule:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>seq: 'a'*',' .</code></span></span>
@@ -253,13 +253,13 @@ the second factor. Given this rule:</p><div class="pre-wrap"><pre class="languag
 “<code class="literal">a</code>”s as appear (including none) provided that they are separated by precisely
 one comma.</p><p>Note that because the separator is a factor as well, you can have more nuanced
 separators. You could match a sequence of “a” characters separated by commas followed by optional
-spaces like this: <code>'a'*(',', ' '*)</code>.</p></dd><dt class="varlistentry"><span class="term"><code class="literal">factor1 + factor2</code></span></dt><dd><p>If two factors are separated by a “+”, they will match
+spaces like this: <code>'a'*(',', ' '*)</code>.</p></dd></div><div class="varlistentry"><dt><span class="term"><code class="literal">factor1 + factor2</code></span></dt><dd><p>If two factors are separated by a “+”, they will match
 one or more occurrences of the first factor <em>separated</em> by
 the second factor. Given this rule:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>seq: 'a'+',' .</code></span></span>
 </pre></div><p>An “<code>seq</code>” will match “<code class="literal">a</code>”, “<code class="literal">a,a</code>”,
 “<code class="literal">a,a,a</code>”, etc. Matching as many
 “<code class="literal">a</code>”s as appear provided that they are separated by precisely
-one comma.</p></dd></dl><div class="admonition note"><div><div class="icon">ⓘ</div><div class="body"><header><div class="title">Note</div></header><div><p>Repetition can be subtle. The pattern “<code>sym* '}'</code>”
+one comma.</p></dd></div></dl><div class="admonition note"><div><div class="icon">ⓘ</div><div class="body"><header><div class="title">Note</div></header><div><p>Repetition can be subtle. The pattern “<code>sym* '}'</code>”
 matches zero or more occurrences of “<code>sym</code>” (whatever that
 is), <em>separated</em> by “<code>}</code>”s. If what you
 <em>intended</em> was zero or more occurrences of
@@ -554,17 +554,17 @@ and terminals with extra symbols, called “marks” in the specification,
 to control how they’re used to construct XML.
 </p><p>The mark on a nonterminal controls how it’s serialized. If a particular
 nonterminal on the right-hand-side of a rule doesn’t have a mark, the mark
-on the rule that defines that nonterminal is the default. The marks are:</p><dl class="variablelist"><dt class="varlistentry"><span class="term"><code class="literal">^</code> (the default mark)</span></dt><dd><p>A “^” is the default. On a nonterminal, it indicates that an
+on the rule that defines that nonterminal is the default. The marks are:</p><dl class="variablelist"><div class="varlistentry"><dt><span class="term"><code class="literal">^</code> (the default mark)</span></dt><dd><p>A “^” is the default. On a nonterminal, it indicates that an
 element should be created using the name of the nonterminal and what
 matches the nonterminal should be inside it. On a terminal, it indicates
 that the terminal should appear in the output.
-</p></dd><dt class="varlistentry"><span class="term"><code class="literal">@</code></span></dt><dd><p>An “@” only applies to nonterminals. It indicates that an
+</p></dd></div><div class="varlistentry"><dt><span class="term"><code class="literal">@</code></span></dt><dd><p>An “@” only applies to nonterminals. It indicates that an
 attribute should be created using the name of the nonterminal and what
 matches the nonterminal should appear in the attribute value.
-</p></dd><dt class="varlistentry"><span class="term"><code class="literal">-</code></span></dt><dd><p>A “-” suppresses output. On a nonterminal, it suppresses the
+</p></dd></div><div class="varlistentry"><dt><span class="term"><code class="literal">-</code></span></dt><dd><p>A “-” suppresses output. On a nonterminal, it suppresses the
 name of the nonterminal, not its content. On a terminal, it suppresses
 the text of the terminal.
-</p></dd></dl><p>Now we can go back to the grammar and suppress all those extra
+</p></dd></div></dl><p>Now we can go back to the grammar and suppress all those extra
 digit elements. Replacing the rule for
 “<code class="symbol">digit</code>” with this one:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>-digit: ["0"-"9"] .</code></span></span>
 </pre></div><p>Changes the output to:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="5"><pre class="language-xml long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">1 <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;date&gt;</span></code></span></span>

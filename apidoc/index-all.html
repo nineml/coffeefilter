@@ -229,6 +229,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/util/XmlWriter.html#declareNamespace(java.lang.String,java.lang.String)">declareNamespace(String, String)</a></span> - Method in class org.nineml.coffeefilter.util.<a href="org/nineml/coffeefilter/util/XmlWriter.html" title="class in org.nineml.coffeefilter.util">XmlWriter</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#disablePragma(java.lang.String)">disablePragma(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Disable the specified pragma.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/exceptions/IxmlTreeException.html#documentNotStarted()">documentNotStarted()</a></span> - Static method in exception org.nineml.coffeefilter.exceptions.<a href="org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/exceptions/IxmlTreeException.html#documentStarted()">documentStarted()</a></span> - Static method in exception org.nineml.coffeefilter.exceptions.<a href="org/nineml/coffeefilter/exceptions/IxmlTreeException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlTreeException</a></dt>
@@ -245,6 +249,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/DataTree.html#EMPTY_DATA_TREE">EMPTY_DATA_TREE</a></span> - Static variable in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#enablePragma(java.lang.String)">enablePragma(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Disable the specified pragma.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/DataTreeBuilder.html#endDocument()">endDocument()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/DataTreeBuilder.html" title="class in org.nineml.coffeefilter.trees">DataTreeBuilder</a></dt>
 <dd>
 <div class="block">Inidcates that construction has finished.</div>
@@ -545,6 +553,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getShowMarks()">getShowMarks()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#getStrictAmbiguity()">getStrictAmbiguity()</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">If a grammar contains priority pragmas that uniquely determine the outcome of every
+ potentially ambiguous choice, report that the grammar is ambiguous anyway.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/SimpleText.html#getText()">getText()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/SimpleText.html" title="class in org.nineml.coffeefilter.trees">SimpleText</a></dt>
 <dd>
 <div class="block">Get the value.</div>
@@ -872,6 +885,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Returns the amount of time (roughly) spent parsing.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#pragmaDisabled(java.lang.String)">pragmaDisabled(String)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Is the specified pragma disabled?</div>
+</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/trees/DataTree.html#prepareCsv()">prepareCsv()</a></span> - Method in class org.nineml.coffeefilter.trees.<a href="org/nineml/coffeefilter/trees/DataTree.html" title="class in org.nineml.coffeefilter.trees">DataTree</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/util/XmlWriter.html#processingInstruction(java.lang.String)">processingInstruction(String)</a></span> - Method in class org.nineml.coffeefilter.util.<a href="org/nineml/coffeefilter/util/XmlWriter.html" title="class in org.nineml.coffeefilter.util">XmlWriter</a></dt>
@@ -946,7 +963,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setIgnoreBOM(boolean)">setIgnoreBOM(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
 <dd>
-<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getIgnoreBOM()"><code>ParserOptions.getIgnoreBOM()</code></a> ()} property.</div>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getIgnoreBOM()"><code>ParserOptions.getIgnoreBOM()</code></a> property.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setIgnoreTrailingWhitespace(boolean)">setIgnoreTrailingWhitespace(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
 <dd>
@@ -972,6 +989,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setShowMarks(boolean)">setShowMarks(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="org/nineml/coffeefilter/ParserOptions.html#setStrictAmbiguity(boolean)">setStrictAmbiguity(boolean)</a></span> - Method in class org.nineml.coffeefilter.<a href="org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></dt>
+<dd>
+<div class="block">Set the <a href="org/nineml/coffeefilter/ParserOptions.html#getStrictAmbiguity()"><code>ParserOptions.getStrictAmbiguity()</code></a> property.</div>
+</dd>
 <dt><a href="org/nineml/coffeefilter/trees/SimpleText.html" title="class in org.nineml.coffeefilter.trees"><span class="typeNameLink">SimpleText</span></a> - Class in <a href="org/nineml/coffeefilter/trees/package-summary.html">org.nineml.coffeefilter.trees</a></dt>
 <dd>
 <div class="block">A node in a <a href="org/nineml/coffeefilter/trees/SimpleTree.html" title="class in org.nineml.coffeefilter.trees"><code>SimpleTree</code></a> that contains a single text value.</div>
