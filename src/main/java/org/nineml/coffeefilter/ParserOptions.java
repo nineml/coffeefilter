@@ -374,7 +374,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
      * @param strict Strictly report ambiguity?
      */
     public void setStrictAmbiguity(boolean strict) {
-        ignoreBOM = strict;
+        strictAmbiguity = strict;
     }
 
     /**

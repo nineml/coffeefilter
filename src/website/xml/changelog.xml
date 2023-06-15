@@ -6,6 +6,15 @@
 
 <revhistory>
 <revision>
+<revnumber>2.2.3</revnumber>
+<date>2023-06-15</date>
+<revdescription>
+<para>Fixed a typo: <methodname>setStrictAmbiguity</methodname> was setting the wrong
+internal flag.</para>
+</revdescription>
+</revision>
+
+<revision>
 <revnumber>2.2.2</revnumber>
 <date>2023-06-15</date>
 <revdescription>
