@@ -6,6 +6,30 @@
 
 <revhistory>
 <revision>
+<revnumber>2.2.2</revnumber>
+<date>2023-06-15</date>
+<revdescription>
+<itemizedlist>
+<listitem>
+<para>Added options to enable and disable pragmas. Individual pragmas can be enabled or
+disabled by name. Specify the name <code>#all</code> to enable or disable them all.</para>
+</listitem>
+<listitem>
+<para>Added a <code>strictAmbiguity</code> option. If <code>strictAmbiguity</code> is true,
+then a grammar will be marked ambiguous even if user-supplied priorities uniquely determined
+every outcome. Added an event builder option to track whether or not any ambiguous choices
+were made.</para>
+</listitem>
+<listitem>
+<para>Added a warning message if a priority pragma is applied to a literal. Parsing doesn’t
+distinguish between different occurrences of literals so the priority is unavailable when
+resolving ambiguities.</para>
+</listitem>
+</itemizedlist>
+</revdescription>
+</revision>
+
+<revision>
   <revnumber>2.2.1</revnumber>
   <date>2023-05-17</date>
   <revdescription>

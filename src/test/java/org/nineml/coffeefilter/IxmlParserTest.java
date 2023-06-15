@@ -169,6 +169,23 @@ public class IxmlParserTest {
         }
     }
 
+    @Ignore
+    public void unicodeLL() {
+        // Java 11 test this test wrong
+        try {
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/unicode-ll.ixml"));
+            Grammar grammar = parser.getGrammar();
+            Assert.assertNotNull(grammar);
+            InvisibleXmlDocument doc = parser.parse(new File("src/test/resources/unicode-ll.inp"), "UTF-8");
+            Assert.assertTrue(doc.succeeded());
+            Assert.assertNotNull(doc.getTree());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            fail();
+        }
+    }
+
+
     // I know I fail this test :-(
     @Ignore
     public void imult6() {

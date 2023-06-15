@@ -1,0 +1,2 @@
+S = char, (#a | #d)* .
+char = [Ll] .

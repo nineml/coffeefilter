@@ -17,6 +17,7 @@ import java.util.*;
  */
 public class EventBuilder extends TreeBuilder {
     public static final String logcategory = "TreeBuilder";
+    protected boolean madeAmbiguousChoice;
     private ParserOptions options;
     private final Stack<Child> output;
     private String xmlns = "";
@@ -39,6 +40,7 @@ public class EventBuilder extends TreeBuilder {
         // xmlns?
         grammarVersion = ixmlVersion;
         output = new Stack<>();
+        madeAmbiguousChoice = false;
         depth = 0;
     }
 
@@ -66,6 +68,7 @@ public class EventBuilder extends TreeBuilder {
     @Override
     public int chooseFromRemaining(ForestNode tree, List<RuleChoice> alternatives) {
         ambiguous = true;
+        int maxCount = 0;
 
         int choice = 0;
         double priority = 0;
@@ -78,11 +81,11 @@ public class EventBuilder extends TreeBuilder {
 
                 if (nt != null && nt.hasAttribute("priority")) {
                     test = Double.parseDouble(alternatives.get(idx).getSymbol().getAttribute("priority").getValue());
-                } else {
                     // The rhs is null if this is a non-terminal symbol (as opposed to an intermediate state)
                     if (rhs == null) {
                         test = defaultPriority;
                     } else {
+                        /* 14 June 2023, this looks unjustified to me...
                         for (Symbol symbol : alternatives.get(idx).getRightHandSide()) {
                             if (symbol.hasAttribute("priority")) {
                                 test += Double.parseDouble(symbol.getAttribute("priority").getValue());
@@ -90,15 +93,28 @@ public class EventBuilder extends TreeBuilder {
                                 test += defaultPriority;
                             }
                         }
+                         */
                     }
+                }
+            }
+
+            if (idx == 0) {
+                maxCount = 1;
+            } else {
+                if (test == priority) {
+                    maxCount++;
                 }
             }
 
             if (test > priority) {
                 choice = idx;
                 priority = test;
+                maxCount = 1;
             }
         }
+
+        madeAmbiguousChoice = madeAmbiguousChoice || maxCount > 1;
+
         return choice;
     }
 
@@ -371,7 +387,9 @@ public class EventBuilder extends TreeBuilder {
                             && !"1.0-9ml".equals(grammarVersion)
                             && !"1.0-nineml".equals(grammarVersion);
 
-                    boolean markAmbiguous = ambiguous && !options.isSuppressedState("ambiguous");
+                    boolean markAmbiguous = ambiguous && !options.isSuppressedState("ambiguous")
+                            && (options.getStrictAmbiguity() || madeAmbiguousChoice);
+
                     badVersion = badVersion && !options.isSuppressedState("version-mismatch");
 
                     if (markAmbiguous || badVersion) {

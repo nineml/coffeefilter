@@ -138,6 +138,55 @@ public class PragmasTest {
         }
     }
 
+    @Test
+    public void ignoreDiscardACD() {
+        try {
+            ParserOptions localOptions = new ParserOptions();
+            localOptions.disablePragma("discard-empty");
+            InvisibleXml localInvisibleXml = new InvisibleXml(localOptions);
+
+            InvisibleXmlParser parser = localInvisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
+            InvisibleXmlDocument doc = parser.parse("");
+            String xml = doc.getTree();
+            Assertions.assertEquals("<S D=\"\" E=\"\"><A/><B/><C/></S>", xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void ignoreAllDiscardACD() {
+        try {
+            ParserOptions localOptions = new ParserOptions();
+            localOptions.disablePragma("#all");
+            InvisibleXml localInvisibleXml = new InvisibleXml(localOptions);
+
+            InvisibleXmlParser parser = localInvisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
+            InvisibleXmlDocument doc = parser.parse("");
+            String xml = doc.getTree();
+            Assertions.assertEquals("<S D=\"\" E=\"\"><A/><B/><C/></S>", xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void ignoreAllExceptDiscardACD() {
+        try {
+            ParserOptions localOptions = new ParserOptions();
+            localOptions.disablePragma("#all");
+            localOptions.enablePragma("discard-empty");
+            InvisibleXml localInvisibleXml = new InvisibleXml(localOptions);
+
+            InvisibleXmlParser parser = localInvisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
+            InvisibleXmlDocument doc = parser.parse("");
+            String xml = doc.getTree();
+            Assertions.assertEquals("<S E=\"\"><B/></S>", xml);
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
     @Ignore
     public void greedy() {
         try {

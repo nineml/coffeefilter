@@ -389,6 +389,16 @@ public abstract class XNode {
             }
         }
 
+        if ("discard".equals(ptype) && getRoot().getOptions().pragmaDisabled("discard-empty")) {
+            return null;
+        }
+        if ("default-priority".equals(ptype) && getRoot().getOptions().pragmaDisabled("priority")) {
+            return null;
+        }
+        if (getRoot().getOptions().pragmaDisabled(ptype)) {
+            return null;
+        }
+
         switch (ptype) {
             case "rewrite":
                 return new IPragmaRewrite(pragma.parent, pragma.name, data);
@@ -409,7 +419,6 @@ public abstract class XNode {
             case "priority":
             case "default-priority":
                 try {
-                    double priority = Double.parseDouble(data);
                     if ("priority".equals(ptype)) {
                         return new IPragmaPriority(pragma.parent, pragma.name, data);
                     }
