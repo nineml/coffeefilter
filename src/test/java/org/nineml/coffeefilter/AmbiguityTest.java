@@ -24,6 +24,7 @@ public class AmbiguityTest {
     @Test
     public void ambiguity1() {
         // This test is for the bug where a terminal marked as optional was losing its optionality
+        // One choice is still ambiguous
         String input = "{[+pragma n \"https://nineml.org/ns/pragma/\"]} S = 'x', (A | {[n priority 2]} B), 'y'.  {[n priority 1]} A = 'a' | B. B = 'b' | A.";
 
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
@@ -33,6 +34,27 @@ public class AmbiguityTest {
         try {
             String xml = doc.getTree();
             Assertions.assertTrue(xml.contains("x<B><A>a</A></B>y"));
+            Assertions.assertTrue(xml.contains("ixml:state"));
+            Assertions.assertTrue(xml.contains("ambiguous"));
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void ambiguity2() {
+        // This test is for the case where no ambiguous choices are made (taking priority into account)
+        String input = "{[+pragma n \"https://nineml.org/ns/pragma/\"]} S = 'x', (A | {[n priority 2]} B), 'y'. -X = 'a' . {[n priority 1]} A = {[n priority 1]} X | B. B = 'b' | A.";
+
+        InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
+        input = "xay";
+        InvisibleXmlDocument doc = parser.parse(input);
+
+        try {
+            String xml = doc.getTree();
+            Assertions.assertTrue(xml.contains("x<B><A>a</A></B>y"));
+            Assertions.assertFalse(xml.contains("ixml:state"));
+            Assertions.assertFalse(xml.contains("ambiguous"));
         } catch (Exception ex) {
             fail();
         }
