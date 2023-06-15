@@ -1,10 +1,10 @@
 package org.nineml.coffeefilter;
 
 import org.nineml.coffeefilter.model.RuleRewriter;
-import org.nineml.coffeefilter.model.RuleRewrites;
 import org.nineml.logging.DefaultLogger;
 import org.nineml.logging.Logger;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -30,6 +30,9 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     private boolean showBnfNonterminals = false;
     private RuleRewriter ruleRewriter = null;
     private boolean ignoreBOM = true;
+    private boolean strictAmbiguity = false;
+    private final HashSet<String> disabledPragmas;
+    private static final HashSet<String> knownPragmas = new HashSet<>(Arrays.asList("discard-empty", "ns", "priority", "regex", "rename", "rewrite", "token"));
 
     /**
      * Create the parser options.
@@ -39,6 +42,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     public ParserOptions() {
         super();
         suppressedIxmlStates = new HashSet<>();
+        disabledPragmas = new HashSet<>();
     }
 
     /**
@@ -48,6 +52,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     public ParserOptions(Logger logger) {
         super(logger);
         suppressedIxmlStates = new HashSet<>();
+        disabledPragmas = new HashSet<>();
     }
 
     /**
@@ -71,6 +76,9 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
         showBnfNonterminals = copy.showBnfNonterminals;
         assertValidXmlCharacters = copy.assertValidXmlCharacters;
         ruleRewriter = copy.ruleRewriter;
+        strictAmbiguity = copy.strictAmbiguity;
+        ignoreBOM = copy.ignoreBOM;
+        disabledPragmas = new HashSet<>(copy.disabledPragmas);
     }
 
     /**
@@ -345,10 +353,72 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     }
 
     /**
-     * Set the {@link #getIgnoreBOM()} ()} property.
+     * Set the {@link #getIgnoreBOM()} property.
      * @param ignore Ignore the BOM?
      */
     public void setIgnoreBOM(boolean ignore) {
         ignoreBOM = ignore;
+    }
+
+    /**
+     * If a grammar contains priority pragmas that uniquely determine the outcome of every
+     * potentially ambiguous choice, report that the grammar is ambiguous anyway.
+     * @return the strict ambiguity setting
+     */
+    public boolean getStrictAmbiguity() {
+        return strictAmbiguity;
+    }
+
+    /**
+     * Set the {@link #getStrictAmbiguity()} property.
+     * @param strict Strictly report ambiguity?
+     */
+    public void setStrictAmbiguity(boolean strict) {
+        ignoreBOM = strict;
+    }
+
+    /**
+     * Is the specified pragma disabled?
+     * <p>The user can selectively disable pragmas in a grammar. This method determines
+     * whether the specified pragma is disabled.</p>
+     * @param pragma the pragma name
+     * @return true if the pragma is disabled.
+     */
+    public boolean pragmaDisabled(String pragma) {
+        return disabledPragmas.contains(pragma);
+    }
+
+    /**
+     * Disable the specified pragma.
+     * <p>The user can selectively ignore pragmas in a grammar. This method specifies that
+     * a particular pragma should be disabled. The token "#all" disables all pragmas.</p>
+     * @param pragma the pragma to disable.
+     */
+    public void disablePragma(String pragma) {
+        if ("#all".equals(pragma)) {
+            disabledPragmas.addAll(knownPragmas);
+        } else {
+            if (!knownPragmas.contains(pragma)) {
+                getLogger().warn("CoffeeFilter", "Attempt to disable unknown pragma: %s", pragma);
+            }
+            disabledPragmas.add(pragma);
+        }
+    }
+
+    /**
+     * Disable the specified pragma.
+     * <p>The user can selectively ignore pragmas in a grammar. This method specifies that
+     * a particular pragma should be enabled. The token "#all" enables all pragmas.</p>
+     * @param pragma the state to suppress.
+     */
+    public void enablePragma(String pragma) {
+        if ("#all".equals(pragma)) {
+            disabledPragmas.clear();
+        } else {
+            if (!knownPragmas.contains(pragma)) {
+                getLogger().warn("CoffeeFilter", "Attempt to enable unknown pragma: %s", pragma);
+            }
+            disabledPragmas.remove(pragma);
+        }
     }
 }

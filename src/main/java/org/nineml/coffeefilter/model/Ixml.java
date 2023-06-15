@@ -393,7 +393,7 @@ public class Ixml extends XNonterminal {
                             } else if (pragma instanceof IPragmaRegex) {
                                 attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
                             } else if (pragma instanceof IPragmaPriority) {
-                                // nop
+                                options.getLogger().warn(logcategory, "Priority pragma does not apply to a literal");
                             } else {
                                 options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a literal: %s", pragma);
                             }
