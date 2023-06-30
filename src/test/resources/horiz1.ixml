@@ -1,0 +1,7 @@
+{[+pragma n "https://nineml.org/ns/pragma/"]}
+                  S = Z .
+                  Z = "x", A, B .
+                  A = "a" | () .
+                  B = B1 | B2 .
+                 -B1 = "a", "y" .
+{[n priority 1]} -B2 = "y" .

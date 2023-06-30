@@ -13,7 +13,7 @@ input: date; iso .
 
 -date: day, -" ", month, -" ", year.
 day: d, d?.
-@month: ("January"; "Feb", {[rewrite "tacular"]} "ruary") .
+@month: ("January"; "Feb", -"ruary", +"tacular") .
 year: d, d, d, d.
 
 -iso: year, -"-", ({[rename month]} nmonth), -"-", day.

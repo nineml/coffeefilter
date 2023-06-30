@@ -3,17 +3,11 @@ package org.nineml.coffeefilter;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.nineml.coffeefilter.InvisibleXml;
-import org.nineml.coffeefilter.InvisibleXmlParser;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeegrinder.parser.Grammar;
-import org.nineml.coffeegrinder.parser.ParseTree;
 import org.nineml.coffeegrinder.util.DefaultProgressMonitor;
-import org.nineml.logging.Logger;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

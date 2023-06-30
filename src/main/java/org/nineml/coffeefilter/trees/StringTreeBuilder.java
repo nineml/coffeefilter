@@ -34,7 +34,6 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
     private String indent = "";
     private int state = FIRST;
     private ByteArrayOutputStream baos = null;
-    private boolean documentElement = true;
     private HashMap<String,String> prefixMapping = null;
 
     private final String iunit = "   ";
@@ -56,7 +55,6 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
           // this can never happen
           throw new RuntimeException(e);
         }
-        documentElement = true;
     }
 
     /**
@@ -179,7 +177,6 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
             stream.printf("%s=\"%s\"", qname, sb);
         }
 
-        documentElement = false;
         state = IN_TAG;
     }
 

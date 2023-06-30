@@ -2,4 +2,4 @@
 {[+pragma o "http://example.com"]}
 {[+n ns "http://example.com/]}                 { <-- syntax error }
 {[o rule-pragma]}S: {[o nonterminal-pragma]}A.
-A: ('a'; {[n rewrite "a'c"]} 'b')+ .
+A: ('a'; -'b', +"a'c")+ .

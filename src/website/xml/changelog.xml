@@ -6,6 +6,36 @@
 
 <revhistory>
 <revision>
+<revnumber>3.0.0a</revnumber>
+<date>2023-07-02</date>
+<revdescription>
+<para>This is a beta release for version 3.0.0. There are a lot of
+changes in this release and many of them impact the public APIs. The JavaDoc
+has not yet been updated.</para>
+<orderedlist>
+<listitem><para>Includes all of the updates in CoffeeGrinder 3.0.0a.
+</para></listitem>
+<listitem><para>Renamed the parser attributes used for pragmas to be URIs.
+</para></listitem>
+<listitem><para>Removed the “rewrite” pragma; it can be replaced with standard features:
+deletion and insertion. Removed the default priority pragma because it didn’t actually seem
+useful.
+</para></listitem>
+<listitem><para>Removed the notion of compiled grammars and the cache of compiled grammars.
+</para></listitem>
+<listitem><para>Refactored <classname>InvisibleXmlDocument</classname> to support the new
+tree construction classes in CoffeeGrinder; added an <classname>InvisibleXmlFailureDocument</classname>
+subclass to represent failed parses.
+</para></listitem>
+<listitem><para>Added an option to omit the headers when parsing to CSV.
+</para></listitem>
+<listitem><para>Lots of test improvements, rewrites.
+</para></listitem>
+</orderedlist>
+</revdescription>
+</revision>
+
+<revision>
 <revnumber>2.2.3</revnumber>
 <date>2023-06-15</date>
 <revdescription>

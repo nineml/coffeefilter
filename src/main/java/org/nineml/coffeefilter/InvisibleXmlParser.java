@@ -3,7 +3,6 @@ package org.nineml.coffeefilter;
 import org.nineml.coffeefilter.model.IPragma;
 import org.nineml.coffeefilter.model.IPragmaMetadata;
 import org.nineml.coffeefilter.model.Ixml;
-import org.nineml.coffeefilter.model.IxmlCompiler;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.nineml.coffeegrinder.tokens.TokenCharacter;
@@ -24,11 +23,11 @@ public class InvisibleXmlParser {
     public static final String logcategory = "InvisibleXml";
     private static final int UnicodeBOM = 0xFEFF;
     private final Ixml ixml;
-    private final InvisibleXmlDocument failedParse;
     private final long parseTime;
     private final ParserOptions options;
     private Exception exception = null;
     private HygieneReport hygieneReport = null;
+    private InvisibleXmlDocument failedParse;
     private boolean shownMessage = false;
 
     protected InvisibleXmlParser(Ixml ixml, ParserOptions options) {
@@ -58,6 +57,9 @@ public class InvisibleXmlParser {
     }
 
     public String getIxmlVersion() {
+        if (ixml == null) {
+            return null;
+        }
         return ixml.getIxmlVersion();
     }
 
@@ -79,6 +81,10 @@ public class InvisibleXmlParser {
      * @return the metadata
      */
     public Map<String, List<String>> getMetadata() {
+        if (ixml == null) {
+            return Collections.emptyMap();
+        }
+
         HashMap<String, List<String>> metadata = new HashMap<>();
         HashSet<String> seen = new HashSet<>();
         for (IPragma pragma : ixml.getPragmas()) {
@@ -290,20 +296,12 @@ public class InvisibleXmlParser {
             doc = new InvisibleXmlDocument(result, ixml.getIxmlVersion(), options);
         }
 
-        return doc;
-    }
-
-    /**
-     * Get a string representation of the compiled grammar.
-     * @return the XML serialization of the compiled grammar
-     * @throws NullPointerException if this parser has no grammar
-     */
-    public String getCompiledParser() {
-        if (ixml == null) {
-            throw new NullPointerException("No grammar for this parser");
+        if (!doc.succeeded()) {
+            failedParse = new InvisibleXmlFailureDocument(result, ixml.getIxmlVersion(), options);
+            doc = failedParse;
         }
-        IxmlCompiler compiler = new IxmlCompiler(options);
-        return compiler.compile(ixml.getGrammar(options));
+
+        return doc;
     }
 
     /**

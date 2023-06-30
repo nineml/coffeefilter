@@ -9,7 +9,6 @@ import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
 import org.nineml.coffeegrinder.parser.HygieneReport;
 import org.nineml.coffeegrinder.parser.SourceGrammar;
 import org.nineml.coffeegrinder.tokens.Token;
-import org.nineml.coffeegrinder.util.GrammarCompiler;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,6 +27,14 @@ import java.util.Calendar;
  */
 public class InvisibleXml {
     public static final String logcategory = "InvisibleXml";
+
+    public static final String XMLNS_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/xmlns";
+    public static final String NAME_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/name";
+    public static final String MARK_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/mark";
+    public static final String TMARK_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/tmark";
+    public static final String INSERTION_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/insertion";
+    public static final String TOKEN_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/token";
+    public static final String DISCARD_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/discard";
 
     public static final String ixml_prefix = "ixml";
     public static final String ixml_ns = "http://invisiblexml.org/NS";
@@ -61,32 +68,22 @@ public class InvisibleXml {
      * @throws IxmlException if the Invisible XML parser for Invisible XML cannot be loaded
      */
     public InvisibleXml(ParserOptions options) {
-        String cxml = ixml_cxml;
         String ixml = ixml_ixml;
         if (!options.getPedantic()) {
-            cxml = pragmas_cxml;
             ixml = pragmas_ixml;
         }
 
         this.options = options;
         try {
-            URL resource = getClass().getResource(cxml);
-            InputStream stream = getClass().getResourceAsStream(cxml);
+            URL resource = getClass().getResource(ixml);
+            InputStream stream = getClass().getResourceAsStream(ixml);
 
             if (stream == null || resource == null) {
-                options.getLogger().debug(logcategory, "Failed to load %s", cxml);
-                resource = getClass().getResource(ixml);
-                stream = getClass().getResourceAsStream(ixml);
-
-                if (stream == null || resource == null) {
-                    options.getLogger().debug(logcategory, "Failed to load %s", ixml);
-                    throw IxmlException.failedToLoadIxmlGrammar(ixml);
-                }
-
-                ixmlForIxml = getParserFromVxml(stream, resource.toString());
-            } else {
-                ixmlForIxml = getParserFromCxml(stream, resource.toString());
+                options.getLogger().debug(logcategory, "Failed to load %s", ixml);
+                throw IxmlException.failedToLoadIxmlGrammar(ixml);
             }
+
+            ixmlForIxml = getParserFromVxml(stream, resource.toString());
         } catch (IOException ex) {
             throw IxmlException.failedToLoadIxmlGrammar(ex);
         }
@@ -208,36 +205,12 @@ public class InvisibleXml {
             case GrammarSniffer.VXML_SOURCE:
                 options.getLogger().debug(logcategory, "Loading %s (VXML)", systemId);
                 return getParserFromVxml(bufstream, systemId);
-            case GrammarSniffer.CXML_SOURCE:
-                options.getLogger().debug(logcategory, "Loading %s (CXML)", systemId);
-                return getParserFromCxml(bufstream, systemId);
             case GrammarSniffer.IXML_SOURCE:
                 options.getLogger().debug(logcategory, "Loading %s with %s encoding", systemId, encoding);
                 return getParserFromIxml(bufstream, encoding);
             default:
                 options.getLogger().info(logcategory, "Failed to detect grammar type for %s", systemId);
                 throw IxmlException.sniffingFailed(systemId);
-        }
-    }
-
-    /**
-     * Construct a parser from a compiled CoffeeGrinder grammar.
-     * @param stream The grammar
-     * @param systemId A system identifier, which may be null
-     * @return The parser
-     * @throws IOException if the input cannot be read
-     * @throws IxmlException if the input is not an ixml grammar
-     */
-    public InvisibleXmlParser getParserFromCxml(InputStream stream, String systemId) throws IOException {
-        try {
-            GrammarCompiler compiler = new GrammarCompiler(options);
-            long startMillis = Calendar.getInstance().getTimeInMillis();
-            SourceGrammar grammar = compiler.parse(stream, systemId);
-            Ixml ixml = new Ixml(options, grammar);
-            long parseMillis = Calendar.getInstance().getTimeInMillis() - startMillis;
-            return new InvisibleXmlParser(ixml, options, parseMillis);
-        } catch (CoffeeGrinderException ex) {
-            throw IxmlException.failedtoParse(systemId, ex);
         }
     }
 

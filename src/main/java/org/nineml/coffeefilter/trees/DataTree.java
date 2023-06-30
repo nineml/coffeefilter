@@ -283,6 +283,10 @@ public class DataTree {
     }
 
     public String asCSV(List<CsvColumn> columns) {
+        return asCSV(columns, false);
+    }
+
+    public String asCSV(List<CsvColumn> columns, boolean omitHeaders) {
         StringBuilder sb = new StringBuilder();
 
         if (parent != null) {
@@ -297,13 +301,15 @@ public class DataTree {
             throw IxmlTreeException.noCsv();
         }
 
-        String sep = "";
-        for (CsvColumn col : columns) {
-            sb.append(sep);
-            sb.append("\"").append(TreeUtils.csvEscape(col.header)).append("\"");
-            sep = ",";
+        if (!omitHeaders) {
+            String sep = "";
+            for (CsvColumn col : columns) {
+                sb.append(sep);
+                sb.append("\"").append(TreeUtils.csvEscape(col.header)).append("\"");
+                sep = ",";
+            }
+            sb.append('\n');
         }
-        sb.append('\n');
 
         HashMap<String,String> values = new HashMap<>();
         for (DataTree row : children.get(0).children) {
@@ -326,7 +332,7 @@ public class DataTree {
                 }
             }
 
-            sep = "";
+            String sep = "";
             for (CsvColumn col : columns) {
                 sb.append(sep);
                 if (values.containsKey(col.name)) {

@@ -4,7 +4,6 @@ public class GrammarSniffer {
     public static final int UNK_SOURCE = -1;
     public static final int IXML_SOURCE = 0;
     public static final int VXML_SOURCE = 1;
-    public static final int CXML_SOURCE = 2;
 
     public static int identify(byte[] buf, int offset, int count) {
         boolean couldBeIxml = true;
@@ -48,9 +47,7 @@ public class GrammarSniffer {
                 if (lookingAt(buf, pos, count, "<ixml")) {
                     return VXML_SOURCE;
                 }
-                // It's XML and it isn't VXML, so assume it's a compiled grammar.
-                // If it isn't, it'll all go sideways later anyway.
-                return CXML_SOURCE;
+                return UNK_SOURCE;
             } else {
                 if (couldBeIxml) {
                     return IXML_SOURCE;
