@@ -1,5 +1,6 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.InvisibleXml;
 import org.nineml.coffeefilter.ParserOptions;
 import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeegrinder.parser.*;
@@ -7,7 +8,9 @@ import org.nineml.coffeegrinder.tokens.TokenCharacter;
 import org.nineml.coffeegrinder.tokens.TokenString;
 import org.nineml.coffeegrinder.util.ParserAttribute;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -307,15 +310,13 @@ public class Ixml extends XNonterminal {
                 IRule rule = (IRule) child;
 
                 attributes.clear();
-                attributes.add(new ParserAttribute("mark", ""+rule.getMark()));
-                attributes.add(new ParserAttribute("name", rule.getName()));
+                attributes.add(new ParserAttribute(InvisibleXml.MARK_ATTRIBUTE, String.valueOf(rule.getMark())));
+                attributes.add(new ParserAttribute(InvisibleXml.NAME_ATTRIBUTE, rule.getName()));
 
                 if (startRule.equals(rule.getName())) {
                     for (IPragma pragma : pragmas) {
                         if (pragma instanceof IPragmaXmlns) {
-                            attributes.add(new ParserAttribute("ns", pragma.getPragmaData()));
-                        } else if (pragma instanceof IPragmaDefaultPriority) {
-                            attributes.add(new ParserAttribute("default-priority", pragma.getPragmaData()));
+                            attributes.add(new ParserAttribute(InvisibleXml.XMLNS_ATTRIBUTE, pragma.getPragmaData()));
                         } else {
                             options.getLogger().debug(logcategory, "Unknown pragma, or does not apply in the prologue: %s", pragma);
                         }
@@ -324,11 +325,11 @@ public class Ixml extends XNonterminal {
 
                 for (IPragma pragma : rule.pragmas) {
                     if (pragma instanceof IPragmaRegex) {
-                        attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
+                        attributes.add(new ParserAttribute(ParserAttribute.REGEX_NAME, pragma.getPragmaData()));
                     } else if (pragma instanceof IPragmaToken) {
-                        attributes.add(new ParserAttribute("token", pragma.getPragmaData()));
+                        attributes.add(new ParserAttribute(InvisibleXml.TOKEN_ATTRIBUTE, pragma.getPragmaData()));
                     } else if (pragma instanceof IPragmaPriority) {
-                        attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
+                        attributes.add(new ParserAttribute(ForestNode.PRIORITY_ATTRIBUTE, pragma.getPragmaData()));
                     } else {
                         options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to rule: %s", pragma);
                     }
@@ -342,8 +343,8 @@ public class Ixml extends XNonterminal {
 
                     if (cat instanceof IInsertion) {
                         IInsertion nt = (IInsertion) cat;
-                        attributes.add(new ParserAttribute("mark", "+"));
-                        attributes.add(new ParserAttribute("insertion", nt.getInsertion()));
+                        attributes.add(new ParserAttribute(InvisibleXml.MARK_ATTRIBUTE, "+"));
+                        attributes.add(new ParserAttribute(InvisibleXml.INSERTION_ATTRIBUTE, nt.getInsertion()));
                         for (IPragma pragma : cat.pragmas) {
                             options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a insertion: %s", pragma);
                         }
@@ -357,7 +358,7 @@ public class Ixml extends XNonterminal {
                     } else if (cat instanceof XNonterminal) {
                         XNonterminal nt = (XNonterminal) cat;
                         if (cat instanceof INonterminal) {
-                            attributes.add(new ParserAttribute("mark", ""+((INonterminal) cat).getMark()));
+                            attributes.add(new ParserAttribute(InvisibleXml.MARK_ATTRIBUTE, String.valueOf(((INonterminal) cat).getMark())));
                             String name = cat.getName();
 
                             checkPriority(cat, attributes);
@@ -367,13 +368,13 @@ public class Ixml extends XNonterminal {
                                 } else if (pragma instanceof IPragmaPriority) {
                                     // nop
                                 } else if (pragma instanceof IPragmaDiscardEmpty) {
-                                    attributes.add(new ParserAttribute("discard", pragma.getPragmaData()));
+                                    attributes.add(new ParserAttribute(InvisibleXml.DISCARD_ATTRIBUTE, pragma.getPragmaData()));
                                 } else {
                                     options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a nonterminal: %s", pragma);
                                 }
                             }
 
-                            attributes.add(new ParserAttribute("name", name));
+                            attributes.add(new ParserAttribute(InvisibleXml.NAME_ATTRIBUTE, name));
                         }
 
                         NonterminalSymbol nts = grammar.getNonterminal(nt.getName(), attributes);
@@ -382,38 +383,31 @@ public class Ixml extends XNonterminal {
                         ILiteral lit = (ILiteral) cat;
                         final String grammarTerminal = lit.getTokenString();
 
-                        attributes.add(new ParserAttribute("tmark", ""+lit.getTMark()));
+                        attributes.add(new ParserAttribute(InvisibleXml.TMARK_ATTRIBUTE, String.valueOf(lit.getTMark())));
                         checkPriority(cat, attributes);
 
-                        ArrayList<ParserAttribute> accumulator = attributes;
-                        IPragmaRewrite rewrite = null;
                         for (IPragma pragma : cat.pragmas) {
-                            if (pragma instanceof IPragmaRewrite) {
-                                rewrite = (IPragmaRewrite) pragma;
-                            } else if (pragma instanceof IPragmaRegex) {
-                                attributes.add(new ParserAttribute("regex", pragma.getPragmaData()));
+                            if (pragma instanceof IPragmaRegex) {
+                                attributes.add(new ParserAttribute(ParserAttribute.REGEX_NAME, pragma.getPragmaData()));
                             } else if (pragma instanceof IPragmaPriority) {
-                                options.getLogger().warn(logcategory, "Priority pragma does not apply to a literal");
+                                attributes.add(new ParserAttribute(ForestNode.PRIORITY_ATTRIBUTE, pragma.getPragmaData()));
                             } else {
                                 options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a literal: %s", pragma);
                             }
                         }
 
-                        if (rewrite != null) {
-                            accumulator = new ArrayList<>(attributes);
-                            accumulator.add(new ParserAttribute("acc", "true"));
-                            attributes.add(new ParserAttribute("rewrite", rewrite.getPragmaData()));
-                        }
-
                         if ("".equals(grammarTerminal)) {
                             rhs.add(new TerminalSymbol(TokenString.get(""), attributes));
                         } else {
-                            for (int pos = 0; pos < grammarTerminal.length(); pos++) {
-                                if (pos+1 == grammarTerminal.length()) {
-                                    rhs.add(new TerminalSymbol(TokenCharacter.get(grammarTerminal.charAt(pos)), attributes));
-                                } else {
-                                    rhs.add(new TerminalSymbol(TokenCharacter.get(grammarTerminal.charAt(pos)), accumulator));
-                                }
+                            ArrayList<Integer> codepoints = new ArrayList<>();
+                            for (int offset = 0; offset < grammarTerminal.length(); ) {
+                                int codepoint = grammarTerminal.codePointAt(offset);
+                                codepoints.add(codepoint);
+                                offset += Character.charCount(codepoint);
+                            }
+
+                            for (int pos = 0; pos < codepoints.size(); pos++) {
+                                rhs.add(new TerminalSymbol(TokenCharacter.get(codepoints.get(pos)), attributes));
                             }
                         }
                     } else if (cat instanceof XTerminal) {
@@ -421,7 +415,7 @@ public class Ixml extends XNonterminal {
 
                         if (term instanceof TMarked) {
                             char mark = ((TMarked) term).getTMark();
-                            attributes.add(new ParserAttribute("tmark", ""+mark));
+                            attributes.add(new ParserAttribute(InvisibleXml.TMARK_ATTRIBUTE, String.valueOf(mark)));
                         }
 
                         checkPriority(cat, attributes);
@@ -445,7 +439,7 @@ public class Ixml extends XNonterminal {
 
         for (IPragma pragma : cat.pragmas) {
             if (pragma instanceof IPragmaPriority) {
-                attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
+                attributes.add(new ParserAttribute(ForestNode.PRIORITY_ATTRIBUTE, pragma.getPragmaData()));
                 priority = true;
             }
         }
@@ -455,7 +449,7 @@ public class Ixml extends XNonterminal {
                 if (find instanceof IRule && find.name.equals(cat.name)) {
                     for (IPragma pragma : find.pragmas) {
                         if (pragma instanceof IPragmaPriority) {
-                            attributes.add(new ParserAttribute("priority", pragma.getPragmaData()));
+                            attributes.add(new ParserAttribute(ForestNode.PRIORITY_ATTRIBUTE, pragma.getPragmaData()));
                         }
                     }
                     break;

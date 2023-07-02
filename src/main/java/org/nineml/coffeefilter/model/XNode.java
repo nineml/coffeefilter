@@ -1,5 +1,6 @@
 package org.nineml.coffeefilter.model;
 
+import org.nineml.coffeefilter.InvisibleXml;
 import org.xml.sax.Attributes;
 
 import java.io.PrintStream;
@@ -400,8 +401,6 @@ public abstract class XNode {
         }
 
         switch (ptype) {
-            case "rewrite":
-                return new IPragmaRewrite(pragma.parent, pragma.name, data);
             case "ns":
                 return new IPragmaXmlns(pragma.parent, pragma.name, data);
             case "regex":
@@ -417,16 +416,7 @@ public abstract class XNode {
                 }
                 break;
             case "priority":
-            case "default-priority":
-                try {
-                    if ("priority".equals(ptype)) {
-                        return new IPragmaPriority(pragma.parent, pragma.name, data);
-                    }
-                    return new IPragmaDefaultPriority(pragma.parent, pragma.name, data);
-                } catch (NumberFormatException ex) {
-                    // ignore
-                }
-                break;
+                return new IPragmaPriority(pragma.parent, pragma.name, data);
             case "token":
                 if ("".equals(data)) {
                     return new IPragmaToken(pragma.parent, pragma.name, data);

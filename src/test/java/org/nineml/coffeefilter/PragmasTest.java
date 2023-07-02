@@ -67,14 +67,8 @@ public class PragmasTest {
             // FIXME: test that the syntax error is reported
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/malformed-test.ixml"));
             InvisibleXmlDocument doc;
-            String xml;
-            /*
-            doc = invisibleXml.getParser().parse(new File("src/test/resources/malformed-test.ixml"));
-            xml = doc.getTree();
-            System.err.println(xml);
-             */
             doc = parser.parse("b");
-            xml = doc.getTree();
+            String xml = doc.getTree();
             Assertions.assertEquals("<S><A>a'c</A></S>", xml);
         } catch (Exception ex) {
             fail();

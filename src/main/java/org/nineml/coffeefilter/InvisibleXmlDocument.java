@@ -1,22 +1,23 @@
 package org.nineml.coffeefilter;
 
-import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.StringTreeBuilder;
+import org.nineml.coffeefilter.trees.XmlTreeBuilder;
 import org.nineml.coffeefilter.util.AttributeBuilder;
-import org.nineml.coffeefilter.util.EventBuilder;
 import org.nineml.coffeegrinder.gll.GllResult;
-import org.nineml.coffeegrinder.parser.*;
+import org.nineml.coffeegrinder.parser.EarleyResult;
+import org.nineml.coffeegrinder.parser.GearleyResult;
+import org.nineml.coffeegrinder.parser.ParserType;
 import org.nineml.coffeegrinder.tokens.Token;
-import org.nineml.coffeegrinder.tokens.TokenCharacter;
-import org.nineml.coffeegrinder.tokens.TokenEOF;
-import org.nineml.coffeegrinder.util.NopTreeBuilder;
-import org.xml.sax.Attributes;
+import org.nineml.coffeegrinder.trees.PriorityTreeSelector;
+import org.nineml.coffeegrinder.trees.TreeBuilder;
+import org.nineml.coffeegrinder.trees.TreeSelector;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * An InvisibleXmlDocument represents a document created with an {@link InvisibleXmlParser}.
@@ -25,19 +26,17 @@ import java.util.*;
  * there may be more than one.</p>
  */
 public class InvisibleXmlDocument {
-    private final GearleyResult result;
-    private final boolean prefixOk;
-    private final String parserVersion;
-    private final EventBuilder eventBuilder;
-    private final ParserOptions options;
+    protected final GearleyResult result;
+    protected final boolean prefixOk;
+    protected final String parserVersion;
+    protected final ParserOptions options;
 
     protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options) {
         this.result = result;
         this.prefixOk = false;
         this.options = options;
         this.parserVersion = parserVersion;
-        this.eventBuilder = new EventBuilder(parserVersion, options);
-
+        result.setTreeSelector(new PriorityTreeSelector());
     }
 
     protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options, boolean prefixOk) {
@@ -45,7 +44,7 @@ public class InvisibleXmlDocument {
         this.prefixOk = prefixOk;
         this.options = options;
         this.parserVersion = parserVersion;
-        this.eventBuilder = new EventBuilder(parserVersion, options);
+        result.setTreeSelector(new PriorityTreeSelector());
     }
 
     /**
@@ -114,7 +113,7 @@ public class InvisibleXmlDocument {
     }
 
     /**
-     * Return the number of successful parses of this document.
+     * Return the number of available parses of this document.
      *
      * <p>Will return 0 if there are no successful parses.</p>
      *
@@ -122,14 +121,27 @@ public class InvisibleXmlDocument {
      */
     public long getNumberOfParses() {
         if (result.succeeded() || result.prefixSucceeded()) {
-            if (eventBuilder.getRevealedParses() == 0) {
-                TreeBuilder builder = new NopTreeBuilder();
-                result.getTree(builder);
-                return builder.getRevealedParses();
-            }
-            return eventBuilder.getRevealedParses();
+            return result.getForest().getParseTreeCount();
         }
         return 0;
+    }
+
+    /**
+     * Is this document ambiguous?
+     * <p>The return value is arbitrary if the parse did not succeed.</p>
+     * @return true, if the document is ambiguous
+     */
+    public boolean isAmbiguous() {
+        return result.getForest() == null || result.getForest().isAmbiguous();
+    }
+
+    /**
+     * Is this document infinitely ambiguous?
+     * <p>The return value is arbitrary if the parse did not succeed.</p>
+     * @return true, if the document is ambiguous
+     */
+    public boolean isInfinitelyAmbiguous() {
+        return result.getForest() == null || result.getForest().isInfinitelyAmbiguous();
     }
 
     /**
@@ -165,7 +177,8 @@ public class InvisibleXmlDocument {
      * @param handler the content handler.
      */
     public void getTree(ContentHandler handler) {
-        realize(handler);
+        XmlTreeBuilder builder = new XmlTreeBuilder(parserVersion, getOptions(), handler);
+        getTree(builder);
     }
 
     /**
@@ -175,287 +188,24 @@ public class InvisibleXmlDocument {
      * @param options the options.
      */
     public void getTree(ContentHandler handler, ParserOptions options) {
-        ParserOptions saveOpts = eventBuilder.getOptions();
-        eventBuilder.setOptions(options);
-        realize(handler);
-        eventBuilder.setOptions(saveOpts);
+        XmlTreeBuilder treeBuilder = new XmlTreeBuilder(parserVersion, options, handler);
+        getTree(treeBuilder);
     }
 
     /**
-     * Process the result with your own {@link EventBuilder}.
-     * <p>This API needs work. It should allow a {@link TreeBuilder}, but it needs the SAX handler
-     * to generate the error document.</p>
+     * Process the result with your own {@link TreeBuilder}.
+     * <p>This API needs work.</p>
      * @param builder the tree builder.
      */
-    public void getTree(EventBuilder builder) {
-        if (result.succeeded() || (result.prefixSucceeded() && prefixOk)) {
-            result.getTree(builder);
-        } else {
-            realizeErrorDocument(builder.getHandler());
-        }
+    public void getTree(TreeBuilder builder) {
+        result.getTree(builder);
     }
 
-    public void reset() {
-        eventBuilder.reset();
+    public void setTreeSelector(TreeSelector selector) {
+        result.setTreeSelector(selector);
     }
 
-    public boolean moreParses() {
-        return eventBuilder.moreParses();
-    }
-
-    public boolean nextTree() {
-        if (moreParses()) {
-            realize(new NopHandler());
-        }
-        return moreParses();
-    }
-
-    private void realize(ContentHandler handler) {
-        if (result.succeeded() || (result.prefixSucceeded() && prefixOk)) {
-            eventBuilder.setHandler(handler);
-            // If the result is known to be ambiguous, pass that along so we know
-            // even if this particular parse misses it.
-            eventBuilder.setAmbiguous(result.isAmbiguous(), result.isInfinitelyAmbiguous());
-            result.getTree(eventBuilder);
-        } else {
-            realizeErrorDocument(handler);
-        }
-    }
-
-    private void realizeErrorDocument(ContentHandler handler) {
-        try {
-            handler.startDocument();
-
-            handler.startPrefixMapping(InvisibleXml.ixml_prefix, InvisibleXml.ixml_ns);
-
-            AttributeBuilder attrs = new AttributeBuilder(options);
-            attrs.addAttribute(InvisibleXml.ixml_ns, InvisibleXml.ixml_prefix + ":state", "failed");
-            handler.startElement("", "fail", "failed", attrs);
-
-            if (getLineNumber() > 0) {
-                atomicValue(handler, "line", ""+getLineNumber());
-            }
-
-            if (getColumnNumber() > 0) {
-                atomicValue(handler, "column", ""+getColumnNumber());
-            }
-
-            atomicValue(handler, "pos", ""+result.getTokenCount());
-
-            if (result.getLastToken() == TokenEOF.EOF) {
-                // This only happens for the GLL parser.
-                atomicValue(handler, "end-of-input", "true");
-            } else {
-                TokenCharacter tchar = (TokenCharacter) result.getLastToken();
-                if (tchar != null) {
-                    if (result.getParser().hasMoreInput()) {
-                        // Special case so that we can include the code point
-                        attrs = new AttributeBuilder(options);
-                        if (tchar.getCodepoint() < 32 || tchar.getCodepoint() >= 127) {
-                            attrs.addAttribute("codepoint", String.format("#%04X", tchar.getCodepoint()));
-                        }
-                        handler.startElement("", "unexpected", "unexpected", attrs);
-                        String value = tchar.getValue();
-                        handler.characters(value.toCharArray(), 0, value.length());
-                        handler.endElement("", "unexpected", "unexpected");
-                    } else {
-                        atomicValue(handler, "end-of-input", "true");
-                    }
-                }
-            }
-
-            boolean predictedSome = false;
-            List<Token> oknext = couldBeNext(result.getPredictedTerminals());
-            if (!oknext.isEmpty()) {
-                predictedSome = true;
-                tokenList(handler, oknext, "permitted");
-            }
-
-            if (result instanceof EarleyResult) {
-                EarleyResult eresult = (EarleyResult) result;
-                oknext = couldBeNext(eresult.getChart(), result.getParser().getGrammar());
-                if (!oknext.isEmpty()) {
-                    String elemName = "permitted";
-                    if (predictedSome) {
-                        elemName = "also-predicted";
-                    }
-                    tokenList(handler, oknext, elemName);
-                }
-
-                if (options.getShowChart()) {
-                    handler.startElement("", "chart", "chart", AttributeBuilder.EMPTY_ATTRIBUTES);
-
-                    for (int row = 0; row < eresult.getChart().size(); row++) {
-                        if (!eresult.getChart().get(row).isEmpty()) {
-                            attrs = new AttributeBuilder(options);
-                            attrs.addAttribute("n", ""+row);
-                            handler.startElement("", "row", "row", attrs);
-
-                            attrs = new AttributeBuilder(options);
-                            for (EarleyItem item : eresult.getChart().get(row)) {
-                                writeString(handler,"  ");
-                                handler.startElement("", "item", "item", attrs);
-                                writeString(handler, item.toString());
-                                handler.endElement("", "item", "item");
-                            }
-
-                            handler.endElement("", "row", "row");
-                        }
-                    }
-                    handler.endElement("", "chart", "chart");
-                }
-            }
-
-            handler.endElement("", "fail", "failed");
-            handler.endDocument();
-        } catch (SAXException ex) {
-            throw IxmlException.parseFailed(ex);
-        }
-    }
-
-    private void atomicValue(ContentHandler handler, String name, String value) throws SAXException {
-        handler.startElement("", name, name, AttributeBuilder.EMPTY_ATTRIBUTES);
-        handler.characters(value.toCharArray(), 0, value.length());
-        handler.endElement("", name, name);
-    }
-
-    private void tokenList(ContentHandler handler, List<Token> oknext, String elemName) throws SAXException {
-        // I don't actually care about the order,
-        // but let's not just make it HashMap random for testing if nothing else.
-        ArrayList<String> chars = new ArrayList<>();
-        for (Token next : oknext) {
-            chars.add(next.toString());
-        }
-        Collections.sort(chars);
-
-        StringBuilder sb = new StringBuilder();
-        for (int pos = 0; pos < chars.size(); pos++) {
-            if (pos > 0) {
-                sb.append(", ");
-            }
-            sb.append(chars.get(pos));
-        }
-        atomicValue(handler, elemName, sb.toString());
-    }
-
-    private List<Token> couldBeNext(Set<TerminalSymbol> symbols) {
-        ArrayList<Token> next = new ArrayList<>();
-        for (TerminalSymbol symbol : symbols) {
-            if (symbol.getToken() != null) {
-                next.add(symbol.getToken());
-            }
-        }
-        return next;
-    }
-
-    private List<Token> couldBeNext(EarleyChart chart, Grammar grammar) {
-        ArrayList<Token> next = new ArrayList<>();
-        List<TerminalSymbol> symbols = couldBeNextSymbols(chart, grammar);
-        for (TerminalSymbol symbol : symbols) {
-            if (symbol.getToken() != null) {
-                next.add(symbol.getToken());
-            }
-        }
-        return next;
-    }
-
-    private List<TerminalSymbol> couldBeNextSymbols(EarleyChart chart, Grammar grammar) {
-        ArrayList<TerminalSymbol> nextChars = new ArrayList<>();
-        HashSet<TerminalSymbol> nextSet = new HashSet<>();
-
-        int lastrow = chart.size() - 1;
-        while (lastrow >= 0 && chart.get(lastrow).isEmpty()) {
-            lastrow--;
-        }
-
-        if (lastrow < 0 || chart.get(lastrow).isEmpty()) {
-            return nextChars;
-        }
-
-        HashSet<Symbol> nextSymbols = new HashSet<>();
-        for (EarleyItem item : chart.get(lastrow)) {
-            State state = item.state;
-            if (state != null && !state.completed()) {
-                if (state.nextSymbol() instanceof TerminalSymbol) {
-                    nextSet.add((TerminalSymbol) state.nextSymbol());
-                } else {
-                    nextSymbols.add(state.nextSymbol());
-                }
-            }
-        }
-
-        for (Symbol s: nextSymbols) {
-            for (Rule rule : grammar.getRules()) {
-                if (rule.getSymbol().equals(s) && !rule.getRhs().isEmpty()) {
-                    if (rule.getRhs().get(0) instanceof TerminalSymbol) {
-                        nextSet.add((TerminalSymbol) rule.getRhs().get(0));
-                    }
-                }
-            }
-        }
-
-        nextChars.addAll(nextSet);
-        return nextChars;
-    }
-
-    private void writeString(ContentHandler handler, String str) throws SAXException {
-        handler.characters(str.toCharArray(), 0, str.length());
-    }
-
-    private static class NopHandler implements ContentHandler {
-        @Override
-        public void setDocumentLocator(Locator locator) {
-            // nop
-        }
-
-        @Override
-        public void startDocument() throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void endDocument() throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void startPrefixMapping(String prefix, String uri) throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void endPrefixMapping(String prefix) throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void characters(char[] ch, int start, int length) throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void processingInstruction(String target, String data) throws SAXException {
-            // nop
-        }
-
-        @Override
-        public void skippedEntity(String name) throws SAXException {
-            // nop
-        }
+    public void resetTrees() {
+        result.resetTrees();;
     }
 }

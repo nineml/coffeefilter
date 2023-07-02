@@ -14,12 +14,6 @@ public class SniffTest {
     }
 
     @Test
-    public void testCxml() {
-        String input = "<grammar xmlns=\"http://nineml.org/coffeegrinder/ns/grammar/compiled\" version=\"0.9.2\">";
-        Assert.assertEquals(GrammarSniffer.CXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
-    }
-
-    @Test
     public void testIxml() {
         String input = "s: not, xml.";
         Assert.assertEquals(GrammarSniffer.IXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
@@ -32,12 +26,6 @@ public class SniffTest {
     }
 
     @Test
-    public void testSkipWhitespaceCxml() {
-        String input = "      \t\n\n\t    \t\n  <grammar xmlns=\"http://nineml.org/coffeegrinder/ns/grammar/compiled\" version=\"0.9.2\">";
-        Assert.assertEquals(GrammarSniffer.CXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
-    }
-
-    @Test
     public void testSkipWhitespaceIxml() {
         String input = "      \t\n\n\t    \t\n  s: not, xml.";
         Assert.assertEquals(GrammarSniffer.IXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
@@ -47,12 +35,6 @@ public class SniffTest {
     public void testSkipCommentVxml() {
         String input = "<!-- comment --><ixml>";
         Assert.assertEquals(GrammarSniffer.VXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
-    }
-
-    @Test
-    public void testSkipCommentCxml() {
-        String input = "<!-- comment --><grammar>";
-        Assert.assertEquals(GrammarSniffer.CXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
     }
 
     @Test
@@ -74,12 +56,6 @@ public class SniffTest {
     }
 
     @Test
-    public void testSkipPiCxml() {
-        String input = "<?xml this is the most likely one ?><grammar>";
-        Assert.assertEquals(GrammarSniffer.CXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
-    }
-
-    @Test
     public void testSkipPiIxml() {
         String input = "<? bad is about to happen ?>s: not, xml, or, ixml.";
         Assert.assertEquals(GrammarSniffer.UNK_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
@@ -89,12 +65,6 @@ public class SniffTest {
     public void testSkipLotsVxml() {
         String input = "\n<?xml?><!-- comment -->\t\n<!--comment--><!--another--><?pi?><?another?>\n\t<?done?><ixml>";
         Assert.assertEquals(GrammarSniffer.VXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
-    }
-
-    @Test
-    public void testSkipLotsCxml() {
-        String input = "\n<?xml?><!-- comment -->\t\n<!--comment--><!--another--><?pi?><?another?>\n\t<?done?><grammar>";
-        Assert.assertEquals(GrammarSniffer.CXML_SOURCE, GrammarSniffer.identify(input.getBytes(StandardCharsets.UTF_8), 0, input.length()));
     }
 
     @Test

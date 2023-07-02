@@ -5,8 +5,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.nineml.coffeefilter.trees.StringTreeBuilder;
+import org.nineml.coffeefilter.trees.XmlTreeBuilder;
+import org.nineml.coffeegrinder.parser.ForestWalker;
+import org.nineml.coffeegrinder.trees.PriorityTreeSelector;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 import static org.junit.Assert.fail;
 
@@ -71,6 +76,21 @@ public class AmbiguityTest {
         try {
             String xml = doc.getTree();
             Assertions.assertTrue(xml.contains("<A>a</A><B>b</B><C>c</C>") || xml.contains("a</A><C>c</C>"));
+        } catch (Exception ex) {
+            fail();
+        }
+
+    }
+
+    @Test
+    public void horiz1() {
+        try {
+            FileInputStream fis = new FileInputStream(new File("src/test/resources/horiz1.ixml"));
+            InvisibleXmlParser parser = invisibleXml.getParserFromIxml(fis, "utf-8");
+            String input = "xay";
+            InvisibleXmlDocument doc = parser.parse(input);
+            String xml = doc.getTree();
+            Assertions.assertTrue(xml.contains("<A>a</A>"));
         } catch (Exception ex) {
             fail();
         }

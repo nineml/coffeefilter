@@ -87,6 +87,9 @@ public class IxmlException extends RuntimeException {
     public static IxmlException undefinedSymbols(Set<NonterminalSymbol> symbols) { return getException("S02", symbolList(symbols)); }
     public static IxmlException unreachableSymbols(Set<NonterminalSymbol> symbols) { return getException("E012", symbolList(symbols)); }
     public static IxmlException unproductiveSymbols(Set<NonterminalSymbol> symbols) { return getException("E013", symbolList(symbols)); }
+    public static IxmlException cannotParseFailure() {
+        return getException("E014");
+    }
 
     private static String symbolList(Set<NonterminalSymbol> symbols) {
         StringBuilder sb = new StringBuilder();

@@ -1,6 +1,6 @@
 {[+pragma n "https://nineml.org/ns/pragma/"]}
 
-                   S = 'x', (A | {[n priority 2.5]} B | C), 'y' .
-{[n priority 1.0]} A = 'a' .
-{[n priority 2.0]} B = 'a' .
-{[n priority 3.0]} C = 'a' .
+                   S = 'x', (A | {[n priority 5]} B | C), 'y' .
+{[n priority 2]} A = 'a' .
+{[n priority 4]} B = 'a' .
+{[n priority 6]} C = 'a' .
