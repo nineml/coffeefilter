@@ -329,7 +329,7 @@ public class Ixml extends XNonterminal {
                     } else if (pragma instanceof IPragmaToken) {
                         attributes.add(new ParserAttribute(InvisibleXml.TOKEN_ATTRIBUTE, pragma.getPragmaData()));
                     } else if (pragma instanceof IPragmaPriority) {
-                        attributes.add(new ParserAttribute(ForestNode.priorityAttribute, pragma.getPragmaData()));
+                        attributes.add(new ParserAttribute(ForestNode.PRIORITY_ATTRIBUTE, pragma.getPragmaData()));
                     } else {
                         options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to rule: %s", pragma);
                     }
@@ -390,7 +390,7 @@ public class Ixml extends XNonterminal {
                             if (pragma instanceof IPragmaRegex) {
                                 attributes.add(new ParserAttribute(ParserAttribute.REGEX_NAME, pragma.getPragmaData()));
                             } else if (pragma instanceof IPragmaPriority) {
-                                attributes.add(new ParserAttribute(ForestNode.priorityAttribute, pragma.getPragmaData()));
+                                attributes.add(new ParserAttribute(ForestNode.PRIORITY_ATTRIBUTE, pragma.getPragmaData()));
                             } else {
                                 options.getLogger().debug(logcategory, "Unknown pragma, or does not apply to a literal: %s", pragma);
                             }
@@ -439,7 +439,7 @@ public class Ixml extends XNonterminal {
 
         for (IPragma pragma : cat.pragmas) {
             if (pragma instanceof IPragmaPriority) {
-                attributes.add(new ParserAttribute(ForestNode.priorityAttribute, pragma.getPragmaData()));
+                attributes.add(new ParserAttribute(ForestNode.PRIORITY_ATTRIBUTE, pragma.getPragmaData()));
                 priority = true;
             }
         }
@@ -449,7 +449,7 @@ public class Ixml extends XNonterminal {
                 if (find instanceof IRule && find.name.equals(cat.name)) {
                     for (IPragma pragma : find.pragmas) {
                         if (pragma instanceof IPragmaPriority) {
-                            attributes.add(new ParserAttribute(ForestNode.priorityAttribute, pragma.getPragmaData()));
+                            attributes.add(new ParserAttribute(ForestNode.PRIORITY_ATTRIBUTE, pragma.getPragmaData()));
                         }
                     }
                     break;
