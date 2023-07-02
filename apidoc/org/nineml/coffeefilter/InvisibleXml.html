@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -156,6 +156,16 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DISCARD_ATTRIBUTE">DISCARD_ATTRIBUTE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#INSERTION_ATTRIBUTE">INSERTION_ATTRIBUTE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ixml_ns">ixml_ns</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -171,12 +181,37 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#MARK_ATTRIBUTE">MARK_ATTRIBUTE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#NAME_ATTRIBUTE">NAME_ATTRIBUTE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nineml_ns">nineml_ns</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nineml_prefix">nineml_prefix</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TMARK_ATTRIBUTE">TMARK_ATTRIBUTE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TOKEN_ATTRIBUTE">TOKEN_ATTRIBUTE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#XMLNS_ATTRIBUTE">XMLNS_ATTRIBUTE</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -289,28 +324,20 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParserFromCxml(java.io.InputStream,java.lang.String)">getParserFromCxml</a></span>&#8203;(java.io.InputStream&nbsp;stream,
-                 java.lang.String&nbsp;systemId)</code></th>
-<td class="colLast">
-<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code><a href="InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParserFromIxml(java.io.InputStream,java.lang.String)">getParserFromIxml</a></span>&#8203;(java.io.InputStream&nbsp;stream,
                  java.lang.String&nbsp;charset)</code></th>
 <td class="colLast">
 <div class="block">Constructs a parser from an ixml grammar.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParserFromIxml(java.lang.String)">getParserFromIxml</a></span>&#8203;(java.lang.String&nbsp;input)</code></th>
 <td class="colLast">
 <div class="block">Constructs a parser from an ixml grammar.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParserFromVxml(java.io.InputStream,java.lang.String)">getParserFromVxml</a></span>&#8203;(java.io.InputStream&nbsp;stream,
                  java.lang.String&nbsp;systemId)</code></th>
@@ -352,6 +379,97 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.logcategory">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="XMLNS_ATTRIBUTE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>XMLNS_ATTRIBUTE</h4>
+<pre>public static final&nbsp;java.lang.String XMLNS_ATTRIBUTE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.XMLNS_ATTRIBUTE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="NAME_ATTRIBUTE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>NAME_ATTRIBUTE</h4>
+<pre>public static final&nbsp;java.lang.String NAME_ATTRIBUTE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.NAME_ATTRIBUTE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="MARK_ATTRIBUTE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>MARK_ATTRIBUTE</h4>
+<pre>public static final&nbsp;java.lang.String MARK_ATTRIBUTE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.MARK_ATTRIBUTE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="TMARK_ATTRIBUTE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>TMARK_ATTRIBUTE</h4>
+<pre>public static final&nbsp;java.lang.String TMARK_ATTRIBUTE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.TMARK_ATTRIBUTE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="INSERTION_ATTRIBUTE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>INSERTION_ATTRIBUTE</h4>
+<pre>public static final&nbsp;java.lang.String INSERTION_ATTRIBUTE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.INSERTION_ATTRIBUTE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="TOKEN_ATTRIBUTE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>TOKEN_ATTRIBUTE</h4>
+<pre>public static final&nbsp;java.lang.String TOKEN_ATTRIBUTE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.TOKEN_ATTRIBUTE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="DISCARD_ATTRIBUTE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>DISCARD_ATTRIBUTE</h4>
+<pre>public static final&nbsp;java.lang.String DISCARD_ATTRIBUTE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.DISCARD_ATTRIBUTE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -635,28 +753,6 @@ extends java.lang.Object</pre>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - if attempting to open or read the source fails</dd>
 <dd><code><a href="exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the source cannot be identified or is not a valid grammar</dd>
-</dl>
-</li>
-</ul>
-<a id="getParserFromCxml(java.io.InputStream,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getParserFromCxml</h4>
-<pre class="methodSignature">public&nbsp;<a href="InvisibleXmlParser.html" title="class in org.nineml.coffeefilter">InvisibleXmlParser</a>&nbsp;getParserFromCxml&#8203;(java.io.InputStream&nbsp;stream,
-                                            java.lang.String&nbsp;systemId)
-                                     throws java.io.IOException</pre>
-<div class="block">Construct a parser from a compiled CoffeeGrinder grammar.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>stream</code> - The grammar</dd>
-<dd><code>systemId</code> - A system identifier, which may be null</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The parser</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - if the input cannot be read</dd>
-<dd><code><a href="exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the input is not an ixml grammar</dd>
 </dl>
 </li>
 </ul>
