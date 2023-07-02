@@ -611,8 +611,8 @@ public class TestDriver {
                 break;
             }
 
-            //System.err.println("EX:" + expected);
-            //System.err.println("AC:" + node);
+            System.err.println("EX:" + expected);
+            System.err.println("AC:" + node);
         }
 
         if (same) {
