@@ -2,7 +2,10 @@
           xmlns:xlink="http://www.w3.org/1999/xlink"
           xml:id="changelog"
           version="5.2">
+<info>
+<?db filename='changelog.html'?>
 <title>Change log</title>
+</info>
 
 <revhistory>
 <revision>
