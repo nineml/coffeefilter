@@ -32,7 +32,7 @@ public class ParserOptions extends org.nineml.coffeegrinder.parser.ParserOptions
     private boolean ignoreBOM = true;
     private boolean strictAmbiguity = false;
     private final HashSet<String> disabledPragmas;
-    private static final HashSet<String> knownPragmas = new HashSet<>(Arrays.asList("discard-empty", "ns", "priority", "regex", "rename", "rewrite", "token"));
+    private static final HashSet<String> knownPragmas = new HashSet<>(Arrays.asList("discard-empty", "ns", "priority", "regex", "rename", "token"));
 
     /**
      * Create the parser options.
