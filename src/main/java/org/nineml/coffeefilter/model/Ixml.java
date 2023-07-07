@@ -311,7 +311,8 @@ public class Ixml extends XNonterminal {
 
                 attributes.clear();
                 attributes.add(new ParserAttribute(InvisibleXml.MARK_ATTRIBUTE, String.valueOf(rule.getMark())));
-                attributes.add(new ParserAttribute(InvisibleXml.NAME_ATTRIBUTE, rule.getName()));
+                attributes.add(new ParserAttribute(InvisibleXml.NAME_ATTRIBUTE,
+                        rule.getRename() == null ? rule.getName() : rule.getRename()));
 
                 if (startRule.equals(rule.getName())) {
                     for (IPragma pragma : pragmas) {
@@ -358,8 +359,9 @@ public class Ixml extends XNonterminal {
                     } else if (cat instanceof XNonterminal) {
                         XNonterminal nt = (XNonterminal) cat;
                         if (cat instanceof INonterminal) {
-                            attributes.add(new ParserAttribute(InvisibleXml.MARK_ATTRIBUTE, String.valueOf(((INonterminal) cat).getMark())));
-                            String name = cat.getName();
+                            INonterminal icat = (INonterminal) cat;
+                            attributes.add(new ParserAttribute(InvisibleXml.MARK_ATTRIBUTE, String.valueOf(icat.getMark())));
+                            String name = icat.getRename();
 
                             checkPriority(cat, attributes);
                             for (IPragma pragma : cat.pragmas) {

@@ -170,13 +170,15 @@ public abstract class XNode {
                 break;
             case "nonterminal":
                 mark = attributes.getValue("mark");
+                String nname = attributes.getValue("name");
+                String nrename = attributes.getValue("rename");
                 if (mark == null) {
-                    child = new INonterminal(this, attributes.getValue("name"));
+                    child = new INonterminal(this, nname, nrename);
                 } else {
                     if (mark.length() != 1) {
                         throw new IllegalArgumentException("mark attribute must be a single character");
                     }
-                    child = new INonterminal(this, attributes.getValue("name"), mark.charAt(0));
+                    child = new INonterminal(this, nname, nrename, mark.charAt(0));
                 }
                 break;
             case "option":
@@ -190,13 +192,15 @@ public abstract class XNode {
                 break;
             case "rule":
                 mark = attributes.getValue("mark");
+                String lhs_name = attributes.getValue("name");
+                String lhs_rename = attributes.getValue("rename");
                 if (mark == null) {
-                    child = new IRule(this, attributes.getValue("name"),'^');
+                    child = new IRule(this, lhs_name, lhs_rename,'^');
                 } else {
                     if (mark.length() != 1) {
                         throw new IllegalArgumentException("mark attribute must be a single character");
                     }
-                    child = new IRule(this, attributes.getValue("name"), mark.charAt(0));
+                    child = new IRule(this, lhs_name, lhs_rename, mark.charAt(0));
                 }
                 break;
             case "sep":

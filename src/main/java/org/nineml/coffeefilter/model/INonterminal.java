@@ -9,6 +9,7 @@ import java.io.PrintStream;
  */
 public class INonterminal extends XNonterminal {
     protected char mark = '?';
+    protected String rename = null;
 
     /**
      * Create an INonterminal.
@@ -20,6 +21,19 @@ public class INonterminal extends XNonterminal {
      * @throws IllegalArgumentException if mark is invalid.
      */
     public INonterminal(XNode parent, String name, char mark) {
+        this(parent, name, null, mark);
+    }
+
+    /**
+     * Create an INonterminal.
+     *
+     * @param parent The parent node.
+     * @param name The nonterminal name.
+     * @param mark The mark.
+     * @throws NullPointerException if the name is null.
+     * @throws IllegalArgumentException if mark is invalid.
+     */
+    public INonterminal(XNode parent, String name, String rename, char mark) {
         super(parent, "nonterminal", name);
 
         if (name == null) {
@@ -30,6 +44,7 @@ public class INonterminal extends XNonterminal {
             throw IxmlException.invalidMark(mark);
         }
 
+        this.rename = rename;
         this.mark = mark;
     }
 
@@ -41,12 +56,24 @@ public class INonterminal extends XNonterminal {
      * @throws NullPointerException if the name is null.
      */
     public INonterminal(XNode parent, String name) {
+        this(parent, name, null);
+    }
+
+    /**
+     * Create an INonterminal.
+     *
+     * @param parent The parent node.
+     * @param name The nonterminal name.
+     * @throws NullPointerException if the name is null.
+     */
+    public INonterminal(XNode parent, String name, String rename) {
         super(parent, "nonterminal", name);
 
         if (name == null) {
             throw new NullPointerException("Unnamed nonterminal?");
         }
 
+        this.rename = rename;
         mark = '?';
     }
 
@@ -68,7 +95,7 @@ public class INonterminal extends XNonterminal {
      */
     @Override
     public XNode copy() {
-        INonterminal newnode = new INonterminal(parent, name);
+        INonterminal newnode = new INonterminal(parent, name, rename);
         newnode.pragmas.addAll(pragmas);
         newnode.mark = mark;
         newnode.optional = optional;
@@ -90,6 +117,37 @@ public class INonterminal extends XNonterminal {
             }
         }
         return mark;
+    }
+
+    public String getRename() {
+        String newName = null;
+        for (IPragma pragma : getPragmas()) {
+            if (pragma instanceof IPragmaRename) {
+                if (newName != null) {
+                    throw IxmlException.repeatedPragma("rename", newName, pragma.getPragmaData());
+                }
+                newName = pragma.getPragmaData();
+            }
+        }
+
+        if (newName != null) {
+            return newName;
+        }
+
+        if (rename != null) {
+            Ixml ixml = getRoot();
+            if (!"1.1-nineml".equals(ixml.getIxmlVersion())) {
+                throw IxmlException.renameUnavailable(name, rename);
+            }
+            return rename;
+        }
+
+        // N.B. rule can be null if the symbol is undefined in the grammar
+        IRule rule = getRoot().getRule(name);
+        if (rule != null && rule.getRename() != null) {
+            return rule.getRename();
+        }
+        return name;
     }
 
     /**

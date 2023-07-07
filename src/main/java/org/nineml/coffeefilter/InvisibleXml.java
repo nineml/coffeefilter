@@ -7,7 +7,6 @@ import org.nineml.coffeefilter.util.GrammarSniffer;
 import org.nineml.coffeefilter.util.IxmlInputBuilder;
 import org.nineml.coffeegrinder.exceptions.CoffeeGrinderException;
 import org.nineml.coffeegrinder.parser.HygieneReport;
-import org.nineml.coffeegrinder.parser.SourceGrammar;
 import org.nineml.coffeegrinder.tokens.Token;
 import org.xml.sax.SAXException;
 
@@ -41,10 +40,8 @@ public class InvisibleXml {
     public static final String nineml_prefix = "n";
     public static final String nineml_ns = "https://nineml.org/ns/";
 
-    private static final String ixml_cxml = "/org/nineml/coffeefilter/ixml.cxml";
-    private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml.xml";
-    private static final String pragmas_cxml = "/org/nineml/coffeefilter/pragmas.cxml";
-    private static final String pragmas_ixml = "/org/nineml/coffeefilter/pragmas.xml";
+    private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml2.xml";
+    private static final String pragmas_ixml = "/org/nineml/coffeefilter/pragmas2.xml";
     private static final String UTF_8 = "UTF-8";
 
     private final InvisibleXmlParser ixmlForIxml;
