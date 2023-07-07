@@ -43,7 +43,7 @@ public class PragmasTest {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/two-dates.ixml"));
             InvisibleXmlDocument doc = parser.parse("12 February 2022");
             String xml = doc.getTree();
-            Assertions.assertEquals("<input month=\"Febtacular\"><day>12</day><year>2022</year></input>", xml);
+            Assertions.assertEquals("<input month='Febtacular'><day>12</day><year>2022</year></input>", xml);
         } catch (Exception ex) {
             fail();
         }
@@ -55,7 +55,7 @@ public class PragmasTest {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/xmlns.ixml"));
             InvisibleXmlDocument doc = parser.parse("2022-03-01");
             String xml = doc.getTree();
-            Assertions.assertEquals("<date xmlns=\"http://example.com/\"><year>2022</year><month>03</month><day>01</day></date>", xml);
+            Assertions.assertEquals("<date xmlns='http://example.com/'><year>2022</year><month>03</month><day>01</day></date>", xml);
         } catch (Exception ex) {
             fail();
         }
@@ -79,7 +79,7 @@ public class PragmasTest {
     public void discardEmpty() {
         try {
             String grammar1 = "S = A, B, C. A = 'a'. B='b'?. C='c'.";
-            String grammar2 = "{[+pragma n \"https://nineml.org/ns/pragma/\"]} S = A, {[n discard empty]} B, C. A = 'a'. B='b'?. C='c'.";
+            String grammar2 = "{[+pragma n 'https://nineml.org/ns/pragma/']} S = A, {[n discard empty]} B, C. A = 'a'. B='b'?. C='c'.";
             String input = "ac";
 
             InvisibleXmlParser parser = invisibleXml.getParserFromIxml(grammar1);
@@ -102,7 +102,7 @@ public class PragmasTest {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
             InvisibleXmlDocument doc = parser.parse("abcde");
             String xml = doc.getTree();
-            Assertions.assertEquals("<S D=\"d\" E=\"e\"><A>a</A><B>b</B><C>c</C></S>", xml);
+            Assertions.assertEquals("<S D='d' E='e'><A>a</A><B>b</B><C>c</C></S>", xml);
         } catch (Exception ex) {
             fail();
         }
@@ -114,7 +114,7 @@ public class PragmasTest {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
             InvisibleXmlDocument doc = parser.parse("cde");
             String xml = doc.getTree();
-            Assertions.assertEquals("<S D=\"d\" E=\"e\"><B/><C>c</C></S>", xml);
+            Assertions.assertEquals("<S D='d' E='e'><B/><C>c</C></S>", xml);
         } catch (Exception ex) {
             fail();
         }
@@ -126,7 +126,7 @@ public class PragmasTest {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
             InvisibleXmlDocument doc = parser.parse("");
             String xml = doc.getTree();
-            Assertions.assertEquals("<S E=\"\"><B/></S>", xml);
+            Assertions.assertEquals("<S E=''><B/></S>", xml);
         } catch (Exception ex) {
             fail();
         }
@@ -142,7 +142,7 @@ public class PragmasTest {
             InvisibleXmlParser parser = localInvisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
             InvisibleXmlDocument doc = parser.parse("");
             String xml = doc.getTree();
-            Assertions.assertEquals("<S D=\"\" E=\"\"><A/><B/><C/></S>", xml);
+            Assertions.assertEquals("<S D='' E=''><A/><B/><C/></S>", xml);
         } catch (Exception ex) {
             fail();
         }
@@ -158,7 +158,7 @@ public class PragmasTest {
             InvisibleXmlParser parser = localInvisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
             InvisibleXmlDocument doc = parser.parse("");
             String xml = doc.getTree();
-            Assertions.assertEquals("<S D=\"\" E=\"\"><A/><B/><C/></S>", xml);
+            Assertions.assertEquals("<S D='' E=''><A/><B/><C/></S>", xml);
         } catch (Exception ex) {
             fail();
         }
@@ -175,7 +175,7 @@ public class PragmasTest {
             InvisibleXmlParser parser = localInvisibleXml.getParser(new File("src/test/resources/discard-empty.ixml"));
             InvisibleXmlDocument doc = parser.parse("");
             String xml = doc.getTree();
-            Assertions.assertEquals("<S E=\"\"><B/></S>", xml);
+            Assertions.assertEquals("<S E=''><B/></S>", xml);
         } catch (Exception ex) {
             fail();
         }

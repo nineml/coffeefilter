@@ -26,12 +26,12 @@ public class ParserTest {
     @Test
     public void parseDate() {
         String input = "date: s?, day, -s, month, (-s, year)? .\n" +
-                "-s: -\" \"+ .\n" +
+                "-s: -' '+ .\n" +
                 "day: digit, digit? .\n" +
-                "-digit: \"0\"; \"1\"; \"2\"; \"3\"; \"4\"; \"5\"; \"6\"; \"7\"; \"8\"; \"9\".\n" +
-                "month: \"January\"; \"February\"; \"March\"; \"April\";\n" +
-                "       \"May\"; \"June\"; \"July\"; \"August\";\n" +
-                "       \"September\"; \"October\"; \"November\"; \"December\".\n" +
+                "-digit: '0'; '1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9'.\n" +
+                "month: 'January'; 'February'; 'March'; 'April';\n" +
+                "       'May'; 'June'; 'July'; 'August';\n" +
+                "       'September'; 'October'; 'November'; 'December'.\n" +
                 "year: ((digit, digit); -\"'\")?, digit, digit .";
 
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
@@ -81,7 +81,7 @@ public class ParserTest {
             String str = node.toString();
             Assert.assertEquals("#.", node.getStringValue());
 
-            Assert.assertTrue(str.contains("<hash d6=\"12\">"));
+            Assert.assertTrue(str.contains("<hash d6='12'>") || str.contains("<hash d6=\"12\">"));
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();
@@ -116,8 +116,8 @@ public class ParserTest {
 
             String str = node.toString();
 
-            Assert.assertTrue(str.contains("<property name=\"ORG\">"));      // random spotchecks
-            Assert.assertTrue(str.contains("<attribute value=\"EVenX\"/>"));
+            Assert.assertTrue(str.contains("<property name='ORG'>") || str.contains("<property name=\"ORG\">"));      // random spotchecks
+            Assert.assertTrue(str.contains("<attribute value='EVenX'/>") || str.contains("<attribute value=\"EVenX\"/>"));
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();
@@ -133,7 +133,7 @@ public class ParserTest {
             InvisibleXmlDocument doc = parser.parse(input);
 
             String str = doc.getTree();
-            Assert.assertEquals("<css><rule><selector><name>body</name></selector><block><property name=\"color\"><value name=\"blue\"/></property><property/></block></rule></css>",
+            Assert.assertEquals("<css><rule><selector><name>body</name></selector><block><property name='color'><value name='blue'/></property><property/></block></rule></css>",
                     str);
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
@@ -168,7 +168,7 @@ public class ParserTest {
         InvisibleXmlDocument doc = parser.parse(input);
         String xml = doc.getTree();
 
-        Assertions.assertTrue(xml.startsWith("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">a<sep"));
+        Assertions.assertTrue(xml.startsWith("<S xmlns:ixml='http://invisiblexml.org/NS' ixml:state='ambiguous'>a<sep"));
         Assertions.assertTrue(xml.contains("<sep>.</sep>") || xml.contains("<sep>,</sep>"));
         Assertions.assertTrue(xml.endsWith(">b</S>"));
     }
@@ -236,7 +236,7 @@ public class ParserTest {
         InvisibleXmlDocument document = parser.parse(input);
         String xml = document.getTree();
         //System.out.println(xml);
-        Assertions.assertEquals("<S b=\"xml\">a<b>xml</b><b>xml</b></S>", xml);
+        Assertions.assertEquals("<S b='xml'>a<b>xml</b><b>xml</b></S>", xml);
     }
 
     @Test
@@ -379,7 +379,7 @@ public class ParserTest {
             InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/cr.ixml"));
             InvisibleXmlDocument document = parser.parse("abc");
             String xml = document.getTree();
-            Assertions.assertEquals("<S><a>a&#xD;</a><b x=\"x&#xD;z\">b</b><c>c</c></S>", xml);
+            Assertions.assertEquals("<S><a>a&#xD;</a><b x='x&#xD;z'>b</b><c>c</c></S>", xml);
         } catch (IOException err) {
             fail();
         }
@@ -394,7 +394,7 @@ public class ParserTest {
             InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/crlf.ixml"));
             InvisibleXmlDocument document = parser.parse("abc");
             String xml = document.getTree();
-            Assertions.assertEquals("<S><a>a&#xD;\n</a><b x=\"x&#xD;&#xA;z\">b</b><c>c</c></S>", xml);
+            Assertions.assertEquals("<S><a>a&#xD;\n</a><b x='x&#xD;&#xA;z'>b</b><c>c</c></S>", xml);
         } catch (IOException err) {
             fail();
         }
@@ -409,7 +409,7 @@ public class ParserTest {
             InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/crlf2.ixml"));
             InvisibleXmlDocument document = parser.parse("abcd");
             String xml = document.getTree();
-            Assertions.assertEquals("<S><a>a&#xD;\n</a><b x=\"x&#xD;&#xA;z\">b&#xD;b</b><c y=\"a&#xD;g\">c</c><d>&#xD;</d></S>", xml);
+            Assertions.assertEquals("<S><a>a&#xD;\n</a><b x='x&#xD;&#xA;z'>b&#xD;b</b><c y='a&#xD;g'>c</c><d>&#xD;</d></S>", xml);
         } catch (IOException err) {
             fail();
         }

@@ -24,7 +24,9 @@ public class IxmlParserTest {
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/main/resources/org/nineml/coffeefilter/ixml.ixml"));
             Grammar grammar = parser.getGrammar();
             Assert.assertNotNull(grammar);
-            //System.err.println(parser.getCompiledParser());
+            InvisibleXmlDocument doc = parser.parse(new File("src/main/resources/org/nineml/coffeefilter/ixml.ixml"));
+            Assert.assertTrue(doc.succeeded());
+            //System.err.println(doc.getTree());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();

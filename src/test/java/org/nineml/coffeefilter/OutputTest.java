@@ -27,7 +27,7 @@ public class OutputTest {
         InvisibleXmlParser parser = new InvisibleXml(options).getParserFromIxml(ixml);
         InvisibleXmlDocument doc = parser.parse("aac");
         String xml = doc.getTree();
-        Assertions.assertEquals("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:mark=\"^\" C=\"c\"><A ixml:mark=\"^\">a</A><A ixml:mark=\"^\">a</A></S>", xml);
+        Assertions.assertEquals("<S xmlns:ixml='http://invisiblexml.org/NS' ixml:mark='^' C='c'><A ixml:mark='^'>a</A><A ixml:mark='^'>a</A></S>", xml);
 
         options.setShowBnfNonterminals(true);
         parser = new InvisibleXml(options).getParserFromIxml(ixml);

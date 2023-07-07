@@ -122,11 +122,11 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
             for (String prefix : prefixMapping.keySet()) {
                 String nsuri = prefixMapping.get(prefix);
                 nsuri = nsuri.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
-                nsuri = nsuri.replaceAll("\"", "&quot;");
+                nsuri = nsuri.replaceAll("'", "&apos;");
                 if ("".equals(prefix)) {
-                    stream.printf(" xmlns=\"%s\"", nsuri);
+                    stream.printf(" xmlns='%s'", nsuri);
                 } else {
-                    stream.printf(" xmlns:%s=\"%s\"", prefix, nsuri);
+                    stream.printf(" xmlns:%s='%s'", prefix, nsuri);
                 }
             }
             prefixMapping = null;
@@ -155,8 +155,9 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                     case '&':
                         sb.append("&amp;");
                         break;
-                    case '"':
-                        sb.append("&quot;");
+                    case '\'':
+                        sb.append("&apos;");
+                        break;
                     case CR:
                     case LF:
                     case TAB:
@@ -174,7 +175,7 @@ public class StringTreeBuilder extends AbstractTreeBuilder {
                 }
             }
 
-            stream.printf("%s=\"%s\"", qname, sb);
+            stream.printf("%s='%s'", qname, sb);
         }
 
         state = IN_TAG;
