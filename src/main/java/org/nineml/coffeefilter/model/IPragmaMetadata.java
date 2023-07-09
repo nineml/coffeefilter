@@ -6,6 +6,7 @@ public class IPragmaMetadata extends IPragma {
         super(parent, "metadata");
         this.uri = uri;
         pragmaData = data;
+        ptype = PragmaType.METADATA;
     }
 
     public String getPragmaURI() {

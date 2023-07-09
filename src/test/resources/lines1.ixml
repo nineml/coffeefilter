@@ -1,0 +1,8 @@
+  file  = line**NL, NL? .
+ -line  = linea | lineb .
+  linea = char*, -';', -s* .
+  lineb = char*, -':', -s* .
+ -s     = [' ' | #9 ] .
+ -NL    = #d?, #a .
+
+ -char  = [L] | [N] | s .

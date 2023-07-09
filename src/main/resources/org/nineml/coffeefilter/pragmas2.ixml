@@ -1,0 +1,95 @@
+ixml version "1.0".
+{ Based on the 2022-06-07 grammar }
+
+         ixml: s, prolog?, rule++RS, s. 
+
+           -s: (whitespace; comment)*. {Optional spacing}
+          -RS: (whitespace; comment)+. {Required spacing}
+  -whitespace: -[Zs]; tab; lf; cr.
+         -tab: -#9.
+          -lf: -#a.
+          -cr: -#d.
+      comment: -"{", ((comment; ~["[]{}"]), (cchar; comment)*)?, -"}".
+       -cchar: ~["{}"].
+
+       prolog: ((version, ppragma**s) | ppragma++s), s. 
+      version: -"ixml", RS, -"version", RS, string, s, -'.' .
+
+         rule: annotation, naming, -["=:"], s, -alts, (pragma, sp)?, -".". 
+        @mark: ["@^-"].
+         alts: alt++(-[";|"], s).
+          alt: term**(-",", s).
+        -term: factor;
+               option;
+               repeat0;
+               repeat1.
+      -factor: terminal;
+               nonterminal;
+               insertion;
+               -"(", s, alts, -")", s.
+      repeat0: factor, (-"*", s; -"**", s, sep).
+      repeat1: factor, (-"+", s; -"++", s, sep).
+       option: factor, -"?", s.
+          sep: factor.
+  nonterminal: annotation, naming.
+  -annotation: (pragma, sp)?, (mark, sp)?.
+          -sp: (whitespace; comment; pragma)*.
+
+      -naming: name, s, (-">", s, rename, s)?.
+
+        @name: namestart, namefollower*.
+      @rename: name.
+
+   -namestart: ["_"; L].
+-namefollower: namestart; ["-.·‿⁀"; Nd; Mn].
+
+    -terminal: literal; 
+               charset.
+      literal: quoted;
+               encoded.
+      -quoted: tannotation, string, s.
+ -tannotation: (pragma, sp)?, (tmark, sp)?.
+
+       @tmark: ["^-"].
+      @string: -'"', dchar+, -'"';
+               -"'", schar+, -"'".
+        dchar: ~['"'; #a; #d];
+               '"', -'"'. {all characters except line breaks; quotes must be doubled}
+        schar: ~["'"; #a; #d];
+               "'", -"'". {all characters except line breaks; quotes must be doubled}
+     -encoded: tannotation, -"#", hex, s.
+         @hex: ["0"-"9"; "a"-"f"; "A"-"F"]+.
+
+     -charset: inclusion; 
+               exclusion.
+    inclusion: tannotation,          set.
+    exclusion: tannotation, -"~", s, set.
+         -set: -"[", s,  (member, s)**(-[";|"], s), -"]", s.
+       member: string;
+               -"#", hex;
+               range;
+               class.
+       -range: from, s, -"-", s, to.
+        @from: character.
+          @to: character.
+   -character: -'"', dchar, -'"';
+               -"'", schar, -"'";
+               "#", hex.
+       -class: code.
+        @code: capital, letter?.
+     -capital: ["A"-"Z"].
+      -letter: ["A"-"Z" | "a"-"z"].
+    insertion: -"+", s, (string; -"#", hex), s.
+
+       pragma: -"{[", @pname, (whitespace, pragma-data)?, -"]}" . 
+      ppragma: -"{[+", @pname, (whitespace, pragma-data)?, -"]}" . 
+       @pname: name.
+
+  pragma-data: (-pragma-char; -bracket-pair)*.
+ -pragma-char: ~["{}"].
+-bracket-pair: '{', -pragma-data, '}'.
+
+       -QName: -name, ':', -name.
+      -UQName: 'Q{', -ns-name, '}', -name.
+     -ns-name: ~["{}"; '"'; "'"]* .
+

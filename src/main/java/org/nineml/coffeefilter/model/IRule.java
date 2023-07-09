@@ -11,6 +11,7 @@ import java.util.HashSet;
  */
 public class IRule extends XNonterminal {
     protected final char mark;
+    protected final String rename;
 
     /**
      * Create an IRule.
@@ -21,7 +22,21 @@ public class IRule extends XNonterminal {
      * @throws IllegalArgumentException if the mark is invalid.
      */
     public IRule(XNode parent, String name, char mark) {
+        this(parent, name, null, mark);
+    }
+
+    /**
+     * Create an IRule.
+     *
+     * @param parent The parent node.
+     * @param name The rule name.
+     * @param rename The serialization name for the rule
+     * @param mark The mark.
+     * @throws IllegalArgumentException if the mark is invalid.
+     */
+    public IRule(XNode parent, String name, String rename, char mark) {
         super(parent, "rule", name);
+        this.rename = rename;
 
         if (mark != '^' && mark != '@' && mark != '-') {
             throw IxmlException.invalidMark(mark);
@@ -30,13 +45,42 @@ public class IRule extends XNonterminal {
         this.mark = mark;
     }
 
+    /** The name to use when serializing this nonterminal
+     *
+     * @return the serialization name
+     */
+    public String getRename() {
+        String newName = null;
+        for (IPragma pragma : getPragmas()) {
+            if (pragma instanceof IPragmaRename) {
+                if (newName != null) {
+                    throw IxmlException.repeatedPragma("rename", newName, pragma.getPragmaData());
+                }
+                newName = pragma.getPragmaData();
+            }
+        }
+
+        if (newName != null) {
+            return newName;
+        }
+
+        if (rename != null) {
+            Ixml ixml = getRoot();
+            if (!"1.1-nineml".equals(ixml.getIxmlVersion())) {
+                throw IxmlException.renameUnavailable(name, rename);
+            }
+        }
+
+        return rename;
+    }
+
     /**
      * Copy the current node and its descendants.
      * @return A copy of the node.
      */
     @Override
     public XNode copy() {
-        IRule newnode = new IRule(parent, name, mark);
+        IRule newnode = new IRule(parent, name, rename, mark);
         newnode.optional = optional;
         newnode.copyChildren(getChildren());
         return newnode;

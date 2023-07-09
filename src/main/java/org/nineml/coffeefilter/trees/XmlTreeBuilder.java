@@ -189,8 +189,8 @@ public class XmlTreeBuilder implements TreeBuilder {
 
             String grammarVersion = parserVersion;
             badVersion = !"1.0".equals(grammarVersion)
-                    && !"1.0-9ml".equals(grammarVersion)
-                    && !"1.0-nineml".equals(grammarVersion);
+                    && !"1.0-nineml".equals(grammarVersion)
+                    && !"1.1-nineml".equals(grammarVersion);
 
             markAmbiguous = ambiguous && !options.isSuppressedState("ambiguous")
                     && (options.getStrictAmbiguity() || madeAmbiguousChoice);

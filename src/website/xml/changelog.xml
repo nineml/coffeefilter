@@ -9,12 +9,32 @@
 
 <revhistory>
 <revision>
-<revnumber>3.0.0a</revnumber>
-<date>2023-07-02</date>
+<revnumber>3.0.0b</revnumber>
+<date>2023-07-09</date>
 <revdescription>
 <para>This is a beta release for version 3.0.0. There are a lot of
 changes in this release and many of them impact the public APIs. The JavaDoc
 has not yet been updated.</para>
+<orderedlist>
+<listitem><para>Includes all of the updates in CoffeeGrinder 3.0.0b.
+</para></listitem>
+<listitem><para>Support the nonterminal renaming
+<link xlink:href="https://lists.w3.org/Archives/Public/public-ixml/2023Jun/0030.html">proposal</link>.
+This is an experimental feature. To use it, you must specify that the
+grammar version is “<literal>1.1-nineml</literal>”.
+</para></listitem>
+<listitem><para>Fixed a quoting bug in XML output; switched to single quotes for
+attributes (for greater consistency with previous releases).
+</para></listitem>
+<listitem><para>Cleaned up pragma processing; removed unused “token” pragma.
+</para></listitem>
+</orderedlist>
+</revdescription>
+</revision>
+<revision>
+<revnumber>3.0.0a</revnumber>
+<date>2023-07-02</date>
+<revdescription>
 <orderedlist>
 <listitem><para>Includes all of the updates in CoffeeGrinder 3.0.0a.
 </para></listitem>

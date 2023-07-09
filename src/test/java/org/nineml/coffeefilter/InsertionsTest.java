@@ -22,7 +22,7 @@ public class InsertionsTest {
         InvisibleXmlDocument doc = parser.parse(input);
         String xml = doc.getTree();
 
-        Assertions.assertEquals("<demo C=\"attrvalue\"><A>aFromA</A>between<B>FromBb</B><D>gentext</D></demo>", xml);
+        Assertions.assertEquals("<demo C='attrvalue'><A>aFromA</A>between<B>FromBb</B><D>gentext</D></demo>", xml);
     }
 
     @Test
@@ -52,8 +52,8 @@ public class InsertionsTest {
 
         String xml = doc.getTree();
 
-        Assertions.assertTrue("<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">A</S>".equals(xml)
-            || "<S xmlns:ixml=\"http://invisiblexml.org/NS\" ixml:state=\"ambiguous\">B</S>".equals(xml));
+        Assertions.assertTrue("<S xmlns:ixml='http://invisiblexml.org/NS' ixml:state='ambiguous'>A</S>".equals(xml)
+            || "<S xmlns:ixml='http://invisiblexml.org/NS' ixml:state='ambiguous'>B</S>".equals(xml));
     }
 
     @Test

@@ -1,0 +1,11 @@
+{[+pragma n "https://nineml.org/ns/pragma/"]}
+
+  file  = line**NL, NL? .
+ -line  = linea | lineb .
+  linea = char, -';', -s* .
+  lineb = char, -':', -s* .
+ -s     = [' ' | #9 ] .
+ -NL    = #d?, #a .
+
+{[n regex "[a-zA-Z0-9 ]*"]}
+ -char  =  ([L] | [N] | s)* .
