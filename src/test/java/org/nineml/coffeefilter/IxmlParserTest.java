@@ -255,13 +255,33 @@ public class IxmlParserTest {
             Grammar grammar = parser.getGrammar();
             Assert.assertNotNull(grammar);
             InvisibleXmlDocument doc = parser.parse("aa");
-            doc.getResult().getForest().serialize("/tmp/ba.xml");
+            //doc.getResult().getForest().serialize("/tmp/ba.xml");
             Assert.assertTrue(doc.succeeded());
             String xml = doc.getTree();
-            System.err.println(xml);
+            //System.err.println(xml);
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();
         }
     }
+
+    @Test
+    public void testGrammar() {
+        try {
+            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
+            //invisibleXml.getOptions().setParserType("GLL");
+
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/lines2.ixml"));
+            Grammar grammar = parser.getGrammar();
+            Assert.assertNotNull(grammar);
+            InvisibleXmlDocument doc = parser.parse(new File("src/test/resources/lines.txt"));
+            Assert.assertTrue(doc.succeeded());
+            System.err.println(doc.getTree());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            fail();
+        }
+    }
+
 }

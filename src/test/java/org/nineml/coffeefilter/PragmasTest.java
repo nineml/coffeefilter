@@ -1,9 +1,10 @@
 package org.nineml.coffeefilter;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.nineml.coffeegrinder.parser.Grammar;
+import org.nineml.coffeegrinder.util.DefaultProgressMonitor;
 
 import java.io.File;
 import java.util.List;
@@ -15,7 +16,7 @@ public class PragmasTest {
     private ParserOptions options;
     private InvisibleXml invisibleXml;
 
-    @Before
+    @BeforeEach
     public void setup() {
         options = new ParserOptions();
         //options.getLogger().setDefaultLogLevel("debug");
@@ -181,7 +182,7 @@ public class PragmasTest {
         }
     }
 
-    @Ignore
+    @Disabled
     public void greedy() {
         try {
             invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
@@ -211,4 +212,52 @@ public class PragmasTest {
         }
     }
      */
+
+    @Test
+    public void testRegex() {
+        try {
+            invisibleXml.getOptions().getLogger().setDefaultLogLevel("trace");
+            invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
+
+            InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/regex.ixml"));
+            Grammar grammar = parser.getGrammar();
+            Assertions.assertNotNull(grammar);
+            InvisibleXmlDocument doc = parser.parse("abzcdz");
+            Assertions.assertTrue(doc.succeeded());
+            System.err.println(doc.getTree());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            fail();
+        }
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Earley", "GLL"})
+    public void testLines(String parserType) {
+        ParserOptions options = new ParserOptions();
+        options.setParserType(parserType);
+
+        try {
+            InvisibleXml ixml = new InvisibleXml(options);
+            InvisibleXmlParser parser = ixml.getParser(new File("src/test/resources/lines1.ixml"));
+            InvisibleXmlDocument doc = parser.parse(new File("src/test/resources/lines.txt"));
+            Assertions.assertTrue(doc.succeeded());
+            String slow = doc.getTree();
+            long slowms = doc.parseTime();
+
+            parser = ixml.getParser(new File("src/test/resources/lines2.ixml"));
+            doc = parser.parse(new File("src/test/resources/lines.txt"));
+            Assertions.assertTrue(doc.succeeded());
+            String fast = doc.getTree();
+            long fastms = doc.parseTime();
+
+            Assertions.assertTrue(fastms < slowms);
+            Assertions.assertEquals(slow, fast);
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            fail();
+        }
+    }
+
 }

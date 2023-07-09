@@ -421,11 +421,6 @@ public abstract class XNode {
                 break;
             case "priority":
                 return new IPragmaPriority(pragma.parent, pragma.name, data);
-            case "token":
-                if ("".equals(data)) {
-                    return new IPragmaToken(pragma.parent, pragma.name, data);
-                }
-                break;
             default:
                 break;
         }

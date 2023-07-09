@@ -67,18 +67,19 @@ public class RenameTest {
     public void renameAtoBCD_pragma_combined() {
         String ixml = "ixml version '1.1-nineml' ." +
                 "{[+pragma n 'https://nineml.org/ns/pragma/']}\n" +
-                "S: @A, {[n rename Y]} B>C, C>D, {[n rename W]} A, B, @C .\n" +
+                "S: @A, {[n rename Y]} B>C, C>D, C, {[n rename W]} A, B, @C .\n" +
                 "A>B: 'b' .\n"+
                 "B: 'c' .\n"+
                 "{[n rename Z]} C: 'd' .\n";
         InvisibleXmlDocument doc; //= invisibleXml.getParser().parse(ixml);
         //System.err.println(doc.getTree());
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(ixml);
-        String input = "bcdbcd";
+        String input = "bcddbcd";
         doc = parser.parse(input);
         Assert.assertTrue(doc.succeeded());
         //System.err.println(doc.getTree());
-        Assert.assertEquals("<S B='b' Z='d'><Y>c</Y><D>d</D><W>b</W><B>c</B></S>", doc.getTree());
+        // N.B. Z in both cases because the pragma always wins.
+        Assert.assertEquals("<S B='b' Z='d'><Y>c</Y><Z>d</Z><Z>d</Z><W>b</W><B>c</B></S>", doc.getTree());
     }
 
     @Test

@@ -4,6 +4,8 @@ public class IPragmaPriority extends IPragma {
     public IPragmaPriority(XNode parent, String name, String priority) {
         super(parent, name);
         pragmaData = priority;
+        ptype = PragmaType.PRIORITY;
+        inherit = true;
 
         try {
             int value = Integer.parseInt(priority);

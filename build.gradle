@@ -71,16 +71,17 @@ dependencies {
     [group: 'org.nineml', name: grinderName, version: grinderVersion]
   )
   testImplementation (
-    [group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.4.2'],
+    [group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.2'],
+    [group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.9.2'],
     [group: 'org.junit.platform', name: 'junit-platform-console-standalone', version: '1.7.1'],
     // For saxon:deep-equal
     [group: 'com.saxonica', name: 'Saxon-EE', version: saxonVersion],
     files(saxonLicenseDir)
   )
   testRuntimeOnly (
-    [group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.4.2'],
-    [group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.4.2'],
-    [group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.8.2']
+    [group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.2'],
+    [group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.9.2'],
+    [group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.8.2'],
   )
   testsuite (
     files("${buildDir}/classes/java/main"),
@@ -93,6 +94,10 @@ dependencies {
     [group: 'org.docbook', name: 'schemas-docbook', version: docbookVersion],
     [group: 'org.docbook', name: 'docbook-xslTNG', version: xslTNGversion]
   )
+}
+
+test {
+  useJUnitPlatform()
 }
 
 println("Building with Java version ${System.getProperty('java.version')}")
