@@ -185,7 +185,7 @@ public class PragmasTest {
     @Disabled
     public void greedy() {
         try {
-            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            //invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             invisibleXml.getOptions().setParserType("GLL");
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/greedy.ixml"));
             InvisibleXmlDocument doc = parser.parse("abbbc");
@@ -216,7 +216,7 @@ public class PragmasTest {
     @Test
     public void testRegex() {
         try {
-            invisibleXml.getOptions().getLogger().setDefaultLogLevel("trace");
+            //invisibleXml.getOptions().getLogger().setDefaultLogLevel("trace");
             invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
 
             InvisibleXmlParser parser = invisibleXml.getParser(new File("src/test/resources/regex.ixml"));
@@ -224,10 +224,10 @@ public class PragmasTest {
             Assertions.assertNotNull(grammar);
             InvisibleXmlDocument doc = parser.parse("abzcdz");
             Assertions.assertTrue(doc.succeeded());
-            System.err.println(doc.getTree());
+            //System.err.println(doc.getTree());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
-            fail();
+            Assertions.fail();
         }
     }
 
@@ -256,7 +256,7 @@ public class PragmasTest {
             Assertions.assertEquals(slow, fast);
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
-            fail();
+            Assertions.fail();
         }
     }
 

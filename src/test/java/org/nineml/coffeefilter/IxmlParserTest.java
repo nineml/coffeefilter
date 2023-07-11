@@ -192,7 +192,6 @@ public class IxmlParserTest {
         String input = "a";
         doc = parser.parse(input);
         String xml = doc.getTree();
-        System.out.println(xml);
         Assert.assertTrue(doc.succeeded());
         Assert.assertEquals("<S>a<b>xml</b><b>xml</b></S>", xml);
     }
@@ -225,15 +224,14 @@ public class IxmlParserTest {
     public void testParseOberon() {
         try {
             invisibleXml.getOptions().setParserType("GLL");
-            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            //invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
             InvisibleXmlParser parser = invisibleXml.getParser(new File("ixml/samples/Oberon/Grammars/Oberon.ixml"));
             Grammar grammar = parser.getGrammar();
             Assert.assertNotNull(grammar);
             InvisibleXmlDocument doc = parser.parse(new File("ixml/samples/Oberon/Project-Oberon-2013-materials/ORB.Mod.txt"));
             Assert.assertTrue(doc.succeeded());
-            //String xml = doc.getTree();
-            //System.err.println(xml);
+            //System.err.println(doc.parseTime());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();
@@ -244,7 +242,7 @@ public class IxmlParserTest {
     public void testAmbig() {
         try {
             invisibleXml.getOptions().setParserType("GLL");
-            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            //invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
 
             String input = "A: ; B. B: A.";
@@ -268,7 +266,7 @@ public class IxmlParserTest {
     @Test
     public void testGrammar() {
         try {
-            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            //invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
             //invisibleXml.getOptions().setParserType("GLL");
 
@@ -277,7 +275,6 @@ public class IxmlParserTest {
             Assert.assertNotNull(grammar);
             InvisibleXmlDocument doc = parser.parse(new File("src/test/resources/lines.txt"));
             Assert.assertTrue(doc.succeeded());
-            System.err.println(doc.getTree());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
             fail();

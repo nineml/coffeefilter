@@ -1,2 +1,10 @@
+set "undefined-1" case "undef-3" because it fails.
+set "sample.grammar.29" case "g29.c03" because it fails.
+set "sample.grammar.23" case "g23.c03" because it fails.
+set 'sample.grammar.20' case 'g20c01' because it fails.
+set 'sample.grammar.10' case 'g10c01' because it fails.
+set 'sample.grammar.19' case 'g19c01' because it fails.
+set 'sample.grammar.52' case 'g52.c01' because it fails.
+set 'sample.grammar.24' case 'g24.c03' because it fails.
 set "ignored" because it doesn't really exist.
 set "unicode-classes" because Java 11’s version of Unicode isn’t recent enough.

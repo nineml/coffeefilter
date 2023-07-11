@@ -22,9 +22,7 @@ public class SimplifyRulesTest {
         String input = "S: 'a'**',' .";
 
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
-
-        System.err.println(parser);
-    }
+   }
 
     @Test
     public void testSimplifyRepeat0() {
@@ -32,9 +30,6 @@ public class SimplifyRulesTest {
         String input = "S: 'a'* .";
 
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
-
-        System.err.println(parser);
-
     }
 
     @Test
@@ -46,7 +41,6 @@ public class SimplifyRulesTest {
         InvisibleXmlDocument doc = parser.parse("a");
         if (doc.succeeded()) {
             String tree = doc.getTree();
-            System.err.println(tree);
         } else {
             fail();
         }

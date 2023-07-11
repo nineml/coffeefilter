@@ -33,7 +33,6 @@ public class OutputTest {
         parser = new InvisibleXml(options).getParserFromIxml(ixml);
         doc = parser.parse("aac");
         xml = doc.getTree();
-        System.out.println(xml);
         Assertions.assertTrue(xml.startsWith("<n:symbol"));
     }
 
