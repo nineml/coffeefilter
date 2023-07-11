@@ -21,7 +21,7 @@ public class RegexTest {
             ByteArrayInputStream bais = new ByteArrayInputStream(ixml.getBytes(StandardCharsets.UTF_8));
 
             invisibleXml.getOptions().setParserType("GLL");
-            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            //invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
 
             InvisibleXmlParser parser = invisibleXml.getParser(bais, "UTF-8");
@@ -41,7 +41,7 @@ public class RegexTest {
             ByteArrayInputStream bais = new ByteArrayInputStream(ixml.getBytes(StandardCharsets.UTF_8));
 
             invisibleXml.getOptions().setParserType("GLL");
-            invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
+            //invisibleXml.getOptions().getLogger().setDefaultLogLevel("debug");
             invisibleXml.getOptions().setProgressMonitor(new DefaultProgressMonitor());
 
             InvisibleXmlParser parser = invisibleXml.getParser(bais, "UTF-8");
