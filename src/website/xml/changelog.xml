@@ -9,12 +9,21 @@
 
 <revhistory>
 <revision>
-<revnumber>3.0.0c</revnumber>
-<date>2023-07-09</date>
+<revnumber>3.0.0d</revnumber>
+<date>2023-07-11</date>
 <revdescription>
 <para>This is a beta release for version 3.0.0. There are a lot of
 changes in this release and many of them impact the public APIs. The JavaDoc
 has not yet been updated.</para>
+<para>Version 3.0.0d depends on CoffeeGrinder 3.0.0d which includes a few
+bug fixes and improvements.</para>
+</revdescription>
+</revision>
+
+<revision>
+<revnumber>3.0.0c</revnumber>
+<date>2023-07-09</date>
+<revdescription>
 <para>Version 3.0.0c depends on CoffeeGrinder 3.0.0c which fixes a bug
 where a regular expression pragma would not successfully parse when
 the regular expression matched the empty string.</para>
