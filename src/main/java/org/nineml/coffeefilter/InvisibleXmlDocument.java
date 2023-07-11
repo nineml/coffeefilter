@@ -204,8 +204,4 @@ public class InvisibleXmlDocument {
     public void setTreeSelector(TreeSelector selector) {
         result.setTreeSelector(selector);
     }
-
-    public void resetTrees() {
-        result.resetTrees();;
-    }
 }
