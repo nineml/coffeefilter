@@ -116,7 +116,7 @@ public class TestResult {
             out.println("</assertions>");
         }
 
-        if (expected != null) {
+        if (expected != null && state == TestState.FAIL) {
             assert actual != null;
             assert deepEqualMessages != null;
             assert expected.size() == actual.size();

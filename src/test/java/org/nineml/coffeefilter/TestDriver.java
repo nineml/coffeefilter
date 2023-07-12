@@ -540,85 +540,99 @@ public class TestDriver {
         result.documentParseTime = doc.parseTime();
 
         DocumentBuilder builder = processor.newDocumentBuilder();
-        BuildingContentHandler bch = builder.newBuildingContentHandler();
+        ArrayList<XdmNode> trees = new ArrayList<>();
 
-        try {
-            doc.getTree(bch);
-        } catch (IxmlException ex) {
-            List<String> codes = errorCodes(assertions);
-            boolean pass = codes.isEmpty();
-            boolean dynamicErrorExpected = false;
-            for (XdmNode assertion : assertions) {
-                dynamicErrorExpected = dynamicErrorExpected || assertion.getNodeName().equals(t_assert_dynamic_error);
-            }
-            for (String code : codes) {
-                pass = pass || code.equals(ex.getCode());
-            }
-            result.state = pass ? TestState.PASS : TestState.FAIL;
-            if (dynamicErrorExpected) {
-                return;
-            }
-            throw ex;
-        }
+        while (doc.getResult().hasMoreTrees()) {
+            BuildingContentHandler bch = builder.newBuildingContentHandler();
 
-        XdmNode node = bch.getDocumentNode();
-
-        XdmSequenceIterator<XdmNode> iter = node.axisIterator(Axis.CHILD);
-        while (iter.hasNext() && node.getNodeKind() != XdmNodeKind.ELEMENT) {
-            node = iter.next();
-        }
-
-        boolean same = false;
-        for (XdmNode assertion : assertions) {
-            XdmNode expected = null;
-            if (t_assert_xml.equals(assertion.getNodeName())) {
-                iter = assertion.axisIterator(Axis.CHILD);
-                while (iter.hasNext()) {
-                    XdmNode anode = iter.next();
-                    if (anode.getNodeKind() == XdmNodeKind.ELEMENT) {
-                        expected = anode;
-                    }
-                }
-            } else if (t_assert_xml_ref.equals(assertion.getNodeName())) {
-                expected = xmlFile(assertion.getBaseURI().resolve(assertion.getAttributeValue(_href)));
-            } else if (t_assert_dynamic_error.equals(assertion.getNodeName())) {
+            try {
+                doc.getTree(bch);
+            } catch (IxmlException ex) {
                 List<String> codes = errorCodes(assertions);
-                boolean pass = codes.isEmpty() || codes.get(0).equals("none");
-                if (!pass && parser.getException() instanceof IxmlException) {
-                    IxmlException except = (IxmlException) parser.getException();
-                    result.errorCode = except.getCode();
-                    for (String code : codes) {
-                        pass = pass || code.equals(except.getCode());
-                    }
+                boolean pass = codes.isEmpty();
+                boolean dynamicErrorExpected = false;
+                for (XdmNode assertion : assertions) {
+                    dynamicErrorExpected = dynamicErrorExpected || assertion.getNodeName().equals(t_assert_dynamic_error);
+                }
+                for (String code : codes) {
+                    pass = pass || code.equals(ex.getCode());
                 }
                 result.state = pass ? TestState.PASS : TestState.FAIL;
-                return;
-            } else {
-                throw new RuntimeException("Unexpected assertion: " + assertion);
+                if (dynamicErrorExpected) {
+                    return;
+                }
+                throw ex;
             }
 
-            assert expected != null;
-            iter = expected.axisIterator(Axis.CHILD);
-            while (iter.hasNext() && expected.getNodeKind() != XdmNodeKind.ELEMENT) {
-                expected = iter.next();
-            }
-            if (expected.getNodeKind() != XdmNodeKind.ELEMENT) {
-                throw new RuntimeException("Did not find element to compare against in assertion?: " + testCase.getBaseURI());
-            }
-
-            same = deepEqual(expected, node, result);
-            if (same) {
-                break;
-            }
-
-            System.err.println("EX:" + expected);
-            System.err.println("AC:" + node);
+            trees.add(bch.getDocumentNode());
         }
 
-        if (same) {
-            result.state = TestState.PASS;
-        } else {
-            result.state = TestState.FAIL;
+        int count = 1;
+        for (XdmNode node : trees) {
+            XdmSequenceIterator<XdmNode> iter = node.axisIterator(Axis.CHILD);
+            while (iter.hasNext() && node.getNodeKind() != XdmNodeKind.ELEMENT) {
+                node = iter.next();
+            }
+
+            boolean same = false;
+            for (XdmNode assertion : assertions) {
+                XdmNode expected = null;
+                if (t_assert_xml.equals(assertion.getNodeName())) {
+                    iter = assertion.axisIterator(Axis.CHILD);
+                    while (iter.hasNext()) {
+                        XdmNode anode = iter.next();
+                        if (anode.getNodeKind() == XdmNodeKind.ELEMENT) {
+                            expected = anode;
+                        }
+                    }
+                } else if (t_assert_xml_ref.equals(assertion.getNodeName())) {
+                    expected = xmlFile(assertion.getBaseURI().resolve(assertion.getAttributeValue(_href)));
+                } else if (t_assert_dynamic_error.equals(assertion.getNodeName())) {
+                    List<String> codes = errorCodes(assertions);
+                    boolean pass = codes.isEmpty() || codes.get(0).equals("none");
+                    if (!pass && parser.getException() instanceof IxmlException) {
+                        IxmlException except = (IxmlException) parser.getException();
+                        result.errorCode = except.getCode();
+                        for (String code : codes) {
+                            pass = pass || code.equals(except.getCode());
+                        }
+                    }
+                    result.state = pass ? TestState.PASS : TestState.FAIL;
+                    return;
+                } else {
+                    throw new RuntimeException("Unexpected assertion: " + assertion);
+                }
+
+                assert expected != null;
+                iter = expected.axisIterator(Axis.CHILD);
+                while (iter.hasNext() && expected.getNodeKind() != XdmNodeKind.ELEMENT) {
+                    expected = iter.next();
+                }
+                if (expected.getNodeKind() != XdmNodeKind.ELEMENT) {
+                    throw new RuntimeException("Did not find element to compare against in assertion?: " + testCase.getBaseURI());
+                }
+
+                same = deepEqual(expected, node, result);
+                if (same) {
+                    break;
+                }
+
+                if (count == 1) {
+                    if (trees.size() > 1) {
+                        System.err.printf("%d of %d trees...", count, trees.size());
+                    }
+                    System.err.println("EX:" + expected);
+                    System.err.println("AC:" + node);
+                }
+                count++;
+            }
+
+            if (same) {
+                result.state = TestState.PASS;
+                break;
+            } else {
+                result.state = TestState.FAIL;
+            }
         }
     }
 
