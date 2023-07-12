@@ -62,6 +62,8 @@ jobs:
         run: |
           git submodule init
           git submodule update
+          ./gradlew -PparserType=earley testSuite
+          ./gradlew -PparserType=gll testSuite
           ./gradlew dist website
 
       - name: Deploy main to gh-pages
