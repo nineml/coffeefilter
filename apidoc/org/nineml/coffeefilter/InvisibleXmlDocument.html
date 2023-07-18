@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -162,83 +162,97 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>org.nineml.coffeegrinder.trees.TreeBuilder</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAdapter(org.xml.sax.ContentHandler)">getAdapter</a></span>&#8203;(org.xml.sax.ContentHandler&nbsp;handler)</code></th>
+<td class="colLast">
+<div class="block">Returns an adapter for SAX ContentHandlers.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getColumnNumber()">getColumnNumber</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the column number of the last line processed.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLineNumber()">getLineNumber</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the line number of the last line processed.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNumberOfParses()">getNumberOfParses</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Return the number of available parses of this document.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOffset()">getOffset</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the offset of the last character processed.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOptions()">getOptions</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the parser options.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>org.nineml.coffeegrinder.parser.ParserType</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParserType()">getParserType</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Return the parser type.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParserVersion()">getParserVersion</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Get the parser version.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>org.nineml.coffeegrinder.parser.GearleyResult</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResult()">getResult</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Return the underlying <code>EarleyResult</code> result for this parse.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTree()">getTree</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Return an XML representation of the current parse.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTree(java.io.PrintStream)">getTree</a></span>&#8203;(java.io.PrintStream&nbsp;output)</code></th>
 <td class="colLast">
 <div class="block">Write an XML representation of the current parse to the stream.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTree(org.nineml.coffeegrinder.trees.TreeBuilder)">getTree</a></span>&#8203;(org.nineml.coffeegrinder.trees.TreeBuilder&nbsp;builder)</code></th>
 <td class="colLast">
 <div class="block">Process the result with your own <code>TreeBuilder</code>.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTree(org.xml.sax.ContentHandler)">getTree</a></span>&#8203;(org.xml.sax.ContentHandler&nbsp;handler)</code></th>
 <td class="colLast">
 <div class="block">Write an XML representation of the current parse to a SAX ContentHandler.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTree(org.xml.sax.ContentHandler,org.nineml.coffeefilter.ParserOptions)">getTree</a></span>&#8203;(org.xml.sax.ContentHandler&nbsp;handler,
        <a href="ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</code></th>
@@ -247,33 +261,28 @@ extends java.lang.Object</pre>
  using a different set of options.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAmbiguous()">isAmbiguous</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Is this document ambiguous?</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isInfinitelyAmbiguous()">isInfinitelyAmbiguous</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Is this document infinitely ambiguous?</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parseTime()">parseTime</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the amount of time (roughly) spent parsing.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTreeSelector(org.nineml.coffeegrinder.trees.TreeSelector)">setTreeSelector</a></span>&#8203;(org.nineml.coffeegrinder.trees.TreeSelector&nbsp;selector)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#succeeded()">succeeded</a></span>()</code></th>
 <td class="colLast">
@@ -304,6 +313,20 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="getParserVersion()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getParserVersion</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getParserVersion()</pre>
+<div class="block">Get the parser version.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the parser version</dd>
+</dl>
+</li>
+</ul>
 <a id="getOptions()">
 <!--   -->
 </a>
@@ -468,6 +491,22 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="getAdapter(org.xml.sax.ContentHandler)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAdapter</h4>
+<pre class="methodSignature">public&nbsp;org.nineml.coffeegrinder.trees.TreeBuilder&nbsp;getAdapter&#8203;(org.xml.sax.ContentHandler&nbsp;handler)</pre>
+<div class="block">Returns an adapter for SAX ContentHandlers.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>handler</code> - the content handler</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>an adapting tree builder</dd>
+</dl>
+</li>
+</ul>
 <a id="getTree()">
 <!--   -->
 </a>
@@ -479,6 +518,8 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the XML.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="exceptions/IxmlException.html" title="class in org.nineml.coffeefilter.exceptions">IxmlException</a></code> - if the parse failed</dd>
 </dl>
 </li>
 </ul>
@@ -530,7 +571,7 @@ extends java.lang.Object</pre>
 <a id="getTree(org.nineml.coffeegrinder.trees.TreeBuilder)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>getTree</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;getTree&#8203;(org.nineml.coffeegrinder.trees.TreeBuilder&nbsp;builder)</pre>
@@ -540,15 +581,6 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>builder</code> - the tree builder.</dd>
 </dl>
-</li>
-</ul>
-<a id="setTreeSelector(org.nineml.coffeegrinder.trees.TreeSelector)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>setTreeSelector</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setTreeSelector&#8203;(org.nineml.coffeegrinder.trees.TreeSelector&nbsp;selector)</pre>
 </li>
 </ul>
 </li>
