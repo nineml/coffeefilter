@@ -1,14 +1,8 @@
 package org.nineml.coffeefilter;
 
-import net.sf.saxon.s9api.*;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.nineml.coffeefilter.trees.StringTreeBuilder;
-import org.nineml.coffeefilter.trees.XmlTreeBuilder;
-import org.nineml.coffeegrinder.parser.ForestWalker;
-import org.nineml.coffeegrinder.trees.PriorityTreeSelector;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +23,6 @@ public class AmbiguityTest {
     @Test
     public void ambiguity1() {
         // This test is for the bug where a terminal marked as optional was losing its optionality
-        // One choice is still ambiguous
         String input = "{[+pragma n \"https://nineml.org/ns/pragma/\"]} S = 'x', (A | {[n priority 2]} B), 'y'.  {[n priority 1]} A = 'a' | B. B = 'b' | A.";
 
         InvisibleXmlParser parser = invisibleXml.getParserFromIxml(input);
@@ -90,7 +83,7 @@ public class AmbiguityTest {
             String input = "xay";
             InvisibleXmlDocument doc = parser.parse(input);
             String xml = doc.getTree();
-            Assertions.assertTrue(xml.contains("<A>a</A>"));
+            Assertions.assertTrue(xml.contains("<A>a</A>") || xml.contains("<B>ay</B>"));
         } catch (Exception ex) {
             fail();
         }

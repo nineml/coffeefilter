@@ -48,7 +48,7 @@ public class InsertionsTest {
         input = "";
         InvisibleXmlDocument doc = parser.parse(input);
 
-        doc.getResult().getForest().serialize("/tmp/insert.xml");
+        //doc.getResult().getForest().serialize("/tmp/insert.xml");
 
         String xml = doc.getTree();
 

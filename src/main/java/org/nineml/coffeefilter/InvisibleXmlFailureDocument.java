@@ -1,7 +1,7 @@
 package org.nineml.coffeefilter;
 
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.trees.XmlTreeBuilder;
+import org.nineml.coffeefilter.trees.ContentHandlerAdapter;
 import org.nineml.coffeefilter.util.AttributeBuilder;
 import org.nineml.coffeegrinder.parser.*;
 import org.nineml.coffeegrinder.tokens.Token;
@@ -55,8 +55,8 @@ public class InvisibleXmlFailureDocument extends InvisibleXmlDocument {
 
     @Override
     public void getTree(TreeBuilder builder) {
-        if (builder instanceof XmlTreeBuilder) {
-            getTree(((XmlTreeBuilder) builder).getHandler());
+        if (builder instanceof ContentHandlerAdapter) {
+            getTree(((ContentHandlerAdapter) builder).getHandler());
         } else {
             throw IxmlException.cannotParseFailure();
         }
