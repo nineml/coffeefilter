@@ -545,7 +545,9 @@ public class TestDriver {
 
         Arborist walker = doc.getResult().getArborist(new PriorityAxe());
 
-        while (walker.hasMoreTrees()) {
+        int ttcount = 0;
+        while (ttcount < 10 && walker.hasMoreTrees()) {
+            ttcount++;
             BuildingContentHandler bch = builder.newBuildingContentHandler();
             ContentHandlerAdapter adapter = new ContentHandlerAdapter(doc.parserVersion, doc.getOptions(), bch);
 
@@ -923,7 +925,8 @@ public class TestDriver {
             if (setName == null) {
                 // What about exceptions?
                 for (DataTree exset : sets) {
-                    if (thisSet.equals(exset.get("id").getValue())) {
+                    String id = exset.get("id").getValue();
+                    if (thisSet.equals(id)) {
                         dataSet = exset;
                         if (exset.getAll("case").isEmpty()) {
                             process = false;
