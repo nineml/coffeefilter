@@ -33,6 +33,8 @@ plugins {
 import com.nwalsh.gradle.saxon.SaxonXsltTask
 import com.nwalsh.gradle.relaxng.validate.RelaxNGValidateTask
 import com.nwalsh.gradle.docker.DockerContainer
+import java.nio.file.Paths
+import java.nio.file.Files
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
@@ -214,6 +216,36 @@ jar {
   }
 }
 
+task classlist(
+  dependsOn: ["javadoc"]
+) {
+  inputs.files fileTree(dir: javadoc.destinationDir)
+  outputs.file "${buildDir}/classlist.xml"
+
+  def classlist = []
+  doLast {
+    def out = new PrintStream(new File("${buildDir}/classlist.xml"))
+    out.println("<classlist>")
+    def plen = "${javadoc.destinationDir}".length() + 1
+    def stream = Files.walk(Paths.get("${javadoc.destinationDir}"))
+    stream.filter(Files::isRegularFile).forEach(fn -> classlist.add(fn.toString()))
+    classlist.forEach { fn ->
+      def path = fn.substring(plen)
+      if (path.endsWith(".html") && path.startsWith("org/")
+          && !path.endsWith("/package-summary.html")
+          && !path.endsWith("/package-tree.html")) {
+        String className = path.replace("/", ".").replace(".html", "")
+        String baseName = className
+        int pos = className.lastIndexOf(".")+1
+        baseName = className.substring(pos)
+        out.println("<class name='${baseName}' fq='${className}' path='${path}'/>")
+      }
+    }
+    out.println("</classlist>")
+    out.close()
+  }
+}
+
 javadoc {
   inputs.file "${projectDir}/src/main/java/overview.html"
   inputs.files fileTree(dir: "${projectDir}/src/main")
@@ -304,7 +336,7 @@ task manual_augment(type: SaxonXsltTask, dependsOn: ["manual_validate"]) {
   )
 }
 
-task website(type: SaxonXsltTask, dependsOn: ["manual_augment", "javadoc"]) {
+task website(type: SaxonXsltTask, dependsOn: ["manual_augment", "classlist"]) {
   inputs.file "${projectDir}/tools/docbook.xsl"
   outputs.files fileTree(dir: "${buildDir}/website")
 

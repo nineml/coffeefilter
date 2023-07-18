@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class XmlTreeBuilder implements TreeBuilder {
+public class ContentHandlerAdapter implements TreeBuilder {
     private Node node;
     public final String parserVersion;
     private final ParserOptions options;
@@ -30,7 +30,7 @@ public class XmlTreeBuilder implements TreeBuilder {
     private boolean root = true;
     private boolean firstSymbol = true;
 
-    public XmlTreeBuilder(String version, ParserOptions options, ContentHandler handler) {
+    public ContentHandlerAdapter(String version, ParserOptions options, ContentHandler handler) {
         this.parserVersion = version;
         this.options = new ParserOptions(options);
         this.handler = handler;
@@ -45,16 +45,16 @@ public class XmlTreeBuilder implements TreeBuilder {
     }
 
     @Override
-    public void startTree(boolean ambiguous, boolean infinitelyAmbiguous) {
-        this.ambiguous = ambiguous;
+    public void startTree() {
         node = new DocumentNode();
         root = true;
         firstSymbol = true;
     }
 
     @Override
-    public void endTree(boolean madeAmbiguousChoice) {
-        this.madeAmbiguousChoice = madeAmbiguousChoice;
+    public void endTree(boolean ambiguous, boolean absolutelyAmbiguous, boolean infinitelyAmbiguous) {
+        this.ambiguous = absolutelyAmbiguous;
+        this.madeAmbiguousChoice = ambiguous;
 
         node.flatten();
         assert nodeStack != null;

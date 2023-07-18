@@ -3,11 +3,12 @@ package org.nineml.coffeefilter;
 import net.sf.saxon.lib.ErrorReporter;
 import net.sf.saxon.s9api.*;
 import org.nineml.coffeefilter.exceptions.IxmlException;
-import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.trees.DataTree;
 import org.nineml.coffeefilter.trees.DataTreeBuilder;
+import org.nineml.coffeefilter.trees.ContentHandlerAdapter;
 import org.nineml.coffeegrinder.exceptions.GrammarException;
-import org.nineml.coffeegrinder.parser.ParserType;
+import org.nineml.coffeegrinder.trees.Arborist;
+import org.nineml.coffeegrinder.trees.PriorityAxe;
 import org.nineml.coffeegrinder.util.StopWatch;
 
 import java.io.*;
@@ -542,11 +543,16 @@ public class TestDriver {
         DocumentBuilder builder = processor.newDocumentBuilder();
         ArrayList<XdmNode> trees = new ArrayList<>();
 
-        while (doc.getResult().hasMoreTrees()) {
+        Arborist walker = doc.getResult().getArborist(new PriorityAxe());
+
+        int ttcount = 0;
+        while (ttcount < 10 && walker.hasMoreTrees()) {
+            ttcount++;
             BuildingContentHandler bch = builder.newBuildingContentHandler();
+            ContentHandlerAdapter adapter = new ContentHandlerAdapter(doc.parserVersion, doc.getOptions(), bch);
 
             try {
-                doc.getTree(bch);
+                walker.getTree(adapter);
             } catch (IxmlException ex) {
                 List<String> codes = errorCodes(assertions);
                 boolean pass = codes.isEmpty();
@@ -919,7 +925,8 @@ public class TestDriver {
             if (setName == null) {
                 // What about exceptions?
                 for (DataTree exset : sets) {
-                    if (thisSet.equals(exset.get("id").getValue())) {
+                    String id = exset.get("id").getValue();
+                    if (thisSet.equals(id)) {
                         dataSet = exset;
                         if (exset.getAll("case").isEmpty()) {
                             process = false;

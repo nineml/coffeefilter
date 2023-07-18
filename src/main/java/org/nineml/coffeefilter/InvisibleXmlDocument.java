@@ -1,23 +1,18 @@
 package org.nineml.coffeefilter;
 
+import org.nineml.coffeefilter.exceptions.IxmlException;
 import org.nineml.coffeefilter.trees.StringTreeBuilder;
-import org.nineml.coffeefilter.trees.XmlTreeBuilder;
-import org.nineml.coffeefilter.util.AttributeBuilder;
+import org.nineml.coffeefilter.trees.ContentHandlerAdapter;
 import org.nineml.coffeegrinder.gll.GllResult;
 import org.nineml.coffeegrinder.parser.EarleyResult;
 import org.nineml.coffeegrinder.parser.GearleyResult;
 import org.nineml.coffeegrinder.parser.ParserType;
-import org.nineml.coffeegrinder.tokens.Token;
-import org.nineml.coffeegrinder.trees.PriorityTreeSelector;
+import org.nineml.coffeegrinder.trees.Arborist;
+import org.nineml.coffeegrinder.trees.PriorityAxe;
 import org.nineml.coffeegrinder.trees.TreeBuilder;
-import org.nineml.coffeegrinder.trees.TreeSelector;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * An InvisibleXmlDocument represents a document created with an {@link InvisibleXmlParser}.
@@ -30,13 +25,13 @@ public class InvisibleXmlDocument {
     protected final boolean prefixOk;
     protected final String parserVersion;
     protected final ParserOptions options;
+    protected Arborist walker = null;
 
     protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options) {
         this.result = result;
         this.prefixOk = false;
         this.options = options;
         this.parserVersion = parserVersion;
-        result.setTreeSelector(new PriorityTreeSelector());
     }
 
     protected InvisibleXmlDocument(GearleyResult result, String parserVersion, ParserOptions options, boolean prefixOk) {
@@ -44,7 +39,14 @@ public class InvisibleXmlDocument {
         this.prefixOk = prefixOk;
         this.options = options;
         this.parserVersion = parserVersion;
-        result.setTreeSelector(new PriorityTreeSelector());
+    }
+
+    /**
+     * Get the parser version.
+     * @return the parser version
+     */
+    public String getParserVersion() {
+        return parserVersion;
     }
 
     /**
@@ -154,8 +156,18 @@ public class InvisibleXmlDocument {
     }
 
     /**
+     * Returns an adapter for SAX ContentHandlers.
+     * @param handler the content handler
+     * @return an adapting tree builder
+     */
+    public TreeBuilder getAdapter(ContentHandler handler) {
+        return new ContentHandlerAdapter(parserVersion, options, handler);
+    }
+
+    /**
      * Return an XML representation of the current parse.
      * @return the XML.
+     * @throws org.nineml.coffeefilter.exceptions.IxmlException if the parse failed
      */
     public String getTree() {
         StringTreeBuilder handler = new StringTreeBuilder(options);
@@ -177,7 +189,7 @@ public class InvisibleXmlDocument {
      * @param handler the content handler.
      */
     public void getTree(ContentHandler handler) {
-        XmlTreeBuilder builder = new XmlTreeBuilder(parserVersion, getOptions(), handler);
+        ContentHandlerAdapter builder = new ContentHandlerAdapter(parserVersion, getOptions(), handler);
         getTree(builder);
     }
 
@@ -188,7 +200,7 @@ public class InvisibleXmlDocument {
      * @param options the options.
      */
     public void getTree(ContentHandler handler, ParserOptions options) {
-        XmlTreeBuilder treeBuilder = new XmlTreeBuilder(parserVersion, options, handler);
+        ContentHandlerAdapter treeBuilder = new ContentHandlerAdapter(parserVersion, options, handler);
         getTree(treeBuilder);
     }
 
@@ -198,10 +210,12 @@ public class InvisibleXmlDocument {
      * @param builder the tree builder.
      */
     public void getTree(TreeBuilder builder) {
-        result.getTree(builder);
-    }
-
-    public void setTreeSelector(TreeSelector selector) {
-        result.setTreeSelector(selector);
+        if (!succeeded()) {
+            throw IxmlException.parseFailed("No trees available for a failed parse");
+        }
+        if (walker == null) {
+            walker = getResult().getArborist(new PriorityAxe());
+        }
+        walker.getTree(builder);
     }
 }

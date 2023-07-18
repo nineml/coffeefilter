@@ -69,6 +69,9 @@ public class IxmlException extends RuntimeException {
     public static IxmlException parseFailed(Exception ex) {
         return getException("P005", new String[] { ex.getMessage() }, ex);
     }
+    public static IxmlException parseFailed(String message) {
+        return getException("P005", new String[] { message });
+    }
     public static IxmlException repeatedAttribute(String name) { return getException("D02", name); }
     public static IxmlException invalidCharacterClass(String name) { return getException("S10", name); }
     public static IxmlException invalidXmlName(String name) { return getException("D03", name); }

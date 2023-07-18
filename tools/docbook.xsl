@@ -15,6 +15,8 @@
 
 <xsl:import href="../website/docbook.xsl"/>
 
+<xsl:variable name="classlist" select="doc('../build/classlist.xml')/*"/>
+
 <!-- ============================================================ -->
 
 <xsl:template match="db:productname" mode="m:titlepage"
@@ -39,6 +41,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="css/nineml.css"/>
   <link rel="stylesheet" href="css/coffeefilter.css"/>
+</xsl:template>
+
+<xsl:template match="db:classname" mode="m:docbook">
+  <xsl:variable name="fq" select="string(.)"/>
+  <xsl:variable name="parts" select="tokenize(., '\.')"/>
+  <xsl:variable name="name" select="$parts[last()]"/>
+
+  <xsl:variable name="class"
+                select="if ($classlist/class[@fq=$fq])
+                        then $classlist/class[@fq=$fq]
+                        else $classlist/class[@name=$name]"/>
+
+  <xsl:choose>
+    <xsl:when test="count($class) = 1">
+      <xsl:variable name="link" select="'/apidoc/'||$class/@path"/>
+      <a href="{$link}">
+        <xsl:call-template name="t:inline">
+          <xsl:with-param name="namemap" select="'code'"/>
+          <xsl:with-param name="content">
+            <xsl:sequence select="$name"/>
+          </xsl:with-param>
+        </xsl:call-template>
+      </a>
+    </xsl:when>
+    <xsl:when test="count($class) gt 1">
+      <xsl:message select="'Ambiguous:', $fq"/>
+      <xsl:next-match/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:next-match/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:stylesheet>

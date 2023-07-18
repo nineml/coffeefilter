@@ -54,13 +54,6 @@ public class ErrorTest {
         } catch (IxmlException ex) {
             Assert.assertEquals("D03", ex.getCode());
         }
-
-        try {
-            doc.getTree();
-            fail();
-        } catch (IxmlException ex) {
-            Assert.assertEquals("D03", ex.getCode());
-        }
     }
 
     @Test
