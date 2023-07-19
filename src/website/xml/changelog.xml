@@ -9,19 +9,27 @@
 
 <revhistory>
 <revision>
-<revnumber>3.0.0f</revnumber>
-<date>2023-07-18</date>
+<revnumber>3.0.0g</revnumber>
+<date>2023-07-19</date>
 <revdescription>
 <para>This is a beta release for version 3.0.0. There are a lot of
 changes in this release and many of them impact the public APIs. The JavaDoc
 has not yet been updated.</para>
+<para>Version 3.0.0g depends on CoffeeGrinder 3.0.0g.
+</para>
+</revdescription>
+</revision>
+
+<revision>
+<revnumber>3.0.0f</revnumber>
+<date>2023-07-18</date>
+<revdescription>
 <para>Version 3.0.0f depends on CoffeeGrinder 3.0.0f. There are also some API changes
 in <classname>InvisibleXmlDocument</classname> and <classname>XmlTreeBuilder</classname> has
 been renamed <classname>ContentHandlerAdapter</classname>.
 </para>
 </revdescription>
 </revision>
-
 <revision>
 <revnumber>3.0.0e</revnumber>
 <date>2023-07-12</date>
