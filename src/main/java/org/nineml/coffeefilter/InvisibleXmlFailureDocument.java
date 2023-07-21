@@ -16,6 +16,12 @@ import org.xml.sax.SAXException;
 import java.io.PrintStream;
 import java.util.*;
 
+/**
+ * A failure document represents the results of a failed parse.
+ *
+ * This is a subclass of the {@link InvisibleXmlDocument} that generates the
+ * result document for a failed parse.
+ */
 public class InvisibleXmlFailureDocument extends InvisibleXmlDocument {
     protected InvisibleXmlFailureDocument(GearleyResult result, String parserVersion, ParserOptions options) {
         super(result, parserVersion, options);
