@@ -1,6 +1,7 @@
 package org.nineml.coffeefilter;
 
 import org.nineml.coffeefilter.exceptions.IxmlException;
+import org.nineml.coffeefilter.model.IPragma;
 import org.nineml.coffeefilter.model.Ixml;
 import org.nineml.coffeefilter.model.IxmlContentHandler;
 import org.nineml.coffeefilter.util.GrammarSniffer;
@@ -19,26 +20,43 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * A static class for constructing instances of Invisible XML grammars.
  */
 public class InvisibleXml {
+    /** The category name used for InvisibleXml log messages. */
     public static final String logcategory = "InvisibleXml";
 
+    /** The internal name for the xmlns parser attribute. */
     public static final String XMLNS_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/xmlns";
+    /** The internal name for the name parser attribute. */
     public static final String NAME_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/name";
+    /** The internal name for the mark parser attribute. */
     public static final String MARK_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/mark";
+    /** The internal name for the tmark parser attribute. */
     public static final String TMARK_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/tmark";
+    /** The internal name for the insertion parser attribute. */
     public static final String INSERTION_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/insertion";
-    public static final String TOKEN_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/token";
+    /** The internal name for the discard parser attribute. */
     public static final String DISCARD_ATTRIBUTE = "https://coffeefilter.nineml.org/attr/discard";
 
+    /** The namespace prefix for the Invisilble XML namespace. */
     public static final String ixml_prefix = "ixml";
+    /** The Invisible XML namespace URI. */
     public static final String ixml_ns = "http://invisiblexml.org/NS";
+     /** The namespace prefix for the NineML namespace. */
     public static final String nineml_prefix = "n";
+     /** THe NineML namespace URI. */
     public static final String nineml_ns = "https://nineml.org/ns/";
+
+    /** The iXML "ambiguous" state .*/
+    public static final String AMBIGUOUS = "ambiguous";
+    /** The iXML "version-mismatch" state. */
+    public static final String VERSION_MISMATCH = "version-mismatch";
 
     private static final String ixml_ixml = "/org/nineml/coffeefilter/ixml2.xml";
     private static final String pragmas_ixml = "/org/nineml/coffeefilter/pragmas2.xml";
@@ -48,7 +66,7 @@ public class InvisibleXml {
     private final ParserOptions options;
 
     /**
-     * Creates a new InvisibleXml object from which parsers can be constructed.
+     * Creates a new InvisibleXml object (with default options) from which parsers can be constructed.
      * <p>Attempts to load the Invisible XML parser for Invisible XML from
      * resources. This constructor uses default options.</p>
      * @throws IxmlException if the Invisible XML parser for Invisible XML cannot be loaded
@@ -58,7 +76,7 @@ public class InvisibleXml {
     }
 
     /**
-     * Creates a new InvisibleXml object from which parsers can be constructed.
+     * Creates a new InvisibleXml object (with custom options) from which parsers can be constructed.
      * <p>Attempts to load the Invisible XML parser for Invisible XML from
      * resources.</p>
      * @param options the parser options
@@ -84,6 +102,31 @@ public class InvisibleXml {
         } catch (IOException ex) {
             throw IxmlException.failedToLoadIxmlGrammar(ex);
         }
+    }
+
+    /**
+     * The known pragma names.
+     * @return the list of pragma names known to the processor
+     */
+    public static List<String> knownPragmas() {
+        ArrayList<String> list = new ArrayList<>();
+        for (IPragma.PragmaType ptype : IPragma.pragmaTypeNames.keySet()) {
+            if (ptype != IPragma.PragmaType.UNDEFINED) {
+                list.add(IPragma.pragmaTypeNames.get(ptype));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * The known states.
+     * @return the list of states known to the processor.
+     */
+    public static List<String> knownStates() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add(AMBIGUOUS);
+        list.add(VERSION_MISMATCH);
+        return list;
     }
 
     /**

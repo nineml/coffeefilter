@@ -192,10 +192,10 @@ public class ContentHandlerAdapter implements TreeBuilder {
                     && !"1.0-nineml".equals(grammarVersion)
                     && !"1.1-nineml".equals(grammarVersion);
 
-            markAmbiguous = ambiguous && !options.isSuppressedState("ambiguous")
+            markAmbiguous = ambiguous && !options.isSuppressedState(InvisibleXml.AMBIGUOUS)
                     && (options.getStrictAmbiguity() || madeAmbiguousChoice);
 
-            badVersion = badVersion && !options.isSuppressedState("version-mismatch");
+            badVersion = badVersion && !options.isSuppressedState(InvisibleXml.VERSION_MISMATCH);
 
             if (markAmbiguous || badVersion) {
                 handler.startPrefixMapping(InvisibleXml.ixml_prefix, InvisibleXml.ixml_ns);

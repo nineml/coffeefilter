@@ -1,19 +1,23 @@
 package org.nineml.coffeefilter.model;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class IPragma extends XNonterminal {
-    protected enum PragmaType { UNDEFINED, DISCARD_EMPTY, METADATA, PRIORITY, REGEX, RENAME, TOKEN, XMLNS, CSV_HEADING };
-    protected static final HashMap<PragmaType, String> pragmaTypeNames = new HashMap<>();
+    public enum PragmaType { UNDEFINED, DISCARD_EMPTY, METADATA, PRIORITY, REGEX, RENAME, XMLNS, CSV_HEADING };
+    public static final Map<PragmaType, String> pragmaTypeNames;
     static {
-        pragmaTypeNames.put(PragmaType.UNDEFINED, "undefined");
-        pragmaTypeNames.put(PragmaType.DISCARD_EMPTY, "discard empty");
-        pragmaTypeNames.put(PragmaType.METADATA, "metadata");
-        pragmaTypeNames.put(PragmaType.PRIORITY, "priority");
-        pragmaTypeNames.put(PragmaType.REGEX, "regex");
-        pragmaTypeNames.put(PragmaType.RENAME, "rename");
-        pragmaTypeNames.put(PragmaType.XMLNS, "xmlns");
-        //pragmaTypeNames.put(PragmaType.CSV_HEADING, "csv heading");
+        HashMap<PragmaType, String> names = new HashMap<>();
+        names.put(PragmaType.UNDEFINED, "undefined");
+        names.put(PragmaType.DISCARD_EMPTY, "discard empty");
+        names.put(PragmaType.METADATA, "metadata");
+        names.put(PragmaType.PRIORITY, "priority");
+        names.put(PragmaType.REGEX, "regex");
+        names.put(PragmaType.RENAME, "rename");
+        names.put(PragmaType.XMLNS, "xmlns");
+        //names.put(PragmaType.CSV_HEADING, "csv heading");
+        pragmaTypeNames = Collections.unmodifiableMap(names);
     }
 
     protected String pragmaData = null;
