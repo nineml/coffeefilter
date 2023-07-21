@@ -9,17 +9,27 @@
 
 <revhistory>
 <revision>
-<revnumber>3.0.0g</revnumber>
-<date>2023-07-19</date>
+<revnumber>3.0.0h</revnumber>
+<date>2023-07-21</date>
 <revdescription>
 <para>This is a beta release for version 3.0.0. There are a lot of
-changes in this release and many of them impact the public APIs. The JavaDoc
-has not yet been updated.</para>
-<para>Version 3.0.0g depends on CoffeeGrinder 3.0.0g.
+changes in this release and many of them impact the public APIs. The
+JavaDoc has not yet been updated.</para>
+<para>Added a couple of methods to get the list of pragmas and
+states known by the processor. Fixed a few obvious JavaDoc
+shortcomings.
 </para>
 </revdescription>
 </revision>
 
+<revision>
+<revnumber>3.0.0g</revnumber>
+<date>2023-07-19</date>
+<revdescription>
+<para>Version 3.0.0g depends on CoffeeGrinder 3.0.0g.
+</para>
+</revdescription>
+</revision>
 <revision>
 <revnumber>3.0.0f</revnumber>
 <date>2023-07-18</date>
