@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":9,"i12":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -156,63 +156,94 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DISCARD_ATTRIBUTE">DISCARD_ATTRIBUTE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#AMBIGUOUS">AMBIGUOUS</a></span></code></th>
+<td class="colLast">
+<div class="block">The iXML "ambiguous" state .</div>
+</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DISCARD_ATTRIBUTE">DISCARD_ATTRIBUTE</a></span></code></th>
+<td class="colLast">
+<div class="block">The internal name for the discard parser attribute.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#INSERTION_ATTRIBUTE">INSERTION_ATTRIBUTE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The internal name for the insertion parser attribute.</div>
+</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ixml_ns">ixml_ns</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The Invisible XML namespace URI.</div>
+</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ixml_prefix">ixml_prefix</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The namespace prefix for the Invisilble XML namespace.</div>
+</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#logcategory">logcategory</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The category name used for InvisibleXml log messages.</div>
+</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#MARK_ATTRIBUTE">MARK_ATTRIBUTE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The internal name for the mark parser attribute.</div>
+</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#NAME_ATTRIBUTE">NAME_ATTRIBUTE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The internal name for the name parser attribute.</div>
+</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nineml_ns">nineml_ns</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">THe NineML namespace URI.</div>
+</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#nineml_prefix">nineml_prefix</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TMARK_ATTRIBUTE">TMARK_ATTRIBUTE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The namespace prefix for the NineML namespace.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TOKEN_ATTRIBUTE">TOKEN_ATTRIBUTE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TMARK_ATTRIBUTE">TMARK_ATTRIBUTE</a></span></code></th>
+<td class="colLast">
+<div class="block">The internal name for the tmark parser attribute.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#VERSION_MISMATCH">VERSION_MISMATCH</a></span></code></th>
+<td class="colLast">
+<div class="block">The iXML "version-mismatch" state.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#XMLNS_ATTRIBUTE">XMLNS_ATTRIBUTE</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The internal name for the xmlns parser attribute.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -234,13 +265,13 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">InvisibleXml</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Creates a new InvisibleXml object from which parsers can be constructed.</div>
+<div class="block">Creates a new InvisibleXml object (with default options) from which parsers can be constructed.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.nineml.coffeefilter.ParserOptions)">InvisibleXml</a></span>&#8203;(<a href="ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</code></th>
 <td class="colLast">
-<div class="block">Creates a new InvisibleXml object from which parsers can be constructed.</div>
+<div class="block">Creates a new InvisibleXml object (with custom options) from which parsers can be constructed.</div>
 </td>
 </tr>
 </table>
@@ -255,7 +286,7 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -345,6 +376,20 @@ extends java.lang.Object</pre>
 <div class="block">Construct a parser from an XML representation (vxml) of an ixml grammar</div>
 </td>
 </tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>static java.util.List&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#knownPragmas()">knownPragmas</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The known pragma names.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>static java.util.List&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#knownStates()">knownStates</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The known states.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -376,6 +421,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>logcategory</h4>
 <pre>public static final&nbsp;java.lang.String logcategory</pre>
+<div class="block">The category name used for InvisibleXml log messages.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.logcategory">Constant Field Values</a></dd>
@@ -389,6 +435,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>XMLNS_ATTRIBUTE</h4>
 <pre>public static final&nbsp;java.lang.String XMLNS_ATTRIBUTE</pre>
+<div class="block">The internal name for the xmlns parser attribute.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.XMLNS_ATTRIBUTE">Constant Field Values</a></dd>
@@ -402,6 +449,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>NAME_ATTRIBUTE</h4>
 <pre>public static final&nbsp;java.lang.String NAME_ATTRIBUTE</pre>
+<div class="block">The internal name for the name parser attribute.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.NAME_ATTRIBUTE">Constant Field Values</a></dd>
@@ -415,6 +463,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>MARK_ATTRIBUTE</h4>
 <pre>public static final&nbsp;java.lang.String MARK_ATTRIBUTE</pre>
+<div class="block">The internal name for the mark parser attribute.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.MARK_ATTRIBUTE">Constant Field Values</a></dd>
@@ -428,6 +477,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>TMARK_ATTRIBUTE</h4>
 <pre>public static final&nbsp;java.lang.String TMARK_ATTRIBUTE</pre>
+<div class="block">The internal name for the tmark parser attribute.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.TMARK_ATTRIBUTE">Constant Field Values</a></dd>
@@ -441,22 +491,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>INSERTION_ATTRIBUTE</h4>
 <pre>public static final&nbsp;java.lang.String INSERTION_ATTRIBUTE</pre>
+<div class="block">The internal name for the insertion parser attribute.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.INSERTION_ATTRIBUTE">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a id="TOKEN_ATTRIBUTE">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>TOKEN_ATTRIBUTE</h4>
-<pre>public static final&nbsp;java.lang.String TOKEN_ATTRIBUTE</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.TOKEN_ATTRIBUTE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -467,6 +505,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>DISCARD_ATTRIBUTE</h4>
 <pre>public static final&nbsp;java.lang.String DISCARD_ATTRIBUTE</pre>
+<div class="block">The internal name for the discard parser attribute.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.DISCARD_ATTRIBUTE">Constant Field Values</a></dd>
@@ -480,6 +519,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>ixml_prefix</h4>
 <pre>public static final&nbsp;java.lang.String ixml_prefix</pre>
+<div class="block">The namespace prefix for the Invisilble XML namespace.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.ixml_prefix">Constant Field Values</a></dd>
@@ -493,6 +533,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>ixml_ns</h4>
 <pre>public static final&nbsp;java.lang.String ixml_ns</pre>
+<div class="block">The Invisible XML namespace URI.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.ixml_ns">Constant Field Values</a></dd>
@@ -506,6 +547,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>nineml_prefix</h4>
 <pre>public static final&nbsp;java.lang.String nineml_prefix</pre>
+<div class="block">The namespace prefix for the NineML namespace.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.nineml_prefix">Constant Field Values</a></dd>
@@ -515,13 +557,42 @@ extends java.lang.Object</pre>
 <a id="nineml_ns">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>nineml_ns</h4>
 <pre>public static final&nbsp;java.lang.String nineml_ns</pre>
+<div class="block">THe NineML namespace URI.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.nineml_ns">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="AMBIGUOUS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>AMBIGUOUS</h4>
+<pre>public static final&nbsp;java.lang.String AMBIGUOUS</pre>
+<div class="block">The iXML "ambiguous" state .</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.AMBIGUOUS">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="VERSION_MISMATCH">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>VERSION_MISMATCH</h4>
+<pre>public static final&nbsp;java.lang.String VERSION_MISMATCH</pre>
+<div class="block">The iXML "version-mismatch" state.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#org.nineml.coffeefilter.InvisibleXml.VERSION_MISMATCH">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -542,7 +613,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>InvisibleXml</h4>
 <pre>public&nbsp;InvisibleXml()</pre>
-<div class="block">Creates a new InvisibleXml object from which parsers can be constructed.
+<div class="block">Creates a new InvisibleXml object (with default options) from which parsers can be constructed.
  <p>Attempts to load the Invisible XML parser for Invisible XML from
  resources. This constructor uses default options.</p></div>
 <dl>
@@ -558,7 +629,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>InvisibleXml</h4>
 <pre>public&nbsp;InvisibleXml&#8203;(<a href="ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a>&nbsp;options)</pre>
-<div class="block">Creates a new InvisibleXml object from which parsers can be constructed.
+<div class="block">Creates a new InvisibleXml object (with custom options) from which parsers can be constructed.
  <p>Attempts to load the Invisible XML parser for Invisible XML from
  resources.</p></div>
 <dl>
@@ -579,6 +650,34 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="knownPragmas()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>knownPragmas</h4>
+<pre class="methodSignature">public static&nbsp;java.util.List&lt;java.lang.String&gt;&nbsp;knownPragmas()</pre>
+<div class="block">The known pragma names.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the list of pragma names known to the processor</dd>
+</dl>
+</li>
+</ul>
+<a id="knownStates()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>knownStates</h4>
+<pre class="methodSignature">public static&nbsp;java.util.List&lt;java.lang.String&gt;&nbsp;knownStates()</pre>
+<div class="block">The known states.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the list of states known to the processor.</dd>
+</dl>
+</li>
+</ul>
 <a id="getOptions()">
 <!--   -->
 </a>
