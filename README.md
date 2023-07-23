@@ -1,12 +1,7 @@
-# CoffeeFilter, an Invisible XML parser in Java
+# CoffeeFilter archive
 
-This package provides an implementation of an [Invisible XML](https://invisiblexml.org/) parser.
+This repository exists to host the release packages and the website pages.
 
-It will read grammars in Invisible XML, parse inputs against them, and return the results.
+For the most recent sources, please see https://github.com/nineml/nineml/
 
-This work depends heavily on the [CoffeGrinder](https://github.com/nineml/coffeegrinder) parser.
-
-This project is just the Invisible XML API. It doesn’t *do* anything
-out of the box. A complete Invisible XML processor built on top of this library
-is available in the [CoffeePot](https://github.com/nineml/coffeepot) repository.
-
+Apologies for any inconvenience.
