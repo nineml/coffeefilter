@@ -1,2 +1,0 @@
-set "ignored" because it doesn't really exist.
-set "unicode-classes" because Java 11’s version of Unicode isn’t recent enough.

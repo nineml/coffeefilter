@@ -1,3 +1,0 @@
-ixml: word.
--letgit: ["a" - "z" {AAA}].
-word: letgit+.

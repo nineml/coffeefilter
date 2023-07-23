@@ -1,2 +1,0 @@
-S = BOM?, "bom", " ", "test", -#a* .
-BOM = -#FEFF .
