@@ -1,0 +1,343 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" class="no-js"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script><title>Invisible XML</title><link href="/css/pygments.css" rel="stylesheet"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="https://purl.org/dc/elements/1.1/" rel="schema.dc"/><meta name="dc.modified" content="2023-07-23T16:36:02Z"/><meta name="dc.created" content="2022-02-21"/><meta name="generator" content="DocBook xslTNG version 2.1.6 / cf0b935 / SAXON EE 12.3"/><link href="/css/docbook-toc.css" rel="stylesheet"/><link href="/css/docbook.css" rel="stylesheet" media="screen"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><script src="https://kit.fontawesome.com/498b6706f0.js" type="text/javascript" crossorigin="anonymous"></script><link href="icon/CoffeeFilter.png" rel="shortcut icon"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link href="css/nineml.css" rel="stylesheet"/><link href="css/coffeefilter.css" rel="stylesheet"/><script src="/js/persistent-toc.js" defer="defer"></script><script src="/js/copy-verbatim.js" defer="defer"></script><script src="/js/chunk-nav.js" defer="defer"></script></head><body class="home"><nav class="top"><span class="nav"><a title="" href=""><i class="fas fa-home"></i></a> <span class="inactive"><i class="fas fa-arrow-left"></i></span> <span class="inactive"><i class="fas fa-arrow-up"></i></span> <span class="inactive"><i class="fas fa-arrow-right"></i></span></span><span class="title"><i class="title">Invisible XML</i></span></nav><main><article class="article component"><header><h1>Invisible XML</h1><div class="author"><h3><span class="first-last personname"><span class="firstname">Norm</span> <span class="surname">Tovey-Walsh</span></span></h3></div><p class="pubdate"><time class="pubdate" datetime="2022-02-21">21 Feb 2022</time></p><div class="copyright">Copyright © <span class="copyright-years"><span class="year">2022</span></span> <span class="holder">Norm Tovey-Walsh</span></div><div class="abstract"><p>This article is a draft that I intend to submit to
+XML.com for publication. Please don’t share this URI at this time.
+Thanks.</p></div></header><p>Invisible XML is a language for describing the implicit
+structure of data, and a set of technologies for making that structure
+explicit as XML markup. It allows you to write a declarative
+description of the format of some text and then leverage that format
+to represent the text as structured information. That sounds a bit
+abstract, so let’s start with an example:</p><p>Suppose you have a document, <code class="filename">contacts.txt</code>,
+where you keep the names, email addresses, and other details of
+friends and colleagues. It might look something like this:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>John Doe</code></span></span>
+<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>john@example.com</code></span></span>
+<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>555-1234</code></span></span>
+<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code> </code></span></span>
+<span class="line" db-line="5"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>Mary Smith</code></span></span>
+<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>m.smith@estaff.example.com</code></span></span>
+<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>+1-222-555-2344</code></span></span>
+<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code> </code></span></span>
+<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>Jane Doe</code></span></span>
+<span class="line" db-line="10"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>(512) 555-9999</code></span></span>
+<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code> </code></span></span>
+<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>Nancy Jones</code></span></span>
+<span class="line" db-line="13"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>nancy@example.org</code></span></span>
+</pre></div><p>This is obviously a toy example, but it will work to illustrate
+a few points. First of all, those of us who are used to working with
+marked up data (such as XML or JSON) are likely to think of this as
+“unstructured” data. But that’s not really true. There is structure
+there, it’s just indicated with whitespace and other informal
+conventions, rather than with angle brackets or curly braces.</p><p>The real world is full of data marked up using different
+conventions. We use files like this every day: email headers, ical and vcard
+files, CSS, Java property files, Windows “ini” configuration files,
+BibTeX, Markdown, etc. At finer levels of granularity, we find even
+more examples: ISO 8601 dates and times, XPath expressions, CSS
+selectors, and so on. And then we have our own ad hoc formats in
+countless text files: diaries, todo lists, calendars, event planners,
+etc. There are probably a dozen or so files like this within easy
+reach wherever you’re reading this.
+</p><p>This is fine when the important consumers are human readers
+looking at the text. But what happens when we want to use that data in
+some other system? What happens when we want to extract the
+information out of these documents structured by conventions of
+spacing and punctuation?</p><p>A common approach would be to write a script to read the format:</p><div class="pre-wrap highlight" db-startinglinenumber="1" db-numberoflines="19"><pre class="language-python long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln"> 1 <span class="nsep">|</span></span><span class="ld"><code><span class="ch">#!/usr/bin/env python3</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code> </code></span></span>
+<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code><span class="n">contacts</span> <span class="o">=</span> <span class="p">[]</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'contacts.txt'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span></code></span></span>
+<span class="line" db-line="5"><span class="ln"> 5 <span class="nsep">|</span></span><span class="ld"><code>    <span class="n">contact_id</span> <span class="o">=</span> <span class="mi">0</span></code></span></span>
+<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>    <span class="n">expect_name</span> <span class="o">=</span> <span class="kc">True</span></code></span></span>
+<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">infile</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span></code></span></span>
+<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></code></span></span>
+<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        <span class="nb">print</span><span class="p">(</span><span class="n">contact_id</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span></code></span></span>
+<span class="line" db-line="10"><span class="ln">10 <span class="nsep">|</span></span><span class="ld"><code>        <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span></code></span></span>
+<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>            <span class="n">contact_id</span> <span class="o">+=</span> <span class="mi">1</span></code></span></span>
+<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>            <span class="n">expect_name</span> <span class="o">=</span> <span class="kc">True</span></code></span></span>
+<span class="line" db-line="13"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        <span class="k">elif</span> <span class="n">expect_name</span><span class="p">:</span></code></span></span>
+<span class="line" db-line="14"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>            <span class="n">contacts</span><span class="o">.</span><span class="n">append</span><span class="p">({</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">line</span> <span class="p">})</span></code></span></span>
+<span class="line" db-line="15"><span class="ln">15 <span class="nsep">|</span></span><span class="ld"><code>            <span class="n">expect_name</span> <span class="o">=</span> <span class="kc">False</span></code></span></span>
+<span class="line" db-line="16"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        <span class="k">elif</span> <span class="s2">"@"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span></code></span></span>
+<span class="line" db-line="17"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>            <span class="n">contacts</span><span class="p">[</span><span class="n">contact_id</span><span class="p">][</span><span class="s2">"email"</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span></code></span></span>
+<span class="line" db-line="18"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        <span class="k">else</span><span class="p">:</span></code></span></span>
+<span class="line" db-line="19"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>            <span class="n">contacts</span><span class="p">[</span><span class="n">contact_id</span><span class="p">][</span><span class="s2">"phone"</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span></code></span></span>
+</pre></div><p>That’s horrible, and not just because it’s a bit of sloppy code
+I banged out in a few short minutes. (Way more of the world’s
+infrastructure relies on code someone put together for a prototype or
+a demo than you’d care to think about.)
+The real problem here is that this tells you nothing about the
+file format beyond what you can glean from the source code. These
+kinds of procedural or imperative definitions of a file format, even
+if they’re backed up by some sort of prose description (that you hope
+is up-to-date with the latest version of the code, even though you
+know it isn’t), are difficult to understand, difficult to
+test, and difficult to reason about.</p><p>Can I put an address in this file? Is it ok if I have two blank
+lines? If I have a phone number but not an email address, can I just put
+in a blank line for the email address? For anything bigger than a toy
+example, these are not easy questions to answer.</p><p>You would be much better off if you had a declarative
+description of the format. Declarative descriptions are more accessible,
+easier to reuse, and generally require less coding.</p><p>So why, you might ask, don’t we use them all the time?
+</p><p>We do. Your XML processor, your JavaScript engine, your JSON
+tooling, the compilers that built your web browser and your operating
+system, are all driven by parsers that take declarative descriptions
+of a system plus some input, construct an abstract representation of
+that system, and operate on it. Under the hood, our favourite software
+is making constant use of declarative descriptions.
+</p><p>Okay, but why don’t <em>we</em> use them all the
+time?</p><p>There are a couple of reasons. Historically, it was expensive. I
+mean computationally expensive. But
+<a href="https://en.wikipedia.org/wiki/Moore%27s_law" class="link">Moore’s Law</a>
+has pretty much sorted that out. The other reason, the real reason, is
+because it’s <em>hard work</em>. Off-the-shelf tools are
+mostly designed to build incredibly efficient parsers that can analyze
+huge amounts of data, unambiguously and efficiently, with only a
+character or two of lookahead. Writing format descriptions for those
+tools is a specialized skill that few of us have.</p><p>But it doesn’t actually have to be hard. Or at least, nowhere
+near <em>that</em> hard. What makes it a specialized skill, and what makes it
+hard, is fitting your declarative description into those very tight
+requirements: no ambiguity and no (or only a small, fixed amount of)
+lookahead.</p><p>Luckily, that’s not the only way to approach the problem.
+Techniques for parsing that are tolerant of ambiguity and prepared to
+engage in (more-or-less) arbitrary lookahead have been around for
+decades. They are not as fast, or as memory efficient, as traditional
+parsers, but they can be competitive in many cases. And we have
+Moore’s Law on our side! Those problems are no longer significant in
+many environments.</p><p>Invisible XML provides a specific syntax for declarative
+description that’s easy to use and easy to understand. Combined with
+a parser that understands Invisible XML, you can apply those descriptions
+to your data and get structured data out. No (imperative) coding required.</p><p>Before we dig in deeper, let’s establish a little bit of
+vocabulary. An Invisible XML document is a
+<span class="glossterm">grammar</span>. As a term of art in computer programming,
+a <span class="firstterm">grammar</span> is essentially a
+set of rules. Each rule describes a <span class="glossterm">symbol</span> in
+terms of some other symbols.</p><p>If you’ve ever used regular expressions, you’re familiar with
+these ideas, even if you didn’t use this exact vocabulary. If you’re
+matching data in Python or XPath, or any language with regular
+expressions, and you say that an integer is a string that matches
+<code>[-+]?[0-9]+</code>, you’ve created a grammar rule:
+<code>integer: [-+]?[0-9]+</code>.</p><p>Invisible XML collects these rules together.
+Each rule has a “left hand side” and a “right hand side”. The left hand
+side is a single symbol, the one being defined, and the right hand side
+is a list of one or more symbols that define it.
+A <span class="firstterm">symbol</span> is either the name of something,
+in which case there must be a further rule that defines it, one that has it as the
+rule’s left hand side; or it’s something that literally matches
+characters in your input.
+With these rules, the processor will work out whether it’s possible
+to match the whole input string that you gave it by applying these
+rules in some order.</p><p>Let’s take a very small example. Suppose we want to match
+sentences of three letter words like “see cat sat”. We could write
+an Invisible XML grammar like this:</p><div class="pre-wrap" db-startinglinenumber="1" db-numberoflines="5"><pre class="language-none long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">1 <span class="nsep">|</span></span><span class="ld"><code>sentence  : word+" " .</code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>word      : consonant, vowel, consonant;</code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>            consonant, vowel, vowel.</code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>vowel     : ["aeiouy"] .</code></span></span>
+<span class="line" db-line="5"><span class="ln">5 <span class="nsep">|</span></span><span class="ld"><code>consonant : ["bcdfghjklmnpqrstvwxyz"] .</code></span></span>
+</pre></div><p>We’ll come back to the specific details about syntax and how to
+write an Invisible XML grammar in the next article, for now we’ll just
+do a little hand waving.</p><p>That grammar has four rules and you can read them like this:
+</p><ol class="orderedlist" type="1"><li><p>A <em>sentence</em> is one or more occurrences of
+<em>word</em> separated by a single space.</p></li><li><p>A <em>word</em> is a <em>consonant</em>,
+followed by a <em>vowel</em>, followed by a
+<em>consonant</em> <strong class="bold">or</strong> a
+<em>consonant</em> followed by two consecutive
+<em>vowel</em>s.</p></li><li><p>A <em>vowel</em> is literally “a”, “e”, “i”, “o”, “u”,
+or “y”.</p></li><li><p>A <em>consonant</em> is literally any one of the
+other lowercase, English language letters, and also “y”.</p></li></ol><p>Note that there’s nothing procedural here. There’s no attempt to
+say how you do anything with a word or any of its constituent parts.
+The grammar just declaratively describes the format. It’s easy to answer questions
+about this format. Are numbers allowed? Can words be more or less than
+three letters long? Is punctuation allowed? No, no, and no, respectively.
+And it’s easy to imagine writing tests to ensure that this grammar does
+match what you want.
+</p><p>Of course, there is software that’s going to process it. The
+first thing a processor, or parser, is going to do is determine whether the
+input you gave it matches the grammar (you’ll sometimes see this
+written as “checking if the input is a sentence in the grammar”).
+In order to do that, it has to know where to start, so you need to nominate
+one of the symbols as the “start symbol”. In Invisible XML, that’s the
+symbol in your first rule, so “sentence” in this case.
+</p><p>We can imagine a parser, given this grammar and the one word
+sentence “cat”, doing something like this:</p><ol class="orderedlist" type="1"><li><p>Does the input match <em>sentence</em>? I don’t know,
+what’s a sentence?
+</p></li><li><p>A sentence is one or more <em>word</em>s separated
+by spaces. Does the input match <em>word</em>? I don’t know,
+what’s a word?
+</p></li><li><p>A word is either:</p><ul class="itemizedlist"><li><p>A <em>consonant</em>, followed by <em>vowel</em>,
+followed by a <em>consonant</em>, or 
+</p></li><li><p>a <em>consonant</em>, followed by a <em>vowel</em>,
+followed by another <em>vowel</em>.
+</p></li></ul><p>Does the input match that? I don’t know, what’s a consonant?
+</p></li><li><p>A <em>consonant</em> is one of a set of letters. Ok. Does
+the first letter match one of those? Yes, “c” is one of those letters.
+Great. 
+</p></li><li><p>Does the rest of the input match the rest of the “right hand side”?
+The next thing is <em>vowel</em>. Does the rest of the input
+match that? I don’t know, what’s a vowel?
+</p></li><li><p>A <em>vowel</em> is one of a set of letters. Ok. Does
+the next letter match one of those? Yes, “a” is one of those letters.
+Great. 
+</p></li><li><p>And on it goes, matching symbols against rules until it runs out
+of symbols or runs out of input. In this case, it will run out of
+input after it matches the “t”.
+</p></li><li><p>There’s no input left. If we stop here, are we finished with the
+right hand side of the rule for the start symbol? Yes? Great. Yes,
+“cat” is a <em>sentence</em>.
+</p></li></ol><p>As you can see, the parser uses the rules to replace symbols
+with what those symbols can be in a kind of recursive process that
+“bottoms out” when it reaches something that has to match the input.
+Sometimes you’ll see the class of symbols that can be replaced by
+other symbols identified as “<span class="firstterm">nonterminals</span>” as
+distinct from the symbols that literally match against the input, the
+“<span class="firstterm">terminals</span>”.</p><p>What happens if it doesn’t match? What happens, for example, if
+we give this grammar the input “frog”? In that case, the parser will
+tell you it couldn’t match your grammar (“the input is not a sentence
+in the grammar”). Something like this:</p><p>Parse failed. At position 2, found unexpected “r”.
+Would have permitted: ["aeiouy"].</p><p>So your grammar also functions as a validator for your input!</p><p>On a successful parse, the other thing an Invisible XML parser has to do is tell
+you <em>how</em> it matched the input. This is the part
+that gives you back the structured information. For our word parser,
+it’s pretty simple and obvious:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;sentence&gt;</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;word&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;consonant&gt;</span>c<span class="nt">&lt;/consonant&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;vowel&gt;</span>a<span class="nt">&lt;/vowel&gt;</span></code></span></span>
+<span class="line" db-line="5"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;consonant&gt;</span>t<span class="nt">&lt;/consonant&gt;</span></code></span></span>
+<span class="line" db-line="6"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;/word&gt;</span></code></span></span>
+<span class="line" db-line="7"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/sentence&gt;</span></code></span></span>
+</pre></div><p>Broadly speaking, Invisible XML makes each nonterminal in your
+grammar into an XML element. In fact, it offers you a number of ways to
+control how the results are constructed, including which nonterminals
+should be output, which things should be elements and which should be
+attributes, and even which things to elide altogether. We’ll come back
+to those topics when we talk about writing grammars in the next article.</p><p>There are two other things to bear in mind. First, the grammar only
+validates against its rules. According to this grammar “xeq bei” is a
+perfectly fine sentence. Second, an input may be ambiguous with respect
+to a grammar. Consider the sentence “hey bee”. If you parse that with our
+sentence grammar, you’ll get:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;sentence</span> <span class="na">xmlns:ixml=</span><span class="s">"http://invisiblexml.org/NS"</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>          <span class="na">ixml:state=</span><span class="s">"ambiguous"</span><span class="nt">&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;word&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;consonant&gt;</span>h<span class="nt">&lt;/consonant&gt;</span></code></span></span>
+<span class="line" db-line="5"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;vowel&gt;</span>e<span class="nt">&lt;/vowel&gt;</span></code></span></span>
+<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;vowel&gt;</span>y<span class="nt">&lt;/vowel&gt;</span></code></span></span>
+<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;/word&gt;</span></code></span></span>
+<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;word&gt;</span></code></span></span>
+<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;consonant&gt;</span>b<span class="nt">&lt;/consonant&gt;</span></code></span></span>
+<span class="line" db-line="10"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;vowel&gt;</span>e<span class="nt">&lt;/vowel&gt;</span></code></span></span>
+<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;vowel&gt;</span>e<span class="nt">&lt;/vowel&gt;</span></code></span></span>
+<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;/word&gt;</span></code></span></span>
+<span class="line" db-line="13"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/sentence&gt;</span></code></span></span>
+</pre></div><p>Or maybe you’ll get:</p><div class="pre-wrap highlight"><pre class="language-xml programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;sentence</span> <span class="na">xmlns:ixml=</span><span class="s">"http://invisiblexml.org/NS"</span></code></span></span>
+<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>          <span class="na">ixml:state=</span><span class="s">"ambiguous"</span><span class="nt">&gt;</span></code></span></span>
+<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;word&gt;</span></code></span></span>
+<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;consonant&gt;</span>h<span class="nt">&lt;/consonant&gt;</span></code></span></span>
+<span class="line" db-line="5"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;vowel&gt;</span>e<span class="nt">&lt;/vowel&gt;</span></code></span></span>
+<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;consonant&gt;</span>y<span class="nt">&lt;/consonant&gt;</span></code></span></span>
+<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;/word&gt;</span></code></span></span>
+<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;word&gt;</span></code></span></span>
+<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;consonant&gt;</span>b<span class="nt">&lt;/consonant&gt;</span></code></span></span>
+<span class="line" db-line="10"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;vowel&gt;</span>e<span class="nt">&lt;/vowel&gt;</span></code></span></span>
+<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      <span class="nt">&lt;vowel&gt;</span>e<span class="nt">&lt;/vowel&gt;</span></code></span></span>
+<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   <span class="nt">&lt;/word&gt;</span></code></span></span>
+<span class="line" db-line="13"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code><span class="nt">&lt;/sentence&gt;</span></code></span></span>
+</pre></div><p>There are two different ways to parse the input because our
+grammar says that a “y” can be either a consonant or a vowel. The word
+“hey” therefore matches both the pattern “consonant-vowel-vowel” and the pattern
+“consonant-vowel-consonant”.
+That makes the results ambiguous. The Invisible XML processor is
+required to tell us that, and it’s required to return one of the valid
+parses. (Implementations may give you more control than that, but
+that’s all that’s required for conformance.)</p><p>You might now be asking yourself, what about the word “gym”? Would that
+be ambiguous too? It is, in some sense “ambiguous” because it’s either
+“consonant-vowel-consonant” or
+“consonant-consonant-consonant”.
+But it’s not ambiguous in <em>this grammar</em> because
+“consonant-consonant-consonant” isn’t a possible match.</p><p>Ambiguity is ok, and sometimes it’s necessary. The ambiguity in
+this grammar is an inherent property of the English language rule that
+“y” sometimes represents the sound of a vowel and sometimes it
+represents the sound of a consonant.</p><p>That said, the more ambiguity there is, the more possibilities
+the parser may have to consider when it’s looking for matches. That
+can make the process slower. We’ll look more at ambiguity when we
+start writing grammars in the next part.</p><p>Here, finally, is a grammar for the contacts format:</p><div class="pre-wrap" db-startinglinenumber="1" db-numberoflines="12"><pre class="language-none long numbered programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln"> 1 <span class="nsep">|</span></span><span class="ld"><code>contacts: (contact, NL*)+ .</code></span></span>
+<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>contact: name, NL, (email, NL)?, (phone, NL)? .</code></span></span>
+<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code> </code></span></span>
+<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>name: letter, ~[#a; "@"]* .</code></span></span>
+<span class="line" db-line="5"><span class="ln"> 5 <span class="nsep">|</span></span><span class="ld"><code>email: username, "@", domainname .</code></span></span>
+<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>phone: ["+0123456789()- "]+ .</code></span></span>
+<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code> </code></span></span>
+<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>-username: (letter; ["+-."])+ .</code></span></span>
+<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>-domainname: (letter; ["+-."])+ .</code></span></span>
+<span class="line" db-line="10"><span class="ln">10 <span class="nsep">|</span></span><span class="ld"><code> </code></span></span>
+<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>-letter: [L] .</code></span></span>
+<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>-NL: -#a ; -#d, -#a .</code></span></span>
+</pre></div><p>It can be read like this:</p><ol class="orderedlist" type="1"><li><p>A <em>contacts</em> file consists of
+one or more contact items followed by
+zero or more newlines.</p></li><li><p>A <em>contact</em> is a name followed by a newline,
+optionally followed by an email followed by a newline, optionally followed
+by a phone followed by a newline.
+</p></li><li><p>A <em>name</em> is a letter followed by any characters
+except newline or “@”.
+</p></li><li><p>An <em>email</em> is a username followed by “@”
+followed by a domainname.
+</p></li><li><p>A <em>phone</em> is one or more digits or the
+“+”, “(“, “)”, “-”, and space punctuation characters.
+</p></li><li><p>A <em>username</em> is one or more occurrences
+of letter or any of the characters “+”, “-”, and “.”.
+</p></li><li><p>A <em>domainname</em> is one or more occurrences
+of letter or any of the characters “+”, “-”, and “.”.
+</p></li><li><p>A <em>letter</em> is any character in the Unicode
+character class “L” (letters).
+</p></li><li><p>A <em>NL</em> is a newline or the sequence carriage return
+followed by newline.
+</p></li></ol><p>If you give that grammar and the contacts file to an Invisible
+XML processor, it will return:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>&lt;contacts&gt;</code></span></span>
+<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;contact&gt;</code></span></span>
+<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;name&gt;John Doe&lt;/name&gt;</code></span></span>
+<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;email&gt;john@example.com&lt;/email&gt;</code></span></span>
+<span class="line" db-line="5"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;phone&gt;555-1234&lt;/phone&gt;</code></span></span>
+<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;/contact&gt;</code></span></span>
+<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;contact&gt;</code></span></span>
+<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;name&gt;Mary Smith&lt;/name&gt;</code></span></span>
+<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;email&gt;m.smith@estaff.example.com&lt;/email&gt;</code></span></span>
+<span class="line" db-line="10"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;phone&gt;+1-222-555-2344&lt;/phone&gt;</code></span></span>
+<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;/contact&gt;</code></span></span>
+<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;contact&gt;</code></span></span>
+<span class="line" db-line="13"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;name&gt;Jane Doe&lt;/name&gt;</code></span></span>
+<span class="line" db-line="14"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;phone&gt;(512) 555-9999&lt;/phone&gt;</code></span></span>
+<span class="line" db-line="15"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;/contact&gt;</code></span></span>
+<span class="line" db-line="16"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;contact&gt;</code></span></span>
+<span class="line" db-line="17"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;name&gt;Nancy Jones&lt;/name&gt;</code></span></span>
+<span class="line" db-line="18"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      &lt;email&gt;nancy@example.org&lt;/email&gt;</code></span></span>
+<span class="line" db-line="19"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>   &lt;/contact&gt;</code></span></span>
+<span class="line" db-line="20"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>&lt;/contacts&gt;</code></span></span>
+</pre></div><p>Or the author of the processor might allow you to ask for the output in JSON
+instead:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>{</code></span></span>
+<span class="line" db-line="2"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>  "contacts": {</code></span></span>
+<span class="line" db-line="3"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>    "contact": [</code></span></span>
+<span class="line" db-line="4"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      {</code></span></span>
+<span class="line" db-line="5"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "name": "John Doe",</code></span></span>
+<span class="line" db-line="6"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "email": "john@example.com",</code></span></span>
+<span class="line" db-line="7"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "phone": "555-1234"</code></span></span>
+<span class="line" db-line="8"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      },</code></span></span>
+<span class="line" db-line="9"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      {</code></span></span>
+<span class="line" db-line="10"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "name": "Mary Smith",</code></span></span>
+<span class="line" db-line="11"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "email": "m.smith@estaff.example.com",</code></span></span>
+<span class="line" db-line="12"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "phone": "+1-222-555-2344"</code></span></span>
+<span class="line" db-line="13"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      },</code></span></span>
+<span class="line" db-line="14"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      {</code></span></span>
+<span class="line" db-line="15"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "name": "Jane Doe",</code></span></span>
+<span class="line" db-line="16"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "phone": "(512) 555-9999"</code></span></span>
+<span class="line" db-line="17"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      },</code></span></span>
+<span class="line" db-line="18"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      {</code></span></span>
+<span class="line" db-line="19"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "name": "Nancy Jones",</code></span></span>
+<span class="line" db-line="20"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>        "email": "nancy@example.org"</code></span></span>
+<span class="line" db-line="21"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>      }</code></span></span>
+<span class="line" db-line="22"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>    ]</code></span></span>
+<span class="line" db-line="23"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>  }</code></span></span>
+<span class="line" db-line="24"><span class="ln">   <span class="nsep">|</span></span><span class="ld"><code>}</code></span></span>
+</pre></div><p>Or maybe in CSV:</p><div class="pre-wrap"><pre class="language-none programlisting verbatim verblines"><span class="line" db-line="1"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>"name","email","phone"</code></span></span>
+<span class="line" db-line="2"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>"John Doe","john@example.com","555-1234"</code></span></span>
+<span class="line" db-line="3"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>"Mary Smith","m.smith@estaff.example.com","+1-222-555-2344"</code></span></span>
+<span class="line" db-line="4"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>"Jane Doe",,"(512) 555-9999"</code></span></span>
+<span class="line" db-line="5"><span class="ln">  <span class="nsep">|</span></span><span class="ld"><code>"Nancy Jones","nancy@example.org",</code></span></span>
+</pre></div><p>Every Invisible XML processor begins by creating a basic XML
+representation of your input data. That’s why it’s called Invisible
+XML. But what’s really going on here is that we’re turning input with
+implicit structure into explicitly structured data that can be
+transformed into whatever output format we require. And we’re doing it
+by describing that format in a compact, understandable, reusable,
+testable way.</p><p>Join us next time for a detailed look at the syntax of Invisible
+XML.</p></article></main><nav class="bottom"><div class="navrow"><div class="navleft"></div><div class="navmiddle"></div><div class="navright"></div></div><div class="navrow"><div class="navleft navtitle"></div><div class="navmiddle"></div><div class="navright navtitle"></div></div><div class="infofooter"><span class="copyrightfooter">Copyright ©  Norman Walsh.</span></div><nav class="tocopen"></nav><nav class="toc"></nav><!-- Hide ToC details from user agents that don’t support JS --><script type="text/html" class="tocopen"><i class="far fa-book"></i></script><script type="text/html" class="toc"><header><span>Table of Contents</span><span class="close"><i class="far fa-window-close"></i></span><p class="ptoc-search"><input class="ptoc-search" placeholder="Search" style="width: 80%"/></p></header><div db-persistent-toc="persistent-toc.html" db-prefix="">Loading…</div></script></nav></body></html>
