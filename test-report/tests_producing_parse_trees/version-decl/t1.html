@@ -1,0 +1,28 @@
+<!DOCTYPE HTML><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Invisible XML Test Suite Catalog</title><link rel="stylesheet" href="../../catalog.css"></head><body><div class="breadcrumbs"><a href="../../"><img class="logotype" src="../..//img/CoffeeFilter.svg"></a>&nbsp;/&nbsp;<a href="../../tests_producing_parse_trees">Tests producing parse trees</a>&nbsp;/&nbsp;<a href="../../tests_producing_parse_trees/version-decl">version-decl</a>&nbsp;/&nbsp;t1</div><main><h1 class="title">CoffeeFilter Test Report</h1><details><p>Report generated on 23 Jul 2023 at 20:18 with CoffeeFilter version 3.0.0j (using CoffeeGrinder version 3.0.0j) from a test suite dated 21&nbsp;Jun&nbsp;2022 (20&nbsp;Jun&nbsp;2023).</p><div class="description"><h4>Description</h4>
+    <p>Top-level catalog for tests in the iXML Community Group
+    Test Suite.</p>
+    <p>Tests have been contributed from several sources, but
+    the core of the test collection are the tests contributed
+    by Steven Pemberton in December 2021.</p>
+  </div></details><h2 class="title">Tests producing parse trees</h2><details><summary>17&nbsp;Jun&nbsp;2022 (15&nbsp;Jun&nbsp;2023)</summary><div class="description"><h4>Description</h4>
+    <p>Tests provided by Steven Pemberton in December 2021, with
+    corrections of 21 December. Reorganized by Norm Tovey-Walsh,
+    February 2022.</p>
+
+  </div></details><h3 class="title">version-decl</h3><p>Created 27&nbsp;May&nbsp;2022 by MSM</p><details><summary>Invisible XML Grammar</summary><div class="grammar"><pre><code>ixml version "1.0".
+
+S = 'abc', done
+  ; [#00BF], 'x', [], 'x?'
+  ; [#00BF], 'y', []+, 'y?'
+  ; [#00A1], 'z', []?, 'z!'
+  ; [#00A1], 'w', []*, 'w!'
+
+  ; 'v', ~[], 'v'
+  ; 'u', ~[]+, 'u'
+  ; 't', ~[]?, 't'
+  ; 's', ~[]*, 's'
+.
+
+done = [#1F63A].
+</code></pre></div></details><h1>Test case: t1</h1><details><p>Repository URI: <code>…/tests/correct/test-catalog.xml</code></p></details><details><summary>Input string (3 characters)</summary><div class="test-string"><pre><code>t.t</code></pre></div></details><details><summary>Expected result</summary><div class="result"><div class="xml-result"><pre><code>&lt;S&gt;t.t&lt;/S&gt;
+</code></pre></div></div></details><h1>Test report</h1><p class="test-result pass">PASS</p></main></body></html>

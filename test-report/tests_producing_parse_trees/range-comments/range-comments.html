@@ -1,0 +1,22 @@
+<!DOCTYPE HTML><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Invisible XML Test Suite Catalog</title><link rel="stylesheet" href="../../catalog.css"></head><body><div class="breadcrumbs"><a href="../../"><img class="logotype" src="../..//img/CoffeeFilter.svg"></a>&nbsp;/&nbsp;<a href="../../tests_producing_parse_trees">Tests producing parse trees</a>&nbsp;/&nbsp;<a href="../../tests_producing_parse_trees/range-comments">range-comments</a>&nbsp;/&nbsp;range-comments</div><main><h1 class="title">CoffeeFilter Test Report</h1><details><p>Report generated on 23 Jul 2023 at 20:18 with CoffeeFilter version 3.0.0j (using CoffeeGrinder version 3.0.0j) from a test suite dated 21&nbsp;Jun&nbsp;2022 (20&nbsp;Jun&nbsp;2023).</p><div class="description"><h4>Description</h4>
+    <p>Top-level catalog for tests in the iXML Community Group
+    Test Suite.</p>
+    <p>Tests have been contributed from several sources, but
+    the core of the test collection are the tests contributed
+    by Steven Pemberton in December 2021.</p>
+  </div></details><h2 class="title">Tests producing parse trees</h2><details><summary>17&nbsp;Jun&nbsp;2022 (15&nbsp;Jun&nbsp;2023)</summary><div class="description"><h4>Description</h4>
+    <p>Tests provided by Steven Pemberton in December 2021, with
+    corrections of 21 December. Reorganized by Norm Tovey-Walsh,
+    February 2022.</p>
+
+  </div></details><h3 class="title">range-comments</h3><p>Created 05&nbsp;Feb&nbsp;2022 by ndw</p><details><summary>Invisible XML Grammar</summary><div class="grammar"><pre><code>name: letter*.
+letter: [{comment}"a"{comment}-{comment}"z"{comment}].
+</code></pre></div></details><h1>Test case: range-comments</h1><details><p>Repository URI: <code>…/tests/correct/test-catalog.xml</code></p></details><p>Created 05&nbsp;Feb&nbsp;2022 by ndw</p><details><summary>Updated 05&nbsp;Feb&nbsp;2022 by ndw</summary><p>Converted it into the catalog format</p></details><details><summary>Input string (4 characters)</summary><div class="test-string"><pre><code>name</code></pre></div></details><details><summary>Expected result</summary><div class="result">
+	<div class="xml-result"><pre><code>&lt;name&gt;
+   &lt;letter&gt;n&lt;/letter&gt;
+   &lt;letter&gt;a&lt;/letter&gt;
+   &lt;letter&gt;m&lt;/letter&gt;
+   &lt;letter&gt;e&lt;/letter&gt;
+&lt;/name&gt;
+</code></pre></div>
+      </div></details><h1>Test report</h1><p class="test-result pass">PASS</p></main></body></html>

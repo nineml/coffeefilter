@@ -1,0 +1,20 @@
+<!DOCTYPE HTML><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Invisible XML Test Suite Catalog</title><link rel="stylesheet" href="../../catalog.css"></head><body><div class="breadcrumbs"><a href="../../"><img class="logotype" src="../..//img/CoffeeFilter.svg"></a>&nbsp;/&nbsp;<a href="../../grammar_syntax_tests">Grammar Syntax tests</a>&nbsp;/&nbsp;<a href="../../grammar_syntax_tests/expr10_ixml">expr10.ixml</a>&nbsp;/&nbsp;Grammar test</div><main><h1 class="title">CoffeeFilter Test Report</h1><details><p>Report generated on 23 Jul 2023 at 20:18 with CoffeeFilter version 3.0.0j (using CoffeeGrinder version 3.0.0j) from a test suite dated 21&nbsp;Jun&nbsp;2022 (20&nbsp;Jun&nbsp;2023).</p><div class="description"><h4>Description</h4>
+    <p>Top-level catalog for tests in the iXML Community Group
+    Test Suite.</p>
+    <p>Tests have been contributed from several sources, but
+    the core of the test collection are the tests contributed
+    by Steven Pemberton in December 2021.</p>
+  </div></details><h2 class="title">Grammar Syntax tests</h2><details><summary>03&nbsp;Jun&nbsp;2022</summary><div class="description"><h4>Description</h4>
+    <p>Syntax tests provided by Steven Pemberton in December 2021.</p>
+    <p>All tests are negative (the file.ixml files do not conform
+    to the grammar for ixml).</p>
+    <p>Since these are all parsed against the grammar for ixml
+    grammars, the expected result could be given as
+    'assert-not-a-grammar' as well as 'assert-not-a-sentence'. The
+    inputs are not sentences in the language defined by the grammar
+    for grammars, which means they are not ixml grammars.</p>
+    <p>Three catalogs are provided, using different formulations. This
+    one describes all the tests as grammar tests and relies on
+    the ixml grammar built into the processor.</p>
+  </div></details><h3 class="title">expr10.ixml</h3><p>Created 16&nbsp;Dec&nbsp;2021 by SP</p><details><summary>Invisible XML Grammar</summary><div class="grammar"><pre><code>expr: factor+("*"; "/").
+term: </code></pre></div></details><h1>Test case: Grammar test</h1><details><p>Repository URI: <code>…/tests/syntax/catalog-as-grammar-tests.xml</code></p></details><details><summary>Expected result</summary><div class="result unsuccessful"><p class="not-a-grammar">The grammar is invalid. Raises a static error.</p></div></details><h1>Test report</h1><p class="test-result pass">PASS</p></main></body></html>

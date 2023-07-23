@@ -1,0 +1,32 @@
+<!DOCTYPE HTML><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Invisible XML Test Suite Catalog</title><link rel="stylesheet" href="../../catalog.css"></head><body><div class="breadcrumbs"><a href="../../"><img class="logotype" src="../..//img/CoffeeFilter.svg"></a>&nbsp;/&nbsp;<a href="../../character_class_tests">Character class tests</a>&nbsp;/&nbsp;<a href="../../character_class_tests/chars_char1b">chars.char1b</a>&nbsp;/&nbsp;char1a</div><main><h1 class="title">CoffeeFilter Test Report</h1><details><p>Report generated on 23 Jul 2023 at 20:18 with CoffeeFilter version 3.0.0j (using CoffeeGrinder version 3.0.0j) from a test suite dated 21&nbsp;Jun&nbsp;2022 (20&nbsp;Jun&nbsp;2023).</p><div class="description"><h4>Description</h4>
+    <p>Top-level catalog for tests in the iXML Community Group
+    Test Suite.</p>
+    <p>Tests have been contributed from several sources, but
+    the core of the test collection are the tests contributed
+    by Steven Pemberton in December 2021.</p>
+  </div></details><h2 class="title">Character class tests</h2><details><summary>17&nbsp;Dec&nbsp;2022 (20&nbsp;Jun&nbsp;2023)</summary><div class="description"><h4>Description</h4>
+    <p>The initial tests are derived from
+    <a href="https://lists.w3.org/Archives/Public/public-ixml/2022Dec/0003.html">an
+    email thread</a>.</p>
+  </div></details><h3 class="title">chars.char1b</h3><p>Created 17&nbsp;Dec&nbsp;2022 by NW</p><details><summary>Invisible XML Grammar</summary><div class="grammar"><pre><code>input: char*.
+
+-char: C; LC; Lm ; Lo; M; N; P; S; Z; Unassigned.
+Unassigned: ~[C; LC; Lm ; Lo; M; N; P; S; Z].
+
+C: [C].
+LC: [LC].
+Lm: [Lm].
+Lo: [Lo].
+M: [M].
+N: [N].
+P: [P].
+S: [S].
+Z: [Z].
+</code></pre></div></details><h1>Test case: char1a</h1><details><p>Repository URI: <code>…/tests/chars/test-catalog.xml</code></p></details><p>Created 17&nbsp;Dec&nbsp;2022 by NW</p><details><summary>Input string (3 characters)</summary><div class="test-string"><pre><code>Abʰ</code></pre></div></details><details><summary>Expected result</summary><div class="result">
+        <div class="xml-result"><pre><code>&lt;input&gt;
+   &lt;LC&gt;A&lt;/LC&gt;
+   &lt;LC&gt;b&lt;/LC&gt;
+   &lt;Lm&gt;ʰ&lt;/Lm&gt;
+&lt;/input&gt;
+</code></pre></div>
+      </div></details><h1>Test report</h1><p class="test-result pass">PASS</p></main></body></html>
