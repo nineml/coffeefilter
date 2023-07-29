@@ -1,0 +1,32 @@
+<!DOCTYPE HTML><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Invisible XML Test Suite Catalog</title><link rel="stylesheet" href="../../catalog.css"></head><body><div class="breadcrumbs"><a href="../../"><img class="logotype" src="../..//img/CoffeeFilter.svg"></a>&nbsp;/&nbsp;<a href="../../ambiguous_inputs">Ambiguous inputs</a>&nbsp;/&nbsp;<a href="../../ambiguous_inputs/ambiguous-without-marks">ambiguous-without-marks</a>&nbsp;/&nbsp;B-or-B</div><main><h1 class="title">CoffeeFilter Test Report</h1><details><p>Report generated on 29 Jul 2023 at 16:56 with CoffeeFilter version 3.0.0 (using CoffeeGrinder version 3.0.0) from a test suite dated 21&nbsp;Jun&nbsp;2022 (20&nbsp;Jun&nbsp;2023).</p><div class="description"><h4>Description</h4>
+    <p>Top-level catalog for tests in the iXML Community Group
+    Test Suite.</p>
+    <p>Tests have been contributed from several sources, but
+    the core of the test collection are the tests contributed
+    by Steven Pemberton in December 2021.</p>
+  </div></details><h2 class="title">Ambiguous inputs</h2><details><summary>01&nbsp;Jun&nbsp;2022 (09&nbsp;May&nbsp;2023)</summary><div class="description"><h4>Description</h4>
+    <p>Tests provided by Steven Pemberton in December 2021, with
+    corrections of 21 December. Reorganized by Norm Tovey-Walsh,
+    February 2022.</p>
+  </div></details><h3 class="title">ambiguous-without-marks</h3><p>Created 09&nbsp;May&nbsp;2023 by ndw</p><details><summary>Invisible XML Grammar</summary><div class="grammar"><pre><code>S = A, B, C | A, B, C . A = 'a' . B = 'b' . C = 'c' .</code></pre></div></details><h1>Test case: B-or-B</h1><details><p>Repository URI: <code>…/tests/ambiguous/test-catalog.xml</code></p></details><p>Created 09&nbsp;May&nbsp;2023 by ndw</p><details><summary>Description</summary><div class="description">
+	<p>This grammar is ambiguous only if the processor does not
+        remove duplicate rules. But there’s nothing in the specification
+        that says a processor must.</p>
+      </div></details><details><summary>Description</summary><div class="description">
+	<p>This grammar is ambiguous only if the processor does not
+        remove duplicate rules. But there’s nothing in the specification
+        that says a processor must.</p>
+      </div></details><details><summary>Input string (3 characters)</summary><div class="test-string"><pre><code>abc</code></pre></div></details><details><summary>Expected results (one of)</summary><div class="result">
+	<div class="xml-result"><pre><code>&lt;S xmlns:ixml="http://invisiblexml.org/NS" ixml:state="ambiguous"&gt;
+   &lt;A&gt;a&lt;/A&gt;
+   &lt;B&gt;b&lt;/B&gt;
+   &lt;C&gt;c&lt;/C&gt;
+&lt;/S&gt;
+</code></pre></div>
+	<div class="xml-result"><pre><code>&lt;S&gt;
+   &lt;A&gt;a&lt;/A&gt;
+   &lt;B&gt;b&lt;/B&gt;
+   &lt;C&gt;c&lt;/C&gt;
+&lt;/S&gt;
+</code></pre></div>
+      </div></details><h1>Test report</h1><p class="test-result pass">PASS</p></main></body></html>
