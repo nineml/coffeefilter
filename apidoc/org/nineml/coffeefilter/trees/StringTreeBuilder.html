@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -194,12 +194,17 @@ extends <a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.h
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/StringTreeBuilder.html#processingInstruction-java.lang.String-java.lang.String-">processingInstruction</a></span>(java.lang.String&nbsp;target,
+                     java.lang.String&nbsp;data)</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/StringTreeBuilder.html#startElement-java.lang.String-java.lang.String-java.lang.String-org.xml.sax.Attributes-">startElement</a></span>(java.lang.String&nbsp;uri,
             java.lang.String&nbsp;localName,
             java.lang.String&nbsp;qName,
             org.xml.sax.Attributes&nbsp;attributes)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/StringTreeBuilder.html#startPrefixMapping-java.lang.String-java.lang.String-">startPrefixMapping</a></span>(java.lang.String&nbsp;prefix,
                   java.lang.String&nbsp;uri)</code>&nbsp;</td>
@@ -210,7 +215,7 @@ extends <a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.h
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.xml.sax.helpers.DefaultHandler</h3>
-<code>endPrefixMapping, error, fatalError, ignorableWhitespace, notationDecl, processingInstruction, resolveEntity, setDocumentLocator, skippedEntity, startDocument, unparsedEntityDecl, warning</code></li>
+<code>endPrefixMapping, error, fatalError, ignorableWhitespace, notationDecl, resolveEntity, setDocumentLocator, skippedEntity, startDocument, unparsedEntityDecl, warning</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -371,7 +376,7 @@ extends <a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.h
 <a name="characters-char:A-int-int-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>characters</h4>
 <pre>public&nbsp;void&nbsp;characters(char[]&nbsp;ch,
@@ -383,6 +388,25 @@ extends <a href="../../../../org/nineml/coffeefilter/trees/AbstractTreeBuilder.h
 <dd><code>characters</code>&nbsp;in interface&nbsp;<code>org.xml.sax.ContentHandler</code></dd>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>characters</code>&nbsp;in class&nbsp;<code>org.xml.sax.helpers.DefaultHandler</code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>org.xml.sax.SAXException</code></dd>
+</dl>
+</li>
+</ul>
+<a name="processingInstruction-java.lang.String-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>processingInstruction</h4>
+<pre>public&nbsp;void&nbsp;processingInstruction(java.lang.String&nbsp;target,
+                                  java.lang.String&nbsp;data)
+                           throws org.xml.sax.SAXException</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>processingInstruction</code>&nbsp;in interface&nbsp;<code>org.xml.sax.ContentHandler</code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>processingInstruction</code>&nbsp;in class&nbsp;<code>org.xml.sax.helpers.DefaultHandler</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>org.xml.sax.SAXException</code></dd>
 </dl>

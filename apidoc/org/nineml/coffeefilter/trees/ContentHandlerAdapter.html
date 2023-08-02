@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -173,37 +173,49 @@ implements org.nineml.coffeegrinder.trees.TreeBuilder</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#endAmbiguity-int-int-int-">endAmbiguity</a></span>(int&nbsp;id,
+            int&nbsp;leftExtent,
+            int&nbsp;rightExtent)</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#endNonterminal-org.nineml.coffeegrinder.parser.NonterminalSymbol-java.util.Map-int-int-">endNonterminal</a></span>(org.nineml.coffeegrinder.parser.NonterminalSymbol&nbsp;symbol,
               java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;attributes,
               int&nbsp;leftExtent,
               int&nbsp;rightExtent)</code>&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#endTree-boolean-boolean-boolean-">endTree</a></span>(boolean&nbsp;ambiguous,
        boolean&nbsp;absolutelyAmbiguous,
        boolean&nbsp;infinitelyAmbiguous)</code>&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>org.xml.sax.ContentHandler</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#getHandler--">getHandler</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/nineml/coffeefilter/ParserOptions.html" title="class in org.nineml.coffeefilter">ParserOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#getOptions--">getOptions</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#startAmbiguity-int-int-int-">startAmbiguity</a></span>(int&nbsp;id,
+              int&nbsp;leftExtent,
+              int&nbsp;rightExtent)</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#startNonterminal-org.nineml.coffeegrinder.parser.NonterminalSymbol-java.util.Map-int-int-">startNonterminal</a></span>(org.nineml.coffeegrinder.parser.NonterminalSymbol&nbsp;symbol,
                 java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;attributes,
                 int&nbsp;leftExtent,
                 int&nbsp;rightExtent)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#startTree--">startTree</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/nineml/coffeefilter/trees/ContentHandlerAdapter.html#token-org.nineml.coffeegrinder.tokens.Token-java.util.Map-int-int-">token</a></span>(org.nineml.coffeegrinder.tokens.Token&nbsp;token,
      java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;attributes,
@@ -349,7 +361,7 @@ implements org.nineml.coffeegrinder.trees.TreeBuilder</pre>
 <a name="token-org.nineml.coffeegrinder.tokens.Token-java.util.Map-int-int-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>token</h4>
 <pre>public&nbsp;void&nbsp;token(org.nineml.coffeegrinder.tokens.Token&nbsp;token,
@@ -359,6 +371,36 @@ implements org.nineml.coffeegrinder.trees.TreeBuilder</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>token</code>&nbsp;in interface&nbsp;<code>org.nineml.coffeegrinder.trees.TreeBuilder</code></dd>
+</dl>
+</li>
+</ul>
+<a name="startAmbiguity-int-int-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>startAmbiguity</h4>
+<pre>public&nbsp;void&nbsp;startAmbiguity(int&nbsp;id,
+                           int&nbsp;leftExtent,
+                           int&nbsp;rightExtent)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>startAmbiguity</code>&nbsp;in interface&nbsp;<code>org.nineml.coffeegrinder.trees.TreeBuilder</code></dd>
+</dl>
+</li>
+</ul>
+<a name="endAmbiguity-int-int-int-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>endAmbiguity</h4>
+<pre>public&nbsp;void&nbsp;endAmbiguity(int&nbsp;id,
+                         int&nbsp;leftExtent,
+                         int&nbsp;rightExtent)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>endAmbiguity</code>&nbsp;in interface&nbsp;<code>org.nineml.coffeegrinder.trees.TreeBuilder</code></dd>
 </dl>
 </li>
 </ul>
